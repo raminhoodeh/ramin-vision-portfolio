@@ -1,301 +1,158 @@
-# Portfolio Website Handoff
+# Ramin Vision Portfolio Handoff
 
-## Current Goal
-
-Recreate a portfolio landing page inspired by `https://hashgraphvc.com/`, but customized as a personal portfolio. The current direction is:
-
-- Keep the site mostly light, clean, silver, and fresh.
-- Keep the animated ShaderGradient background visible outside the main site container.
-- Put the whole portfolio inside a frosted/glass-like framed container.
-- Avoid making the site feel dark, depressing, or overly 3D/tacky.
-- Park heavy 3D objects for later; possibly add only one or two tasteful 3D/glass elements near the end.
-
-## Current Local App
-
-Workspace:
+## Canonical Repository
 
 ```txt
-/Users/raminhoodeh/Desktop/website
+https://github.com/raminhoodeh/ramin-vision-portfolio
 ```
 
-Dev server has been running at:
+This repository is now the canonical working copy for continuing the portfolio on another laptop or in another Codex session.
+
+## Local Setup
+
+```bash
+npm install
+npm run verify
+npm run dev
+```
+
+Preview URL:
 
 ```txt
-http://127.0.0.1:3002/
+http://127.0.0.1:4182/
 ```
 
-Main stack:
+If `npm run dev` fails with `Port 4182 is already in use`, stop the old server first:
 
-- React
-- Vite
-- TypeScript
-- Tailwind CSS v4
-- GSAP
-- Framer Motion
-- hls.js still installed, but the current hero/footer no longer use the HLS background video
-- ShaderGradient via `@shadergradient/react`
-- Three / React Three Fiber dependencies for ShaderGradient
+```bash
+lsof -nP -iTCP:4182 -sTCP:LISTEN
+kill <PID>
+npm run dev
+```
 
-## Important Design Decisions
+Do not start duplicate dev servers on random ports. Use `4182` as the single preview port unless the user explicitly asks otherwise.
 
-The user showed a GIF where the whole portfolio sits inside its own framed container, with the animated background outside it.
+## Current Product Structure
 
-The latest intended balance is:
+The website should follow the agreed structure:
 
-- Use the original darker blue ShaderGradient background from the user’s provided snippet.
-- Do not make the entire site dark.
-- Keep the portfolio content in a light frosted stage, so the content remains readable and fresh.
-- The ShaderGradient should still be visible around the outside of the site container and subtly through the frosted shell.
+1. Hero
+2. Experience & Education
+3. Personal Projects
+4. Teaching, Speaking & Writing
+5. Contact CTA
+6. Bonus Section
+7. AI Ramin Chatbot modal
 
-The previous mistake was making the shader itself too pale, which made the background disappear. That was corrected by restoring the original ShaderGradient values.
-
-## Key Files
-
-App structure:
+Section specs live in:
 
 ```txt
-src/App.tsx
-src/main.tsx
-src/index.css
-src/data/portfolio.ts
+docs/section-specs/
 ```
 
-Components:
+Use those files as the source of truth before changing a section.
 
-```txt
-src/components/ShaderGradientBackground.tsx
-src/components/LoadingScreen.tsx
-src/components/LiquidGlassNavShell.tsx
-src/components/LiquidGlassJsNavShell.tsx
-src/components/HlsVideo.tsx
-```
+## Current Design State
 
-Local reference libraries:
+- The site is a light/silver portfolio experience with an animated shader background.
+- The bottom navigation is the active navigation direction.
+- The old top nav and left rail experiments should not be revived unless explicitly requested.
+- Keep the WebGL and 3D assets. They are needed for the Bonus rock phase.
+
+Important assets/code to preserve:
 
 ```txt
 react libraries/liquid-glass-js-main/
-shadergradient-main/packages/shadergradient
-react libraries/shadergradient-main/
+gl/
+src/components/LiquidGlassJsNavShellReadable.tsx
+src/components/ShaderGradientBackground.tsx
 ```
 
-Parked 3D notes:
+## Bottom Liquid Glass Navigation
+
+The bottom nav uses the local WebGL liquid-glass library from:
 
 ```txt
-parked-3d-notes.md
+react libraries/liquid-glass-js-main/
 ```
 
-## Current ShaderGradient State
-
-`src/components/ShaderGradientBackground.tsx` currently restores the user’s original shader direction:
-
-- black base
-- `color1="#63bdf9"`
-- `color2="#5a769d"`
-- `color3="#fafdff"`
-- `grain="on"`
-- `brightness={1.2}`
-- same camera / rotation / density / strength values from the user’s snippet
-
-It is wrapped as a fixed full-page background behind the app.
-
-Some export-only props from the original snippet are intentionally not passed to `ShaderGradient` because they are not runtime props for `@shadergradient/react`, for example:
-
-- `axesHelper`
-- `bgColor1`
-- `bgColor2`
-- `destination`
-- `embedMode`
-- `format`
-- `frameRate`
-- `gizmoHelper`
-
-`pixelDensity` and `fov` are applied to `ShaderGradientCanvas`.
-
-## Current Portfolio Container
-
-The main portfolio stage is in `src/App.tsx` around the page content:
-
-```tsx
-<div className="relative z-10 p-3 sm:p-6 lg:p-12">
-  <div className="portfolio-stage ...">
-    ...
-  </div>
-</div>
-```
-
-The `.portfolio-stage` CSS is in `src/index.css`. It is currently a frosted light shell:
-
-- semi-transparent white/blue gradient
-- border with white translucency
-- dark/blue shadow for separation from the shader background
-- `backdrop-filter: blur(...) saturate(...)`
-- pseudo-element overlay for top sheen and blue tint
-
-## Liquid Glass Nav Work In Progress
-
-The user asked to test:
+It is wired through:
 
 ```txt
-react libraries/liquid-glass-js-main
-```
-
-on the top nav first, now that the HLS background video is gone.
-
-Reference page:
-
-```txt
-https://dashersw.github.io/liquid-glass-js/
-```
-
-Important finding:
-
-- The local `liquid-glass-js-main` library uses WebGL for the glass effect.
-- Its default capture path relies on `html2canvas`.
-- `html2canvas` previously failed against this app because Tailwind v4 generated modern `oklab` / `color-mix` CSS.
-- So the current approach is to use the local `Container` class, but patch/override its page capture to sample the live ShaderGradient canvas (`#gradientCanvas`) directly instead of using `html2canvas`.
-
-Files involved:
-
-```txt
-src/components/LiquidGlassJsNavShell.tsx
+src/components/LiquidGlassJsNavShellReadable.tsx
 src/index.css
 src/App.tsx
 ```
 
-`src/components/LiquidGlassJsNavShell.tsx` was just added. It:
-
-- imports the local library source as raw text:
-
-```ts
-import containerSource from '../../react libraries/liquid-glass-js-main/container.js?raw';
-```
-
-- evaluates the local `Container` class in the browser
-- patches `Container.prototype.capturePageSnapshot`
-- draws `#gradientCanvas` into a viewport-sized canvas
-- sets that as `Container.pageSnapshot`
-- renders the nav children through a React portal into the local library’s generated glass element
-
-`src/App.tsx` was changed to import and use:
-
-```ts
-import { LiquidGlassJsNavShell } from './components/LiquidGlassJsNavShell';
-```
-
-instead of the previous custom:
-
-```ts
-LiquidGlassNavShell
-```
-
-Important: this Liquid Glass JS swap was interrupted before a build/browser QA was completed. The next session should immediately verify it.
-
-## Previous Custom Glass Nav
-
-There is an older custom implementation:
+Current navigation labels:
 
 ```txt
-src/components/LiquidGlassNavShell.tsx
+Intro
+Work
+Projects
+Thoughts
+Contact
+Bonus
+AI Ramin
 ```
 
-This custom component directly sampled:
+Current behavior:
+
+- Inactive items show only dark icon + dark label.
+- Inactive inner pills should have no visible border, fill, canvas, shadow, or blur.
+- Selected item shows the inner liquid-glass pill.
+- Selected label stays dark/black for readability.
+- Labels are inside each inner pill, below the icon.
+- Text descenders must not clip. Current fix uses visible overflow, more line height, and bottom padding on `.glass-button-text`.
+
+Current WebGL control values are based on the Liquid Glass JS demo:
 
 ```txt
-[data-glass-media], #gradientCanvas
+edgeIntensity: 0.01
+rimIntensity: 0.05
+baseIntensity: 0.01
+edgeDistance: 0.15
+rimDistance: 0.8
+baseDistance: 0.1
+cornerBoost: 0.02
+rippleEffect: 0.1
+blurRadius: 5
+tintOpacity: 0.2
+warp: false
 ```
 
-and used its own WebGL shader. It worked reasonably, but the user specifically asked to retest the actual `liquid-glass-js-main` library.
+Do not replace the liquid-glass implementation with CSS-only blur. CSS should support the WebGL effect, not mask it.
 
-Do not delete the old custom component yet. It is a fallback if the local library proves too brittle.
+## Current Verification Status
 
-## Next Steps
-
-1. Run:
+The latest checks passed:
 
 ```bash
+npm run verify
+```
+
+This runs:
+
+```bash
+npm run check:content
 npm run build
 ```
 
-2. If TypeScript/Vite errors appear, first check:
+The Vite build currently emits a chunk-size warning because of Three.js / shader dependencies. That warning is not fatal.
 
-```txt
-src/components/LiquidGlassJsNavShell.tsx
-```
+## Important Cautions For Future Sessions
 
-Likely risk areas:
+- Do not remove `react libraries/liquid-glass-js-main/`.
+- Do not remove `gl/`.
+- Do not reintroduce top nav / left rail unless the user asks.
+- Do not create new preview URLs casually.
+- Before previewing, check whether port `4182` is already in use.
+- If GitHub work is needed, use the canonical repo above.
+- If a token was pasted in chat, treat it as exposed and tell the user to revoke it. Do not echo or use it.
 
-- raw import typing
-- the path with a space: `../../react libraries/...`
-- `new Function(...)`
-- type definitions around `Container`
+## Suggested Next Work
 
-3. Open:
-
-```txt
-http://127.0.0.1:3002/
-```
-
-4. Visually inspect the nav:
-
-- Does the nav render at all?
-- Does the nav glass show distorted ShaderGradient behind it?
-- Does the nav remain readable?
-- Does it update while the ShaderGradient animates?
-- Does it avoid console errors?
-
-5. If the nav is blank or stale:
-
-- Confirm the ShaderGradient canvas exists:
-
-```js
-document.querySelector('#gradientCanvas')
-```
-
-- Confirm the library instance exists:
-
-```js
-window.Container?.instances
-```
-
-6. If `html2canvas` errors reappear, that means the local library’s original capture path is still being called. The patch in `LiquidGlassJsNavShell.tsx` needs to run before `new Container(...)`.
-
-7. If the real library is too brittle, switch `App.tsx` back to:
-
-```ts
-import { LiquidGlassNavShell } from './components/LiquidGlassNavShell';
-```
-
-and use:
-
-```tsx
-<LiquidGlassNavShell>...</LiquidGlassNavShell>
-```
-
-The custom implementation already avoids `html2canvas`.
-
-## Verification Already Done Before Interruption
-
-Before the Liquid Glass JS swap:
-
-- `npm run build` passed.
-- The ShaderGradient rendered correctly.
-- The light frosted portfolio container displayed correctly.
-- The original shader background was visible around the container again.
-
-Known build warning:
-
-```txt
-Some chunks are larger than 500 kB after minification
-```
-
-This is expected because ShaderGradient pulls in Three / React Three Fiber.
-
-## User Preference Notes
-
-- User wants honesty and practical judgment.
-- User does not want the site to look dark/depressing.
-- User also does not want “light mode” interpreted so literally that the dramatic background disappears.
-- The right visual target is premium, fresh, silver, glassy, and dimensional.
-- Avoid random/tacky 3D.
-- Test changes visually before declaring them done.
-
+1. Continue visual QA of the bottom liquid-glass nav at `http://127.0.0.1:4182/`.
+2. Clean up legacy navigation/component experiments once the bottom nav is approved.
+3. Continue section implementation strictly from `docs/section-specs/`.
+4. Build the Bonus Section later using the preserved 3D/WebGL rock assets.
