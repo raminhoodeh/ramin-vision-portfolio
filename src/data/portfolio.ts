@@ -1,4 +1,5 @@
 import profilePictureUrl from '../assets/ramin-profile-nav.webp';
+import { thoughtsAssets } from '../assets/thoughts';
 
 export const hlsSource =
   'https://stream.mux.com/Aa02T7oM1wH5Mk5EEVDYhbZ1ChcdhRsS2m1NYyx4Ua1g.m3u8';
@@ -18,6 +19,7 @@ export const navLinks = [
   { label: 'Teaching, Speaking & Writing', target: 'teaching-speaking-writing' },
   { label: 'Contact', target: 'contact' },
   { label: 'Bonus', target: 'bonus' },
+  { label: 'AI Ramin', target: 'ai-ramin' },
 ] as const satisfies readonly NavLink[];
 
 export const roles = ['Manager', 'Teacher', 'Engineer'] as const;
@@ -1730,7 +1732,7 @@ export const contentReadiness = {
       section: 'Experience & Education',
       target: 'experience-education',
       priority: 'High',
-      sourceNote: 'The nine-company experience structure plus formal education and certifications are complete; evidence assets and public-safe wording are the main gaps.',
+      sourceNote: 'The ten-company experience structure plus formal education and certifications are complete; evidence assets and public-safe wording are the main gaps.',
       requests: [
         { item: 'Company logos or approval to use text-only marks', sourceStatus: 'manual-needed' },
         { item: 'Product videos, screenshots, or safe placeholder diagrams for each company', sourceStatus: 'manual-needed' },
@@ -1776,9 +1778,8 @@ export const contentReadiness = {
       section: 'Contact CTA',
       target: 'contact',
       priority: 'Medium',
-      sourceNote: 'Email is present; WhatsApp and final public contact preferences still need approval.',
+      sourceNote: 'Email and WhatsApp deep link are present; final availability wording still needs approval.',
       requests: [
-        { item: 'Final WhatsApp deep link', sourceStatus: 'manual-needed' },
         { item: 'Confirm public email label', sourceStatus: 'asset-lead' },
         { item: 'Confirm availability wording and social links', sourceStatus: 'asset-lead' },
       ],
@@ -1813,7 +1814,7 @@ export const contentReadiness = {
 } as const;
 
 export const stats = [
-  { value: '9+', label: 'Product environments' },
+  { value: '10', label: 'Product environments' },
   { value: '4', label: 'AI certifications' },
   { value: '£1B+', label: 'Media investment measured' },
 ] as const;
@@ -1922,6 +1923,1232 @@ const createSpeakingEntry = (talkTitle: string, sourceTitle: string, invitedBy: 
   };
 };
 
+const thoughtPageFrame = {
+  headline: 'Clarity systems for a noisy world.',
+  formationQuote: 'I believe that you are not defined by what you do, but by how the things you create have shaped you.',
+  body:
+    'Talks, books, and courses are different expressions of the same work: reducing over-information, understanding where we are, defining a vision, and acting with clearer judgment.',
+  formatIntros: {
+    talks: {
+      title: 'Live arguments for seeing clearly.',
+      quote: 'What they need to hear is more important than what you want to say.',
+      body:
+        'The talks are public moments where abstract ideas become something an audience can feel, remember, and use.',
+    },
+    books: {
+      title: 'Stories that turn metaphysics into guidance.',
+      body:
+        'The books use myth, fiction, and practical guides to make questions of meaning, purpose, and inner clarity more usable.',
+    },
+    courses: {
+      title: 'Operating systems for product judgment.',
+      body:
+        'The courses turn hard-earned product experience into repeatable systems for teams, builders, and modern AI product managers.',
+    },
+  },
+} as const;
+
+const thoughtAssetSources = {
+  talks: {
+    tedx: {
+      path: thoughtsAssets.talks.tedxTalk,
+      sourcePath: 'thoughts-section/talks/tedx final final.png',
+      alt: 'Ramin Hoodeh speaking at TEDx Imperial College London.',
+      orientation: 'wide',
+    },
+    university: {
+      path: thoughtsAssets.talks.universityTalk,
+      sourcePath: 'thoughts-section/talks/University-Talk-picture.jpg',
+      alt: 'Ramin Hoodeh giving a university talk.',
+      orientation: 'portrait',
+    },
+  },
+  courses: {
+    aiProductManager: {
+      path: thoughtsAssets.courses.aiProductManagerCourse,
+      sourcePath: 'thoughts-section/courses/ai-product-manager-course-thumbnail.png',
+      alt: 'Transition from Product Manager to AI Product Manager course thumbnail.',
+      orientation: 'wide',
+    },
+    productInnovationThumbnail: {
+      path: thoughtsAssets.courses.productInnovationCourse,
+      sourcePath: 'thoughts-section/courses/product-innovation-course-thumbnail.jpg',
+      alt: 'Product Innovation Process course thumbnail.',
+      orientation: 'wide',
+    },
+    productInnovationMockup: {
+      path: thoughtsAssets.courses.productInnovationLaptop,
+      sourcePath: 'thoughts-section/courses/product-innovation-process-course-laptop-mockup.jpg',
+      alt: 'Product Innovation Process laptop mockup.',
+      orientation: 'wide',
+    },
+  },
+  books: {
+    proposition: [
+      {
+        path: thoughtsAssets.books.proposition.bookCover,
+        sourcePath: 'thoughts-section/books/the-proposition-pictures/the-proposition-book-picture.jpg',
+        alt: 'The Proposition book cover photographed as a physical artifact.',
+        role: 'cover',
+      },
+      {
+        path: thoughtsAssets.books.proposition.bookOpen,
+        sourcePath: 'thoughts-section/books/the-proposition-pictures/the-proposition-book-opened-picture.jpg',
+        alt: 'The Proposition opened book photograph.',
+        role: 'interior',
+      },
+      {
+        path: thoughtsAssets.books.proposition.triptych,
+        sourcePath: 'thoughts-section/books/the-proposition-pictures/Triptich Final.png',
+        alt: 'Triptych artwork from The Proposition.',
+        role: 'world',
+      },
+      {
+        path: thoughtsAssets.books.proposition.adamMeetsGod,
+        sourcePath: 'thoughts-section/books/the-proposition-pictures/adam-meets-god.png',
+        alt: 'Adam meets God illustration from The Proposition visual world.',
+        role: 'world',
+      },
+      {
+        path: thoughtsAssets.books.proposition.adamEveCharacter,
+        sourcePath: 'thoughts-section/books/the-proposition-pictures/adam-eve-character.png',
+        alt: 'Adam and Eve character artwork from The Proposition.',
+        role: 'character',
+      },
+      {
+        path: thoughtsAssets.books.proposition.bookCharacter,
+        sourcePath: 'thoughts-section/books/the-proposition-pictures/the-proposition-book-character-picture.jpg',
+        alt: 'The Proposition character book photograph.',
+        role: 'cover',
+      },
+      {
+        path: thoughtsAssets.books.proposition.frontCoverExtended,
+        sourcePath: 'thoughts-section/books/the-proposition-pictures/the proposition-front-cover-extended-background.jpg',
+        alt: 'The Proposition extended cover artwork.',
+        role: 'cover',
+      },
+      {
+        path: thoughtsAssets.books.proposition.gardenOfEden,
+        sourcePath: 'thoughts-section/books/the-proposition-pictures/garden-of-eden.jpg',
+        alt: 'Garden of Eden artwork from The Proposition.',
+        role: 'world',
+      },
+      {
+        path: thoughtsAssets.books.proposition.loverCharacter,
+        sourcePath: 'thoughts-section/books/the-proposition-pictures/lover-character.png',
+        alt: 'Lover character artwork from The Proposition.',
+        role: 'character',
+      },
+      {
+        path: thoughtsAssets.books.proposition.magicianCharacter,
+        sourcePath: 'thoughts-section/books/the-proposition-pictures/magician-character.png',
+        alt: 'Magician character artwork from The Proposition.',
+        role: 'character',
+      },
+      {
+        path: thoughtsAssets.books.proposition.warriorCharacter,
+        sourcePath: 'thoughts-section/books/the-proposition-pictures/warrior-character.png',
+        alt: 'Warrior character artwork from The Proposition.',
+        role: 'character',
+      },
+    ],
+    meaningOfLife: [
+      {
+        path: thoughtsAssets.books.meaningOfLife.bookCover,
+        sourcePath: 'thoughts-section/books/the-meaning-of-life-book-pictures/the-meaning-of-life-book-picture.jpg',
+        alt: 'The Meaning of Life book photographed as a physical artifact.',
+        role: 'cover',
+      },
+      {
+        path: thoughtsAssets.books.meaningOfLife.bookWidescreen,
+        sourcePath: 'thoughts-section/books/the-meaning-of-life-book-pictures/the-meaning-of-life-book-widescreen-animated.jpg',
+        alt: 'The Meaning of Life widescreen artwork.',
+        role: 'world',
+      },
+      {
+        path: thoughtsAssets.books.meaningOfLife.quotePage,
+        sourcePath: 'thoughts-section/books/the-meaning-of-life-book-pictures/the-meaning-of-life-book-page-quote-screenshot.png',
+        alt: 'A page quote screenshot from The Meaning of Life.',
+        role: 'quote',
+      },
+      {
+        path: thoughtsAssets.books.meaningOfLife.serpentWidescreen,
+        sourcePath: 'thoughts-section/books/the-meaning-of-life-book-pictures/the-meaning-of-life-serpent-image-widescreen.png',
+        alt: 'The Meaning of Life serpent widescreen artwork.',
+        role: 'world',
+      },
+      {
+        path: thoughtsAssets.books.meaningOfLife.bookAnimatedPortrait,
+        sourcePath: 'thoughts-section/books/the-meaning-of-life-book-pictures/the-meaning-of-life-book-animated-portrait.png',
+        alt: 'The Meaning of Life animated portrait artwork.',
+        role: 'cover',
+      },
+      {
+        path: thoughtsAssets.books.meaningOfLife.edenGardenPortrait,
+        sourcePath: 'thoughts-section/books/the-meaning-of-life-book-pictures/the-meaning-of-life-eden-garden-image-portrait.png',
+        alt: 'The Meaning of Life Eden garden portrait artwork.',
+        role: 'world',
+      },
+      {
+        path: thoughtsAssets.books.meaningOfLife.snakePortrait,
+        sourcePath: 'thoughts-section/books/the-meaning-of-life-book-pictures/the-meaning-of-life-snake-portrait-imge.png',
+        alt: 'The Meaning of Life snake portrait artwork.',
+        role: 'world',
+      },
+    ],
+  },
+} as const;
+
+const thoughtTalks = [
+  {
+    ...createSpeakingEntry(
+      'Existentially Viewing your Existential Crisis',
+      'Existentially viewing your existential crisis',
+      'TEDx / Imperial College London',
+    ),
+    displayTitle: 'Existentially Viewing Your Existential Crisis',
+    venue: 'Imperial College London',
+    formatRole: 'Cosmic perspective talk',
+    media: thoughtAssetSources.talks.tedx,
+    youtubeEmbeddedLink: 'https://www.ted.com/talks/ramin_hoodeh_existentially_viewing_your_existential_crisis',
+    coreIdea:
+      'A guided attempt to help people make decisions from the reality of existence rather than from daily noise alone.',
+    audienceTakeaway:
+      'Use mindfulness and imagination to temporarily see life from a wider cosmic perspective, then let that perspective reorder what matters.',
+    whyItShapedMe:
+      'It turned a private metaphysical instinct into a public experience and showed that abstract reflection can be made visceral for an audience.',
+    liveMoment:
+      'The talk included a guided visualization exercise, asking the room to experience a version of the astronaut or spiritual-guru perspective without leaving Earth.',
+    tags: ['TEDx', 'Mindfulness', 'Decision-making', 'Cosmic perspective'],
+    sourceLinks: [
+      {
+        label: 'Watch TEDx talk',
+        href: 'https://www.ted.com/talks/ramin_hoodeh_existentially_viewing_your_existential_crisis',
+        sourceStatus: 'public-proof',
+      },
+    ],
+  },
+  {
+    ...createSpeakingEntry('My Story', 'My Life Story', 'University talk'),
+    venue: 'University audience',
+    formatRole: 'Origin story talk',
+    media: thoughtAssetSources.talks.university,
+    youtubeEmbeddedLink: 'https://www.youtube.com/watch?v=fpNNyHFUKzM',
+    coreIdea:
+      'A personal account of turning a fragmented life and career path into a middle-way system where professional work and creative purpose reinforce each other.',
+    audienceTakeaway:
+      'Build a clear story around your experiences, use your 9-5 and your personal projects to compound each other, and create from the vision that keeps you moving through mundane work.',
+    whyItShapedMe:
+      'It forced the full arc into one story: family, migration, faith-adjacent meaning, Tesla, TEDx, sustainability, product management, books, nsso, and teaching.',
+    liveMoment:
+      'The talk connects practical career advice with the deeper argument that reducing noise helps people hear the inner voice that knows what they value.',
+    tags: ['Storytelling', 'Career clarity', 'Middle way', 'Personal operating system'],
+    sourceLinks: [
+      {
+        label: 'Watch on YouTube',
+        href: 'https://www.youtube.com/watch?v=fpNNyHFUKzM',
+        sourceStatus: 'public-proof',
+      },
+    ],
+  },
+] as const;
+
+const thoughtCourses = [
+  {
+    ...createTeachingEntry(
+      'Transitioning to AI Product Management',
+      'Transition from Product Manager to AI Product Manager',
+      'New',
+    ),
+    displayTitle: 'Transition from Product Manager to AI Product Manager',
+    courseDescription:
+      'A practical AI-native product course for PMs and builders who need a durable operating system for probabilistic software, not a tour of tools that will expire.',
+    courseModules: [
+      'End of PM: old line, new loop, and the full AI-native stack',
+      'Model layer: capability, latency, cost, updates, and model judgment',
+      'Context layer: owned context files, memory, prompts, RAG, and product/user knowledge',
+      'Orchestration layer: agents, MCPs, tools, workflows, and the conductor posture',
+      'Governance layer: evals, guardrails, observability, fallbacks, and audit trails',
+      'Human layer: vision, empathy, taste, communication, judgment, and the professional posture when execution is cheap',
+    ],
+    courseTrailer: pmOsThesisUrl,
+    courseLink: pmOsThesisUrl,
+    media: [thoughtAssetSources.courses.aiProductManager],
+    positioning:
+      'The successor to the deterministic Product Innovation Process: old stage-gates become a loop because AI systems are probabilistic.',
+    framework: {
+      name: 'AI-Native Product OS',
+      loop: ['Talk', 'Decide', 'Build', 'Observe', 'Iterate'],
+      stack: ['Model', 'Context', 'Orchestration', 'Governance', 'Human'],
+      durableClaim:
+        'Models change fast, but the stack gives every future model, tool, or workflow a permanent shelf in your head.',
+    },
+    includedAssets: [
+      'Installable AI-Native Product OS',
+      'Eval templates and governance scaffolds',
+      'Prompt library',
+      'AI tools database',
+      'Vibe coding guide',
+      'PM database',
+      'Accelerators and investors database',
+      'Original Product Innovation Process course included as foundation',
+    ],
+    stats: [
+      { label: 'Lessons', value: '6' },
+      { label: 'Core loop', value: '5 verbs' },
+      { label: 'Stack', value: '5 layers' },
+    ],
+    sourceLinks: [
+      { label: 'AI PM course structure', href: pmOsThesisUrl, sourceStatus: 'local-primary' },
+      { label: 'GitHub OS assets', href: 'https://github.com/raminhoodeh?tab=repositories', sourceStatus: 'public-proof' },
+    ],
+    tags: ['AI PM', 'Probabilistic systems', '5-layer stack', 'Product judgment'],
+  },
+  {
+    ...createTeachingEntry('Full Product Development Process', 'The Fastest Path to Product Management', 'Highest-Rated'),
+    courseDescription:
+      'A start-to-finish product management walkthrough built around the Product Innovation Process: a shared source of truth for moving from idea to launch with clarity.',
+    courseModules: [
+      'Introduction to the Product Innovation Process',
+      'Discovery: idea, problem, backstory, strategic alignment, competition, and feedback',
+      'Product Design: problem/solution statement, personas, journeys, requirements, KPIs, architecture, and business requirements',
+      'Alpha: internal proof of concept, team testing, success criteria, and early access feedback',
+      'Beta: external MVP testing, iteration, rollout, development documentation, and go-live checklist',
+      'Live: staging, North Star metric, continuous iteration, roadmap, release workflow, adoption, and handover',
+    ],
+    courseTrailer: 'https://www.udemy.com/course/the-fastest-way-to-become-a-product-manager/',
+    courseLink: 'https://www.udemy.com/course/the-fastest-way-to-become-a-product-manager/',
+    media: [thoughtAssetSources.courses.productInnovationThumbnail, thoughtAssetSources.courses.productInnovationMockup],
+    positioning:
+      'A deterministic-era product operating system for aligning cross-functional teams around one vision, one process, and one source of truth.',
+    framework: {
+      name: 'Product Innovation Process',
+      loop: ['Discovery', 'Product Design', 'Alpha', 'Beta', 'Live'],
+      stack: ['Vision', 'Mission', 'Strategy', 'Tactics', 'Products and services'],
+      durableClaim:
+        'Teams move faster when everyone can see the same product story, decision history, responsibilities, and next stage-gate.',
+    },
+    includedAssets: [
+      'Product Innovation Process document',
+      'Stage-gate checklists',
+      'Strategic alignment prompts',
+      'Product requirements templates',
+      'Persona and user-story templates',
+      'KPI and North Star metric guidance',
+      'Roadmap and release workflow guidance',
+    ],
+    stats: [
+      { label: 'Rating', value: '4.8' },
+      { label: 'Students', value: '4,871' },
+      { label: 'Reviews', value: '162' },
+    ],
+    sourceLinks: [
+      {
+        label: 'Udemy course',
+        href: 'https://www.udemy.com/course/the-fastest-way-to-become-a-product-manager/',
+        sourceStatus: 'public-proof',
+      },
+      {
+        label: 'Process document',
+        href: 'https://docs.google.com/document/d/1WA3bAjACbkhMYAi7xiZTq5UO29Tqxsb3/edit?usp=sharing&ouid=110264933146795409149&rtpof=true&sd=true',
+        sourceStatus: 'public-proof',
+      },
+    ],
+    tags: ['Product management', 'Source of truth', 'Process design', 'Team alignment'],
+  },
+] as const;
+
+const thoughtBooks = [
+  {
+    bookName: 'The Proposition',
+    bookType: 'Spiritual fiction',
+    bookImage: thoughtsAssets.books.proposition.bookCover,
+    bookVideo: undefined,
+    purchaseLink: 'https://www.amazon.co.uk/Purpose-Ramin-Hoodeh/dp/1527286185',
+    previewLink: 'https://author.vision/',
+    summaryLink: undefined,
+    fullText:
+      'https://docs.google.com/document/d/1zibHuBmxwThGVPb82qCtJOY5wJFXyQTq/preview?usp=drive_link&ouid=110264933146795409149&rtpof=true&sd=true',
+    bookDescription:
+      'A spiritual fiction novel about Ali, an imprisoned poet whose conversations, visions, and refusal to betray his principles turn confinement into a journey toward inner freedom and purpose.',
+    media: thoughtAssetSources.books.proposition,
+    premise:
+      'A poet imprisoned for his words is ordered to translate sacred texts, forms an unexpected bond with a young guard, and discovers that his immediate purpose may be to pass on wisdom rather than escape.',
+    coreQuestion: 'Can ancient wisdom become clear enough to guide a modern person through confusion, grief, ego, and purpose?',
+    readerUse:
+      'Read it as a story, carry it as an oracle book, and use the Purpose Guide to turn metaphysical insight into a practical life plan.',
+    includedGuide: 'Purpose Guide for turning the book’s wisdom into a personal two-year plan.',
+    shapedMe:
+      'It shaped my belief that dense metaphysical enquiry becomes more usable when it is carried through story, symbolism, character, and humour.',
+    tags: ['Spiritual fiction', 'Purpose', 'Ancient wisdom', 'Oracle book'],
+    visualInventory: {
+      cover: thoughtsAssets.books.proposition.bookCover,
+      openedBook: thoughtsAssets.books.proposition.bookOpen,
+      world: [
+        thoughtsAssets.books.proposition.triptych,
+        thoughtsAssets.books.proposition.adamMeetsGod,
+        thoughtsAssets.books.proposition.gardenOfEden,
+      ],
+      characters: [
+        thoughtsAssets.books.proposition.adamEveCharacter,
+        thoughtsAssets.books.proposition.loverCharacter,
+        thoughtsAssets.books.proposition.magicianCharacter,
+        thoughtsAssets.books.proposition.warriorCharacter,
+      ],
+      supporting: [
+        thoughtsAssets.books.proposition.serpent,
+        thoughtsAssets.books.proposition.snakeFinal,
+        thoughtsAssets.books.proposition.backCover,
+      ],
+    },
+    sourceLinks: [
+      { label: 'Amazon page', href: 'https://www.amazon.co.uk/Purpose-Ramin-Hoodeh/dp/1527286185', sourceStatus: 'public-proof' },
+      { label: 'Author site', href: 'https://author.vision/', sourceStatus: 'public-proof' },
+    ],
+  },
+  {
+    bookName: 'The Meaning of Life',
+    bookType: 'Metaphysical companion',
+    bookImage: thoughtsAssets.books.meaningOfLife.bookCover,
+    bookVideo: undefined,
+    purchaseLink: 'https://author.vision/',
+    previewLink: 'https://drive.google.com/drive/folders/1Vgbf3l5pmJeGYLzYOWP1mcn7aED9zOPD?usp=sharing',
+    summaryLink: 'https://drive.google.com/file/d/10Rzdgz9dFOHOgjUiP-tKUoxCPuRCRsN7/view?usp=sharing',
+    fullText: 'https://drive.google.com/drive/folders/1Vgbf3l5pmJeGYLzYOWP1mcn7aED9zOPD?usp=sharing',
+    bookDescription:
+      'A shorter metaphysical companion to The Proposition, told through Adam and Eve, that distills life’s biggest questions into a clear frame of reality and a practical 3-Day Purpose Guide.',
+    media: thoughtAssetSources.books.meaningOfLife,
+    premise:
+      'Adam searches through the overwhelming library of existence and finds that metaphysical clarity can be organized through five fundamental questions.',
+    coreQuestion: 'Where did I come from, who am I, why do I exist, how should I be, and what should I do now?',
+    readerUse:
+      'Use it as a concise map for existential clarity, then work through the 3-Day Purpose Guide to connect meaning to present action.',
+    includedGuide: '3-Day Purpose Guide for knowing yourself, going deep, letting go, and getting specific.',
+    shapedMe:
+      'It shaped the clearest version of my belief that meaning comes from organizing knowledge into a state of being, not collecting more information.',
+    tags: ['Metaphysics', 'Adam and Eve', 'Purpose Guide', 'Audiobook'],
+    visualInventory: {
+      cover: thoughtsAssets.books.meaningOfLife.bookCover,
+      world: [
+        thoughtsAssets.books.meaningOfLife.bookWidescreen,
+        thoughtsAssets.books.meaningOfLife.serpentWidescreen,
+        thoughtsAssets.books.meaningOfLife.edenGardenPortrait,
+      ],
+      portrait: [
+        thoughtsAssets.books.meaningOfLife.bookAnimatedPortrait,
+        thoughtsAssets.books.meaningOfLife.snakePortrait,
+      ],
+      quote: thoughtsAssets.books.meaningOfLife.quotePage,
+    },
+    sourceLinks: [
+      {
+        label: 'Audiobook',
+        href: 'https://drive.google.com/file/d/1NsfY8UMPmYrcyfvB9hlPyRhMjHyyCgGm/view?usp=sharing',
+        sourceStatus: 'local-primary',
+      },
+      {
+        label: 'Book folder',
+        href: 'https://drive.google.com/drive/folders/1Vgbf3l5pmJeGYLzYOWP1mcn7aED9zOPD?usp=sharing',
+        sourceStatus: 'local-primary',
+      },
+    ],
+  },
+] as const;
+
+const workExperienceData = [
+  {
+    companyLogo: 'company-logos/bayut logo.webp',
+    companyLogoAsset: {
+      title: 'Bayut logo',
+      pathOrUrl: 'company-logos/bayut logo.webp',
+      altText: 'Bayut logo',
+      type: 'logo',
+      status: 'ready',
+      sourceNotes: 'Provided in company-logos folder.',
+    },
+    companyName: 'Bayut',
+    productVideo: videoNeeded(),
+    productVideoAsset: {
+      title: 'Bayut product video',
+      pathOrUrl: videoNeeded(),
+      altText: 'Bayut product video',
+      type: 'video',
+      status: 'needed',
+      sourceNotes: 'Placeholder for the left-column active experience video panel.',
+    },
+    companyLink: 'https://www.bayut.com/',
+    location: 'Dubai, UAE',
+    monthYearRangeWorked: 'Jan 2026 - Present',
+    jobTitle: 'AI Product Manager',
+    companyDescription:
+      'Bayut is the market-leading property website in the UAE, connecting buyers, sellers, landlords, tenants, and agents through extensive inventory from more than 3,500 agencies.',
+    industryTag: 'PropTech SaaS',
+    industryTags: ['PropTech SaaS', 'eCommerce'],
+    productsWorkedOn: ['Bayut web', 'Bayut App', 'Profolio app'],
+    productDetails: [
+      {
+        name: 'Bayut web, Bayut App, Profolio app',
+        description:
+          'Bespoke property listing management platform for UAE real estate agents registered on Bayut, alongside AI-native property search features.',
+      },
+    ],
+    mainAchievements: [
+      '[Confidential] Built AI-native property search features with model selection, eval suite design, guardrails, and MCP integration - supporting property search, recommendations, and insights from conversational AI.',
+    ],
+    impact: [
+      '[Confidential] Built AI-native property search features with model selection, eval suite design, guardrails, and MCP integration - supporting property search, recommendations, and insights from conversational AI.',
+    ],
+    processesIntroducedManagerial: [
+      'Introduced the AI-Native Product OS to the wider product team, creating a shared context layer that helped PMs integrate more design and engineering into their work, move from idea to workable prototypes faster, synthesize user insights more effectively, and spot dependencies with greater speed and clarity.',
+    ],
+    businessModel: ['B2B', 'B2C'],
+    marketType: 'B2B / B2C',
+    customersClientTypes: ['Property seekers', 'Property owners', 'Real estate brokers'],
+    customerClientTypesAndUserNumbers: 'Property seekers, property owners, and real estate brokers.',
+    reviews: [reviewNeeded()],
+    links: [{ label: 'Bayut', url: 'https://www.bayut.com/', status: 'ready' }],
+  },
+  {
+    companyLogo: 'company-logos/side logo.png',
+    companyLogoAsset: {
+      title: 'SIDE logo',
+      pathOrUrl: 'company-logos/side logo.png',
+      altText: 'SIDE logo',
+      type: 'logo',
+      status: 'ready',
+      sourceNotes: 'Provided in company-logos folder.',
+    },
+    companyName: 'SIDE',
+    productVideo: videoNeeded(),
+    productVideoAsset: {
+      title: 'SIDE product video',
+      pathOrUrl: videoNeeded(),
+      altText: 'SIDE product video',
+      type: 'video',
+      status: 'needed',
+      sourceNotes: 'Template notes a video may be provided in company-videos folder; final path needed.',
+    },
+    companyLink: 'https://www.side.inc/',
+    location: 'London, UK',
+    monthYearRangeWorked: 'Mar 2025 - Aug 2025',
+    jobTitle: 'Senior Product Manager',
+    companyDescription:
+      'Side (side.inc) is a global game development and services provider that delivers technical and creative solutions to major video game studios worldwide.',
+    industryTag: 'Audio',
+    industryTags: ['Audio', 'ERP'],
+    productsWorkedOn: [
+      'AI-engineered in-house ERP alternatives',
+      'Windsurf integration',
+      'Microsoft Enterprise Copilot with core ERP',
+    ],
+    productDetails: [
+      {
+        name: 'AI-engineered in-house ERP alternatives, Windsurf integration, Microsoft Enterprise Copilot with core ERP',
+        description:
+          'Replaced multiple internal ERP products with AI-coded in-house alternatives to reduce operational cost and improve speed from idea to feature. Integrated AI coding copilot workflows into engineering practice. Connected siloed Finance, Operations, and Sales data with Microsoft Enterprise Copilot and core ERP systems for leadership insight.',
+      },
+    ],
+    mainAchievements: [
+      'Reduced ERP operational costs by 20% over 4 months.',
+      'Decreased idea-to-feature time by 90% for internal process improvement.',
+      'Shifted engineering resources from 60% Maintenance / 40% Innovation to 40% Maintenance / 60% Innovation.',
+      'Eliminated 30% of manual reporting overhead through Microsoft Enterprise Copilot and ERP integration.',
+    ],
+    impact: [
+      'Reduced ERP operational costs by 20% over 4 months.',
+      'Decreased idea-to-feature time by 90% for internal process improvement.',
+      'Shifted engineering resources from 60% Maintenance / 40% Innovation to 40% Maintenance / 60% Innovation.',
+      'Eliminated 30% of manual reporting overhead through Microsoft Enterprise Copilot and ERP integration.',
+    ],
+    processesIntroducedManagerial: [
+      'Internal Forward Deployment Engineer: global point of contact for employees to explore and request new AI or automation tools across the organisation, responsible for corporate GPT rollout and integration.',
+    ],
+    businessModel: ['B2B'],
+    marketType: 'B2B',
+    customersClientTypes: ['Global SIDE.inc team across London, Paris and LA'],
+    customerClientTypesAndUserNumbers: 'Global SIDE.inc team across London, Paris and LA.',
+    reviews: [reviewNeeded()],
+    links: [{ label: 'Side.inc', url: 'https://www.side.inc/', status: 'ready' }],
+  },
+  {
+    companyLogo: 'company-logos/perkbox.com.png',
+    companyLogoAsset: {
+      title: 'Perkbox logo',
+      pathOrUrl: 'company-logos/perkbox.com.png',
+      altText: 'Perkbox logo',
+      type: 'logo',
+      status: 'ready',
+      sourceNotes: 'Provided in company-logos folder.',
+    },
+    companyName: 'Perkbox Vivup',
+    productVideo: videoNeeded(),
+    productVideoAsset: {
+      title: 'Vivup App product video',
+      pathOrUrl: videoNeeded(),
+      altText: 'Vivup App product video',
+      type: 'video',
+      status: 'needed',
+      sourceNotes: 'Template notes a video may be provided in company-videos folder; final path needed.',
+    },
+    companyLink: 'https://www.perkbox.com/',
+    location: 'London, UK',
+    monthYearRangeWorked: 'Jan 2023 - Nov 2024',
+    jobTitle: 'Senior Product Manager',
+    companyDescription:
+      'Perkbox is a global employee benefits and rewards platform. It provides companies with a centralized app to help motivate, celebrate, and care for their teams.',
+    industryTag: 'Employee Benefits SaaS',
+    industryTags: ['Employee Benefits SaaS'],
+    productsWorkedOn: ['Highfive Recognition App', 'FamilyCare'],
+    productDetails: [
+      {
+        name: 'Highfive Recognition App, FamilyCare',
+        description:
+          'The Vivup Highfive Recognition and Reward app enables continuous appreciation through a simple recognition experience aligned with company values. FamilyCare is the first platform in the UK that allows employees to use salary sacrifice to pay for childcare costs.',
+      },
+    ],
+    mainAchievements: [
+      'Improved the App gateway experience through qualitative user research and UX iteration.',
+      'Increased Google Play Store rating by 0.6 and iPhone App Store rating by 1.2 within 3 months.',
+      'Grew product customer lifetime value by 19% over 5 months.',
+      'Decreased order form and checkout abandonment rate by 1/3 within the first month of delivery.',
+    ],
+    impact: [
+      'Improved the App gateway experience through qualitative user research and UX iteration.',
+      'Increased Google Play Store rating by 0.6 and iPhone App Store rating by 1.2 within 3 months.',
+      'Grew product customer lifetime value by 19% over 5 months.',
+      'Decreased order form and checkout abandonment rate by 1/3 within the first month of delivery.',
+    ],
+    processesIntroducedManagerial: [
+      'Qualitative user research and stakeholder alignment around the Order Guidance Wizard and app UX improvements.',
+    ],
+    businessModel: ['B2B2C'],
+    marketType: 'B2B2C',
+    customersClientTypes: ['HR leaders', 'Ministry of Justice employees'],
+    customerClientTypesAndUserNumbers: 'HR leaders and Ministry of Justice employees.',
+    reviews: [reviewNeeded()],
+    links: [{ label: 'Website', url: 'https://www.perkbox.com/', status: 'ready' }],
+  },
+  {
+    companyLogo: 'company-logos/groupm logo.webp',
+    companyLogoAsset: {
+      title: 'WPP Media logo',
+      pathOrUrl: 'company-logos/groupm logo.webp',
+      altText: 'WPP Media logo',
+      type: 'logo',
+      status: 'needs-confirmation',
+      sourceNotes: 'Only the GroupM logo asset is present; replace with WPP Media logo when supplied.',
+    },
+    companyName: 'WPP Media',
+    previousCompanyName: 'GroupM',
+    productVideo: videoNeeded(),
+    productVideoAsset: {
+      title: 'Carbon Calculator product video',
+      pathOrUrl: videoNeeded(),
+      altText: 'Carbon Calculator product video',
+      type: 'video',
+      status: 'needed',
+      sourceNotes: 'Placeholder for the left-column active experience video panel.',
+    },
+    companyLink: 'https://www.wppmedia.com/',
+    location: detailNeeded(),
+    monthYearRangeWorked: 'Jan 2022 - Dec 2022',
+    jobTitle: 'Product Manager',
+    companyDescription:
+      "Formerly GroupM, WPP Media is WPP's global media collective, built for the AI era. It unifies data, technology, and human expertise to deliver measurable outcomes and intelligent growth for brands in over 80 markets.",
+    industryTag: 'Climate',
+    industryTags: ['Climate', 'AdTech'],
+    productsWorkedOn: ['Carbon Calculator', 'Product Innovation Process'],
+    productDetails: [
+      {
+        name: 'Carbon Calculator',
+        description:
+          "The media sector's most widely used carbon calculation tool, comparing the CO2 emissions of over 7 physical and digital formats and providing recommendations on advertisement reach against environmental impact for global brands.",
+      },
+      {
+        name: 'Product Innovation Process',
+        description:
+          "Process used to define and manage the product division of WPP Media's Global Innovation Group.",
+      },
+    ],
+    mainAchievements: [
+      "Translated EY's carbon emissions methodology with over 300+ dataset variables and 20+ climate APIs into product specifications for a world-first media carbon calculator.",
+      'Carbon Calculator measured the environmental impact of GBP 1bn+ of media investment in 2022, remaining the most widely used calculator in the media sector.',
+    ],
+    impact: [
+      "Translated EY's carbon emissions methodology with over 300+ dataset variables and 20+ climate APIs into product specifications for a world-first media carbon calculator.",
+      'Carbon Calculator measured the environmental impact of GBP 1bn+ of media investment in 2022, remaining the most widely used calculator in the media sector.',
+    ],
+    processesIntroducedManagerial: [
+      "Product Innovation Process: managed product strategy, mentored junior PMs and engineers, and defined the product division of WPP Media's Global Innovation Group.",
+    ],
+    businessModel: ['B2B'],
+    marketType: 'B2B',
+    customersClientTypes: ['Media investment teams', 'Sustainability stakeholders'],
+    customerClientTypesAndUserNumbers: 'Media investment teams and sustainability stakeholders.',
+    reviews: [reviewNeeded()],
+    links: [
+      { label: 'WPP Media', url: 'https://www.wppmedia.com/', status: 'ready' },
+      {
+        label: 'Carbon Calculator reference',
+        url: 'https://www.mi-3.com.au/20-07-2022/carbon-footprint-different-media-distribution-options-will-increasingly-influence-where',
+        status: 'ready',
+      },
+    ],
+  },
+  {
+    companyLogo: 'company-logos/cox automotive logo.jpg',
+    companyLogoAsset: {
+      title: 'Cox Automotive logo',
+      pathOrUrl: 'company-logos/cox automotive logo.jpg',
+      altText: 'Cox Automotive logo',
+      type: 'logo',
+      status: 'ready',
+      sourceNotes: 'Provided in company-logos folder.',
+    },
+    companyName: 'Cox Auto',
+    fullCompanyName: 'Cox Automotive',
+    productVideo: videoNeeded(),
+    productVideoAsset: {
+      title: 'Auction platform product video',
+      pathOrUrl: videoNeeded(),
+      altText: 'Auction platform product video',
+      type: 'video',
+      status: 'needed',
+      sourceNotes: 'Placeholder for the left-column active experience video panel.',
+    },
+    companyLink: 'https://www.coxautoinc.com/',
+    location: 'London, UK',
+    monthYearRangeWorked: 'Sept 2021 - Dec 2021',
+    jobTitle: 'Product Owner [Contract]',
+    companyDescription:
+      'Cox Automotive is a global automotive services and technology company that provides digital marketing, wholesale auction, software, and financial services to automobile dealers, manufacturers, and consumers.',
+    industryTag: 'Automotive SaaS',
+    industryTags: ['Automotive SaaS'],
+    productsWorkedOn: ['Manheim Express'],
+    productDetails: [
+      {
+        name: 'Manheim Express',
+        description:
+          'Manheim Express is a digital B2B auction platform designed for commercial used car trading with an industry-first auction monetization functionality for dealers.',
+      },
+    ],
+    mainAchievements: [
+      'Introduced a feature scoring framework that turned a large, ambiguous auction-platform backlog into a ranked delivery roadmap.',
+      'Reduced stakeholder feedback cycles by 50% by creating clearer acceptance criteria, decision records, and prioritisation rituals.',
+      'Improved roadmap confidence by tying backlog decisions to manufacturer needs, user evidence, commercial value, and delivery complexity.',
+    ],
+    impact: [
+      'Introduced a feature scoring framework that turned a large, ambiguous auction-platform backlog into a ranked delivery roadmap.',
+      'Reduced stakeholder feedback cycles by 50% by creating clearer acceptance criteria, decision records, and prioritisation rituals.',
+      'Improved roadmap confidence by tying backlog decisions to manufacturer needs, user evidence, commercial value, and delivery complexity.',
+    ],
+    processesIntroducedManagerial: [
+      'Product Decision Matrix: a qualitative and data-driven approach to prioritising a large feature backlog.',
+    ],
+    businessModel: ['B2B'],
+    marketType: 'B2B',
+    customersClientTypes: ['Automotive manufacturers', 'Automotive dealerships'],
+    customerClientTypesAndUserNumbers: 'Automotive manufacturers and automotive dealerships.',
+    reviews: [reviewNeeded()],
+    links: [
+      { label: 'Cox Automotive', url: 'https://www.coxautoinc.com/', status: 'ready' },
+      {
+        label: 'Product Decision Matrix',
+        url: 'https://docs.google.com/spreadsheets/d/19unnxIX1GxI9PXj-Xsu7_q19W6Qy03Ae/edit?usp=sharing&ouid=110264933146795409149&rtpof=true&sd=true',
+        status: 'ready',
+      },
+    ],
+  },
+  {
+    companyLogo: 'company-logos/ordnance survey logo.jpg',
+    companyLogoAsset: {
+      title: 'Ordnance Survey logo',
+      pathOrUrl: 'company-logos/ordnance survey logo.jpg',
+      altText: 'Ordnance Survey logo',
+      type: 'logo',
+      status: 'ready',
+      sourceNotes: 'Provided in company-logos folder.',
+    },
+    companyName: 'Ordnance Survey',
+    productVideo: videoNeeded(),
+    productVideoAsset: {
+      title: 'Geospatial API product video',
+      pathOrUrl: videoNeeded(),
+      altText: 'Geospatial API product video',
+      type: 'video',
+      status: 'needed',
+      sourceNotes: 'Placeholder for the left-column active experience video panel.',
+    },
+    companyLink: 'https://www.ordnancesurvey.co.uk/',
+    location: detailNeeded(),
+    monthYearRangeWorked: 'Dec 2020 - Sept 2021',
+    jobTitle: 'Product Manager; Geospatial API',
+    companyDescription:
+      'Worked within Geospatial Solutions Proposition and Innovation, gathering intelligence for positive impact and building a portfolio of next-generation geospatial solutions.',
+    industryTag: 'Geospatial',
+    industryTags: ['Geospatial', 'Climate'],
+    productsWorkedOn: ['OS Maps API on Microsoft Power Platform', 'Sustainability applications of geospatial data'],
+    productDetails: [
+      {
+        name: 'OS Maps API on Microsoft Power Platform, Sustainability applications of geospatial data',
+        description:
+          'The OS Places API provides a detailed view of an address and its life cycle. Created new product concepts using geospatial intelligence for positive impact across energy, infrastructure, defence, and space sector clients.',
+      },
+    ],
+    mainAchievements: [
+      "Defined and launched the first geospatial API product on Microsoft's Power Platform.",
+      'Increased geospatial data utilisation by 30% across 2 key accounts by Q3 2021.',
+      'Led twelve discovery workshops for client stakeholders, validating 3 product concepts approved for further investment.',
+      "Improved energy clients' ability to forecast carbon impacts on asset valuations by 25% within 6 months.",
+    ],
+    impact: [
+      "Defined and launched the first geospatial API product on Microsoft's Power Platform.",
+      'Increased geospatial data utilisation by 30% across 2 key accounts by Q3 2021.',
+      'Led twelve discovery workshops for client stakeholders, validating 3 product concepts approved for further investment.',
+      "Improved energy clients' ability to forecast carbon impacts on asset valuations by 25% within 6 months.",
+    ],
+    processesIntroducedManagerial: [
+      'Rapid Design Sprint: created and implemented cross-functional rapid design sprints that turned sustainability discovery into sector-specific geospatial propositions with a clear innovation roadmap for launch.',
+    ],
+    businessModel: ['Government'],
+    marketType: 'Government',
+    customersClientTypes: ['National energy clients', 'Infrastructure clients', 'Defence clients', 'Space sector clients'],
+    customerClientTypesAndUserNumbers: 'National energy, infrastructure, defence, and space sector clients.',
+    reviews: [reviewNeeded()],
+    links: [
+      { label: 'Ordnance Survey', url: 'https://www.ordnancesurvey.co.uk/', status: 'ready' },
+      {
+        label: 'OS Maps API',
+        url: 'https://docs.microsoft.com/en-gb/connectors/ordnancesurveyplaces/',
+        status: 'ready',
+      },
+    ],
+  },
+  {
+    companyLogo: 'company-logos/urgentem logo.jpg',
+    companyLogoAsset: {
+      title: 'Urgentem logo',
+      pathOrUrl: 'company-logos/urgentem logo.jpg',
+      altText: 'Urgentem logo',
+      type: 'logo',
+      status: 'ready',
+      sourceNotes: 'Provided in company-logos folder.',
+    },
+    companyName: 'Urgentem',
+    productVideo: videoNeeded(),
+    productVideoAsset: {
+      title: 'Element6 product video',
+      pathOrUrl: videoNeeded(),
+      altText: 'Element6 product video',
+      type: 'video',
+      status: 'needed',
+      sourceNotes: 'Placeholder for the left-column active experience video panel.',
+    },
+    companyLink: 'http://bit.ly/urgentemwebsite',
+    location: 'London, UK',
+    monthYearRangeWorked: 'Oct 2019 - Nov 2020',
+    jobTitle: 'Product Manager',
+    companyDescription:
+      'Climate risk analytics platform company helping investors measure and navigate climate-related risks and opportunities.',
+    industryTag: 'Fintech',
+    industryTags: ['Fintech', 'SaaS'],
+    productsWorkedOn: ['Element6'],
+    productDetails: [
+      {
+        name: 'Element6',
+        description:
+          'Climate risk platform for investors with portfolio and company-level scenario analysis, forward-looking metrics, and tools for holistic management of climate-related risks and opportunities.',
+      },
+    ],
+    mainAchievements: [
+      'Co-managed development and start-up launch of [now acquired] Element6, a climate risk platform for investors.',
+      'Helped reduce climate-related risk by 20% across client portfolios totalling GBP 900m in AUM.',
+      'Featured in the Financial Times.',
+      'Improved Demo-to-Buy conversion rate by 30% over 4 months and reduced quarterly churn by 25%.',
+      'Increased ratio of story point development to feature usage by 25% over 8 months.',
+    ],
+    impact: [
+      'Co-managed development and start-up launch of [now acquired] Element6, a climate risk platform for investors.',
+      'Helped reduce climate-related risk by 20% across client portfolios totalling GBP 900m in AUM.',
+      'Featured in the Financial Times.',
+      'Improved Demo-to-Buy conversion rate by 30% over 4 months and reduced quarterly churn by 25%.',
+      'Increased ratio of story point development to feature usage by 25% over 8 months.',
+    ],
+    processesIntroducedManagerial: [
+      'Sprint planning and SCRUM setup: introduced sprint planning to the early founding team to prioritize and implement agile and prioritization best practices.',
+    ],
+    businessModel: ['B2B'],
+    marketType: 'B2B',
+    customersClientTypes: ['European Central Bank', 'Ilmarinen', 'Folksam', 'Pension and investment organisations'],
+    customerClientTypesAndUserNumbers:
+      'Central bank, pension, and investment organisations including European Central Bank, Ilmarinen, Folksam, and client portfolios totalling GBP 900m in AUM.',
+    reviews: [reviewNeeded()],
+    links: [
+      { label: 'Urgentem', url: 'http://bit.ly/urgentemwebsite', status: 'ready' },
+      {
+        label: 'Financial Times coverage',
+        url: 'https://www.ft.com/content/7b734848-1287-4106-b866-7d07bc9d7eb8',
+        status: 'ready',
+      },
+    ],
+  },
+  {
+    companyLogo: 'company-logos/deity-ai-logo.png',
+    companyLogoAsset: {
+      title: 'Deity AI logo',
+      pathOrUrl: 'company-logos/deity-ai-logo.png',
+      altText: 'Deity AI logo',
+      type: 'logo',
+      status: 'ready',
+      sourceNotes: 'Provided in company-logos folder.',
+    },
+    companyName: 'Deity AI',
+    productVideo: videoNeeded(),
+    productVideoAsset: {
+      title: 'Deity product video',
+      pathOrUrl: videoNeeded(),
+      altText: 'Deity product video',
+      type: 'video',
+      status: 'needed',
+      sourceNotes: 'Placeholder for the left-column active experience video panel.',
+    },
+    companyLink: 'http://www.deity.ai/',
+    location: 'London, UK',
+    monthYearRangeWorked: 'Jul 2017 - Oct 2019',
+    jobTitle: 'Product Manager',
+    companyDescription:
+      'Deity is a social impact start-up that recommends people and places to work remotely from, using a conversational mediator to help users move into deeper collaboration.',
+    industryTag: 'Social Networking',
+    industryTags: ['Social Networking'],
+    productsWorkedOn: ['Circles by Deity', 'Deity conversational chatbot mediator'],
+    productDetails: [
+      {
+        name: 'Circles by Deity, Deity conversational chatbot mediator',
+        description:
+          'Product recommending people and places to work remotely from in partnership with local cafes and co-working spaces. Conversational mediator helped users skip small talk, reach more meaningful dialogue, and receive relevant place recommendations to meet and collaborate.',
+      },
+    ],
+    mainAchievements: [
+      'Increased footfall from partnering venues by 15% over a sustained period of 7 months.',
+      'Improved chat retention rate by over 50% in first 3 months after Deity mediator release.',
+    ],
+    impact: [
+      'Increased footfall from partnering venues by 15% over a sustained period of 7 months.',
+      'Improved chat retention rate by over 50% in first 3 months after Deity mediator release.',
+    ],
+    processesIntroducedManagerial: [detailNeeded()],
+    businessModel: ['B2B', 'B2C'],
+    marketType: 'B2B / B2C',
+    customersClientTypes: ['Hospitality SMEs', 'Digital nomads'],
+    customerClientTypesAndUserNumbers: 'Hospitality SMEs and digital nomads.',
+    reviews: [reviewNeeded()],
+    links: [
+      { label: 'Deity AI', url: 'http://www.deity.ai/', status: 'ready' },
+      {
+        label: 'Conversation mediator chatbot demo',
+        url: 'https://drive.google.com/file/d/19Ln-UWxReuAFTFdDc4JBZHdDxzeBPmwt/view?usp=sharing',
+        status: 'ready',
+      },
+    ],
+  },
+  {
+    companyLogo: 'company-logos/erm logo.jpg',
+    companyLogoAsset: {
+      title: 'ERM logo',
+      pathOrUrl: 'company-logos/erm logo.jpg',
+      altText: 'ERM logo',
+      type: 'logo',
+      status: 'ready',
+      sourceNotes: 'Provided in company-logos folder.',
+    },
+    companyName: 'ERM',
+    productVideo: videoNeeded(),
+    productVideoAsset: {
+      title: 'ERM research proof video',
+      pathOrUrl: videoNeeded(),
+      altText: 'ERM research proof video',
+      type: 'video',
+      status: 'needed',
+      sourceNotes: 'Placeholder for the left-column active experience video panel.',
+    },
+    companyLink: 'http://www.erm.com/',
+    location: detailNeeded(),
+    monthYearRangeWorked: 'Dec 2018 - Oct 2019',
+    jobTitle: 'Product Stewardship Consultant',
+    companyDescription:
+      "ERM is the world's leading sustainability consultancy, helping organizations manage risk, improve performance, and accelerate the transition to a sustainable future.",
+    industryTag: 'Climate',
+    industryTags: ['Climate'],
+    productsWorkedOn: ['DISC European Commission research project'],
+    productDetails: [
+      {
+        name: 'DISC European Commission research project',
+        description:
+          'Research identifying the social risks and benefits associated with the life cycle of new solar products, specifically double-side contacted cells with innovative carrier-selective contacts.',
+      },
+    ],
+    mainAchievements: [
+      'Co-authored European Commission-funded research on the social risks and benefits of new solar product lifecycles.',
+      'Assessed socio-economic value and value-chain benefits created by new solar product innovation in Europe.',
+      'Identified satellite-data use cases for environmental risk detection, including detecting copper mines at risk of leaking waste into waterways.',
+      'Improved partner RepRisk product offering revenue by 10% over 6 months.',
+    ],
+    impact: [
+      'Co-authored European Commission-funded research on the social risks and benefits of new solar product lifecycles.',
+      'Assessed socio-economic value and value-chain benefits created by new solar product innovation in Europe.',
+      'Identified satellite-data use cases for environmental risk detection, including detecting copper mines at risk of leaking waste into waterways.',
+      'Improved partner RepRisk product offering revenue by 10% over 6 months.',
+    ],
+    processesIntroducedManagerial: [detailNeeded()],
+    businessModel: ['B2B'],
+    marketType: 'B2B',
+    customersClientTypes: ['Institute for Solar Energy Research', 'European Commission'],
+    customerClientTypesAndUserNumbers: 'Institute for Solar Energy Research and European Commission.',
+    reviews: [reviewNeeded()],
+    links: [
+      { label: 'ERM', url: 'http://www.erm.com/', status: 'ready' },
+      {
+        label: 'European Commission research paper',
+        url: 'https://ec.europa.eu/research/participants/documents/downloadPublic?documentIds=080166e5c80d5f80&appId=PPGMS',
+        status: 'ready',
+      },
+    ],
+  },
+  {
+    companyLogo: 'company-logos/tesla logo.png',
+    companyLogoAsset: {
+      title: 'Tesla logo',
+      pathOrUrl: 'company-logos/tesla logo.png',
+      altText: 'Tesla logo',
+      type: 'logo',
+      status: 'ready',
+      sourceNotes: 'Provided in company-logos folder.',
+    },
+    companyName: 'Tesla',
+    productVideo: videoNeeded(),
+    productVideoAsset: {
+      title: 'Tesla product video',
+      pathOrUrl: videoNeeded(),
+      altText: 'Tesla product video',
+      type: 'video',
+      status: 'needed',
+      sourceNotes: 'Placeholder for the left-column active experience video panel.',
+    },
+    companyLink: 'http://www.tesla.com',
+    location: 'London, UK & Amsterdam, Netherlands',
+    monthYearRangeWorked: 'Apr 2017 - Sept 2018',
+    jobTitle: 'Senior Product Specialist',
+    companyDescription:
+      "Tesla is an American automotive and clean energy company that designs, manufactures, and sells electric vehicles, battery energy storage systems, and solar energy products to accelerate the world's transition to sustainable energy.",
+    industryTag: 'Energy',
+    industryTags: ['Energy', 'Automotive'],
+    productsWorkedOn: ['Tesla app 3.23 Power Flow', 'Tesla Model S', 'Tesla Powerwall', 'Tesla / SpaceX marketing campaign'],
+    productDetails: [
+      {
+        name: 'Tesla app 3.23 Power Flow',
+        description:
+          'Tesla app update introducing Power Flow, allowing users to see whether home electricity is coming from the grid, solar installation, or Powerwall, and set preferences to optimise for energy independence, outage protection, or savings.',
+      },
+    ],
+    mainAchievements: [
+      "Worked around Tesla's energy product experience, including Power Flow visibility for grid, solar, and Powerwall energy usage.",
+      'Ideated and initiated a Tesla / SpaceX marketing campaign through direct communication with the CEO, leading to more than double the attendance of Owners Orientation events in Q1-Q3 2018.',
+      'Averaged 120% performance on Tesla Model S sales target from Q3 2017 to Q2 2018.',
+      'Sold the first Tesla Powerwall to a residential customer in the UK.',
+    ],
+    impact: [
+      "Worked around Tesla's energy product experience, including Power Flow visibility for grid, solar, and Powerwall energy usage.",
+      'Ideated and initiated a Tesla / SpaceX marketing campaign through direct communication with the CEO, leading to more than double the attendance of Owners Orientation events in Q1-Q3 2018.',
+      'Averaged 120% performance on Tesla Model S sales target from Q3 2017 to Q2 2018.',
+      'Sold the first Tesla Powerwall to a residential customer in the UK.',
+    ],
+    processesIntroducedManagerial: [detailNeeded()],
+    businessModel: ['B2C', 'B2B'],
+    marketType: 'B2C / B2B',
+    customersClientTypes: ['Commercial property owners', 'Residential property owners', 'Drivers'],
+    customerClientTypesAndUserNumbers: 'Commercial and residential property owners and drivers.',
+    reviews: [reviewNeeded()],
+    links: [{ label: 'Tesla reference link', url: 'http://www.tesla.com', status: 'ready' }],
+  },
+] as const;
+
+const degreeData = [
+  {
+    institutionLogo: logoNeeded(),
+    institutionLogoAsset: {
+      title: 'Imperial College London logo',
+      pathOrUrl: logoNeeded(),
+      altText: 'Imperial College London logo',
+      type: 'logo',
+      status: 'needed',
+      sourceNotes: 'Institution logo or approved text-only mark needed.',
+    },
+    institutionName: 'Imperial College London',
+    qualification: 'MSc Environmental Technology',
+    qualificationType: 'MSc',
+    qualificationLink: linkNeeded(),
+    gradeAchieved: 'Distinction',
+    dateAchieved: '2017',
+    modulesOrFocusAreas: ['Environmental technology', 'Sustainability', 'ESG'],
+    howThisHasHelpedYouAsAPM:
+      'Trained me to think like a systems-led Product Manager: understanding the real-world problem first, then applying the right technology in a way that is practical, measurable, and environmentally meaningful.',
+  },
+  {
+    institutionLogo: logoNeeded(),
+    institutionLogoAsset: {
+      title: 'University of Northampton logo',
+      pathOrUrl: logoNeeded(),
+      altText: 'University of Northampton logo',
+      type: 'logo',
+      status: 'needed',
+      sourceNotes: 'Institution logo or approved text-only mark needed.',
+    },
+    institutionName: 'University of Northampton',
+    qualification: 'BA Business and Marketing',
+    qualificationType: 'BA',
+    qualificationLink: linkNeeded(),
+    gradeAchieved: '1st Class Honours',
+    dateAchieved: '2016',
+    modulesOrFocusAreas: ['Business', 'Marketing'],
+    howThisHasHelpedYouAsAPM:
+      'Built commercial, customer, positioning, and go-to-market strategy theory. With a thesis on consumer behaviour, my research focused on why people buy products and how positioning, motivation, and value perception shape adoption.',
+  },
+] as const;
+
+const certificationData = [
+  {
+    awardingBodyLogo: logoNeeded(),
+    awardingBodyLogoAsset: {
+      title: 'IBM logo',
+      pathOrUrl: logoNeeded(),
+      altText: 'IBM logo',
+      type: 'logo',
+      status: 'needed',
+      sourceNotes: 'Add IBM logo or certificate badge when available.',
+    },
+    awardingBodyName: 'IBM',
+    certificationName: 'AI Engineer Certification',
+    certificationLink: linkNeeded(),
+    modulesIncluded: [
+      'Classical machine learning with Python',
+      'Deep learning with Keras, TensorFlow, and PyTorch',
+      'Neural networks',
+      'Transformer architectures and LLM data preparation',
+      'Generative AI fine-tuning',
+      'RAG, LangChain, and AI agents',
+      'Generative AI application development',
+    ],
+    dateAchieved: '2026',
+    howThisHasHelpedYouAsAPM:
+      'Helped me turn AI ideas into real product architecture. On nsso, it shaped the chatbot/profile coach concept: treating profile data, RAG, retrieval, and reviewed profile mutations as product infrastructure rather than just chatbot copy. In Dreamsea, the same thinking helped me design dream interpretation as a model pipeline - capture, transcription, interpretation, symbol extraction, and image generation - where model behaviour and context quality shape the user experience. For Mass Social Wisdom Agent, it informed the multi-step agent orchestration, RAG/LangChain-style workflow, and generated document output as a reliable system.',
+  },
+  {
+    awardingBodyLogo: logoNeeded(),
+    awardingBodyLogoAsset: {
+      title: 'Google AI School logo',
+      pathOrUrl: logoNeeded(),
+      altText: 'Google AI School logo',
+      type: 'logo',
+      status: 'needed',
+      sourceNotes: 'Add Google AI School logo or certification badge when available.',
+    },
+    awardingBodyName: 'Google AI School',
+    certificationName: 'Professional Machine Learning Engineer',
+    certificationLink: linkNeeded(),
+    modulesIncluded: [
+      'Google Cloud AI and machine learning foundations',
+      'Data preparation and feature engineering',
+      'BigQuery ML and Vertex AI notebooks',
+      'TensorFlow and Keras model development',
+      'Production ML systems',
+      'MLOps, model evaluation, and monitoring',
+      'Generative AI applications',
+      'Responsible AI, fairness, bias, interpretability, privacy, and safety',
+    ],
+    dateAchieved: '2026',
+    howThisHasHelpedYouAsAPM:
+      'Helped me bring production ML discipline into my current AI Product Manager role. It informs how I approach model evaluation, automation, and quality checks for AI property search, recommendations, and conversational AI: not just whether the feature works in a demo, but whether the data is ready, outputs can be evaluated, latency is acceptable, failures are observable, and the model is improving the business/user outcome. It also supports my product judgement around AI Costs Dashboard and RAG Pipeline work, where monitoring, attribution, and evaluation matter as much as generation quality.',
+  },
+  {
+    awardingBodyLogo: logoNeeded(),
+    awardingBodyLogoAsset: {
+      title: 'Google AI School logo',
+      pathOrUrl: logoNeeded(),
+      altText: 'Google AI School logo',
+      type: 'logo',
+      status: 'needed',
+      sourceNotes: 'Add Google AI School logo or certification badge when available. Modules need confirmation from certificate transcript.',
+    },
+    awardingBodyName: 'Google AI School',
+    certificationName: 'Generative AI Leader',
+    certificationLink: linkNeeded(),
+    modulesIncluded: [
+      'Generative AI strategy',
+      'AI product opportunity framing',
+      'Organisational AI adoption',
+      'Responsible AI leadership',
+      'Value, risk, and governance tradeoffs',
+      'Human-in-the-loop AI workflows',
+    ],
+    dateAchieved: '2026',
+    howThisHasHelpedYouAsAPM:
+      'Helped me decide how generative AI should behave inside a product, not just where to add it. In 24Seven Concierge, that meant designing an experience where AI can generate itineraries and recommendations, while the human concierge remains part of the fulfilment and trust layer. In Dreamsea, it translated into guardrails for dream interpretation generation: the output needs to feel reflective, safe, and tonally careful rather than acting like an unconstrained oracle. In my current AI PM work, it helps me frame where AI should automate, where humans should review, and how to lead teams through that tradeoff.',
+  },
+  {
+    awardingBodyLogo: logoNeeded(),
+    awardingBodyLogoAsset: {
+      title: 'Anthropic logo',
+      pathOrUrl: logoNeeded(),
+      altText: 'Anthropic logo',
+      type: 'logo',
+      status: 'needed',
+      sourceNotes: 'Add Anthropic Academy logo or credential badge when available.',
+    },
+    awardingBodyName: 'Anthropic Academy',
+    certificationName: 'MCP Advanced Topics',
+    certificationLink: linkNeeded(),
+    modulesIncluded: [
+      'Core MCP features',
+      'Sampling',
+      'Log and progress notifications',
+      'Roots',
+      'JSON message types',
+      'STDIO transport',
+      'StreamableHTTP transport',
+      'Stateful MCP communication',
+      'MCP client-server architecture',
+    ],
+    dateAchieved: '2026',
+    howThisHasHelpedYouAsAPM:
+      'Helped me understand how to design AI products that connect to tools, not just chat interfaces. Practically, that applies to MCP-connected workflows such as connecting an AI assistant into Figma for nsso design work, allowing product or operational data to be queried in plain English, and designing controlled tool access where an AI agent can propose or retrieve information without being allowed to act unsafely. It also maps onto the nsso chatbot profile mutation flow, where the AI can suggest profile changes, but review, permissions, and user confirmation must sit around the tool call.',
+  },
+  {
+    awardingBodyLogo: logoNeeded(),
+    awardingBodyLogoAsset: {
+      title: 'MBTi logo',
+      pathOrUrl: logoNeeded(),
+      altText: 'MBTi logo',
+      type: 'logo',
+      status: 'needed',
+      sourceNotes: 'Add MBTi logo or programme proof when available. Modules need confirmation from programme materials.',
+    },
+    awardingBodyName: 'MBTi',
+    certificationName: 'MBTi Leadership Development Programme',
+    certificationLink: linkNeeded(),
+    modulesIncluded: [
+      'Leadership self-awareness',
+      'Communication styles',
+      'Team motivation',
+      'Stakeholder alignment',
+      'Empathy and conflict awareness',
+      'Decision-making in groups',
+    ],
+    dateAchieved: '2024',
+    howThisHasHelpedYouAsAPM:
+      "Helped me become more deliberate about the human operating system around product work. At Side.inc, it supported the alignment work around AI/automation tools such as Windsurf and Microsoft Enterprise Copilot. At Perkbox Vivup, it was relevant when aligning stakeholders around fundamental changes to our web app and app's user journey. It supports the part of product management that is not just deciding what to build, but bringing people with different motivations, communication styles, and risk appetites into shared commitment.",
+  },
+] as const;
+
 const selfwareProjects = [
   createProjectEntry('Qadam', 'Qadam', 'Agent', 'case-study'),
   createProjectEntry('Dreamsea', 'Dreamsea', 'App', 'case-study'),
@@ -1959,18 +3186,9 @@ export const portfolioContent = {
     },
   },
   productManagementWorkExperiences: {
-    intro: 'Proven experience across multiple industries in start-ups, SMEs, and complex product environments.',
-    companies: [
-      createWorkExperience('Bayut', 'Bayut'),
-      createWorkExperience('SIDE', 'Side.inc'),
-      createWorkExperience('Perkbox', 'Perkbox Vivup'),
-      createWorkExperience('GroupM', 'GroupM'),
-      createWorkExperience('Cox Auto', 'Cox Automotive'),
-      createWorkExperience('Ordnance Survey', 'Ordnance Survey'),
-      createWorkExperience('Deity AI', 'Deity AI'),
-      createWorkExperience('ERM', 'ERM'),
-      createWorkExperience('Tesla', 'Tesla'),
-    ],
+    intro:
+      '8+ years of proven experience in complex product environments across fintech, climate, geospatial and e-commerce sectors at start-ups, SMEs, governments and corporates.',
+    companies: workExperienceData,
   },
   personalProjects: {
     selfware: selfwareProjects,
@@ -2008,118 +3226,15 @@ export const portfolioContent = {
     },
   },
   qualifications: {
-    qualifications: [
-      {
-        institutionLogo: logoNeeded(),
-        institutionName: 'Imperial College',
-        qualification: 'Imperial College MSc Environmental Technology - Distinction',
-        qualificationType: 'MSc',
-        gradeAchieved: 'Distinction',
-        howThisHasHelpedYouAsAPM:
-          credentials.find((item) => item.title === 'Imperial College MSc Environmental Technology - Distinction')
-            ?.note ?? detailNeeded(),
-      },
-      {
-        institutionLogo: logoNeeded(),
-        institutionName: 'University of Northampton',
-        qualification: 'University of Northampton BA Fine Art Painting & Drawing - 1st Class Honours',
-        qualificationType: 'BA',
-        gradeAchieved: '1st Class Honours',
-        howThisHasHelpedYouAsAPM:
-          credentials.find(
-            (item) => item.title === 'University of Northampton BA Fine Art Painting & Drawing - 1st Class Honours',
-          )?.note ?? detailNeeded(),
-      },
-    ],
-    certifications: [
-      {
-        awardingBodyLogo: logoNeeded(),
-        awardingBodyName: 'IBM',
-        certificationName: 'AI Engineer Certification',
-        certificationLink: linkNeeded(),
-        modulesIncluded: [detailNeeded()],
-        howThisHasHelpedYouAsAPM:
-          credentials.find((item) => item.title === 'IBM AI Engineering Professional Certificate')?.note ??
-          detailNeeded(),
-      },
-      {
-        awardingBodyLogo: logoNeeded(),
-        awardingBodyName: 'Google',
-        certificationName: 'Professional Machine Learning Engineer',
-        certificationLink: linkNeeded(),
-        modulesIncluded: [detailNeeded()],
-        howThisHasHelpedYouAsAPM:
-          credentials.find((item) => item.title === 'Google Professional Machine Learning Engineer')?.note ??
-          detailNeeded(),
-      },
-      {
-        awardingBodyLogo: logoNeeded(),
-        awardingBodyName: 'Google',
-        certificationName: 'Generative AI Leader',
-        certificationLink: linkNeeded(),
-        modulesIncluded: [detailNeeded()],
-        howThisHasHelpedYouAsAPM:
-          credentials.find((item) => item.title === 'Google Generative AI Leader')?.note ?? detailNeeded(),
-      },
-      {
-        awardingBodyLogo: logoNeeded(),
-        awardingBodyName: 'Anthropic',
-        certificationName: 'MCP Advanced Topics',
-        certificationLink: linkNeeded(),
-        modulesIncluded: [detailNeeded()],
-        howThisHasHelpedYouAsAPM:
-          credentials.find((item) => item.title === 'Anthropic MCP Protocols Advanced Topics')?.note ??
-          detailNeeded(),
-      },
-      {
-        awardingBodyLogo: logoNeeded(),
-        awardingBodyName: 'MBTi',
-        certificationName: 'MBTi Leadership Development Programme',
-        certificationLink: linkNeeded(),
-        modulesIncluded: [detailNeeded()],
-        howThisHasHelpedYouAsAPM:
-          credentials.find((item) => item.title === 'Leadership Development MBTi')?.note ?? detailNeeded(),
-      },
-    ],
+    qualifications: degreeData,
+    certifications: certificationData,
   },
   teachingSpeakingWriting: {
-    teaching: [
-      createTeachingEntry(
-        'Transitioning to AI Product Management',
-        'Transition from Product Manager to AI Product Manager',
-        'New',
-      ),
-      createTeachingEntry('Full Product Development Process', 'The Fastest Path to Product Management', 'Highest-Rated'),
-    ],
-    speaking: [
-      createSpeakingEntry('Existentially Viewing your Existential Crisis', 'Existentially viewing your existential crisis', 'TEDx'),
-      createSpeakingEntry('My Life Story', 'My Life Story', detailNeeded()),
-    ],
+    frame: thoughtPageFrame,
+    teaching: thoughtCourses,
+    speaking: thoughtTalks,
     writing: {
-      books: [
-        {
-          bookName: 'The Proposition',
-          bookType: 'Fiction',
-          bookImage: detailNeeded(),
-          bookVideo: videoNeeded(),
-          purchaseLink: propositionSource?.href ?? linkNeeded(),
-          previewLink: linkNeeded(),
-          summaryLink: undefined,
-          fullText: undefined,
-          bookDescription: propositionSource?.subtitle ?? detailNeeded(),
-        },
-        {
-          bookName: 'The Meaning of Life',
-          bookType: 'Metaphysics',
-          bookImage: detailNeeded(),
-          bookVideo: undefined,
-          purchaseLink: linkNeeded(),
-          previewLink: undefined,
-          summaryLink: linkNeeded(),
-          fullText: linkNeeded(),
-          bookDescription: detailNeeded(),
-        },
-      ],
+      books: thoughtBooks,
       articles: [
         {
           articleTitle: 'Framework of Metacognition',
@@ -2174,20 +3289,20 @@ export const portfolioContent = {
   contactCta: {
     artisticHeroText: 'CLARITY . JUDGEMENT . TASTE . EMPATHY . VISION',
     hook: 'Do you have a role in mind?',
-    headline: 'Let’s create beautiful things that the world really needs',
+    headline: "Let's create beautiful things that the world really needs",
     ctaButtons: [
       {
-        label: 'Email raminhoodeh@gmail.com',
-        href: 'mailto:raminhoodeh@gmail.com',
+        label: 'raminhoodeh@gmail.com',
+        href: 'raminhoodeh@gmail.com',
       },
       {
         label: 'WhatsApp',
-        href: linkNeeded(),
+        href: 'https://wa.link/7g31wi',
       },
     ],
   },
   bonus: {
-    hook: 'Congratulations, you’ve reached the bonus section!',
+    hook: 'Congratulations, you’ve reached the bonus section',
     body: 'As a reward for making it this far, click the magical rock 3 times to reveal 4 incredible gifts…',
     trigger: {
       element: '3D webGL exploding rock element from the original Ventures website scrape',
@@ -2196,23 +3311,23 @@ export const portfolioContent = {
     gifts: [
       {
         title: '100% coupon code for new AI PM Course',
-        detail: 'AIPMFUTURE',
-        link: linkNeeded(),
+        detail: 'Use the code AIPMFUTURE',
+        link: 'https://www.udemy.com/course/the-fastest-way-to-become-a-product-manager/',
       },
       {
         title: '30 minute AI Product consultation',
-        detail: 'Google Meet link needed',
-        link: linkNeeded(),
+        detail: 'Google Meet link',
+        link: 'https://calendar.app.google/ritTa9aSxXNpz5Df8',
       },
       {
         title: 'Lifetime membership to Dreamsea dream interpretation app',
-        detail: 'Download and enter iloverazin as your username to activate the secret lifetime access',
-        link: linkNeeded(),
+        detail: 'Set your username as "iloverazin" to activate',
+        link: 'https://apps.apple.com/us/app/dreamsea/id6761101193',
       },
       {
         title: 'AI Tools Database',
         detail: 'An organised list of over 350 AI tools, categorised by use case',
-        link: linkNeeded(),
+        link: 'https://docs.google.com/spreadsheets/d/16MHU2CgFHK4LoyvgPa9jf3lIw2udxSDESD0UZ4A_lKU/edit?usp=sharing',
       },
     ],
   },

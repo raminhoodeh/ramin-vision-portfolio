@@ -372,7 +372,7 @@ class Button extends Container {
         vec2 textureRefraction = perpendicular * rippleEffect;
         
         vec2 totalRefraction = baseRefraction + cornerRefraction + textureRefraction;
-        vec2 textureCoord = baseTextureCoord + totalRefraction;
+        vec2 refractedCoord = baseTextureCoord + totalRefraction;
         
         // HIGH-QUALITY BUTTON BLUR on container texture
         vec4 color = vec4(0.0);
@@ -391,21 +391,41 @@ class Button extends Container {
             float weight = exp(-(distance * distance) / (2.0 * sigma * sigma));
             
             vec2 offset = vec2(i, j) * blurStep;
-            color += texture2D(u_image, textureCoord + offset) * weight;
+            color += texture2D(u_image, refractedCoord + offset) * weight;
             totalWeight += weight;
           }
         }
         
         color /= totalWeight;
+
+        float glassEdge = 1.0 - smoothstep(0.0, 0.28, distFromEdge);
+        vec2 chromaOffset = shapeNormal * rimIntensity * 0.0042;
+        vec3 dispersedColor = vec3(
+          texture2D(u_image, refractedCoord + chromaOffset).r,
+          texture2D(u_image, refractedCoord).g,
+          texture2D(u_image, refractedCoord - chromaOffset).b
+        );
+        color.rgb = mix(color.rgb, dispersedColor, clamp(rimIntensity * 0.64, 0.0, 0.52));
+
+        vec2 keyLight = normalize(vec2(-0.42, -0.91));
+        vec2 fillShadow = normalize(vec2(0.62, 0.78));
+        float specular = pow(max(dot(shapeNormal, keyLight), 0.0), 2.0) * glassEdge;
+        float innerShadow = pow(max(dot(shapeNormal, fillShadow), 0.0), 1.55) * glassEdge;
+        float caustic = pow(1.0 - clamp(abs(coord.y - 0.2) * 5.4, 0.0, 1.0), 2.0) * glassEdge;
+        float grain = fract(sin(dot(coord * u_resolution + u_buttonPosition, vec2(15.733, 91.417))) * 24634.6345);
+        color.rgb += vec3(1.0, 0.98, 0.94) * specular * 0.24;
+        color.rgb += vec3(0.76, 0.9, 1.0) * caustic * 0.065;
+        color.rgb -= vec3(0.06, 0.09, 0.12) * innerShadow * 0.14;
+        color.rgb += (grain - 0.5) * 0.006;
         
         // BUTTON'S OWN GRADIENT LAYERS (same sophistication as container)
         float gradientPosition = coord.y;
         
         // Primary button gradient
         vec3 topTint = vec3(1.0, 1.0, 1.0);
-        vec3 bottomTint = vec3(0.7, 0.7, 0.7);
+        vec3 bottomTint = vec3(0.84, 0.92, 1.0);
         vec3 gradientTint = mix(topTint, bottomTint, gradientPosition);
-        vec3 tintedColor = mix(color.rgb, gradientTint, u_tintOpacity * 0.7);
+        vec3 tintedColor = mix(color.rgb, gradientTint, u_tintOpacity * 0.34);
         color = vec4(tintedColor, color.a);
         
         // SECOND BUTTON GRADIENT - sampling from container's texture for variation
@@ -434,11 +454,11 @@ class Button extends Container {
           }
         }
         
-        vec3 secondTinted = mix(color.rgb, sampledGradient, u_tintOpacity * 0.4);
+        vec3 secondTinted = mix(color.rgb, sampledGradient, u_tintOpacity * 0.18);
         
         // Button highlighting/shadow system
-        vec3 buttonTopTint = vec3(1.08, 1.08, 1.08);    
-        vec3 buttonBottomTint = vec3(0.92, 0.92, 0.92); 
+        vec3 buttonTopTint = vec3(1.06, 1.055, 1.04);    
+        vec3 buttonBottomTint = vec3(0.95, 0.975, 1.0); 
         vec3 buttonGradient = mix(buttonTopTint, buttonBottomTint, gradientPosition);
         vec3 finalTinted = secondTinted * buttonGradient;
         

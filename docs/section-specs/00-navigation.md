@@ -2,11 +2,11 @@
 
 ## Purpose
 
-Define the current bottom navigation implementation so future design work does not drift back to the old top navbar or left rail.
+Document the current shared bottom navigation so future work keeps one consistent liquid-glass control across every portfolio page.
 
 ## Current Display Labels
 
-The public navigation displays these labels:
+The public bottom navigation displays these labels:
 
 ```txt
 Intro
@@ -20,7 +20,7 @@ AI Ramin
 
 ## Current Target Mapping
 
-The display labels map onto the locked site structure like this:
+`src/App.tsx` owns the display-level navigation array:
 
 ```ts
 [
@@ -34,11 +34,11 @@ The display labels map onto the locked site structure like this:
 ]
 ```
 
-`AI Ramin` opens the chatbot modal. It does not mount a normal page section and is not part of `navLinks` in `src/data/portfolio.ts`.
+`AI Ramin` opens a modal. It is not a normal page section and must stay out of structural `navLinks`.
 
-## Source Data
+## Structural Source Data
 
-`navLinks` in `src/data/portfolio.ts` remains the structural source for public page sections:
+`src/data/portfolio.ts` remains the source of truth for public page sections:
 
 ```ts
 [
@@ -51,130 +51,153 @@ The display labels map onto the locked site structure like this:
 ]
 ```
 
-The bottom nav uses shorter display labels for the SwiftUI-style liquid-glass treatment.
+The bottom nav intentionally uses shorter display labels so the control can stay compact.
 
 ## Current Implementation Files
 
 - `src/App.tsx`: `BottomNavigation`, `bottomNavigationLinks`, `handleBottomNavigation`, `activeSection`, `ActivePortfolioSection`
 - `src/data/portfolio.ts`: structural `navLinks`
-- `src/components/LiquidGlassJsNavShellReadable.tsx`: real liquid-glass JS bridge, bottom orientation, icon insertion, and active-state handling
-- `src/index.css`: bottom bar positioning, active expansion, icon/text styling, responsive sizing
+- `src/components/LiquidGlassJsNavShellReadable.tsx`: raw liquid-glass JS bridge, WebGL patches, icon insertion, adaptive refresh loop, active-state handling
+- `src/index.css`: bottom-bar size, placement, hover expansion, active-only inner-pill treatment, responsive sizing
 
 ## Current UX Model
 
-- The site uses a section-switching portfolio stage.
-- Only the active public section is mounted in the main stage.
-- Clicking a section navigation item sets `activeSection`.
-- The URL hash is replaced with the active target, for example `#projects`.
-- The page scrolls back to the top after section navigation.
-- `hashchange` updates `activeSection` when the hash changes manually.
+- The site uses a fixed viewport portfolio stage, not a long-page scrollspy.
+- Only the selected public section is mounted in the main stage.
+- Clicking a normal section item sets `activeSection`, replaces the URL hash, closes AI Ramin if it is open, and resets the stage scroll to the top.
+- `hashchange` updates `activeSection` when a supported hash is entered manually.
 - `AnimatePresence` transitions between mounted sections.
-- Clicking `AI Ramin` opens the chatbot modal and visually activates the `AI Ramin` nav item while the modal is open.
-
-This is not a traditional long-page scrollspy implementation.
+- Clicking `AI Ramin` opens the chatbot modal and visually activates the `AI Ramin` nav item while the modal remains open.
+- Closing AI Ramin returns the bottom nav active state to the currently mounted page section.
 
 ## Current Bottom Bar Behavior
 
-The visible public navigator is `BottomNavigation` in `src/App.tsx`.
+`BottomNavigation` renders one fixed `<nav className="portfolio-bottom-navigation">` on every page and passes all visible items into `LiquidGlassJsNavShell`.
 
-It renders:
+Current shell props:
 
-- A fixed `<nav>` with class `portfolio-bottom-navigation`.
-- `LiquidGlassJsNavShell` with:
-  - `orientation="bottom"`
-  - `showLogo={false}`
-  - `showCta={false}`
-  - `navLabel="Portfolio navigation"`
-  - icon + label data for all seven display items
+```tsx
+<LiquidGlassJsNavShell
+  navLinks={items}
+  active={active}
+  onNavigate={onNavigate}
+  orientation="bottom"
+  showLogo={false}
+  showCta={false}
+  navLabel="Portfolio navigation"
+/>
+```
+
+## Size And Placement
+
+The same element, dimensions, and positioning apply across all active sections:
+
+- Fixed bottom placement through `.portfolio-bottom-navigation`
+- Horizontal centering with `left: 50%` and `transform: translateX(-50%)`
+- Bottom offset: `calc(env(safe-area-inset-bottom) + 0.25rem)`
+- Rest width: `24.85rem`
+- Maximum expanded width: `43.9875rem`
+- Rest tab width: `3.05rem`
+- Expanded tab width: `5.7rem`
+- Rest tab height: `2.28rem`
+- Expanded tab height: `3.46rem`
+- Rest shell padding: `0.26rem 0.34rem`
+- Expanded shell padding: `0.42rem 0.46rem`
+
+The bar is intentionally slightly low, with a small visible gap under it, so it sits near the lower edge of the main white container without blocking too much content.
+
+## Rest And Hover States
+
+- At rest, the bar is short and compact.
+- Resting icons are smaller than expanded icons.
+- Labels are hidden at rest to keep the nav visually short.
+- Hover, keyboard focus within the nav, active pointer interaction, or the internal expanded state enlarges the shell and reveals labels.
+- Hovering off the nav returns it to the compact rest state.
+- Expansion happens on the shared outer liquid-glass shell; individual inactive tabs do not become highlighted just because they are hovered.
 
 ## Active Item Behavior
 
-- Bottom nav items use equal-width inner glass pills.
-- Active item keeps the same width as every other item.
-- Bottom nav maximum width is `43.9875rem`; each equal tab slot is `5.7rem` wide with enough height for icon + label breathing room.
-- Inner pill surface, border, and opaque fill appear only on the selected item; inactive items show only icon and label.
-- Selected inner pill uses the WebGL liquid-glass button canvas with the demo control values: edge `0.01`, rim `0.05`, base `0.01`, distances `0.15 / 0.8 / 0.1`, corner `0.02`, ripple `0.1`, blur `5`, tint `0.2`.
-- CSS fill on the selected inner pill must stay minimal so refraction remains visible.
-- Labels sit inside each inner glass pill, underneath the icon.
-- Icons and labels share the same dark foreground color in active and inactive states, use no text/icon shadow, and labels use regular/medium weight rather than bold.
-- Bottom labels use the real liquid-glass button text element; `data-nav-label` remains available as metadata.
-- Desktop inactive items also show their underneath label without selection.
-- Narrow mobile items may collapse to icon-first behavior to fit the viewport.
-- `AI Ramin` becomes the active nav item while the chatbot modal is open.
-- Selecting any normal section closes the AI Ramin modal and returns to section navigation.
+- Only the selected item gets an inner liquid-glass pill.
+- Inactive items show the icon and, when expanded, the label without a highlighted inner surface.
+- Inactive tabs keep their nested button canvas hidden, with no `::before` or `::after` highlight.
+- The active tab shows its nested WebGL canvas, border, subtle rim, and controlled fill.
+- `AI Ramin` becomes the selected item only while the modal is open.
+- Selecting any normal section closes the AI Ramin modal and returns the selected state to that section.
 
-## Liquid Glass Implementation
+## Liquid Glass Engine
 
-Navigation uses the real liquid-glass JS implementation through `LiquidGlassJsNavShellReadable.tsx`.
-
-The file imports raw source from:
+Navigation uses the real liquid-glass JS source from:
 
 ```txt
 react libraries/liquid-glass-js-main/container.js
 react libraries/liquid-glass-js-main/button.js
 ```
 
-It evaluates the library once, patches the engine for the portfolio, and creates a WebGL-backed container/button system.
+`LiquidGlassJsNavShellReadable.tsx` evaluates the library once and patches it for this portfolio:
 
-Current glass controls:
+- Requests WebGL with `alpha: true`
+- Uses `powerPreference: 'high-performance'`
+- Uses `desynchronized: true`
+- Keeps `preserveDrawingBuffer: true` so texture capture remains stable
+- Injects `u_time` into the shader program
+- Adds animated ripple, caustic, and fine-grain movement inside the glass
+- Tracks debug metrics through `window.__portfolioLiquidGlassNav`
+
+Current glass control values:
 
 ```ts
 {
-  edgeIntensity: 0.026,
-  rimIntensity: 0.072,
+  edgeIntensity: 0.01,
+  rimIntensity: 0.052,
   baseIntensity: 0.006,
-  edgeDistance: 0.18,
-  rimDistance: 0.68,
-  baseDistance: 0.08,
-  cornerBoost: 0.014,
-  rippleEffect: 0.085,
-  blurRadius: 4.8,
+  edgeDistance: 0.15,
+  rimDistance: 0.85,
+  baseDistance: 0.1,
+  cornerBoost: 0.018,
+  rippleEffect: 0.075,
+  blurRadius: 5.5,
   tintOpacity: 0.16,
   warp: false,
 }
 ```
 
-Current bottom nav construction:
+Current bottom construction:
 
 - Container type: `pill`
-- Container border radius: `36`
-- Container tint opacity: `0.11`
-- Button type: `pill`
-- Button size: `14`
-- Button tint opacity: `0.34`
-- Button warp: `false`
-- Active button tint increases by `0.1`, capped at `0.62`
-- Icons are inserted as inline SVG elements inside each real liquid-glass button.
-- The generated button text is hidden inside the inner pill; visible labels use the `data-nav-label` pseudo-label underneath the icon.
-- The WebGL button sizes refresh immediately and again after the active-width transition so the shader matches the expanded pill shape.
-- The selected bottom-nav button suppresses its nested child canvas to avoid stale circular texture artifacts during active expansion; the parent bar remains WebGL-backed.
-- Inner pills use a stronger translucent fill so labels remain readable over the animated background.
+- Container tint opacity: `0.38`
+- Bottom button tint opacity: `0.3`
+- Active button tint opacity: at least `0.46`
+- Refresh mode: `adaptive-raf`
+- Active texture refresh target: `24fps`
+- Idle texture refresh target: `6fps`
+- Floating idle refresh target: `4fps`
+- Nested button render loop: `requestAnimationFrame`
+- Maximum glass DPR: `1.65`
 
-Snapshot refresh:
-
-- `SNAPSHOT_REFRESH_MS = 420`
-- Texture refresh runs on interval, resize, scroll, and visibility return.
+The refresh loop runs faster during hover, interaction, resize, scroll, or recent visual movement, then idles down when the page settles. Visibility changes pause or resume the loop.
 
 ## Navigation Rules
 
-- Do not reintroduce the old horizontal top navbar as the primary public nav.
-- Do not reintroduce the left rail as the primary public nav.
-- Keep AI Ramin inside the bottom navigation as the modal trigger.
+- Keep one shared bottom nav element across every page.
+- Do not reintroduce the old top navbar as the primary public nav.
+- Do not reintroduce a left rail as the primary public nav.
+- Keep AI Ramin inside the bottom nav as a modal trigger.
 - Do not mount AI Ramin as a normal section.
 - Do not split `Experience & Education` into separate top-level Work and Qualifications sections.
 - Use `Thoughts` only as the short bottom-nav display label for `teaching-speaking-writing`.
-- If the nav implementation changes, update this file and the per-section Navigation Spec blocks in the section files.
+- If nav sizing, glass controls, or active-state behavior changes, update this file and the per-section navigation specs.
 
 ## Implementation Checklist
 
 - [ ] Bottom nav displays `Intro`, `Work`, `Projects`, `Thoughts`, `Contact`, `Bonus`, and `AI Ramin`.
-- [ ] Each item has an icon.
-- [ ] Active item expands around the icon.
-- [ ] Labels sit underneath icons, outside the inner glass pill.
-- [ ] Desktop inactive labels are visible without selection.
+- [ ] The same bottom nav element appears on every page.
+- [ ] The bar is compact at rest and expands on hover/focus/interaction.
+- [ ] Icons are smaller at rest than in the expanded state.
+- [ ] Labels are hidden at rest and revealed in the expanded state.
+- [ ] Only the selected item has an inner highlighted glass pill.
+- [ ] Inactive item hover does not create a persistent inner-pill highlight.
+- [ ] The bar sits low with a small visible gap below it.
 - [ ] Bottom nav uses `LiquidGlassJsNavShell` with `orientation="bottom"`.
 - [ ] Bottom nav uses source from `react libraries/liquid-glass-js-main`.
-- [ ] AI Ramin opens the chatbot modal.
-- [ ] AI Ramin is absent from structural `navLinks`.
-- [ ] Navigation changes `activeSection` and mounts only the selected section.
-- [ ] URL hash updates to the active section target for normal sections.
+- [ ] AI Ramin opens the chatbot modal and is absent from structural `navLinks`.
+- [ ] Normal navigation changes `activeSection`, updates the URL hash, and mounts only the selected section.

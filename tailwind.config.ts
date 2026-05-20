@@ -3,6 +3,7 @@ import tailwindcssAnimate from 'tailwindcss-animate';
 
 export default {
   content: ['./index.html', './src/**/*.{ts,tsx}'],
+  darkMode: 'class',
   theme: {
     extend: {
       fontFamily: {
@@ -30,11 +31,20 @@ export default {
           '0%, 100%': { backgroundPosition: '0% 50%' },
           '50%': { backgroundPosition: '100% 50%' },
         },
+        aurora: {
+          from: {
+            backgroundPosition: '50% 50%, 50% 50%',
+          },
+          to: {
+            backgroundPosition: '350% 50%, 350% 50%',
+          },
+        },
       },
       animation: {
         'scroll-down': 'scroll-down 1.5s ease-in-out infinite',
         'role-fade-in': 'role-fade-in 0.4s ease-out',
         'gradient-shift': 'gradient-shift 6s ease infinite',
+        aurora: 'aurora 60s linear infinite',
       },
     },
   },

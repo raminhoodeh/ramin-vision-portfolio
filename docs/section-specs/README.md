@@ -2,6 +2,8 @@
 
 These files are the tracking specs for the final public portfolio structure. They are intentionally separate from implementation files so design and build work can be checked against a stable hierarchy.
 
+The currently refreshed implementation specs are Navigation, Experience & Education, Personal Projects, Teaching/Speaking/Writing, and AI Ramin. The Hero, Contact CTA, and Bonus specs are intentionally not refreshed in this pass.
+
 ## Locked Public Structure
 
 0. [Navigation](./00-navigation.md)
@@ -26,12 +28,23 @@ These files are the tracking specs for the final public portfolio structure. The
 
 - Public navigation is a bottom SwiftUI-style liquid-glass bar.
 - Display labels are `Intro`, `Work`, `Projects`, `Thoughts`, `Contact`, `Bonus`, and `AI Ramin`.
-- Active items expand horizontally around the icon.
-- Labels sit underneath each icon, outside the inner glass pill.
-- Desktop inactive labels are visible without needing selection.
+- The same bottom nav element is rendered across every page.
+- The bar is short at rest and expands on hover, focus, or active pointer interaction.
+- Labels are hidden at rest and revealed in the expanded state.
+- Only the selected item has an inner highlighted glass pill.
+- Inactive items do not gain inner-pill highlighting on hover.
+- The nav sits low against the stage, with a small visible gap below it.
 - Navigation changes the active section and mounts only that section in the main portfolio stage.
 - The URL hash reflects the selected normal section.
 - `AI Ramin` opens the chatbot modal from the bottom bar and is not a normal scroll section.
+
+## Current Implementation Components
+
+- `experience-education` mounts `ExperienceEducationSection`.
+- `projects` mounts `CaseStudyGrid`.
+- `teaching-speaking-writing` mounts `TeachingWritingShelf`.
+- `AI Ramin` opens `AiRaminModal` from the shared bottom nav.
+- `hero`, `contact`, and `bonus` are documented in their own specs but were not updated in this documentation pass.
 
 ## Preview Rule
 
@@ -41,7 +54,13 @@ The canonical local preview is:
 http://127.0.0.1:4182/
 ```
 
-Do not start an extra dev server if port `4182` is already occupied. Stop the old server first, then restart the canonical one.
+The active Codex preview during the current implementation work has used:
+
+```txt
+http://127.0.0.1:4183/
+```
+
+Do not start an extra dev server if the chosen preview port is already occupied. Reuse or stop the old server before starting another one.
 
 ## Placeholder Policy
 

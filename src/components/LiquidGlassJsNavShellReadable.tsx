@@ -14,6 +14,7 @@ type LiquidGlassJsNavShellProps = {
   active: string;
   navLinks: readonly NavLink[];
   onNavigate: (target: string) => void;
+  onNavIntent?: (target: string) => void;
   onCta: () => void;
   logoLabel?: string;
   ctaLabel?: string;
@@ -36,6 +37,7 @@ type GlassRefs = {
   texture?: WebGLTexture;
   positionBuffer?: WebGLBuffer;
   texcoordBuffer?: WebGLBuffer;
+  resolutionLoc?: WebGLUniformLocation;
   textureSizeLoc?: WebGLUniformLocation;
   pageHeightLoc?: WebGLUniformLocation;
   viewportHeightLoc?: WebGLUniformLocation;
@@ -43,6 +45,9 @@ type GlassRefs = {
   scrollYLoc?: WebGLUniformLocation;
   containerPositionLoc?: WebGLUniformLocation;
   buttonPositionLoc?: WebGLUniformLocation;
+  containerSizeLoc?: WebGLUniformLocation;
+  borderRadiusLoc?: WebGLUniformLocation;
+  timeLoc?: WebGLUniformLocation;
 };
 
 type LiquidGlassInstance = {
@@ -120,8 +125,37 @@ type LiquidGlassWindow = Window &
     __portfolioLiquidGlassNav?: {
       instances: LiquidGlassInstance[];
       getInstanceCount: () => number;
+      refreshMode: 'adaptive-raf';
+      getTextureFps: () => number;
+      getMetrics: () => LiquidGlassNavPerfSnapshot;
     };
   };
+
+type MetricSeries = {
+  count: number;
+  totalMs: number;
+  lastMs: number;
+  maxMs: number;
+  lastAt: number;
+};
+
+type MetricSeriesSnapshot = {
+  count: number;
+  lastMs: number;
+  avgMs: number;
+  maxMs: number;
+  lastAt: number;
+};
+
+type LiquidGlassNavPerfSnapshot = {
+  instances: number;
+  refreshMode: 'adaptive-raf';
+  textureFps: number;
+  snapshot: MetricSeriesSnapshot;
+  textureRefresh: MetricSeriesSnapshot;
+  textureUpload: MetricSeriesSnapshot;
+  nestedRenderFps: number;
+};
 
 type NavInstances = {
   all: LiquidGlassInstance[];
@@ -133,11 +167,23 @@ let cachedLibrary: LiquidGlassLibrary | null = null;
 let reusableSnapshotCanvas: HTMLCanvasElement | null = null;
 let reusableSnapshotContext: CanvasRenderingContext2D | null = null;
 
+const liquidGlassPerf = {
+  snapshot: { count: 0, totalMs: 0, lastMs: 0, maxMs: 0, lastAt: 0 },
+  textureRefresh: { count: 0, totalMs: 0, lastMs: 0, maxMs: 0, lastAt: 0 },
+  textureUpload: { count: 0, totalMs: 0, lastMs: 0, maxMs: 0, lastAt: 0 },
+  nestedRenderFrames: 0,
+  nestedRenderFps: 0,
+  nestedRenderLastSample: typeof performance === 'undefined' ? 0 : performance.now(),
+};
+
 const SNAPSHOT_MAX_HEIGHT = 10000;
-const SNAPSHOT_REFRESH_MS = 420;
+const GLASS_ACTIVE_REFRESH_MS = 1000 / 24;
+const GLASS_IDLE_REFRESH_MS = 1000 / 6;
+const GLASS_FLOATING_REFRESH_MS = 1000 / 4;
 const SNAPSHOT_OVERSCAN = 220;
 const SNAPSHOT_ELEMENT_LIMIT = 520;
 const SNAPSHOT_TEXT_LIMIT = 380;
+const GLASS_MAX_DPR = 1.65;
 const SNAPSHOT_IGNORED_SELECTOR = [
   '.glass-container',
   '.glass-button',
@@ -149,6 +195,56 @@ const SNAPSHOT_IGNORED_SELECTOR = [
   'noscript',
 ].join(',');
 
+function roundMetric(value: number) {
+  return Math.round(value * 10) / 10;
+}
+
+function recordSeriesMetric(series: MetricSeries, startedAt: number) {
+  const duration = performance.now() - startedAt;
+  series.count += 1;
+  series.totalMs += duration;
+  series.lastMs = duration;
+  series.maxMs = Math.max(series.maxMs, duration);
+  series.lastAt = performance.now();
+}
+
+function snapshotSeries(series: MetricSeries): MetricSeriesSnapshot {
+  return {
+    count: series.count,
+    lastMs: roundMetric(series.lastMs),
+    avgMs: roundMetric(series.count ? series.totalMs / series.count : 0),
+    maxMs: roundMetric(series.maxMs),
+    lastAt: roundMetric(series.lastAt),
+  };
+}
+
+function recordNestedRenderFrame() {
+  const now = performance.now();
+  liquidGlassPerf.nestedRenderFrames += 1;
+
+  const elapsed = now - liquidGlassPerf.nestedRenderLastSample;
+  if (elapsed < 500) return;
+
+  liquidGlassPerf.nestedRenderFps = roundMetric((liquidGlassPerf.nestedRenderFrames * 1000) / elapsed);
+  liquidGlassPerf.nestedRenderFrames = 0;
+  liquidGlassPerf.nestedRenderLastSample = now;
+}
+
+function getLiquidGlassPerfSnapshot(
+  instances: LiquidGlassInstance[],
+  textureFps: number,
+): LiquidGlassNavPerfSnapshot {
+  return {
+    instances: instances.filter((instance) => !instance.__portfolioDestroyed).length,
+    refreshMode: 'adaptive-raf',
+    textureFps: roundMetric(textureFps),
+    snapshot: snapshotSeries(liquidGlassPerf.snapshot),
+    textureRefresh: snapshotSeries(liquidGlassPerf.textureRefresh),
+    textureUpload: snapshotSeries(liquidGlassPerf.textureUpload),
+    nestedRenderFps: liquidGlassPerf.nestedRenderFps,
+  };
+}
+
 const navIconPaths: Record<NavIconName, readonly string[]> = {
   intro: ['M3 10.5 12 3l9 7.5', 'M5 9.5V21h5v-6h4v6h5V9.5'],
   work: ['M9 6V5a3 3 0 0 1 3-3h0a3 3 0 0 1 3 3v1', 'M3 7h18v13H3z', 'M3 12h18'],
@@ -158,6 +254,43 @@ const navIconPaths: Record<NavIconName, readonly string[]> = {
   bonus: ['M20 12v8H4v-8', 'M3 8h18v4H3z', 'M12 8v12', 'M12 8H8.5A2.5 2.5 0 1 1 12 5.5V8Z', 'M12 8h3.5A2.5 2.5 0 1 0 12 5.5V8Z'],
   ai: ['M12 3l1.15 4.1L17 8.25l-3.85 1.15L12 13.5l-1.15-4.1L7 8.25l3.85-1.15L12 3Z', 'M5 14l.75 2.2L8 17l-2.25.8L5 20l-.75-2.2L2 17l2.25-.8L5 14Z', 'M18 14l.75 2.2L21 17l-2.25.8L18 20l-.75-2.2L15 17l2.25-.8L18 14Z'],
 };
+
+function getGlassDpr() {
+  return Math.min(Math.max(window.devicePixelRatio || 1, 1), GLASS_MAX_DPR);
+}
+
+function getCssRect(element: HTMLElement | HTMLCanvasElement) {
+  const rect = element.getBoundingClientRect();
+  return {
+    left: rect.left,
+    top: rect.top,
+    width: Math.max(rect.width, 1),
+    height: Math.max(rect.height, 1),
+  };
+}
+
+function syncGlassUniforms(instance: LiquidGlassInstance) {
+  const gl = instance.gl_refs.gl;
+  if (!gl) return;
+
+  const dpr = getGlassDpr();
+  if (instance.gl_refs.resolutionLoc) {
+    gl.uniform2f(instance.gl_refs.resolutionLoc, instance.canvas.width, instance.canvas.height);
+  }
+  if (instance.gl_refs.borderRadiusLoc) {
+    gl.uniform1f(instance.gl_refs.borderRadiusLoc, instance.borderRadius * dpr);
+  }
+  if (instance.gl_refs.containerSizeLoc && instance.parent) {
+    gl.uniform2f(instance.gl_refs.containerSizeLoc, instance.parent.width, instance.parent.height);
+  }
+}
+
+function syncGlassTime(instance: LiquidGlassInstance, timestamp = performance.now()) {
+  const gl = instance.gl_refs.gl;
+  if (!gl || !instance.gl_refs.timeLoc) return;
+
+  gl.uniform1f(instance.gl_refs.timeLoc, timestamp * 0.001);
+}
 
 function createNavIcon(icon: NavIconName) {
   const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -183,8 +316,162 @@ function createNavIcon(icon: NavIconName) {
 function loadLiquidGlassLibrary() {
   if (cachedLibrary) return cachedLibrary;
 
+  const patchedContainerSource = containerSource
+    .replace(
+      `    this.gl = this.canvas.getContext('webgl', { preserveDrawingBuffer: true })`,
+      `    this.gl = this.canvas.getContext('webgl', {
+      alpha: true,
+      antialias: false,
+      desynchronized: true,
+      powerPreference: 'high-performance',
+      preserveDrawingBuffer: true
+    })`,
+    )
+    .replace(
+      `      uniform float u_rippleEffect;
+      uniform float u_tintOpacity;`,
+      `      uniform float u_rippleEffect;
+      uniform float u_tintOpacity;
+      uniform float u_time;`,
+    )
+    .replace(
+      `        float rippleEffect = sin(distFromEdge * 25.0) * u_rippleEffect * rimIntensity;`,
+      `        float rippleEffect = sin(distFromEdge * 25.0 - u_time * 2.4) * u_rippleEffect * rimIntensity;`,
+    )
+    .replace(
+      `        float caustic = pow(1.0 - clamp(abs(coord.y - 0.18) * 5.0, 0.0, 1.0), 2.0) * glassEdge;
+        float grain = fract(sin(dot(coord * u_resolution + u_containerPosition, vec2(12.9898, 78.233))) * 43758.5453);`,
+      `        float causticBand = 0.18 + sin(u_time * 0.75 + coord.x * 3.14159) * 0.018;
+        float caustic = pow(1.0 - clamp(abs(coord.y - causticBand) * 5.0, 0.0, 1.0), 2.0) * glassEdge;
+        float grain = fract(sin(dot(coord * u_resolution + u_containerPosition + u_time * 7.0, vec2(12.9898, 78.233))) * 43758.5453);`,
+    )
+    .replace(
+      `    const tintOpacityLoc = gl.getUniformLocation(program, 'u_tintOpacity')
+    const imageLoc = gl.getUniformLocation(program, 'u_image')`,
+      `    const tintOpacityLoc = gl.getUniformLocation(program, 'u_tintOpacity')
+    const timeLoc = gl.getUniformLocation(program, 'u_time')
+    const imageLoc = gl.getUniformLocation(program, 'u_image')`,
+    )
+    .replace(
+      `      rippleEffectLoc,
+      tintOpacityLoc,
+      imageLoc,`,
+      `      rippleEffectLoc,
+      tintOpacityLoc,
+      timeLoc,
+      imageLoc,`,
+    )
+    .replace(
+      `    gl.uniform1f(tintOpacityLoc, this.tintOpacity)`,
+      `    gl.uniform1f(tintOpacityLoc, this.tintOpacity)
+    if (timeLoc) gl.uniform1f(timeLoc, 0)`,
+    )
+    .replace(
+      `        color.rgb -= vec3(0.06, 0.09, 0.12) * innerShadow * 0.16;`,
+      `        color.rgb -= vec3(0.045, 0.065, 0.09) * innerShadow * 0.055;`,
+    )
+    .replace(
+      `        vec3 finalTinted = mix(color.rgb, sampledGradient, u_tintOpacity * 0.16);
+        color = vec4(finalTinted, color.a);`,
+      `        vec3 finalTinted = mix(color.rgb, sampledGradient, u_tintOpacity * 0.16);
+        float luminance = dot(finalTinted, vec3(0.2126, 0.7152, 0.0722));
+        float lift = smoothstep(0.7, 0.18, luminance) * u_tintOpacity * 1.06;
+        finalTinted = mix(finalTinted, vec3(0.9, 0.95, 1.0), clamp(lift, 0.0, 0.72));
+        color = vec4(finalTinted, color.a);`,
+    )
+    .replace(
+      `        gl_FragColor = vec4(color.rgb, mask);`,
+      `        float innerRim = (1.0 - smoothstep(0.0, 9.0, abs(maskDistance))) * mask;
+        float topGlint = innerRim * pow(max(dot(shapeNormal, normalize(vec2(-0.32, -0.95))), 0.0), 1.28);
+        float lowerPrism = innerRim * pow(max(dot(shapeNormal, normalize(vec2(0.52, 0.86))), 0.0), 1.42);
+        float sidePrism = innerRim * pow(abs(dot(shapeNormal, normalize(vec2(0.98, -0.18)))), 1.7);
+        vec3 rimLight =
+          vec3(1.0, 0.98, 0.92) * topGlint * 0.48 +
+          vec3(0.58, 0.82, 1.0) * sidePrism * 0.16 +
+          vec3(0.68, 0.9, 1.0) * lowerPrism * 0.12;
+        color.rgb = clamp(color.rgb + rimLight, 0.0, 1.0);
+
+        gl_FragColor = vec4(color.rgb, min(mask + innerRim * 0.08, 1.0));`,
+    );
+
+  const patchedButtonSource = buttonSource
+    .replace(
+      `      uniform float u_rippleEffect;
+      uniform float u_tintOpacity;`,
+      `      uniform float u_rippleEffect;
+      uniform float u_tintOpacity;
+      uniform float u_time;`,
+    )
+    .replace(
+      `        float rippleEffect = sin(distFromEdge * 30.0) * u_rippleEffect * rimIntensity;`,
+      `        float rippleEffect = sin(distFromEdge * 30.0 - u_time * 2.8) * u_rippleEffect * rimIntensity;`,
+    )
+    .replace(
+      `        float caustic = pow(1.0 - clamp(abs(coord.y - 0.2) * 5.4, 0.0, 1.0), 2.0) * glassEdge;
+        float grain = fract(sin(dot(coord * u_resolution + u_buttonPosition, vec2(15.733, 91.417))) * 24634.6345);`,
+      `        float causticBand = 0.2 + sin(u_time * 0.9 + coord.x * 3.14159) * 0.02;
+        float caustic = pow(1.0 - clamp(abs(coord.y - causticBand) * 5.4, 0.0, 1.0), 2.0) * glassEdge;
+        float grain = fract(sin(dot(coord * u_resolution + u_buttonPosition + u_time * 8.0, vec2(15.733, 91.417))) * 24634.6345);`,
+    )
+    .replace(
+      `    const tintOpacityLoc = gl.getUniformLocation(program, 'u_tintOpacity')
+    const imageLoc = gl.getUniformLocation(program, 'u_image')`,
+      `    const tintOpacityLoc = gl.getUniformLocation(program, 'u_tintOpacity')
+    const timeLoc = gl.getUniformLocation(program, 'u_time')
+    const imageLoc = gl.getUniformLocation(program, 'u_image')`,
+    )
+    .replace(
+      `      rippleEffectLoc,
+      tintOpacityLoc,
+      imageLoc,`,
+      `      rippleEffectLoc,
+      tintOpacityLoc,
+      timeLoc,
+      imageLoc,`,
+    )
+    .replace(
+      `    gl.uniform1f(tintOpacityLoc, this.tintOpacity)`,
+      `    gl.uniform1f(tintOpacityLoc, this.tintOpacity)
+    if (timeLoc) gl.uniform1f(timeLoc, 0)`,
+    )
+    .replace(
+      `        vec2 viewportCenter = u_buttonPosition;
+        float topY = max(0.0, (viewportCenter.y - buttonSize.y * 0.4) / containerSize.y);
+        float midY = viewportCenter.y / containerSize.y;
+        float bottomY = min(1.0, (viewportCenter.y + buttonSize.y * 0.4) / containerSize.y);`,
+      `        float gradientRadius = buttonSize.y * 0.4 / containerSize.y;
+        float topY = clamp(baseTextureCoord.y - gradientRadius, 0.0, 1.0);
+        float midY = clamp(baseTextureCoord.y, 0.0, 1.0);
+        float bottomY = clamp(baseTextureCoord.y + gradientRadius, 0.0, 1.0);`,
+    )
+    .replace(
+      `        color.rgb -= vec3(0.06, 0.09, 0.12) * innerShadow * 0.14;`,
+      `        color.rgb -= vec3(0.045, 0.065, 0.09) * innerShadow * 0.045;`,
+    )
+    .replace(
+      `        vec3 finalTinted = secondTinted * buttonGradient;`,
+      `        vec3 finalTinted = secondTinted * buttonGradient;
+        float buttonLuminance = dot(finalTinted, vec3(0.2126, 0.7152, 0.0722));
+        float buttonLift = smoothstep(0.68, 0.18, buttonLuminance) * u_tintOpacity * 1.08;
+        finalTinted = mix(finalTinted, vec3(0.9, 0.95, 1.0), clamp(buttonLift, 0.0, 0.74));`,
+    )
+    .replace(
+      `        gl_FragColor = vec4(finalTinted, mask);`,
+      `        float buttonInnerRim = (1.0 - smoothstep(0.0, 7.0, abs(maskDistance))) * mask;
+        float buttonTopGlint = buttonInnerRim * pow(max(dot(shapeNormal, normalize(vec2(-0.32, -0.95))), 0.0), 1.18);
+        float buttonSidePrism = buttonInnerRim * pow(abs(dot(shapeNormal, normalize(vec2(0.98, -0.18)))), 1.55);
+        float buttonLowerPrism = buttonInnerRim * pow(max(dot(shapeNormal, normalize(vec2(0.52, 0.86))), 0.0), 1.36);
+        vec3 buttonRimLight =
+          vec3(1.0, 0.99, 0.94) * buttonTopGlint * 0.58 +
+          vec3(0.55, 0.82, 1.0) * buttonSidePrism * 0.2 +
+          vec3(0.72, 0.92, 1.0) * buttonLowerPrism * 0.12;
+        finalTinted = clamp(finalTinted + buttonRimLight, 0.0, 1.0);
+
+        gl_FragColor = vec4(finalTinted, min(mask + buttonInnerRim * 0.12, 1.0));`,
+    );
+
   cachedLibrary = new Function(
-    `${containerSource}\n${buttonSource}\nreturn { Container, Button };`,
+    `${patchedContainerSource}\n${patchedButtonSource}\nreturn { Container, Button };`,
   )() as LiquidGlassLibrary;
 
   patchLiquidGlassLibrary(cachedLibrary);
@@ -203,11 +490,75 @@ function prepareSharedSnapshotState(Container: LiquidGlassContainerConstructor) 
 }
 
 function patchLiquidGlassLibrary({ Container, Button }: LiquidGlassLibrary) {
+  Container.prototype.getPosition = function getPosition() {
+    const rect = getCssRect(this.canvas);
+    const dpr = getGlassDpr();
+    return {
+      x: (rect.left + rect.width / 2) * dpr,
+      y: (rect.top + rect.height / 2) * dpr,
+    };
+  };
+
+  Container.prototype.updateSizeFromDOM = function updateSizeFromDOM() {
+    window.requestAnimationFrame(() => {
+      if (this.__portfolioDestroyed || !this.element || !this.canvas) return;
+
+      const dpr = getGlassDpr();
+      const rect = getCssRect(this.element);
+      let cssWidth = Math.ceil(rect.width);
+      let cssHeight = Math.ceil(rect.height);
+
+      if (this.type === 'circle') {
+        const cssSize = Math.max(cssWidth, cssHeight);
+        cssWidth = cssSize;
+        cssHeight = cssSize;
+        this.borderRadius = cssSize / 2;
+        this.element.style.width = `${cssSize}px`;
+        this.element.style.height = `${cssSize}px`;
+        this.element.style.borderRadius = `${this.borderRadius}px`;
+      } else if (this.type === 'pill') {
+        this.borderRadius = cssHeight / 2;
+        this.element.style.borderRadius = `${this.borderRadius}px`;
+      }
+
+      const pixelWidth = Math.max(Math.ceil(cssWidth * dpr), 1);
+      const pixelHeight = Math.max(Math.ceil(cssHeight * dpr), 1);
+
+      if (this.canvas.width !== pixelWidth || this.canvas.height !== pixelHeight) {
+        this.canvas.width = pixelWidth;
+        this.canvas.height = pixelHeight;
+        this.canvas.style.width = `${cssWidth}px`;
+        this.canvas.style.height = `${cssHeight}px`;
+        this.canvas.style.borderRadius = `${this.borderRadius}px`;
+      }
+
+      this.width = pixelWidth;
+      this.height = pixelHeight;
+      syncGlassUniforms(this);
+
+      if (this.gl_refs.gl) {
+        this.gl_refs.gl.viewport(0, 0, pixelWidth, pixelHeight);
+      }
+
+      this.children?.forEach((child) => {
+        child.updateSizeFromDOM();
+        if (child.gl_refs.gl && child.gl_refs.texture && child.isNestedGlass) {
+          const gl = child.gl_refs.gl;
+          gl.bindTexture(gl.TEXTURE_2D, child.gl_refs.texture);
+          gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, pixelWidth, pixelHeight, 0, gl.RGBA, gl.UNSIGNED_BYTE, null);
+          if (child.gl_refs.textureSizeLoc) gl.uniform2f(child.gl_refs.textureSizeLoc, pixelWidth, pixelHeight);
+          syncGlassUniforms(child);
+        }
+      });
+    });
+  };
+
   Container.prototype.initWebGL = function initWebGL() {
     if (!Container.pageSnapshot || !this.gl || this.__portfolioDestroyed) return;
 
     try {
       this.setupShader(Container.pageSnapshot);
+      syncGlassUniforms(this);
       this.webglInitialized = true;
     } catch (error) {
       reportGlassError('container initWebGL failed', error);
@@ -247,14 +598,15 @@ function patchLiquidGlassLibrary({ Container, Button }: LiquidGlassLibrary) {
         const gl = this.gl_refs.gl;
         gl.clear(gl.COLOR_BUFFER_BIT);
 
-        const scrollY = window.pageYOffset || document.documentElement.scrollTop;
-        if (this.gl_refs.scrollYLoc) gl.uniform1f(this.gl_refs.scrollYLoc, scrollY);
+        if (this.gl_refs.scrollYLoc) gl.uniform1f(this.gl_refs.scrollYLoc, 0);
 
         if (this.gl_refs.containerPositionLoc) {
           const position = this.getPosition();
           gl.uniform2f(this.gl_refs.containerPositionLoc, position.x, position.y);
         }
 
+        syncGlassUniforms(this);
+        syncGlassTime(this);
         gl.drawArrays(gl.TRIANGLES, 0, 6);
         renderNestedChildren(this);
       } catch (error) {
@@ -290,21 +642,18 @@ function patchLiquidGlassLibrary({ Container, Button }: LiquidGlassLibrary) {
           gl.uniform2f(this.gl_refs.containerPositionLoc, containerPosition.x, containerPosition.y);
         }
 
+        syncGlassUniforms(this);
+        syncGlassTime(this);
         gl.drawArrays(gl.TRIANGLES, 0, 6);
+        recordNestedRenderFrame();
       } catch (error) {
         reportGlassError('nested button render failed', error);
         return;
       }
     };
 
-    const animationLoop = () => {
-      if (this.__portfolioDestroyed || this.parent?.__portfolioDestroyed) return;
-      render();
-      this.__portfolioRaf = window.requestAnimationFrame(animationLoop);
-    };
-
     this.render = render;
-    animationLoop();
+    render();
   };
 }
 
@@ -558,7 +907,7 @@ function drawTextNode(
 }
 
 function drawDomSnapshotLayer(ctx: CanvasRenderingContext2D, scrollY: number, snapshotHeight: number) {
-  const root = document.querySelector<HTMLElement>('.portfolio-stage');
+  const root = document.body;
   if (!root) return;
 
   const elements: HTMLElement[] = [];
@@ -621,10 +970,17 @@ function drawStageSurface(ctx: CanvasRenderingContext2D, scrollY: number) {
   roundedRectPath(ctx, x, y, width, height, radius);
   ctx.clip();
 
+  const base = ctx.createLinearGradient(x, y, x + width, y + height);
+  base.addColorStop(0, 'rgba(253, 255, 255, 0.96)');
+  base.addColorStop(0.54, 'rgba(247, 252, 255, 0.94)');
+  base.addColorStop(1, 'rgba(239, 248, 255, 0.9)');
+  ctx.fillStyle = base;
+  ctx.fillRect(x, y, width, height);
+
   const radial = ctx.createRadialGradient(x + width * 0.5, y, 0, x + width * 0.5, y, Math.max(width, height) * 0.72);
-  radial.addColorStop(0, 'rgba(255, 255, 255, 0.38)');
-  radial.addColorStop(0.36, 'rgba(244, 249, 253, 0.21)');
-  radial.addColorStop(1, 'rgba(238, 246, 252, 0.27)');
+  radial.addColorStop(0, 'rgba(255, 255, 255, 0.72)');
+  radial.addColorStop(0.36, 'rgba(249, 253, 255, 0.42)');
+  radial.addColorStop(1, 'rgba(238, 246, 252, 0.32)');
   ctx.fillStyle = radial;
   ctx.fillRect(x, y, width, height);
 
@@ -645,6 +1001,8 @@ function drawStageSurface(ctx: CanvasRenderingContext2D, scrollY: number) {
 }
 
 function drawPortfolioSnapshot() {
+  const startedAt = performance.now();
+
   try {
     if (!reusableSnapshotCanvas) {
       reusableSnapshotCanvas = document.createElement('canvas');
@@ -655,19 +1013,18 @@ function drawPortfolioSnapshot() {
     const ctx = reusableSnapshotContext;
     if (!ctx) return null;
 
-    const scrollY = window.pageYOffset || document.documentElement.scrollTop;
-    const width = Math.max(Math.ceil(window.innerWidth), 1);
-    const height = Math.max(
-      Math.min(Math.ceil(scrollY + window.innerHeight + SNAPSHOT_OVERSCAN), SNAPSHOT_MAX_HEIGHT),
-      Math.ceil(window.innerHeight),
-      1,
-    );
+    const dpr = getGlassDpr();
+    const cssWidth = Math.max(Math.ceil(window.innerWidth), 1);
+    const cssHeight = Math.max(Math.ceil(window.innerHeight), 1);
+    const width = Math.max(Math.ceil(cssWidth * dpr), 1);
+    const height = Math.max(Math.ceil(cssHeight * dpr), 1);
 
     if (snapshot.width !== width) snapshot.width = width;
     if (snapshot.height !== height) snapshot.height = height;
 
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     ctx.fillStyle = '#020817';
-    ctx.fillRect(0, 0, width, height);
+    ctx.fillRect(0, 0, cssWidth, cssHeight);
 
     const shaderCanvas = getShaderCanvas();
     if (shaderCanvas && shaderCanvas.width > 0 && shaderCanvas.height > 0) {
@@ -677,54 +1034,58 @@ function drawPortfolioSnapshot() {
         ctx.drawImage(
           shaderCanvas,
           shaderRect.left,
-          shaderRect.top + scrollY,
+          shaderRect.top,
           shaderRect.width,
           shaderRect.height,
         );
       } catch {
-        const fallback = ctx.createLinearGradient(0, scrollY, width, scrollY + window.innerHeight);
+        const fallback = ctx.createLinearGradient(0, 0, cssWidth, window.innerHeight);
         fallback.addColorStop(0, '#63bdf9');
         fallback.addColorStop(0.48, '#5a769d');
         fallback.addColorStop(1, '#fafdff');
         ctx.fillStyle = fallback;
-        ctx.fillRect(0, scrollY, width, window.innerHeight);
+        ctx.fillRect(0, 0, cssWidth, window.innerHeight);
       }
     } else {
-      const fallback = ctx.createLinearGradient(0, scrollY, width, scrollY + window.innerHeight);
+      const fallback = ctx.createLinearGradient(0, 0, cssWidth, window.innerHeight);
       fallback.addColorStop(0, '#63bdf9');
       fallback.addColorStop(0.48, '#5a769d');
       fallback.addColorStop(1, '#fafdff');
       ctx.fillStyle = fallback;
-      ctx.fillRect(0, scrollY, width, window.innerHeight);
+      ctx.fillRect(0, 0, cssWidth, window.innerHeight);
     }
 
-    drawStageSurface(ctx, scrollY);
-    drawDomSnapshotLayer(ctx, scrollY, height);
+    drawStageSurface(ctx, 0);
+    drawDomSnapshotLayer(ctx, 0, cssHeight);
     return snapshot;
   } catch (error) {
     reportGlassError('snapshot draw failed', error);
     return null;
+  } finally {
+    recordSeriesMetric(liquidGlassPerf.snapshot, startedAt);
   }
 }
 
 function setGlassControls() {
   (window as LiquidGlassWindow).glassControls = {
     edgeIntensity: 0.01,
-    rimIntensity: 0.05,
-    baseIntensity: 0.01,
+    rimIntensity: 0.052,
+    baseIntensity: 0.006,
     edgeDistance: 0.15,
-    rimDistance: 0.8,
+    rimDistance: 0.85,
     baseDistance: 0.1,
-    cornerBoost: 0.02,
-    rippleEffect: 0.1,
-    blurRadius: 5,
-    tintOpacity: 0.2,
+    cornerBoost: 0.018,
+    rippleEffect: 0.075,
+    blurRadius: 5.5,
+    tintOpacity: 0.16,
     warp: false,
   };
 }
 
 function uploadSnapshotToInstance(instance: LiquidGlassInstance, snapshot: HTMLCanvasElement) {
   if (instance.__portfolioDestroyed || instance.parent || !instance.gl_refs.gl || !instance.gl_refs.texture) return;
+
+  const startedAt = performance.now();
 
   try {
     const gl = instance.gl_refs.gl;
@@ -747,29 +1108,38 @@ function uploadSnapshotToInstance(instance: LiquidGlassInstance, snapshot: HTMLC
     }
 
     if (instance.gl_refs.viewportHeightLoc) {
-      gl.uniform1f(instance.gl_refs.viewportHeightLoc, window.innerHeight);
+      gl.uniform1f(instance.gl_refs.viewportHeightLoc, window.innerHeight * getGlassDpr());
     }
 
+    if (instance.gl_refs.scrollYLoc) {
+      gl.uniform1f(instance.gl_refs.scrollYLoc, 0);
+    }
+
+    syncGlassUniforms(instance);
     instance.render?.();
   } catch (error) {
     reportGlassError('texture upload failed', error);
+  } finally {
+    recordSeriesMetric(liquidGlassPerf.textureUpload, startedAt);
   }
 }
 
 function updateStandaloneTextures(Container: LiquidGlassContainerConstructor, instances: LiquidGlassInstance[]) {
+  const startedAt = performance.now();
   const snapshot = drawPortfolioSnapshot();
   if (!snapshot) return;
 
   Container.pageSnapshot = snapshot;
 
   instances.forEach((instance) => uploadSnapshotToInstance(instance, snapshot));
+  recordSeriesMetric(liquidGlassPerf.textureRefresh, startedAt);
 }
 
 function applyActiveState(items: NavInstances['buttons'], active: string) {
   items.forEach(({ instance, target, tintOpacity }) => {
     const isActive = target === active;
     instance.element.classList.toggle('is-active', isActive);
-    instance.tintOpacity = isActive ? 0.2 : tintOpacity;
+    instance.tintOpacity = isActive ? Math.max(tintOpacity, 0.46) : tintOpacity;
 
     if (target) {
       if (isActive) {
@@ -839,6 +1209,7 @@ export function LiquidGlassJsNavShell({
   active,
   navLinks,
   onNavigate,
+  onNavIntent,
   onCta,
   logoLabel = 'RH',
   ctaLabel = 'Say hi ↗',
@@ -852,10 +1223,12 @@ export function LiquidGlassJsNavShell({
   const navRef = useRef<NavInstances | null>(null);
   const activeRef = useRef(active);
   const navigateRef = useRef(onNavigate);
+  const navIntentRef = useRef(onNavIntent);
   const ctaRef = useRef(onCta);
 
   activeRef.current = active;
   navigateRef.current = onNavigate;
+  navIntentRef.current = onNavIntent;
   ctaRef.current = onCta;
 
   useEffect(() => {
@@ -910,7 +1283,7 @@ export function LiquidGlassJsNavShell({
       const container = new Container({
         type: isVertical ? 'rounded' : 'pill',
         borderRadius: isVertical ? 34 : isBottom ? 36 : 28,
-        tintOpacity: isVertical ? 0.12 : isBottom ? 0.2 : 0.065,
+        tintOpacity: isVertical ? 0.12 : isBottom ? 0.38 : 0.065,
       });
     container.element.classList.add('portfolio-liquid-library-nav');
     container.element.classList.add(`portfolio-liquid-library-nav-${orientation}`);
@@ -928,6 +1301,7 @@ export function LiquidGlassJsNavShell({
         label: string;
         menuLabel?: string;
         icon?: NavIconName;
+        onIntent?: () => void;
         onClick: () => void;
       },
     ) => {
@@ -940,6 +1314,11 @@ export function LiquidGlassJsNavShell({
         instance.element.insertBefore(createNavIcon(options.icon), instance.textElement ?? null);
       }
       instance.textElement?.classList.add('portfolio-liquid-tab-label');
+      if (options.onIntent) {
+        instance.element.addEventListener('pointerenter', options.onIntent, { passive: true });
+        instance.element.addEventListener('focusin', options.onIntent);
+        instance.element.addEventListener('touchstart', options.onIntent, { passive: true });
+      }
       makeKeyboardClickable(instance.element, options.onClick);
       container.addChild(instance);
       buttons.push({ instance, target: options.target, tintOpacity: options.tintOpacity });
@@ -980,17 +1359,18 @@ export function LiquidGlassJsNavShell({
           text: link.label,
           type: 'pill',
           size: '14',
-          tintOpacity: isBottom ? 0 : 0.46,
+          tintOpacity: isBottom ? 0.3 : 0.46,
           warp: false,
           onClick: () => navigateRef.current(link.target),
         }),
         {
           target: link.target,
           className: 'portfolio-liquid-tab',
-          tintOpacity: isBottom ? 0 : 0.46,
+          tintOpacity: isBottom ? 0.3 : 0.46,
           label: link.menuLabel ?? link.label,
           menuLabel: link.menuLabel,
           icon: link.icon,
+          onIntent: () => navIntentRef.current?.(link.target),
           onClick: () => navigateRef.current(link.target),
         },
       );
@@ -1018,30 +1398,79 @@ export function LiquidGlassJsNavShell({
     root.appendChild(container.element);
     navRef.current = { all, buttons, container };
 
+    let realtimeTextureFps = 0;
+    let realtimeTextureFrames = 0;
+    let realtimeTextureLastSample = performance.now();
+
     const win = window as LiquidGlassWindow;
     win.__portfolioLiquidGlassNav = {
       instances: all,
       getInstanceCount: () => all.filter((instance) => !instance.__portfolioDestroyed).length,
+      refreshMode: 'adaptive-raf',
+      getTextureFps: () => realtimeTextureFps,
+      getMetrics: () => getLiquidGlassPerfSnapshot(all, realtimeTextureFps),
     };
 
-      const refreshTextures = () => {
-        try {
-          if (document.visibilityState === 'hidden') return;
-          if (isNavVisible(container)) {
-            updateStandaloneTextures(Container, all);
-          }
-        } catch (error) {
-          reportGlassError('nav texture refresh failed', error);
+    let realtimeTextureHotUntil = 0;
+    const keepTextureLoopHot = (durationMs = 900) => {
+      realtimeTextureHotUntil = Math.max(realtimeTextureHotUntil, performance.now() + durationMs);
+    };
+
+    const refreshTextures = () => {
+      try {
+        if (document.visibilityState === 'hidden') return false;
+        if (isNavVisible(container)) {
+          updateStandaloneTextures(Container, all);
+          return true;
         }
-      };
+      } catch (error) {
+        reportGlassError('nav texture refresh failed', error);
+      }
+
+      return false;
+    };
 
     let textureFrame = 0;
     const requestTextureRefresh = () => {
+      keepTextureLoopHot(700);
       if (textureFrame) return;
       textureFrame = window.requestAnimationFrame(() => {
         textureFrame = 0;
         refreshTextures();
       });
+    };
+
+    let realtimeTextureFrame = 0;
+    let realtimeTextureTimer = 0;
+    const scheduleRealtimeTextureLoop = (delayMs = 0) => {
+      if (realtimeTextureFrame || realtimeTextureTimer || container.__portfolioDestroyed) return;
+
+      realtimeTextureTimer = window.setTimeout(() => {
+        realtimeTextureTimer = 0;
+        realtimeTextureFrame = window.requestAnimationFrame(runRealtimeTextureLoop);
+      }, delayMs);
+    };
+
+    const runRealtimeTextureLoop = () => {
+      realtimeTextureFrame = 0;
+
+      if (container.__portfolioDestroyed || document.visibilityState === 'hidden') return;
+
+      const didRefresh = refreshTextures();
+
+      const now = performance.now();
+      if (didRefresh) realtimeTextureFrames += 1;
+      if (now - realtimeTextureLastSample >= 500) {
+        realtimeTextureFps = (realtimeTextureFrames * 1000) / (now - realtimeTextureLastSample);
+        realtimeTextureFrames = 0;
+        realtimeTextureLastSample = now;
+      }
+
+      scheduleRealtimeTextureLoop(now < realtimeTextureHotUntil ? GLASS_ACTIVE_REFRESH_MS : GLASS_IDLE_REFRESH_MS);
+    };
+
+    const startRealtimeTextureLoop = () => {
+      scheduleRealtimeTextureLoop(0);
     };
 
     let layoutFrame = window.requestAnimationFrame(() => {
@@ -1055,7 +1484,104 @@ export function LiquidGlassJsNavShell({
       }
     });
 
-    const refreshTimer = window.setInterval(refreshTextures, SNAPSHOT_REFRESH_MS);
+    let interactionLayoutFrame = 0;
+    const requestLayoutRefresh = () => {
+      if (interactionLayoutFrame) return;
+
+      interactionLayoutFrame = window.requestAnimationFrame(() => {
+        interactionLayoutFrame = 0;
+        try {
+          container.updateSizeFromDOM();
+          all.forEach((instance) => {
+            instance.updateSizeFromDOM();
+            instance.render?.();
+          });
+          refreshTextures();
+        } catch (error) {
+          reportGlassError('nav interaction layout refresh failed', error);
+        }
+      });
+    };
+
+    const interactionRefreshTimers: number[] = [];
+    const refreshDuringInteractionTransition = () => {
+      keepTextureLoopHot(1200);
+      requestLayoutRefresh();
+      interactionRefreshTimers.push(window.setTimeout(requestLayoutRefresh, 120));
+      interactionRefreshTimers.push(window.setTimeout(requestLayoutRefresh, 340));
+    };
+
+    const navResizeObserver =
+      typeof window.ResizeObserver === 'undefined'
+        ? null
+        : new window.ResizeObserver(() => requestLayoutRefresh());
+
+    if (navResizeObserver) {
+      all.forEach((instance) => navResizeObserver.observe(instance.element));
+    }
+
+    const navElement = root.closest('.portfolio-bottom-navigation');
+    const setExpandedState = (isExpanded: boolean) => {
+      root.classList.toggle('is-expanded', isExpanded);
+      navElement?.classList.toggle('is-expanded', isExpanded);
+    };
+
+    let tapExpansionTimer = 0;
+    let tapExpansionHoldUntil = 0;
+    let lastInteractionWasKeyboard = false;
+
+    const collapseExpandedState = () => {
+      setExpandedState(false);
+      refreshDuringInteractionTransition();
+    };
+
+    const collapseIfIdle = () => {
+      if (container.element.matches(':hover') || Date.now() < tapExpansionHoldUntil) return;
+
+      collapseExpandedState();
+    };
+
+    const expandForInteraction = () => {
+      setExpandedState(true);
+      refreshDuringInteractionTransition();
+    };
+
+    const expandForTap = () => {
+      tapExpansionHoldUntil = Date.now() + 1600;
+      window.clearTimeout(tapExpansionTimer);
+      setExpandedState(true);
+      refreshDuringInteractionTransition();
+      tapExpansionTimer = window.setTimeout(() => {
+        tapExpansionHoldUntil = 0;
+        collapseIfIdle();
+      }, 1800);
+    };
+
+    const expandForKeyboardFocus = () => {
+      if (!lastInteractionWasKeyboard) return;
+
+      expandForInteraction();
+    };
+
+    const collapseAfterFocus = () => {
+      window.setTimeout(collapseIfIdle, 0);
+    };
+
+    const collapseAfterPointerLeave = (event: PointerEvent) => {
+      if (event.pointerType !== 'mouse' && Date.now() < tapExpansionHoldUntil) return;
+
+      tapExpansionHoldUntil = 0;
+      window.clearTimeout(tapExpansionTimer);
+      collapseExpandedState();
+    };
+
+    const handleKeyboardIntent = (event: KeyboardEvent) => {
+      if (event.key === 'Tab') lastInteractionWasKeyboard = true;
+    };
+
+    const handlePointerIntent = () => {
+      lastInteractionWasKeyboard = false;
+    };
 
     const handleResize = () => {
       window.cancelAnimationFrame(layoutFrame);
@@ -1070,10 +1596,22 @@ export function LiquidGlassJsNavShell({
       });
     };
 
+    startRealtimeTextureLoop();
     window.addEventListener('resize', handleResize);
     window.addEventListener('scroll', requestTextureRefresh, { passive: true });
+    document.addEventListener('keydown', handleKeyboardIntent);
+    document.addEventListener('pointerdown', handlePointerIntent);
+    container.element.addEventListener('pointerenter', expandForInteraction);
+    container.element.addEventListener('pointerleave', collapseAfterPointerLeave);
+    container.element.addEventListener('focusin', expandForKeyboardFocus);
+    container.element.addEventListener('focusout', collapseAfterFocus);
+    container.element.addEventListener('pointerdown', expandForTap, true);
+    container.element.addEventListener('click', expandForTap, true);
     const handleVisibilityChange = () => {
-      if (document.visibilityState === 'visible') requestTextureRefresh();
+      if (document.visibilityState === 'visible') {
+        requestTextureRefresh();
+        startRealtimeTextureLoop();
+      }
     };
 
     document.addEventListener('visibilitychange', handleVisibilityChange);
@@ -1081,10 +1619,24 @@ export function LiquidGlassJsNavShell({
       return () => {
         window.removeEventListener('resize', handleResize);
         window.removeEventListener('scroll', requestTextureRefresh);
+        document.removeEventListener('keydown', handleKeyboardIntent);
+        document.removeEventListener('pointerdown', handlePointerIntent);
+        container.element.removeEventListener('pointerenter', expandForInteraction);
+        container.element.removeEventListener('pointerleave', collapseAfterPointerLeave);
+        container.element.removeEventListener('focusin', expandForKeyboardFocus);
+        container.element.removeEventListener('focusout', collapseAfterFocus);
+        container.element.removeEventListener('pointerdown', expandForTap, true);
+        container.element.removeEventListener('click', expandForTap, true);
         document.removeEventListener('visibilitychange', handleVisibilityChange);
+        setExpandedState(false);
         window.cancelAnimationFrame(layoutFrame);
         window.cancelAnimationFrame(textureFrame);
-        window.clearInterval(refreshTimer);
+        window.cancelAnimationFrame(realtimeTextureFrame);
+        window.cancelAnimationFrame(interactionLayoutFrame);
+        window.clearTimeout(realtimeTextureTimer);
+        window.clearTimeout(tapExpansionTimer);
+        interactionRefreshTimers.forEach((timer) => window.clearTimeout(timer));
+        navResizeObserver?.disconnect();
 
         [...all].reverse().forEach((instance) => destroyInstance(Container, instance));
         navRef.current = null;
@@ -1175,7 +1727,7 @@ export function LiquidGlassJsFloatingButton({
       }
     });
 
-    const refreshTimer = window.setInterval(refreshTextures, SNAPSHOT_REFRESH_MS);
+    const refreshTimer = window.setInterval(refreshTextures, GLASS_FLOATING_REFRESH_MS);
 
     const handleResize = () => {
       window.cancelAnimationFrame(layoutFrame);

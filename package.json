@@ -6,10 +6,14 @@
   "scripts": {
     "dev": "vite --host 127.0.0.1 --port 4182 --strictPort",
     "build": "vite build",
+    "start": "node server.mjs",
     "preview": "vite preview",
     "check:content": "node scripts/check-content-model.mjs",
+    "check:rock-assets": "node scripts/check-hashgraph-rock-assets.mjs",
+    "check:performance-guardrails": "node scripts/check-performance-guardrails.mjs",
     "check:preview": "node scripts/check-preview.mjs",
-    "verify": "npm run check:content && npm run build"
+    "verify": "npm run check:content && npm run build && npm run check:rock-assets && npm run check:performance-guardrails",
+    "verify:preview": "npm run verify && npm run check:preview"
   },
   "dependencies": {
     "@gltf-transform/core": "^4.3.0",

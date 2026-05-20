@@ -238,6 +238,321 @@ Each phase should end with:
 - Mobile and desktop visual sanity check
 - Updated asset intake checklist if new gaps appear
 
+## 7A. Active Bonus Rock Repair Plan
+
+This is the current active visual workstream. The Bonus section uses the original Hashgraph Ventures intro rock as its motion source of truth, but the interaction is adapted from scroll progress into three deliberate clicks.
+
+### Source Of Truth
+
+Primary reference:
+
+- Live site: `https://hashgraphvc.com/`
+- Local scrape shell: `Hashgraph Ventures | AI & Blockchain Venture Capital.html`
+- Local original model: `gl/intro/intro_compressed.glb`
+- Local material textures: `gl/intro/texture_0.ktx2`, `texture_1.ktx2`, `texture_2.ktx2`, `texture_3.ktx2`
+- Local reference state machine: `rock-state.js`
+- Local particle reference: `particles.js`
+- Portfolio asset pipeline: `src/three/hashgraphRockAssets.ts`
+- Portfolio motion contract: `src/three/hashgraphRockMotion.ts`
+
+The reference state machine is:
+
+1. `IDLE`: intact rock, slow rotation, base inner glow.
+2. `WARMING`: glow wakes without visible fragmentation.
+3. `GLOWING`: stronger internal pressure and pulse.
+4. `EXPLODING`: fast rupture, dissolve, particle release.
+5. `DISSOLVED`: rock has cleared and particles own the scene.
+
+The portfolio click translation is:
+
+1. Click 0, `sealed`: intact rock, gifts fully hidden.
+2. Click 1, `warming`: pressure and glow only; maybe tiny silver gift glints through cracks.
+3. Click 2, `fracturing`: selected seams separate slightly; minimized gift shapes can be seen behind the rock but are still unreadable and not clickable.
+4. Click 3, `ruptured`: the only true explosion; page-wide spark burst; gifts expand into clickable final layout.
+
+### Phase 1: Reference Lock And Motion Contract
+
+Status: completed.
+
+Goal:
+
+- Encode the Ventures source-of-truth behavior into repo-readable constants before changing animation math.
+- Make it impossible for click 1 to accidentally mean "small explosion" again.
+- Add explicit gift foreshadowing states: hidden, glint, miniature, revealed.
+
+Target files:
+
+- `src/three/hashgraphRockMotion.ts`
+- `src/App.tsx`
+- `PORTFOLIO_IMPLEMENTATION_PLAN.md`
+
+Acceptance criteria:
+
+- The click stages are named and documented in code.
+- The UI stage labels read from the shared stage contract.
+- The gift preview mode is available as a DOM data attribute for CSS and animation work in later phases.
+
+### Phase 2: Split Animation Tracks
+
+Status: completed.
+
+Goal:
+
+- Replace the current single `stagedExplosion` behavior with separate tracks:
+  - `wakeProgress`
+  - `fractureProgress`
+  - `ruptureProgress`
+  - `giftPeekProgress`
+  - `giftRevealProgress`
+
+Acceptance criteria:
+
+- Click 1 drives glow and pressure, not shard displacement.
+- Click 2 drives limited fracture and gift peek.
+- Click 3 drives the only full rupture.
+
+### Phase 3: Preserve Rock Integrity Before Rupture
+
+Status: completed.
+
+Goal:
+
+- Keep the original rock visually whole until click 3.
+- Add per-shard activation thresholds so only selected seams move on click 2.
+- Avoid the current circular wreath of chunks.
+
+Acceptance criteria:
+
+- Click 1: no visible shard ring.
+- Click 2: the rock still reads as one object.
+- Click 3: shards release with varied velocity, depth, and falloff.
+
+### Phase 4: Ventures-style Lighting And Material Tuning
+
+Status: completed.
+
+Goal:
+
+- Reduce overexposure.
+- Keep icy/stone texture readable.
+- Use glow as internal energy, not a white wash.
+
+Acceptance criteria:
+
+- Emissive intensity stays near the Ventures baseline before rupture.
+- The material remains readable on the Bonus shader background.
+- Final flash is brief and cinematic.
+
+### Phase 5: Re-anchor Particles To The Rock Core
+
+Status: completed.
+
+Goal:
+
+- Make all sparks and particle trails originate from the rock, not from an offset plume.
+- Keep early particles subtle and local.
+- Let only the third click spread across the whole Bonus section.
+
+Acceptance criteria:
+
+- Click 1 has aura and tiny spark pressure only.
+- Click 2 has local crack sparks.
+- Click 3 has page-wide celestial spread.
+
+### Phase 6: Gift Foreshadowing Behind The Rock
+
+Status: completed.
+
+Goal:
+
+- Place the gift layer behind the rock from the start.
+- Show subtle physical evidence of the gifts as the rock separates.
+
+State behavior:
+
+- Click 0: gifts are fully occluded.
+- Click 1: faint silver/glass glints leak through cracks.
+- Click 2: minimized, blurred gift shapes are visible behind the fractured rock.
+- Click 3: gifts expand, sharpen, and become clickable.
+
+Acceptance criteria:
+
+- The gifts feel hidden inside or behind the rock.
+- Pre-reveal gift shapes are not clickable.
+- Final gift reveal feels caused by the explosion.
+
+### Phase 7: Full-section Composition
+
+Status: completed.
+
+Goal:
+
+- Keep the rock intelligently placed on the right half of the main Bonus section.
+- Do not wrap the rock in a card or bounded scene.
+- Let the explosion span the whole Bonus section.
+
+Acceptance criteria:
+
+- The rock hitbox follows the visible rock area.
+- The text card does not clip or imprison the explosion.
+- Desktop and mobile layouts avoid awkward overlap.
+
+### Phase 8: Performance And Smoothness Pass
+
+Status: completed.
+
+Goal:
+
+- Bring the interaction closer to the Ventures smoothness standard.
+- Keep React out of the animation loop.
+- Keep particle and shard updates GPU-friendly.
+
+Acceptance criteria:
+
+- `npm run verify` passes.
+- `npm run check:preview` passes.
+- Browser screenshots confirm click 0, click 1, click 2, and click 3 states.
+- No shader background dropout.
+
+## 7B. Bonus Rock Background Loading Plan
+
+This workstream follows `performance-efficiency-guidelines.md`: make likely future requests hot before the user clicks, while avoiding hidden Bonus UI or hidden WebGL scenes on non-Bonus sections.
+
+### Phase 1: Resource And Module Preload
+
+Status: completed.
+
+Goal:
+
+- Warm the original Ventures rock GLB, KTX2 textures, decoder assets, Three.js, and loader modules in the background.
+- Trigger low-priority preload after the main portfolio has settled.
+- Trigger higher-priority preload when the user shows Bonus navigation intent.
+
+Acceptance criteria:
+
+- The Bonus section is not mounted just to preload.
+- The Bonus shader variant remains tied to the active section only.
+- The preload path uses browser/module caches instead of creating a hidden WebGL canvas.
+
+### Phase 2: Preload State Machine
+
+Status: completed.
+
+Goal:
+
+- Track Bonus rock preload status as `idle`, `preloading`, `ready`, or `failed`.
+- Let the visible Bonus scene join the same preload state when it mounts.
+- Expose preload state for QA without showing any user-facing preload UI.
+
+Acceptance criteria:
+
+- Idle, nav intent, navigation, and visible scene paths all call the same preload coordinator.
+- Preload failure is captured without breaking navigation.
+- Performance guardrails verify the preload coordinator and intent hooks stay wired.
+
+### Phase 3: Instrumentation And Visual Leak Guard
+
+Status: completed.
+
+Goal:
+
+- Make the background-loading work measurable in the development performance panel.
+- Verify that warming the Bonus rock never mounts a hidden WebGL scene on other sections.
+- Verify that the Bonus shader variant only appears while Bonus is active.
+
+Acceptance criteria:
+
+- The performance baseline reports Bonus preload status and visible shader variants.
+- Non-Bonus sections budget for zero Bonus rock canvases, even after preload is ready.
+- Bonus budgets require the active Bonus shader variant and a live Bonus rock preload state.
+- Static guardrails fail if the preload/status/shader isolation checks are removed.
+
+### Phase 4: Runtime Canvas Pixel Budget Trim
+
+Status: completed.
+
+Goal:
+
+- Reduce visible WebGL buffer pixels on the Bonus section without changing the rock model.
+- Keep the shader at the requested `pixelDensity={1}` setting.
+- Tighten static guardrails so the Bonus rock DPR cap cannot drift back up.
+
+Acceptance criteria:
+
+- Bonus rock still uses `gl/intro/intro_compressed.glb`.
+- Runtime Bonus canvas pixel budget passes in the dev performance panel.
+- `npm run verify` passes with the stricter rock DPR guardrail.
+
+### Phase 5: Preview Smoke Coverage
+
+Status: completed.
+
+Goal:
+
+- Make the existing preview check catch preload, shader, and rock source regressions.
+- Keep this phase non-visual and low risk.
+- Verify the dev server serves the same safe contracts that the source guardrails inspect.
+
+Acceptance criteria:
+
+- `npm run check:preview` validates the original Ventures GLB pipeline.
+- The preview check fails if Bonus preload hooks, status attributes, or nav intent hooks disappear.
+- The preview check fails if Bonus shader settings or non-Bonus leak budgets disappear.
+- No model, material, or animation math changes are made in this phase.
+
+### Phase 6: Production Verification Bundle
+
+Status: completed.
+
+Goal:
+
+- Keep standard `npm run verify` usable without requiring a running dev server.
+- Add an explicit local preview verification bundle for development QA.
+- Strengthen the production build asset check so emitted JavaScript must still reference the original rock model, textures, decoder assets, and low-priority warmup path.
+
+Acceptance criteria:
+
+- `npm run verify` remains build-only and server-independent.
+- `npm run verify:preview` runs the full build/source verification plus the dev-server preview smoke check.
+- `npm run check:rock-assets` fails if production output drops the runtime references to the Ventures rock pipeline.
+- No model, material, or animation math changes are made in this phase.
+
+### Phase 7: Runtime Resource Hint Layer
+
+Status: completed.
+
+Goal:
+
+- Warm the exact Vite-resolved rock assets earlier without mounting the Bonus section or changing the rock renderer.
+- Use low-priority browser hints that complement the existing cache-warming fetches.
+- Keep hints de-duplicated so repeated idle, hover, focus, and visible-scene preload calls do not spam the document head.
+
+Acceptance criteria:
+
+- The resource hint layer installs `<link rel="prefetch" as="fetch">` entries for the GLB, KTX2 textures, Basis assets, and Draco assets.
+- Resource hints use anonymous requests so they share cache behavior with the subsequent loader/fetch path.
+- The production asset check fails if the built bundle drops the resource hint marker or prefetch behavior.
+- No model, material, or animation math changes are made in this phase.
+
+### Phase 8: Live Interaction QA And Performance Capture
+
+Status: completed.
+
+Goal:
+
+- Prove the end-to-end Bonus rock experience against the running preview.
+- Capture off-Bonus preload isolation, click 0 through click 3 visual states, console health, and performance budget status.
+- Keep this phase observational unless live QA reveals a real defect.
+
+Acceptance criteria:
+
+- Off-Bonus preload reaches `ready` with 9 rock resource hints, default shader variant, and 0 Bonus rock canvases.
+- Click 0, 1, 2, and 3 map to `sealed`, `warming`, `fracturing`, and `ruptured`.
+- Gift preview modes progress through `hidden`, `glint`, `miniature`, and `revealed`.
+- Hero and Bonus performance panels report 0 failing budgets.
+- No relevant shader, WebGL, GLB, KTX, Draco, or Bonus rock warnings/errors appear in the browser console.
+- `npm run verify:preview` passes after the capture.
+
 ## 8. Phase 1: Thesis / AI-Native Product OS Deep Dive
 
 ### Goal

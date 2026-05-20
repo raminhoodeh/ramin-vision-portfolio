@@ -22,6 +22,11 @@ Use this as the working checklist for filling the portfolio over time. The site 
 ## Product Management Experience
 
 - [ ] Company logos or approval to use text-only marks
+- [ ] Add missing `company-logos/perkbox-logo.png`
+- [ ] Add a WPP Media logo, or approve the current legacy GroupM logo fallback
+- [ ] Create a root `company-videos/` folder for role videos when ready
+- [ ] Preferred video filenames: `bayut.mp4`, `side.mp4`, `perkboxvivup.mp4`, `wppmedia.mp4`, `coxautomotive.mp4`, `ordnancesurvey.mp4`, `urgentem.mp4`, `deityai.mp4`, `erm.mp4`, `tesla.mp4`
+- [ ] Supported video formats: `.mp4`, `.webm`, `.mov`
 - [ ] Which roles can mention metrics publicly
 - [ ] Confidential exclusions for Bayut and Side.inc
 - [ ] Public-safe product screenshots
