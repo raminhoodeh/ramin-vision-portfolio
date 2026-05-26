@@ -1,0 +1,63 @@
+{
+  "schemaVersion": 1,
+  "description": "Stage 0 fixtures for observing current AI Ramin routing behavior before the NLP intent router replaces brittle fallthrough logic.",
+  "cases": [
+    {
+      "id": "casual-hey",
+      "prompt": "hey",
+      "requestType": "general_chat",
+      "expectedQuestionType": "conversation_open",
+      "expectedNeedsRetrieval": false,
+      "expectedShowEvidenceDisclosure": false,
+      "expectedFallthroughToPortfolioOverview": false
+    },
+    {
+      "id": "casual-status-check",
+      "prompt": "hows it going",
+      "requestType": "general_chat",
+      "expectedQuestionType": "conversation_open",
+      "expectedNeedsRetrieval": false,
+      "expectedShowEvidenceDisclosure": false,
+      "expectedFallthroughToPortfolioOverview": false
+    },
+    {
+      "id": "casual-acknowledgement",
+      "prompt": "cool thanks",
+      "requestType": "general_chat",
+      "expectedQuestionType": "portfolio_overview",
+      "expectedNeedsRetrieval": true,
+      "expectedShowEvidenceDisclosure": true,
+      "expectedFallthroughToPortfolioOverview": true,
+      "notes": "Known Stage 0 gap: the future NLP router should classify this as casual_chat."
+    },
+    {
+      "id": "ambiguous-follow-up",
+      "prompt": "tell me more",
+      "requestType": "general_chat",
+      "expectedQuestionType": "portfolio_overview",
+      "expectedNeedsRetrieval": true,
+      "expectedShowEvidenceDisclosure": true,
+      "expectedFallthroughToPortfolioOverview": true,
+      "notes": "Known Stage 0 gap: this needs conversation-history aware clarification."
+    },
+    {
+      "id": "professional-role-follow-up",
+      "prompt": "what about for a senior PM role?",
+      "requestType": "general_chat",
+      "expectedQuestionType": "portfolio_overview",
+      "expectedNeedsRetrieval": true,
+      "expectedShowEvidenceDisclosure": true,
+      "expectedFallthroughToPortfolioOverview": true,
+      "notes": "Known Stage 0 gap: the future NLP router should infer role_fit from conversational context."
+    },
+    {
+      "id": "behavioral-hardest-challenge",
+      "prompt": "what's the hardest product challenge that you overcame?",
+      "requestType": "general_chat",
+      "expectedQuestionType": "behavioral_example",
+      "expectedNeedsRetrieval": true,
+      "expectedShowEvidenceDisclosure": true,
+      "expectedFallthroughToPortfolioOverview": false
+    }
+  ]
+}
