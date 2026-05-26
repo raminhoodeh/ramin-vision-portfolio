@@ -435,7 +435,11 @@
       "expectedSourceRoles": ["work", "framework"],
       "expectedKeywords": ["ai", "product", "90"],
       "minimumAnswerableEvidenceCards": 2,
-      "requiredContractSections": ["short_answer", "verified_proof", "inferred_fit", "open_questions"]
+      "requiredContractSections": ["short_answer", "verified_proof", "inferred_fit", "open_questions"],
+      "qualityGateFixtureShortAnswer": "I do not have enough verified portfolio context to answer that accurately.",
+      "expectedQualityGateIssues": ["over_cautious_with_sufficient_evidence"],
+      "expectedQualityGateStrategy": "first_90_days_recovery",
+      "expectedQualityGateRecoveredKeywords": ["first 90 days", "diagnostic ramp", "evals", "guardrails"]
     },
     {
       "id": "weakness-gap-senior-ai-pm",

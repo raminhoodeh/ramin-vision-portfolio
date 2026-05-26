@@ -44,7 +44,17 @@
       ],
       "expectedFollowUp": true,
       "expectedInheritedIntent": "role_fit",
-      "expectedInheritedQuestionType": "role_fit"
+      "expectedInheritedQuestionType": "role_fit",
+      "expectedContextualQueryIncludes": [
+        "Previous visitor question",
+        "Previous AI Ramin answer focus",
+        "Previous lead story",
+        "Previous evidence anchors"
+      ],
+      "expectedPromptIncludes": [
+        "Previous lead story: GroupM Media Carbon Calculator",
+        "Previous evidence anchors: GroupM Media Carbon Calculator; Urgentem Element6"
+      ]
     },
     {
       "id": "casual-thanks-after-role-fit",
@@ -115,7 +125,110 @@
       ],
       "expectedFollowUp": true,
       "expectedInheritedIntent": "product_judgment",
-      "expectedInheritedQuestionType": "product_judgment"
+      "expectedInheritedQuestionType": "product_judgment",
+      "expectedContextualQueryIncludes": [
+        "Previous AI Ramin answer focus",
+        "Previous evidence anchors: Ramin Qualifications; nsso"
+      ],
+      "expectedPromptIncludes": [
+        "Previous evidence anchors: Ramin Qualifications; nsso"
+      ]
+    },
+    {
+      "id": "first-90-days-after-role-fit",
+      "prompt": "what would the first 90 days look like?",
+      "requestType": "general_chat",
+      "history": [
+        {
+          "role": "user",
+          "content": "Would Ramin fit a senior PM role at a B2B SaaS company?"
+        },
+        {
+          "role": "assistant",
+          "content": "Ramin looks relevant because of senior PM work at Perkbox Vivup, B2B data-product work at Urgentem, and AI-native product systems.",
+          "metadata": {
+            "requestType": "role_fit",
+            "intentRoute": {
+              "intent": "role_fit",
+              "confidence": 0.93,
+              "isSubstantive": true,
+              "needsEvidence": true,
+              "needsRetrieval": true,
+              "needsStructuredModules": true,
+              "suggestedTone": "hiring",
+              "sourceQuestionType": "role_fit",
+              "reason": "previous role fit answer"
+            },
+            "answerShape": {
+              "primaryQuestionType": "role_fit"
+            },
+            "evidenceCardTitles": [
+              "Perkbox Vivup - Senior Product Manager",
+              "AI-Native Product OS"
+            ]
+          }
+        }
+      ],
+      "expectedFollowUp": true,
+      "expectedInheritedIntent": "role_fit",
+      "expectedInheritedQuestionType": "role_fit",
+      "expectedContextualQueryIncludes": [
+        "Current follow-up: what would the first 90 days look like?",
+        "Inherited intent: role_fit",
+        "Previous evidence anchors: Perkbox Vivup - Senior Product Manager; AI-Native Product OS"
+      ],
+      "expectedPromptIncludes": [
+        "Conversation follow-up context",
+        "Previous evidence anchors: Perkbox Vivup - Senior Product Manager; AI-Native Product OS"
+      ]
+    },
+    {
+      "id": "enterprise-variant-after-product-judgment",
+      "prompt": "how would that change for enterprise customers?",
+      "requestType": "general_chat",
+      "history": [
+        {
+          "role": "user",
+          "content": "Here is a gym app for creatives. Which parts of Ramin's experience are relevant?"
+        },
+        {
+          "role": "assistant",
+          "content": "The answer should connect personal training qualification, nsso creative identity work, and product discovery from scratch.",
+          "metadata": {
+            "requestType": "product_judgment",
+            "intentRoute": {
+              "intent": "product_judgment",
+              "confidence": 0.91,
+              "isSubstantive": true,
+              "needsEvidence": true,
+              "needsRetrieval": true,
+              "needsStructuredModules": true,
+              "suggestedTone": "analytical",
+              "sourceQuestionType": "product_judgment",
+              "reason": "previous product scenario answer"
+            },
+            "answerShape": {
+              "primaryQuestionType": "product_judgment"
+            },
+            "evidenceCardTitles": [
+              "Ramin Qualifications",
+              "nsso"
+            ]
+          }
+        }
+      ],
+      "expectedFollowUp": true,
+      "expectedInheritedIntent": "product_judgment",
+      "expectedInheritedQuestionType": "product_judgment",
+      "expectedContextualQueryIncludes": [
+        "Current follow-up: how would that change for enterprise customers?",
+        "Inherited intent: product_judgment",
+        "Previous evidence anchors: Ramin Qualifications; nsso"
+      ],
+      "expectedPromptIncludes": [
+        "Previous answer focus: The answer should connect personal training qualification, nsso creative identity work, and product discovery from scratch.",
+        "Previous evidence anchors: Ramin Qualifications; nsso"
+      ]
     }
   ]
 }

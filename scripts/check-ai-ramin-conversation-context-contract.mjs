@@ -5,6 +5,7 @@ import {
   buildAiRaminConversationRouteContext,
   buildQueryIntentFromIntentRoute,
   buildRoutingObservability,
+  buildVisitorPrompt,
   classifyQuery,
 } from '../server/aiRaminHandler.mjs';
 
@@ -36,6 +37,8 @@ assertIncludes(serverSource, 'conversation_context_fallback', 'server inherited 
 assertIncludes(serverSource, 'retrievalQuery', 'server contextual retrieval query');
 assertIncludes(serverSource, 'getRequestTypeForIntentRoute', 'server classifier request type promotion');
 assertIncludes(serverSource, 'contextualQuery', 'server contextual query contract');
+assertIncludes(serverSource, 'Previous lead story', 'server prompt previous lead story contract');
+assertIncludes(serverSource, 'Previous evidence anchors', 'server prompt previous evidence anchors contract');
 assertIncludes(uiSource, 'metadata: message.response', 'client history metadata');
 assertIncludes(uiSource, 'evidenceCardTitles', 'client history evidence titles');
 assertIncludes(packageSource, 'check:ai-ramin-conversation-context', 'package conversation context script');
@@ -57,6 +60,32 @@ for (const fixture of fixtures.cases ?? []) {
   if (fixture.expectedFollowUp) {
     assert(context.contextualQuery.includes(fixture.prompt), `${fixture.id}: contextual query should include current prompt`);
     assert(context.contextualQuery.includes('Previous'), `${fixture.id}: contextual query should include previous context`);
+  }
+
+  for (const expectedText of fixture.expectedContextualQueryIncludes ?? []) {
+    assert(
+      context.contextualQuery.includes(expectedText),
+      `${fixture.id}: contextual query should include "${expectedText}"`,
+    );
+  }
+
+  if (fixture.expectedPromptIncludes?.length) {
+    const visitorPrompt = buildVisitorPrompt(
+      fixture.prompt,
+      'hiring-manager',
+      fixture.requestType,
+      {
+        ...deterministicQueryIntent,
+        conversationContext: context,
+      },
+    );
+
+    for (const expectedText of fixture.expectedPromptIncludes) {
+      assert(
+        visitorPrompt.includes(expectedText),
+        `${fixture.id}: visitor prompt should include "${expectedText}"`,
+      );
+    }
   }
 }
 

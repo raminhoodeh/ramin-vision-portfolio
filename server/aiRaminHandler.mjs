@@ -1451,6 +1451,9 @@ function isContextDependentFollowUp(message) {
     /^(tell me more|go deeper|expand|expand on that|explain more|why|why not|how so|same for|same question|continue|and|also|what about|how about|what if|for .+|and for .+|compare that|stronger proof|show risks|what risks|draft that|turn that into|can you expand|can you compare|can you explain|do that for)\b/i.test(
       normalized,
     ) ||
+    /\b(first\s+(?:90|ninety)\s+days?|first\s+three\s+months|first\s+quarter|next\s+steps?|what\s+would\s+(?:he|ramin)\s+do\s+(?:first|next)|how\s+would\s+(?:that|this|it)\s+change|how\s+would\s+(?:he|ramin)\s+approach\s+(?:that|this|it))\b/i.test(
+      normalized,
+    ) ||
     (tokenCount <= 7 &&
       /\b(role|company|google|meta|apple|amazon|microsoft|startup|enterprise|b2b|b2c|senior|lead|director|pm|product|risks|proof|brief|mvp|evidence)\b/i.test(
         normalized,
@@ -3368,6 +3371,49 @@ function buildStrongestProductProofRecovery(visitorMessage, portfolioContext, ev
   };
 }
 
+function buildFirst90DaysRecovery(visitorMessage, portfolioContext, evidenceCards) {
+  const rankedCards = sortedRecoverableEvidenceCards(evidenceCards);
+  if (!rankedCards.length) return null;
+
+  const conversationContext = portfolioContext?.queryIntent?.conversationContext;
+  const contextText = [
+    visitorMessage,
+    conversationContext?.contextualQuery,
+    conversationContext?.previousUserMessagePreview,
+    conversationContext?.previousAnswerPreview,
+  ].join(' ');
+  const rolePhrase = /\bb2b\s+saas\b/i.test(contextText)
+    ? 'for a senior B2B SaaS PM role'
+    : /\bai\s+(?:product|pm|product manager)\b/i.test(contextText)
+      ? 'for a senior AI Product Manager role'
+      : 'for the role in question';
+  const proof = rankedCards.slice(0, 5).map(strongestProductProofForCard);
+
+  return {
+    short_answer: [
+      `For this follow-up, Ramin's first 90 days ${rolePhrase} should be a diagnostic ramp, not a performative roadmap.`,
+      'He would first clarify the role scorecard, user segment, operating constraints, and AI/data risk profile; then map the product system across model, context, orchestration, governance, and human judgement; then ship one narrow, evidence-led workflow with explicit evals, guardrails, and stakeholder feedback before expanding scope.',
+    ].join('\n\n'),
+    verified_proof: proof,
+    inferred_fit: [
+      'Days 1-30: diagnose the role expectations, customer segment, product surface, data context, decision owners, and current failure modes.',
+      'Days 31-60: align the team around the riskiest assumptions, define the first useful workflow, and create eval and guardrail criteria before heavy build-out.',
+      'Days 61-90: ship or pilot a narrow product improvement, measure user and operational feedback, then decide whether to deepen, pivot, or scale.',
+      'The relevant pattern from the portfolio is Ramin turning ambiguous AI, data, and stakeholder problems into usable product systems.',
+    ],
+    confidential_boundary: [
+      'This is a likely operating plan inferred from portfolio evidence, not a factual claim about a past first-90-days plan at a specific employer.',
+      'The exact roadmap should depend on the company scorecard, team setup, user segment, data availability, and risk profile.',
+    ],
+    open_questions: [
+      'What is the company hiring him to change in the first quarter: discovery quality, AI feature reliability, product strategy, delivery speed, or stakeholder alignment?',
+      'Which user segment and product surface should he diagnose first?',
+      'What level of AI risk, compliance, or human review is required before launch?',
+    ],
+    suggested_next_action: 'Share the role context to turn this into a sharper 30/60/90 plan or hiring brief.',
+  };
+}
+
 function buildPortfolioOverviewRecovery(evidenceCards) {
   const hasOverview = evidenceCards.some((card) => String(card.source_path ?? '').includes('canonical/ramin-overview.md'));
   const hasProfile = evidenceCards.some((card) => String(card.source_path ?? '').includes('canonical/profile.md'));
@@ -3540,6 +3586,9 @@ export function recoverOverCautiousAnswer(sections, visitorMessage, requestType,
   if (primaryQuestionType === 'strongest_product_proof') {
     strategy = 'strongest_product_proof_recovery';
     recoveredSections = buildStrongestProductProofRecovery(visitorMessage, portfolioContext, evidenceCards);
+  } else if (primaryQuestionType === 'first_90_days') {
+    strategy = 'first_90_days_recovery';
+    recoveredSections = buildFirst90DaysRecovery(visitorMessage, portfolioContext, evidenceCards);
   } else if (primaryQuestionType === 'portfolio_overview') {
     strategy = 'portfolio_overview_recovery';
     recoveredSections = buildPortfolioOverviewRecovery(evidenceCards);
@@ -4662,7 +4711,7 @@ function buildSystemInstruction(hiringMode, requestType, queryIntent) {
   return instructions.join('\n');
 }
 
-function buildVisitorPrompt(visitorMessage, hiringMode, requestType, queryIntent) {
+export function buildVisitorPrompt(visitorMessage, hiringMode, requestType, queryIntent) {
   const modeConfig = HIRING_MODE_CONFIG[hiringMode] ?? HIRING_MODE_CONFIG[DEFAULT_HIRING_MODE];
   const primaryQuestionType = QUESTION_TYPES.has(queryIntent?.primaryQuestionType)
     ? queryIntent.primaryQuestionType
@@ -4692,6 +4741,12 @@ function buildVisitorPrompt(visitorMessage, hiringMode, requestType, queryIntent
           : '',
         queryIntent.conversationContext.previousAnswerPreview
           ? `Previous answer focus: ${queryIntent.conversationContext.previousAnswerPreview}`
+          : '',
+        queryIntent.conversationContext.previousLeadStoryTitle
+          ? `Previous lead story: ${queryIntent.conversationContext.previousLeadStoryTitle}`
+          : '',
+        queryIntent.conversationContext.previousEvidenceCardTitles?.length
+          ? `Previous evidence anchors: ${queryIntent.conversationContext.previousEvidenceCardTitles.join('; ')}`
           : '',
         'Answer the latest message as a follow-up to that context. Do not reset to a generic Ramin biography unless the visitor clearly changed topic.',
         '',
