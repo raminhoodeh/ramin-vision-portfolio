@@ -1646,6 +1646,7 @@ export function buildRoutingObservability({
           used: Boolean(classifier.used),
           intent: classifier.intent ?? null,
           confidence: classifier.confidence ?? null,
+          acceptanceThreshold: classifier.acceptanceThreshold ?? null,
           reason: classifier.reason ?? '',
           fallbackReason: classifier.fallbackReason ?? '',
           error: classifier.error ?? '',
@@ -4068,6 +4069,34 @@ export function shouldUseDeterministicIntentShortcut(queryIntent, { geminiApiKey
   return false;
 }
 
+export function getIntentClassifierAcceptanceThreshold(route, deterministicQueryIntent, defaultThreshold = getIntentClassifierConfidenceThreshold()) {
+  const threshold = normalizeConfidence(defaultThreshold, DEFAULT_INTENT_CLASSIFIER_CONFIDENCE_THRESHOLD);
+  if (!route) return threshold;
+
+  const deterministicQuestionType = deterministicQueryIntent?.primaryQuestionType ?? '';
+  if (route.intent === 'casual_chat' && route.isSubstantive === false && route.needsRetrieval === false) {
+    return Math.min(threshold, 0.45);
+  }
+  if (route.intent === 'clarification_needed' && route.needsRetrieval === false) {
+    return Math.min(threshold, 0.5);
+  }
+  if (
+    route.intent !== 'portfolio_overview' &&
+    deterministicQuestionType === 'portfolio_overview' &&
+    route.isSubstantive === true &&
+    route.needsRetrieval === true
+  ) {
+    return Math.min(threshold, 0.56);
+  }
+
+  return threshold;
+}
+
+export function shouldAcceptIntentClassifierRoute(route, deterministicQueryIntent, defaultThreshold = getIntentClassifierConfidenceThreshold()) {
+  if (!route) return false;
+  return route.confidence >= getIntentClassifierAcceptanceThreshold(route, deterministicQueryIntent, defaultThreshold);
+}
+
 function buildIntentClassifierHistorySummary(history) {
   if (!Array.isArray(history)) return 'No prior chat history supplied.';
 
@@ -4355,6 +4384,7 @@ export async function resolveAiRaminQueryIntent({
   });
   const threshold = getIntentClassifierConfidenceThreshold();
   const route = classification.route;
+  const acceptanceThreshold = getIntentClassifierAcceptanceThreshold(route, deterministicQueryIntent, threshold);
 
   const inheritedRoute = buildConversationInheritedRoute(conversationContext);
   const shouldInheritRoute = shouldUseConversationInheritedRoute(route, conversationContext);
@@ -4378,7 +4408,7 @@ export async function resolveAiRaminQueryIntent({
     };
   }
 
-  if (route && route.confidence >= threshold) {
+  if (shouldAcceptIntentClassifierRoute(route, deterministicQueryIntent, threshold)) {
     const contextualQuery = conversationContext.isFollowUp
       ? conversationContext.contextualQuery || visitorMessage
       : visitorMessage;
@@ -4387,6 +4417,7 @@ export async function resolveAiRaminQueryIntent({
         router: 'ai_intent_classifier',
         ...classification.classifier,
         used: true,
+        acceptanceThreshold,
         fallbackReason: '',
       }, {
         conversationContext,
@@ -4396,7 +4427,7 @@ export async function resolveAiRaminQueryIntent({
   }
 
   const fallbackReason = route
-    ? `classifier_confidence_below_threshold_${threshold}`
+    ? `classifier_confidence_below_threshold_${acceptanceThreshold}`
     : classification.classifier.fallbackReason || 'classifier_unavailable';
 
   return {
@@ -4410,6 +4441,7 @@ export async function resolveAiRaminQueryIntent({
         router: 'deterministic_fallback',
         ...classification.classifier,
         used: false,
+        acceptanceThreshold,
         intent: route?.intent ?? classification.classifier.intent ?? deterministicIntent,
         confidence: route?.confidence ?? classification.classifier.confidence ?? getRoutingConfidence(
           deterministicQueryIntent.primaryQuestionType,

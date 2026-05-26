@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "description": "Stage 6 fixtures for intent-aware semantic classifier confidence. These cases prevent moderate-confidence casual or professional classifications from falling back to portfolio_overview just because deterministic routing was weak.",
+  "cases": [
+    {
+      "id": "moderate-confidence-casual-acknowledgement",
+      "prompt": "ok cool thanks",
+      "requestType": "general_chat",
+      "expectedDeterministicQuestionType": "portfolio_overview",
+      "classifierPayload": {
+        "intent": "casual_chat",
+        "confidence": 0.48,
+        "isSubstantive": false,
+        "needsEvidence": false,
+        "needsRetrieval": false,
+        "needsStructuredModules": false,
+        "suggestedTone": "casual",
+        "reason": "casual acknowledgement"
+      },
+      "defaultThreshold": 0.62,
+      "expectedAcceptanceThreshold": 0.45,
+      "expectedAccepted": true,
+      "expectedQuestionType": "conversation_open",
+      "expectedNeedsRetrieval": false
+    },
+    {
+      "id": "below-calibrated-casual-acknowledgement",
+      "prompt": "ok cool thanks",
+      "requestType": "general_chat",
+      "expectedDeterministicQuestionType": "portfolio_overview",
+      "classifierPayload": {
+        "intent": "casual_chat",
+        "confidence": 0.42,
+        "isSubstantive": false,
+        "needsEvidence": false,
+        "needsRetrieval": false,
+        "needsStructuredModules": false,
+        "suggestedTone": "casual",
+        "reason": "low-confidence casual acknowledgement"
+      },
+      "defaultThreshold": 0.62,
+      "expectedAcceptanceThreshold": 0.45,
+      "expectedAccepted": false
+    },
+    {
+      "id": "moderate-confidence-role-fit-overview-fallback",
+      "prompt": "would he be good for a chaotic B2B SaaS team?",
+      "requestType": "general_chat",
+      "expectedDeterministicQuestionType": "portfolio_overview",
+      "classifierPayload": {
+        "intent": "role_fit",
+        "confidence": 0.57,
+        "isSubstantive": true,
+        "needsEvidence": true,
+        "needsRetrieval": true,
+        "needsStructuredModules": true,
+        "suggestedTone": "hiring",
+        "reason": "role-fit question with no exact deterministic role keyword"
+      },
+      "defaultThreshold": 0.62,
+      "expectedAcceptanceThreshold": 0.56,
+      "expectedAccepted": true,
+      "expectedQuestionType": "role_fit",
+      "expectedNeedsRetrieval": true
+    },
+    {
+      "id": "below-calibrated-role-fit-overview-fallback",
+      "prompt": "would he be good for a chaotic B2B SaaS team?",
+      "requestType": "general_chat",
+      "expectedDeterministicQuestionType": "portfolio_overview",
+      "classifierPayload": {
+        "intent": "role_fit",
+        "confidence": 0.54,
+        "isSubstantive": true,
+        "needsEvidence": true,
+        "needsRetrieval": true,
+        "needsStructuredModules": true,
+        "suggestedTone": "hiring",
+        "reason": "low-confidence role-fit interpretation"
+      },
+      "defaultThreshold": 0.62,
+      "expectedAcceptanceThreshold": 0.56,
+      "expectedAccepted": false
+    }
+  ]
+}

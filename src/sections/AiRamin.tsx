@@ -129,6 +129,7 @@ type AiRaminRoutingTrace = {
     used?: boolean;
     intent?: string | null;
     confidence?: number | null;
+    acceptanceThreshold?: number | null;
     reason?: string;
     fallbackReason?: string;
     error?: string;
@@ -1413,6 +1414,9 @@ function AiRaminInlineDebugDrawer({ response }: { response: AiRaminStructuredRes
             </span>
           ) : null}
           {routingTrace.classifier?.fallbackReason ? <span>{routingTrace.classifier.fallbackReason}</span> : null}
+          {typeof routingTrace.classifier?.acceptanceThreshold === 'number' ? (
+            <span>{Math.round(routingTrace.classifier.acceptanceThreshold * 100)}% acceptance threshold</span>
+          ) : null}
           {routingTrace.conversationContext?.isFollowUp ? (
             <span>
               follow-up from {routingTrace.conversationContext.inheritedIntent || 'prior context'}

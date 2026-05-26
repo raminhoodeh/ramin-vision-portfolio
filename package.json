@@ -16,6 +16,7 @@
     "check:ai-ramin-intent-contract": "node scripts/check-ai-ramin-intent-router-contract.mjs",
     "check:ai-ramin-intent-classifier": "node scripts/check-ai-ramin-intent-classifier-contract.mjs",
     "check:ai-ramin-semantic-routing": "node scripts/check-ai-ramin-semantic-routing-contract.mjs",
+    "check:ai-ramin-semantic-confidence": "node scripts/check-ai-ramin-semantic-confidence-contract.mjs",
     "check:ai-ramin-conversation-context": "node scripts/check-ai-ramin-conversation-context-contract.mjs",
     "check:ai-ramin-clarification-routing": "node scripts/check-ai-ramin-clarification-routing-contract.mjs",
     "check:ai-ramin-prompt": "node scripts/check-ai-ramin-prompt-contract.mjs",
@@ -29,7 +30,7 @@
     "check:rock-assets": "node scripts/check-hashgraph-rock-assets.mjs",
     "check:performance-guardrails": "node scripts/check-performance-guardrails.mjs",
     "check:preview": "node scripts/check-preview.mjs",
-    "verify": "npm run check:content && npm run check:ai-ramin-corpus && npm run check:ai-ramin-eval && npm run check:ai-ramin-routing && npm run check:ai-ramin-routing-observability && npm run check:ai-ramin-intent-contract && npm run check:ai-ramin-intent-classifier && npm run check:ai-ramin-semantic-routing && npm run check:ai-ramin-conversation-context && npm run check:ai-ramin-clarification-routing && npm run check:ai-ramin-prompt && npm run check:ai-ramin-ui-copy && npm run check:ai-ramin-weak-ui && npm run check:ai-ramin-feedback && npm run check:ai-ramin-review && npm run build && npm run check:rock-assets && npm run check:performance-guardrails",
+    "verify": "npm run check:content && npm run check:ai-ramin-corpus && npm run check:ai-ramin-eval && npm run check:ai-ramin-routing && npm run check:ai-ramin-routing-observability && npm run check:ai-ramin-intent-contract && npm run check:ai-ramin-intent-classifier && npm run check:ai-ramin-semantic-routing && npm run check:ai-ramin-semantic-confidence && npm run check:ai-ramin-conversation-context && npm run check:ai-ramin-clarification-routing && npm run check:ai-ramin-prompt && npm run check:ai-ramin-ui-copy && npm run check:ai-ramin-weak-ui && npm run check:ai-ramin-feedback && npm run check:ai-ramin-review && npm run build && npm run check:rock-assets && npm run check:performance-guardrails",
     "verify:preview": "npm run verify && npm run check:preview"
   },
   "dependencies": {
