@@ -74,6 +74,7 @@ const QUESTION_TYPES = new Set([
   'strongest_product_proof',
   'evidence_lookup',
   'guardrail_boundary',
+  'clarification_needed',
 ]);
 
 export const AI_RAMIN_INTENT_ROUTE_IDS = [
@@ -114,6 +115,7 @@ const QUESTION_TYPE_INSTRUCTIONS = {
     'Rank Ramin\'s strongest product evidence, explain the basis for the ranking, and translate it into hiring relevance.',
   evidence_lookup: 'Prioritise verified proof and distinguish local-primary evidence from inference or missing evidence.',
   guardrail_boundary: 'Apply policy first, refuse unsupported or private scope, and offer the closest safe portfolio-relevant answer.',
+  clarification_needed: 'Ask one concise clarifying question and offer the most useful answer directions without retrieval or proof.',
 };
 
 const ANSWER_TECHNIQUE_CONFIG = {
@@ -200,6 +202,12 @@ const ANSWER_TECHNIQUE_CONFIG = {
     id: 'policy_boundary_redirect',
     structure: 'Apply the boundary, briefly explain why, and redirect to the closest safe portfolio-relevant answer.',
     evidenceRequirement: 'Use policy chunks first. Do not answer private, unsupported, or out-of-scope parts.',
+    visibility: 'hidden',
+  },
+  clarification_needed: {
+    id: 'clarifying_question',
+    structure: 'Ask one short clarifying question and name the answer modes that would help.',
+    evidenceRequirement: 'Do not retrieve or surface proof for unresolved ambiguous messages.',
     visibility: 'hidden',
   },
 };
@@ -345,6 +353,16 @@ const ANSWER_FRAME_CONFIG = {
     followUpMove: 'Offer a safe portfolio question when appropriate.',
     softCtas: ['analyze_role_fit', 'compare_projects'],
   },
+  clarification_needed: {
+    id: 'clarification_prompt',
+    answerFamily: 'conversation',
+    openingMove: 'Ask a direct clarifying question.',
+    proofMove: 'Do not include proof until the visitor chooses a concrete direction.',
+    interpretationMove: 'Offer useful answer directions without becoming a menu-heavy interface.',
+    boundaryMove: 'Do not guess the intended topic from too little context.',
+    followUpMove: 'Invite the visitor to choose role fit, product judgment, evidence, or interview examples.',
+    softCtas: [],
+  },
 };
 
 const RETRIEVAL_PROFILE_BY_QUESTION_TYPE = {
@@ -443,6 +461,13 @@ const RETRIEVAL_PROFILE_BY_QUESTION_TYPE = {
     policyLimit: 6,
     preferredEvidenceRoles: ['canonical', 'work', 'project'],
     generalEvidenceLimit: 6,
+    frameworkLimit: 0,
+    minimumAnswerableEvidence: 0,
+  },
+  clarification_needed: {
+    policyLimit: 0,
+    preferredEvidenceRoles: [],
+    generalEvidenceLimit: 0,
     frameworkLimit: 0,
     minimumAnswerableEvidence: 0,
   },
@@ -832,6 +857,7 @@ function getRoutingConfidence(primaryQuestionType, message, requestType) {
   const lower = String(message ?? '').toLowerCase();
 
   if (primaryQuestionType === 'conversation_open') return 0.99;
+  if (primaryQuestionType === 'clarification_needed') return 0.78;
   if (primaryQuestionType === 'guardrail_boundary') return 0.96;
   if (requestType !== 'general_chat' && primaryQuestionType !== 'portfolio_overview') return 0.9;
   if (primaryQuestionType === 'portfolio_overview') {
@@ -846,6 +872,7 @@ function getRoutingDecisionReason(primaryQuestionType, message, requestType) {
   const lower = String(message ?? '').toLowerCase();
 
   if (primaryQuestionType === 'conversation_open') return 'social opener or acknowledgement';
+  if (primaryQuestionType === 'clarification_needed') return 'ambiguous short message needs clarification';
   if (primaryQuestionType === 'guardrail_boundary') return 'sensitive or boundary cue matched';
   if (requestType !== 'general_chat' && primaryQuestionType !== 'portfolio_overview') {
     return `selected request type routed as ${primaryQuestionType}`;
@@ -927,7 +954,10 @@ function classifyQuestionType(message, requestType = 'general_chat') {
     return 'weakness_or_gap';
   }
 
-  if (requestType === 'role_fit' || /\b(job description|role description|jd\b|role fit|fit for|fit this role|screen this role|compare.*role)\b/i.test(lower)) {
+  if (
+    requestType === 'role_fit' ||
+    /\b(job description|role description|jd\b|role fit|fit for|fit this role|screen this role|compare.*role|for (?:a|an|the )?.{0,50}(?:pm|product manager|product lead|head of product|founding pm|senior pm|lead pm).{0,35}role|(?:pm|product manager|product lead|head of product|founding pm|senior pm|lead pm).{0,35}role)\b/i.test(lower)
+  ) {
     return 'role_fit';
   }
 
@@ -970,6 +1000,10 @@ function classifyQuestionType(message, requestType = 'general_chat') {
 
   if (/\b(has he|has ramin|does ramin have|can he|can ramin|does he have|worked on|experience with|able to|know about)\b/i.test(lower)) {
     return 'factual_capability';
+  }
+
+  if (isContextDependentFollowUp(lower)) {
+    return 'clarification_needed';
   }
 
   return 'portfolio_overview';
@@ -1044,6 +1078,7 @@ function getIntentRouteId(primaryQuestionType) {
     strongest_product_proof: 'evidence_lookup',
     evidence_lookup: 'evidence_lookup',
     guardrail_boundary: 'guardrail_boundary',
+    clarification_needed: 'clarification_needed',
   }[primaryQuestionType] ?? 'portfolio_overview';
 
   return INTENT_ROUTE_IDS.has(intent) ? intent : 'portfolio_overview';
@@ -1256,7 +1291,7 @@ export function getQuestionTypeForIntentRoute(intent, message, requestType = 'ge
   if (intent === 'hiring_brief') return 'hiring_brief';
   if (intent === 'interview_coaching') return 'interview_coaching';
   if (intent === 'guardrail_boundary') return 'guardrail_boundary';
-  if (intent === 'clarification_needed') return 'portfolio_overview';
+  if (intent === 'clarification_needed') return 'clarification_needed';
 
   return classifyQuestionType(message, requestType);
 }
@@ -1491,7 +1526,9 @@ function shouldUseConversationInheritedRoute(route, conversationContext) {
 function buildRoutingPresentationPolicy(queryIntent) {
   const primaryQuestionType = queryIntent.primaryQuestionType;
   const isConversationOpen = primaryQuestionType === 'conversation_open';
-  const shouldShowEvidenceDisclosure = !isConversationOpen && primaryQuestionType !== 'guardrail_boundary';
+  const isClarificationNeeded = primaryQuestionType === 'clarification_needed';
+  const isLightweightConversation = isConversationOpen || isClarificationNeeded;
+  const shouldShowEvidenceDisclosure = !isLightweightConversation && primaryQuestionType !== 'guardrail_boundary';
   const shouldShowStructuredModules = [
     'role_fit',
     'product_judgment',
@@ -1504,9 +1541,9 @@ function buildRoutingPresentationPolicy(queryIntent) {
   return {
     showEvidenceDisclosure: shouldShowEvidenceDisclosure,
     showStructuredModules: shouldShowStructuredModules,
-    showFeedback: !isConversationOpen,
-    showSoftCtas: !isConversationOpen && Boolean(queryIntent.answerFrame?.softCtas?.length),
-    showSuggestions: isConversationOpen,
+    showFeedback: !isLightweightConversation,
+    showSoftCtas: !isLightweightConversation && Boolean(queryIntent.answerFrame?.softCtas?.length),
+    showSuggestions: isLightweightConversation,
   };
 }
 
@@ -2959,8 +2996,26 @@ function buildConversationOpenSections(visitorMessage = '') {
   };
 }
 
-function sendConversationOpenResponse(res, { visitorMessage, hiringMode, requestType, queryIntent, routing }) {
-  const sections = buildConversationOpenSections(visitorMessage);
+function buildClarificationNeededSections(visitorMessage = '') {
+  const normalized = normalizeConversationOpenText(visitorMessage);
+  const shortAnswer = normalized.startsWith('tell me') || normalized.includes('more')
+    ? "What should I go deeper on: Ramin's role fit, product judgment, evidence/proof, or an interview-style example?"
+    : "I can answer that, but I need one anchor first: are you asking about Ramin's role fit, product judgment, evidence/proof, or an interview-style example?";
+
+  return {
+    short_answer: shortAnswer,
+    verified_proof: [],
+    inferred_fit: [],
+    confidential_boundary: [],
+    open_questions: [],
+    suggested_next_action: '',
+  };
+}
+
+function sendLightweightConversationResponse(res, { visitorMessage, hiringMode, requestType, queryIntent, routing }) {
+  const sections = queryIntent.primaryQuestionType === 'clarification_needed'
+    ? buildClarificationNeededSections(visitorMessage)
+    : buildConversationOpenSections(visitorMessage);
   const answerFrame = serializeAnswerFrame(getAnswerFrame(queryIntent.primaryQuestionType));
   const answerShape = {
     primaryQuestionType: queryIntent.primaryQuestionType,
@@ -3007,6 +3062,10 @@ function sendConversationOpenResponse(res, { visitorMessage, hiringMode, request
     contextChunkCount: 0,
     contextTruncated: false,
   });
+}
+
+function sendConversationOpenResponse(res, args) {
+  sendLightweightConversationResponse(res, args);
 }
 
 function isInsufficientContextAnswer(sections) {
@@ -4263,6 +4322,26 @@ export async function resolveAiRaminQueryIntent({
     };
   }
 
+  if (deterministicQueryIntent.primaryQuestionType === 'clarification_needed' && !conversationContext.isFollowUp) {
+    return {
+      queryIntent: {
+        ...deterministicQueryIntent,
+        conversationContext,
+        intentClassifier: {
+          router: 'deterministic_clarification',
+          provider: 'none',
+          model: null,
+          attempted: false,
+          used: false,
+          intent: 'clarification_needed',
+          confidence: getRoutingConfidence(deterministicQueryIntent.primaryQuestionType, visitorMessage, requestType),
+          reason: 'ambiguous short message without professional conversation context',
+          fallbackReason: 'clarification_needed_without_context',
+        },
+      },
+    };
+  }
+
   const classification = await classifyIntentWithModel({
     visitorMessage,
     history,
@@ -4781,9 +4860,9 @@ export async function handleAiRaminRequest(req, res) {
     modelCalled: false,
   });
 
-  if (queryIntent.primaryQuestionType === 'conversation_open') {
+  if (queryIntent.primaryQuestionType === 'conversation_open' || queryIntent.primaryQuestionType === 'clarification_needed') {
     logAiRaminRoutingObservation(initialRouting);
-    sendConversationOpenResponse(res, { visitorMessage, hiringMode, requestType, queryIntent, routing: initialRouting });
+    sendLightweightConversationResponse(res, { visitorMessage, hiringMode, requestType, queryIntent, routing: initialRouting });
     return;
   }
 

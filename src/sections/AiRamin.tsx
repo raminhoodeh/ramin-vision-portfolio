@@ -565,7 +565,9 @@ function getAiRaminPresentationPolicy(response: AiRaminStructuredResponse) {
 }
 
 function isAiRaminConversationOpenResponse(response: AiRaminStructuredResponse) {
-  return getAiRaminIntentRoute(response)?.intent === 'casual_chat' || getAiRaminQuestionType(response) === 'conversation_open';
+  const intent = getAiRaminIntentRoute(response)?.intent;
+  const questionType = getAiRaminQuestionType(response);
+  return intent === 'casual_chat' || intent === 'clarification_needed' || questionType === 'conversation_open' || questionType === 'clarification_needed';
 }
 
 function shouldShowAiRaminFeedback(response: AiRaminStructuredResponse) {
@@ -2081,7 +2083,12 @@ export function AiRaminSection() {
             response: responsePayload ?? undefined,
           },
         ]);
-        if (responseIntent === 'casual_chat' || responseQuestionType === 'conversation_open') {
+        if (
+          responseIntent === 'casual_chat' ||
+          responseIntent === 'clarification_needed' ||
+          responseQuestionType === 'conversation_open' ||
+          responseQuestionType === 'clarification_needed'
+        ) {
           setIsSuggestionsOpen(true);
         }
       } catch (error) {

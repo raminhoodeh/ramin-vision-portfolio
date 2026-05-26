@@ -41,6 +41,7 @@ const QUESTION_TYPES = new Set([
   'strongest_product_proof',
   'evidence_lookup',
   'guardrail_boundary',
+  'clarification_needed',
 ]);
 
 const ANSWER_TECHNIQUE_BY_QUESTION_TYPE = {
@@ -58,6 +59,7 @@ const ANSWER_TECHNIQUE_BY_QUESTION_TYPE = {
   strongest_product_proof: 'rank_prove_translate',
   evidence_lookup: 'proof_ledger',
   guardrail_boundary: 'policy_boundary_redirect',
+  clarification_needed: 'clarifying_question',
 };
 
 const ANSWER_TECHNIQUES = new Set(Object.values(ANSWER_TECHNIQUE_BY_QUESTION_TYPE));
@@ -77,6 +79,7 @@ const ANSWER_FRAME_BY_QUESTION_TYPE = {
   strongest_product_proof: 'ranked_product_proof',
   evidence_lookup: 'proof_first_ledger',
   guardrail_boundary: 'boundary_redirect',
+  clarification_needed: 'clarification_prompt',
 };
 
 const ANSWER_FRAMES = new Set(Object.values(ANSWER_FRAME_BY_QUESTION_TYPE));
@@ -96,12 +99,20 @@ const SOFT_CTAS_BY_QUESTION_TYPE = {
   strongest_product_proof: ['analyze_role_fit', 'ask_stronger_proof', 'compare_projects'],
   evidence_lookup: ['use_in_hiring_brief', 'ask_stronger_proof', 'show_evidence'],
   guardrail_boundary: ['analyze_role_fit', 'compare_projects'],
+  clarification_needed: [],
 };
 
 const SOFT_CTA_IDS = new Set(Object.values(SOFT_CTAS_BY_QUESTION_TYPE).flat());
 
 const RETRIEVAL_PROFILE_BY_QUESTION_TYPE = {
   conversation_open: {
+    policyLimit: 0,
+    preferredEvidenceRoles: [],
+    generalEvidenceLimit: 0,
+    frameworkLimit: 0,
+    minimumAnswerableEvidence: 0,
+  },
+  clarification_needed: {
     policyLimit: 0,
     preferredEvidenceRoles: [],
     generalEvidenceLimit: 0,
@@ -407,7 +418,10 @@ function classifyQuestionType(message, requestType = 'general_chat') {
     return 'weakness_or_gap';
   }
 
-  if (requestType === 'role_fit' || /\b(job description|role description|jd\b|role fit|fit for|fit this role|screen this role|compare.*role)\b/i.test(lower)) {
+  if (
+    requestType === 'role_fit' ||
+    /\b(job description|role description|jd\b|role fit|fit for|fit this role|screen this role|compare.*role|for (?:a|an|the )?.{0,50}(?:pm|product manager|product lead|head of product|founding pm|senior pm|lead pm).{0,35}role|(?:pm|product manager|product lead|head of product|founding pm|senior pm|lead pm).{0,35}role)\b/i.test(lower)
+  ) {
     return 'role_fit';
   }
 
@@ -449,6 +463,10 @@ function classifyQuestionType(message, requestType = 'general_chat') {
 
   if (/\b(has he|has ramin|does ramin have|can he|can ramin|does he have|worked on|experience with|able to|know about)\b/i.test(lower)) {
     return 'factual_capability';
+  }
+
+  if (/^(tell me more|go deeper|expand|expand on that|explain more|why|why not|how so|same for|same question|continue|and|also|what about|how about|what if|for .+|and for .+|compare that|stronger proof|show risks|what risks|draft that|turn that into|can you expand|can you compare|can you explain|do that for)\b/i.test(lower)) {
+    return 'clarification_needed';
   }
 
   return 'portfolio_overview';
@@ -1387,7 +1405,11 @@ function evaluateCase(corpus, testCase) {
     failures.push('Guardrail case did not retrieve policy context.');
   }
 
-  if (!selected.length && queryIntent.primaryQuestionType !== 'conversation_open') {
+  const allowsNoRetrievedChunks = ['conversation_open', 'clarification_needed'].includes(
+    queryIntent.primaryQuestionType,
+  );
+
+  if (!selected.length && !allowsNoRetrievedChunks) {
     failures.push('No chunks were retrieved.');
   }
 

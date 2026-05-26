@@ -40,25 +40,25 @@
       "id": "ambiguous-follow-up",
       "prompt": "tell me more",
       "requestType": "general_chat",
-      "expectedIntent": "portfolio_overview",
+      "expectedIntent": "clarification_needed",
       "expectedSuggestedTone": "professional",
-      "expectedQuestionType": "portfolio_overview",
-      "expectedNeedsRetrieval": true,
-      "expectedShowEvidenceDisclosure": true,
-      "expectedFallthroughToPortfolioOverview": true,
-      "notes": "Known Stage 0 gap: this needs conversation-history aware clarification."
+      "expectedQuestionType": "clarification_needed",
+      "expectedNeedsRetrieval": false,
+      "expectedShowEvidenceDisclosure": false,
+      "expectedFallthroughToPortfolioOverview": false,
+      "notes": "Stage 4: bare ambiguous follow-ups ask for clarification instead of falling through to overview."
     },
     {
       "id": "professional-role-follow-up",
       "prompt": "what about for a senior PM role?",
       "requestType": "general_chat",
-      "expectedIntent": "portfolio_overview",
-      "expectedSuggestedTone": "professional",
-      "expectedQuestionType": "portfolio_overview",
+      "expectedIntent": "role_fit",
+      "expectedSuggestedTone": "hiring",
+      "expectedQuestionType": "role_fit",
       "expectedNeedsRetrieval": true,
       "expectedShowEvidenceDisclosure": true,
-      "expectedFallthroughToPortfolioOverview": true,
-      "notes": "Known Stage 0 gap: the future NLP router should infer role_fit from conversational context."
+      "expectedFallthroughToPortfolioOverview": false,
+      "notes": "Stage 4: PM role follow-ups route to role fit even without a named company."
     },
     {
       "id": "behavioral-hardest-challenge",

@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "description": "Stage 4 fixtures for first-class clarification routing. Ambiguous short turns without usable context should ask a clarifying question instead of falling through to portfolio overview.",
+  "cases": [
+    {
+      "id": "bare-tell-me-more",
+      "prompt": "tell me more",
+      "requestType": "general_chat",
+      "expectedIntent": "clarification_needed",
+      "expectedQuestionType": "clarification_needed",
+      "expectedNeedsRetrieval": false,
+      "expectedShowEvidenceDisclosure": false,
+      "expectedShowSuggestions": true
+    },
+    {
+      "id": "bare-what-about",
+      "prompt": "what about that?",
+      "requestType": "general_chat",
+      "classifierPayload": {
+        "intent": "clarification_needed",
+        "confidence": 0.78,
+        "isSubstantive": false,
+        "needsEvidence": false,
+        "needsRetrieval": false,
+        "needsStructuredModules": false,
+        "suggestedTone": "professional",
+        "reason": "ambiguous follow-up without enough context"
+      },
+      "expectedIntent": "clarification_needed",
+      "expectedQuestionType": "clarification_needed",
+      "expectedNeedsRetrieval": false,
+      "expectedShowEvidenceDisclosure": false,
+      "expectedShowSuggestions": true
+    }
+  ]
+}

@@ -89,6 +89,20 @@
       "requiredContractSections": ["short_answer"]
     },
     {
+      "id": "clarification-needed-bare-follow-up",
+      "category": "conversation",
+      "requestType": "general_chat",
+      "expectedQuestionType": "clarification_needed",
+      "expectedAnswerTechnique": "clarifying_question",
+      "expectedAnswerFrame": "clarification_prompt",
+      "expectedSoftCtas": [],
+      "hiringMode": "hiring-manager",
+      "prompt": "tell me more",
+      "expectedSourceRoles": [],
+      "expectedPathIncludes": [],
+      "requiredContractSections": ["short_answer"]
+    },
+    {
       "id": "profile-ai-pm-positioning",
       "category": "factual_profile",
       "requestType": "general_chat",
