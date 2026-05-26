@@ -3202,6 +3202,11 @@ function shouldRecoverBehavioralAnswer(sections, portfolioContext) {
   return !answerMentionsSelectedStory(sections, portfolioContext.selectedStory);
 }
 
+function shouldRecoverCasualChatAnswer(sections, portfolioContext) {
+  if (portfolioContext?.queryIntent?.primaryQuestionType !== 'conversation_open') return false;
+  return isGenericPortfolioBioAnswer(sections) || isInsufficientContextAnswer(sections) || isPlaceholderAnswer(sections);
+}
+
 function isRecoverableEvidenceCard(card) {
   return card && !['policy', 'framework', 'inferred'].includes(card.type);
 }
@@ -3315,6 +3320,18 @@ function buildProductJudgmentRecovery(visitorMessage, portfolioContext) {
       'What is the core behaviour to change: starting workouts, consistency, confidence, injury-safe programming, or social accountability?',
     ],
     suggested_next_action: 'Turn this into an MVP plan or use the Contact section to validate the product fit directly with Ramin.',
+  };
+}
+
+function buildCasualChatRecovery() {
+  return {
+    short_answer:
+      "Hey. I'm AI Ramin. Ask me about Ramin's product experience, projects, role fit, interview examples, or how he thinks through AI product decisions.",
+    verified_proof: [],
+    inferred_fit: [],
+    confidential_boundary: [],
+    open_questions: [],
+    suggested_next_action: 'Ask a role-fit, project, product-judgment, or interview question.',
   };
 }
 
@@ -3532,6 +3549,16 @@ export function recoverOverCautiousAnswer(sections, visitorMessage, requestType,
       recovered: false,
       strategy: 'none',
       reason: 'guardrail_or_sensitive_question',
+    };
+  }
+  if (shouldRecoverCasualChatAnswer(sections, portfolioContext)) {
+    return {
+      sections: buildCasualChatRecovery(),
+      recovered: true,
+      strategy: 'casual_chat_recovery',
+      reason: isGenericPortfolioBioAnswer(sections)
+        ? 'casual_answer_was_generic_portfolio_bio'
+        : 'casual_answer_was_over_cautious_or_placeholder',
     };
   }
   if (portfolioContext.answerableEvidenceCount < portfolioContext.queryIntent.retrievalProfile.minimumAnswerableEvidence) {
@@ -3756,6 +3783,9 @@ function detectAnswerQualityIssues(sections, portfolioContext) {
     if (isGenericPortfolioBioAnswer(sections)) issues.add('generic_behavioral_answer');
     if (shouldRecoverBehavioralAnswer(sections, portfolioContext)) issues.add('behavioral_story_missing');
   }
+  if (portfolioContext.queryIntent.primaryQuestionType === 'conversation_open' && isGenericPortfolioBioAnswer(sections)) {
+    issues.add('generic_casual_bio_answer');
+  }
   if (hasSufficientEvidence && isInsufficientContextAnswer(sections)) {
     issues.add('over_cautious_with_sufficient_evidence');
   }
@@ -3805,6 +3835,7 @@ export function applyAnswerQualityGate(sections, visitorMessage, requestType, po
           'raw_json_short_answer',
           'local_source_path_leak',
           'internal_metadata_leak',
+          'generic_casual_bio_answer',
           'generic_behavioral_answer',
           'behavioral_story_missing',
           'over_cautious_with_sufficient_evidence',

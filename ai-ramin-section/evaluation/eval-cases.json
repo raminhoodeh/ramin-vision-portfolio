@@ -48,12 +48,13 @@
       "story-bank/behavioural/feedback-vivup-abit-model.md",
       "story-bank/behavioural/competing-priorities-groupm-digital-module.md"
     ],
-    "requiredRecoveryStrategies": ["behavioral_story_recovery"],
+    "requiredRecoveryStrategies": ["casual_chat_recovery", "behavioral_story_recovery", "first_90_days_recovery"],
     "requiredAnswerQualityIssues": [
       "raw_json_short_answer",
       "local_source_path_leak",
       "internal_metadata_leak",
       "duplicated_next_action_label",
+      "generic_casual_bio_answer",
       "generic_behavioral_answer",
       "behavioral_story_missing",
       "over_cautious_with_sufficient_evidence"
@@ -72,7 +73,14 @@
       "prompt": "hey",
       "expectedSourceRoles": [],
       "expectedPathIncludes": [],
-      "requiredContractSections": ["short_answer"]
+      "requiredContractSections": ["short_answer"],
+      "recoveryFixtureShortAnswer": "Ramin Hoodeh is an AI Product Manager, TEDx speaker, author, and creator of the AI-Native Product OS.",
+      "expectedRecoveryStrategy": "casual_chat_recovery",
+      "expectedRecoveredKeywords": ["Hey", "Ask me about Ramin's product experience"],
+      "qualityGateFixtureShortAnswer": "Ramin Hoodeh is an AI Product Manager, TEDx speaker, author, and creator of the AI-Native Product OS.",
+      "expectedQualityGateIssues": ["generic_casual_bio_answer"],
+      "expectedQualityGateStrategy": "casual_chat_recovery",
+      "expectedQualityGateRecoveredKeywords": ["Hey", "Ask me about Ramin's product experience"]
     },
     {
       "id": "conversation-open-status-check",
@@ -436,6 +444,9 @@
       "expectedKeywords": ["ai", "product", "90"],
       "minimumAnswerableEvidenceCards": 2,
       "requiredContractSections": ["short_answer", "verified_proof", "inferred_fit", "open_questions"],
+      "recoveryFixtureShortAnswer": "I do not have enough verified portfolio context to answer that accurately.",
+      "expectedRecoveryStrategy": "first_90_days_recovery",
+      "expectedRecoveredKeywords": ["first 90 days", "diagnostic ramp", "evals", "guardrails"],
       "qualityGateFixtureShortAnswer": "I do not have enough verified portfolio context to answer that accurately.",
       "expectedQualityGateIssues": ["over_cautious_with_sufficient_evidence"],
       "expectedQualityGateStrategy": "first_90_days_recovery",

@@ -1,0 +1,302 @@
+{
+  "schemaVersion": 1,
+  "description": "Stage 8 regression fixtures for AI Ramin conversational routing, continuity, and answer-quality recovery. These are deterministic and do not call Gemini.",
+  "requiredFamilies": [
+    "casual_route",
+    "professional_route",
+    "conversation_followup",
+    "quality_recovery"
+  ],
+  "cases": [
+    {
+      "id": "casual-hey-no-portfolio-overview",
+      "family": "casual_route",
+      "kind": "intent_route",
+      "prompt": "hey",
+      "requestType": "general_chat",
+      "classifierPayload": {
+        "intent": "casual_chat",
+        "confidence": 0.96,
+        "isSubstantive": false,
+        "needsEvidence": false,
+        "needsRetrieval": false,
+        "needsStructuredModules": false,
+        "suggestedTone": "casual",
+        "reason": "casual greeting"
+      },
+      "expectedIntent": "casual_chat",
+      "expectedQuestionType": "conversation_open",
+      "expectedTone": "casual",
+      "expectedNeedsRetrieval": false,
+      "expectedNeedsStructuredModules": false,
+      "expectedShowEvidenceDisclosure": false,
+      "expectedFallthroughToPortfolioOverview": false,
+      "expectedPromptIncludes": [
+        "Internal question type: conversation_open"
+      ],
+      "expectedPromptExcludes": [
+        "Previous evidence anchors",
+        "Contract reminder: Answer the product scenario directly"
+      ]
+    },
+    {
+      "id": "casual-status-no-portfolio-overview",
+      "family": "casual_route",
+      "kind": "intent_route",
+      "prompt": "hows it going",
+      "requestType": "general_chat",
+      "classifierPayload": {
+        "intent": "casual_chat",
+        "confidence": 0.95,
+        "isSubstantive": false,
+        "needsEvidence": false,
+        "needsRetrieval": false,
+        "needsStructuredModules": false,
+        "suggestedTone": "casual",
+        "reason": "small-talk greeting"
+      },
+      "expectedIntent": "casual_chat",
+      "expectedQuestionType": "conversation_open",
+      "expectedTone": "casual",
+      "expectedNeedsRetrieval": false,
+      "expectedNeedsStructuredModules": false,
+      "expectedShowEvidenceDisclosure": false,
+      "expectedFallthroughToPortfolioOverview": false
+    },
+    {
+      "id": "any-company-role-fit",
+      "family": "professional_route",
+      "kind": "intent_route",
+      "prompt": "I have a product manager role for Ramin at Stripe. Would he be a fit?",
+      "requestType": "general_chat",
+      "classifierPayload": {
+        "intent": "role_fit",
+        "confidence": 0.91,
+        "isSubstantive": true,
+        "needsEvidence": true,
+        "needsRetrieval": true,
+        "needsStructuredModules": true,
+        "suggestedTone": "hiring",
+        "reason": "role-fit question for a named company"
+      },
+      "expectedIntent": "role_fit",
+      "expectedQuestionType": "role_fit",
+      "expectedTone": "hiring",
+      "expectedNeedsRetrieval": true,
+      "expectedNeedsStructuredModules": true,
+      "expectedShowEvidenceDisclosure": true,
+      "expectedFallthroughToPortfolioOverview": false
+    },
+    {
+      "id": "any-company-strongest-product-proof",
+      "family": "professional_route",
+      "kind": "intent_route",
+      "prompt": "What is Ramin's strongest product proof for a PM job at any company?",
+      "requestType": "general_chat",
+      "classifierPayload": {
+        "intent": "evidence_lookup",
+        "confidence": 0.9,
+        "isSubstantive": true,
+        "needsEvidence": true,
+        "needsRetrieval": true,
+        "needsStructuredModules": true,
+        "suggestedTone": "hiring",
+        "reason": "asks for strongest product proof for a hiring context"
+      },
+      "expectedIntent": "evidence_lookup",
+      "expectedQuestionType": "strongest_product_proof",
+      "expectedTone": "hiring",
+      "expectedNeedsRetrieval": true,
+      "expectedNeedsStructuredModules": true,
+      "expectedShowEvidenceDisclosure": true,
+      "expectedFallthroughToPortfolioOverview": false,
+      "expectedPromptIncludes": [
+        "Internal question type: strongest_product_proof",
+        "Contract reminder: Give the best-supported ranking"
+      ]
+    },
+    {
+      "id": "first-90-days-after-role-fit",
+      "family": "conversation_followup",
+      "kind": "conversation_followup",
+      "prompt": "what would the first 90 days look like?",
+      "requestType": "general_chat",
+      "history": [
+        {
+          "role": "user",
+          "content": "Would Ramin fit a senior PM role at a B2B SaaS company?"
+        },
+        {
+          "role": "assistant",
+          "content": "Ramin looks relevant because of senior PM work at Perkbox Vivup, B2B data-product work at Urgentem, and AI-native product systems.",
+          "metadata": {
+            "requestType": "role_fit",
+            "intentRoute": {
+              "intent": "role_fit",
+              "confidence": 0.93,
+              "isSubstantive": true,
+              "needsEvidence": true,
+              "needsRetrieval": true,
+              "needsStructuredModules": true,
+              "suggestedTone": "hiring",
+              "sourceQuestionType": "role_fit",
+              "reason": "previous role fit answer"
+            },
+            "answerShape": {
+              "primaryQuestionType": "role_fit"
+            },
+            "evidenceCardTitles": [
+              "Perkbox Vivup - Senior Product Manager",
+              "AI-Native Product OS"
+            ]
+          }
+        }
+      ],
+      "expectedFollowUp": true,
+      "expectedInheritedIntent": "role_fit",
+      "expectedInheritedQuestionType": "role_fit",
+      "expectedContextualQueryIncludes": [
+        "Current follow-up: what would the first 90 days look like?",
+        "Inherited intent: role_fit",
+        "Previous evidence anchors: Perkbox Vivup - Senior Product Manager; AI-Native Product OS"
+      ],
+      "expectedPromptIncludes": [
+        "Conversation follow-up context",
+        "Previous evidence anchors: Perkbox Vivup - Senior Product Manager; AI-Native Product OS"
+      ]
+    },
+    {
+      "id": "enterprise-variant-after-product-judgment",
+      "family": "conversation_followup",
+      "kind": "conversation_followup",
+      "prompt": "how would that change for enterprise customers?",
+      "requestType": "general_chat",
+      "history": [
+        {
+          "role": "user",
+          "content": "Here is a gym app for creatives. Which parts of Ramin's experience are relevant?"
+        },
+        {
+          "role": "assistant",
+          "content": "The answer should connect personal training qualification, nsso creative identity work, and product discovery from scratch.",
+          "metadata": {
+            "requestType": "product_judgment",
+            "intentRoute": {
+              "intent": "product_judgment",
+              "confidence": 0.91,
+              "isSubstantive": true,
+              "needsEvidence": true,
+              "needsRetrieval": true,
+              "needsStructuredModules": true,
+              "suggestedTone": "analytical",
+              "sourceQuestionType": "product_judgment",
+              "reason": "previous product scenario answer"
+            },
+            "answerShape": {
+              "primaryQuestionType": "product_judgment"
+            },
+            "evidenceCardTitles": [
+              "Ramin Qualifications",
+              "nsso"
+            ]
+          }
+        }
+      ],
+      "expectedFollowUp": true,
+      "expectedInheritedIntent": "product_judgment",
+      "expectedInheritedQuestionType": "product_judgment",
+      "expectedContextualQueryIncludes": [
+        "Current follow-up: how would that change for enterprise customers?",
+        "Inherited intent: product_judgment",
+        "Previous evidence anchors: Ramin Qualifications; nsso"
+      ],
+      "expectedPromptIncludes": [
+        "Previous answer focus: The answer should connect personal training qualification, nsso creative identity work, and product discovery from scratch.",
+        "Previous evidence anchors: Ramin Qualifications; nsso"
+      ]
+    },
+    {
+      "id": "casual-bio-quality-recovery",
+      "family": "quality_recovery",
+      "kind": "quality_gate",
+      "prompt": "hey",
+      "requestType": "general_chat",
+      "classifierPayload": {
+        "intent": "casual_chat",
+        "confidence": 0.96,
+        "isSubstantive": false,
+        "needsEvidence": false,
+        "needsRetrieval": false,
+        "needsStructuredModules": false,
+        "suggestedTone": "casual",
+        "reason": "casual greeting"
+      },
+      "answerableEvidenceCount": 0,
+      "fixtureSections": {
+        "short_answer": "Ramin Hoodeh is an AI Product Manager, TEDx speaker, author, and creator of the AI-Native Product OS.",
+        "verified_proof": [],
+        "inferred_fit": [],
+        "confidential_boundary": [],
+        "open_questions": [],
+        "suggested_next_action": "Ask for a role-fit analysis."
+      },
+      "expectedQualityGateIssues": [
+        "generic_casual_bio_answer"
+      ],
+      "expectedQualityGateStrategy": "casual_chat_recovery",
+      "expectedRecoveredKeywords": [
+        "Hey",
+        "Ask me about Ramin's product experience"
+      ],
+      "expectedAbsentKeywords": [
+        "TEDx speaker",
+        "creator of the AI-Native Product OS"
+      ]
+    },
+    {
+      "id": "first-90-overcautious-quality-recovery",
+      "family": "quality_recovery",
+      "kind": "quality_gate",
+      "prompt": "What would Ramin do in the first 90 days of a senior B2B SaaS PM role?",
+      "requestType": "role_fit",
+      "answerableEvidenceCount": 6,
+      "fixtureSections": {
+        "short_answer": "I do not have enough verified portfolio context to answer that accurately.",
+        "verified_proof": [],
+        "inferred_fit": [],
+        "confidential_boundary": [],
+        "open_questions": [],
+        "suggested_next_action": "Use the Contact section if you want to validate fit directly with Ramin."
+      },
+      "evidenceCards": [
+        {
+          "title": "Perkbox Vivup - Senior Product Manager",
+          "type": "work",
+          "summary": "Ramin worked at Perkbox Vivup as Senior Product Manager from Jan 2023 to Nov 2024.",
+          "source_path": "ai-ramin-section/canonical/work-experiences/perkbox-vivup.md",
+          "confidence": "needs-review"
+        },
+        {
+          "title": "AI-Native Product OS",
+          "type": "project",
+          "summary": "The AI-Native Product OS is Ramin's framework for AI product work across model, context, orchestration, governance, and human judgement.",
+          "source_path": "ai-ramin-section/canonical/projects/ai-native-product-os.md",
+          "confidence": "local-primary"
+        }
+      ],
+      "expectedQualityGateIssues": [
+        "over_cautious_with_sufficient_evidence"
+      ],
+      "expectedQualityGateStrategy": "first_90_days_recovery",
+      "expectedRecoveredKeywords": [
+        "first 90 days",
+        "diagnostic ramp",
+        "evals",
+        "guardrails"
+      ],
+      "expectedAbsentKeywords": [
+        "not have enough verified portfolio context"
+      ]
+    }
+  ]
+}
