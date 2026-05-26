@@ -13,6 +13,7 @@
     "check:ai-ramin-eval": "node scripts/evaluate-ai-ramin.mjs",
     "check:ai-ramin-routing": "node scripts/check-ai-ramin-interview-routing.mjs",
     "check:ai-ramin-routing-observability": "node scripts/check-ai-ramin-routing-observability.mjs",
+    "check:ai-ramin-intent-contract": "node scripts/check-ai-ramin-intent-router-contract.mjs",
     "check:ai-ramin-prompt": "node scripts/check-ai-ramin-prompt-contract.mjs",
     "check:ai-ramin-ui-copy": "node scripts/check-ai-ramin-ui-copy-contract.mjs",
     "check:ai-ramin-weak-ui": "node scripts/check-ai-ramin-weak-answer-ui-contract.mjs",
@@ -24,7 +25,7 @@
     "check:rock-assets": "node scripts/check-hashgraph-rock-assets.mjs",
     "check:performance-guardrails": "node scripts/check-performance-guardrails.mjs",
     "check:preview": "node scripts/check-preview.mjs",
-    "verify": "npm run check:content && npm run check:ai-ramin-corpus && npm run check:ai-ramin-eval && npm run check:ai-ramin-routing && npm run check:ai-ramin-routing-observability && npm run check:ai-ramin-prompt && npm run check:ai-ramin-ui-copy && npm run check:ai-ramin-weak-ui && npm run check:ai-ramin-feedback && npm run check:ai-ramin-review && npm run build && npm run check:rock-assets && npm run check:performance-guardrails",
+    "verify": "npm run check:content && npm run check:ai-ramin-corpus && npm run check:ai-ramin-eval && npm run check:ai-ramin-routing && npm run check:ai-ramin-routing-observability && npm run check:ai-ramin-intent-contract && npm run check:ai-ramin-prompt && npm run check:ai-ramin-ui-copy && npm run check:ai-ramin-weak-ui && npm run check:ai-ramin-feedback && npm run check:ai-ramin-review && npm run build && npm run check:rock-assets && npm run check:performance-guardrails",
     "verify:preview": "npm run verify && npm run check:preview"
   },
   "dependencies": {

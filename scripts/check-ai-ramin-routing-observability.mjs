@@ -31,12 +31,29 @@ for (const fixture of fixtures.cases ?? []) {
 
   assert(routing.schemaVersion === 1, `${fixture.id}: missing routing schema version`);
   assert(routing.router === 'deterministic_rules', `${fixture.id}: unexpected router ${routing.router}`);
+  assert(routing.intentRoute?.schemaVersion === 1, `${fixture.id}: missing intent route contract schema version`);
+  assert(typeof routing.intentRoute?.intent === 'string', `${fixture.id}: missing intent route id`);
+  assert(typeof routing.intentRoute?.confidence === 'number', `${fixture.id}: missing intent route confidence`);
+  assert(typeof routing.intentRoute?.isSubstantive === 'boolean', `${fixture.id}: missing isSubstantive flag`);
+  assert(typeof routing.intentRoute?.needsEvidence === 'boolean', `${fixture.id}: missing needsEvidence flag`);
+  assert(typeof routing.intentRoute?.needsRetrieval === 'boolean', `${fixture.id}: missing needsRetrieval flag`);
+  assert(typeof routing.intentRoute?.needsStructuredModules === 'boolean', `${fixture.id}: missing needsStructuredModules flag`);
+  assert(typeof routing.intentRoute?.suggestedTone === 'string', `${fixture.id}: missing suggested tone`);
+  assert(typeof routing.intentRoute?.reason === 'string' && routing.intentRoute.reason.length > 0, `${fixture.id}: missing intent route reason`);
   assert(typeof routing.messagePreview === 'string' && routing.messagePreview.length > 0, `${fixture.id}: missing message preview`);
   assert(typeof routing.confidence === 'number', `${fixture.id}: missing route confidence`);
   assert(typeof routing.reason === 'string' && routing.reason.length > 0, `${fixture.id}: missing route reason`);
   assert(
     routing.primaryQuestionType === fixture.expectedQuestionType,
     `${fixture.id}: expected ${fixture.expectedQuestionType}; got ${routing.primaryQuestionType}`,
+  );
+  assert(
+    routing.intentRoute.intent === fixture.expectedIntent,
+    `${fixture.id}: expected intent ${fixture.expectedIntent}; got ${routing.intentRoute.intent}`,
+  );
+  assert(
+    routing.intentRoute.suggestedTone === fixture.expectedSuggestedTone,
+    `${fixture.id}: expected tone ${fixture.expectedSuggestedTone}; got ${routing.intentRoute.suggestedTone}`,
   );
   assert(
     routing.needsRetrieval === fixture.expectedNeedsRetrieval,

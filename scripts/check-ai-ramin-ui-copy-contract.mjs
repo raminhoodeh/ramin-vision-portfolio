@@ -45,6 +45,8 @@ assertIncludes('ai-ramin-message-row-weak-answer', 'weak-answer message row clas
 assertIncludes('presentation.shouldShowStructuredModules', 'weak-answer structured module suppression');
 assertIncludes('isAiRaminConversationOpenResponse', 'conversation-open UI suppression helper');
 assertIncludes('routing?.primaryQuestionType', 'routing metadata question type usage');
+assertIncludes('getAiRaminIntentRoute', 'intent route metadata helper');
+assertIncludes('getAiRaminPresentationPolicy', 'route presentation policy helper');
 assertIncludes('route confidence', 'debug drawer routing confidence label');
 
 if (!serverSource.includes('**Suggested next action:**')) {
@@ -55,6 +57,9 @@ if (!serverSource.includes('conversation_open') || !serverSource.includes('sendC
 }
 if (!serverSource.includes('buildRoutingObservability') || !serverSource.includes('fallthroughToPortfolioOverview')) {
   failures.push('server routing observability metadata missing');
+}
+if (!serverSource.includes('buildAiRaminIntentRouteContract') || !serverSource.includes('intentRoute: routing.intentRoute')) {
+  failures.push('server intent route contract metadata missing');
 }
 if (!evalCasesSource.includes('"conversation-open-greeting"')) {
   failures.push('greeting eval case missing');

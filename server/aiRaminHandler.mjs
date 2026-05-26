@@ -71,6 +71,28 @@ const QUESTION_TYPES = new Set([
   'guardrail_boundary',
 ]);
 
+export const AI_RAMIN_INTENT_ROUTE_IDS = [
+  'casual_chat',
+  'portfolio_overview',
+  'role_fit',
+  'product_judgment',
+  'evidence_lookup',
+  'behavioral_interview',
+  'hiring_brief',
+  'interview_coaching',
+  'guardrail_boundary',
+  'clarification_needed',
+];
+const INTENT_ROUTE_IDS = new Set(AI_RAMIN_INTENT_ROUTE_IDS);
+
+export const AI_RAMIN_SUGGESTED_TONES = [
+  'casual',
+  'professional',
+  'hiring',
+  'analytical',
+];
+const SUGGESTED_TONES = new Set(AI_RAMIN_SUGGESTED_TONES);
+
 const QUESTION_TYPE_INSTRUCTIONS = {
   conversation_open: 'Reply naturally to the greeting, set expectations, and invite a useful portfolio question without proof or analysis.',
   portfolio_overview: 'Give a concise orientation, then anchor it in the strongest portfolio proof.',
@@ -1001,6 +1023,44 @@ function getRetrievalProfile(questionType) {
   return RETRIEVAL_PROFILE_BY_QUESTION_TYPE[questionType] ?? RETRIEVAL_PROFILE_BY_QUESTION_TYPE.portfolio_overview;
 }
 
+function getIntentRouteId(primaryQuestionType) {
+  const intent = {
+    conversation_open: 'casual_chat',
+    portfolio_overview: 'portfolio_overview',
+    factual_capability: 'evidence_lookup',
+    role_fit: 'role_fit',
+    behavioral_example: 'behavioral_interview',
+    product_judgment: 'product_judgment',
+    tradeoff_or_prioritisation: 'product_judgment',
+    weakness_or_gap: 'role_fit',
+    first_90_days: 'role_fit',
+    interview_coaching: 'interview_coaching',
+    hiring_brief: 'hiring_brief',
+    strongest_product_proof: 'evidence_lookup',
+    evidence_lookup: 'evidence_lookup',
+    guardrail_boundary: 'guardrail_boundary',
+  }[primaryQuestionType] ?? 'portfolio_overview';
+
+  return INTENT_ROUTE_IDS.has(intent) ? intent : 'portfolio_overview';
+}
+
+function getSuggestedTone(intent, inferredRequestType) {
+  const tone = {
+    casual_chat: 'casual',
+    portfolio_overview: 'professional',
+    role_fit: 'hiring',
+    product_judgment: 'analytical',
+    evidence_lookup: 'analytical',
+    behavioral_interview: 'hiring',
+    hiring_brief: 'hiring',
+    interview_coaching: 'hiring',
+    guardrail_boundary: 'professional',
+    clarification_needed: 'professional',
+  }[intent] ?? (inferredRequestType === 'product_judgment' ? 'analytical' : 'professional');
+
+  return SUGGESTED_TONES.has(tone) ? tone : 'professional';
+}
+
 function buildRoutingPresentationPolicy(queryIntent) {
   const primaryQuestionType = queryIntent.primaryQuestionType;
   const isConversationOpen = primaryQuestionType === 'conversation_open';
@@ -1023,6 +1083,41 @@ function buildRoutingPresentationPolicy(queryIntent) {
   };
 }
 
+export function buildAiRaminIntentRouteContract({
+  visitorMessage,
+  explicitRequestType,
+  inferredRequestType,
+  queryIntent,
+  confidence,
+  reason,
+  fallthroughToPortfolioOverview = false,
+  presentationPolicy,
+}) {
+  const intent = getIntentRouteId(queryIntent.primaryQuestionType);
+  const policy = presentationPolicy ?? buildRoutingPresentationPolicy(queryIntent);
+  const normalizedExplicitRequestType = normalizeRequestType(explicitRequestType);
+
+  return {
+    schemaVersion: 1,
+    intent,
+    confidence,
+    isSubstantive: intent !== 'casual_chat' && intent !== 'clarification_needed',
+    needsEvidence: policy.showEvidenceDisclosure,
+    needsRetrieval: intent !== 'casual_chat',
+    needsStructuredModules: policy.showStructuredModules,
+    suggestedTone: getSuggestedTone(intent, inferredRequestType),
+    reason,
+    sourceQuestionType: queryIntent.primaryQuestionType,
+    answerTechniqueId: queryIntent.answerTechniqueId,
+    answerFrameId: queryIntent.answerFrameId,
+    explicitRequestType: normalizedExplicitRequestType ?? null,
+    inferredRequestType,
+    fallthroughToPortfolioOverview,
+    messagePreview: truncateForDebug(visitorMessage, 240),
+    presentationPolicy: policy,
+  };
+}
+
 export function buildRoutingObservability({
   visitorMessage,
   explicitRequestType,
@@ -1041,6 +1136,17 @@ export function buildRoutingObservability({
     inferredRequestType === 'general_chat' &&
     !hasPortfolioOverviewCue(visitorMessage);
   const presentationPolicy = buildRoutingPresentationPolicy(queryIntent);
+  const reason = getRoutingDecisionReason(primaryQuestionType, visitorMessage, inferredRequestType);
+  const intentRoute = buildAiRaminIntentRouteContract({
+    visitorMessage,
+    explicitRequestType,
+    inferredRequestType,
+    queryIntent,
+    confidence,
+    reason,
+    fallthroughToPortfolioOverview,
+    presentationPolicy,
+  });
 
   return {
     schemaVersion: 1,
@@ -1052,13 +1158,14 @@ export function buildRoutingObservability({
     answerTechniqueId: queryIntent.answerTechniqueId,
     answerFrameId: queryIntent.answerFrameId,
     confidence,
-    reason: getRoutingDecisionReason(primaryQuestionType, visitorMessage, inferredRequestType),
+    reason,
+    intentRoute,
     fallthroughToPortfolioOverview,
     fallbackReason: fallthroughToPortfolioOverview ? 'no_specific_route_matched' : '',
-    isSubstantive: primaryQuestionType !== 'conversation_open',
-    needsEvidence: presentationPolicy.showEvidenceDisclosure,
-    needsRetrieval: primaryQuestionType !== 'conversation_open',
-    needsStructuredModules: presentationPolicy.showStructuredModules,
+    isSubstantive: intentRoute.isSubstantive,
+    needsEvidence: intentRoute.needsEvidence,
+    needsRetrieval: intentRoute.needsRetrieval,
+    needsStructuredModules: intentRoute.needsStructuredModules,
     retrievalRan,
     modelCalled,
     contextChunkCount,
@@ -1085,6 +1192,8 @@ function logAiRaminRoutingObservation(routing) {
       requestType: routing.inferredRequestType,
       questionType: routing.primaryQuestionType,
       confidence: routing.confidence,
+      intent: routing.intentRoute?.intent,
+      tone: routing.intentRoute?.suggestedTone,
       fallthroughToPortfolioOverview: routing.fallthroughToPortfolioOverview,
       reason: routing.reason,
       retrievalRan: routing.retrievalRan,
@@ -2132,6 +2241,7 @@ function buildAiRaminDebugTrace({
       fallthroughToPortfolioOverview: Boolean(routing?.fallthroughToPortfolioOverview),
       answerShape,
     },
+    intentRoute: routing?.intentRoute,
     routing,
     sufficiency: {
       answerableEvidenceCount: portfolioContext.answerableEvidenceCount,
@@ -2445,6 +2555,7 @@ function sendConversationOpenResponse(res, { visitorMessage, hiringMode, request
       qualityGateResetModelPayload: false,
       selectedStory: null,
       answerShape,
+      intentRoute: routing.intentRoute,
       routing,
     },
     contextSources: [],
@@ -4047,6 +4158,7 @@ export async function handleAiRaminRequest(req, res) {
       corpusStats: portfolioContext.corpusStats,
       evidenceCardCount: evidenceCards.length,
       answerableEvidenceCount: portfolioContext.answerableEvidenceCount,
+      intentRoute: routing.intentRoute,
       routing,
       recoveryApplied: recovery.recovered,
       recoveryStrategy: recovery.strategy,

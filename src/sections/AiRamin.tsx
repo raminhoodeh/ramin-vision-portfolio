@@ -53,6 +53,7 @@ type AiRaminDebugTrace = {
     needsContact?: boolean;
     guardrailSensitive?: boolean;
   };
+  intentRoute?: AiRaminIntentRoute;
   routing?: AiRaminRoutingTrace;
   sufficiency?: {
     answerableEvidenceCount?: number;
@@ -103,6 +104,7 @@ type AiRaminDebugTrace = {
 type AiRaminRoutingTrace = {
   schemaVersion?: number;
   router?: string;
+  intentRoute?: AiRaminIntentRoute;
   messagePreview?: string;
   explicitRequestType?: string | null;
   inferredRequestType?: string;
@@ -128,6 +130,35 @@ type AiRaminRoutingTrace = {
     showSoftCtas?: boolean;
     showSuggestions?: boolean;
   };
+};
+type AiRaminIntentRoute = {
+  schemaVersion?: number;
+  intent?:
+    | 'casual_chat'
+    | 'portfolio_overview'
+    | 'role_fit'
+    | 'product_judgment'
+    | 'evidence_lookup'
+    | 'behavioral_interview'
+    | 'hiring_brief'
+    | 'interview_coaching'
+    | 'guardrail_boundary'
+    | 'clarification_needed';
+  confidence?: number;
+  isSubstantive?: boolean;
+  needsEvidence?: boolean;
+  needsRetrieval?: boolean;
+  needsStructuredModules?: boolean;
+  suggestedTone?: 'casual' | 'professional' | 'hiring' | 'analytical';
+  reason?: string;
+  sourceQuestionType?: string;
+  answerTechniqueId?: string;
+  answerFrameId?: string;
+  explicitRequestType?: string | null;
+  inferredRequestType?: string;
+  fallthroughToPortfolioOverview?: boolean;
+  messagePreview?: string;
+  presentationPolicy?: AiRaminRoutingTrace['presentationPolicy'];
 };
 type AiRaminResponseSections = {
   short_answer: string;
@@ -156,6 +187,7 @@ type AiRaminSourceMetadata = {
   qualityGateReason?: string;
   qualityGateResetModelPayload?: boolean;
   selectedStory?: AiRaminSelectedStory | null;
+  intentRoute?: AiRaminIntentRoute;
   routing?: AiRaminRoutingTrace;
   debugTrace?: AiRaminDebugTrace;
   answerShape?: {
@@ -476,6 +508,8 @@ function getAiRaminProofTrailCounts(response: AiRaminStructuredResponse) {
 
 function getAiRaminQuestionType(response: AiRaminStructuredResponse) {
   return (
+    response.sourceMetadata?.intentRoute?.sourceQuestionType ||
+    response.sourceMetadata?.routing?.intentRoute?.sourceQuestionType ||
     response.sourceMetadata?.routing?.primaryQuestionType ||
     response.sourceMetadata?.answerShape?.primaryQuestionType ||
     response.sourceMetadata?.debugTrace?.intent?.primaryQuestionType ||
@@ -483,11 +517,31 @@ function getAiRaminQuestionType(response: AiRaminStructuredResponse) {
   );
 }
 
+function getAiRaminIntentRoute(response: AiRaminStructuredResponse): AiRaminIntentRoute | null {
+  return (
+    response.sourceMetadata?.intentRoute ??
+    response.sourceMetadata?.routing?.intentRoute ??
+    response.sourceMetadata?.debugTrace?.intentRoute ??
+    response.sourceMetadata?.debugTrace?.routing?.intentRoute ??
+    null
+  );
+}
+
+function getAiRaminPresentationPolicy(response: AiRaminStructuredResponse) {
+  return getAiRaminIntentRoute(response)?.presentationPolicy ?? response.sourceMetadata?.routing?.presentationPolicy;
+}
+
 function isAiRaminConversationOpenResponse(response: AiRaminStructuredResponse) {
-  return getAiRaminQuestionType(response) === 'conversation_open';
+  return getAiRaminIntentRoute(response)?.intent === 'casual_chat' || getAiRaminQuestionType(response) === 'conversation_open';
+}
+
+function shouldShowAiRaminFeedback(response: AiRaminStructuredResponse) {
+  return getAiRaminPresentationPolicy(response)?.showFeedback !== false && !isAiRaminConversationOpenResponse(response);
 }
 
 function getAiRaminAnswerPresentation(response: AiRaminStructuredResponse): AiRaminAnswerPresentation {
+  const presentationPolicy = getAiRaminPresentationPolicy(response);
+
   if (isAiRaminConversationOpenResponse(response)) {
     return {
       isWeak: false,
@@ -510,12 +564,14 @@ function getAiRaminAnswerPresentation(response: AiRaminStructuredResponse): AiRa
   const isInsufficientContext = isAiRaminInsufficientContextText(response.sections.short_answer);
   const isWeak = wasReset || hasCriticalQualityIssue || wasRecovered || (isInsufficientContext && counts.proofCount === 0);
   const hasAnyDisclosureTrail = hasEvidenceTrail || counts.boundaryCount > 0 || (!isWeak && counts.inferenceCount > 0);
+  const routeAllowsEvidence = presentationPolicy?.showEvidenceDisclosure ?? true;
+  const routeAllowsStructuredModules = presentationPolicy?.showStructuredModules ?? true;
 
   return {
     isWeak,
     hasEvidenceTrail,
-    shouldShowStructuredModules: !isWeak,
-    shouldShowEvidenceDisclosure: hasAnyDisclosureTrail,
+    shouldShowStructuredModules: !isWeak && routeAllowsStructuredModules,
+    shouldShowEvidenceDisclosure: routeAllowsEvidence && hasAnyDisclosureTrail,
   };
 }
 
@@ -560,7 +616,7 @@ function makeSoftCta(id: AiRaminSoftCtaId): AiRaminSoftCta {
 }
 
 function getAiRaminSoftCtas(response: AiRaminStructuredResponse): AiRaminSoftCta[] {
-  if (isAiRaminConversationOpenResponse(response)) {
+  if (isAiRaminConversationOpenResponse(response) || getAiRaminPresentationPolicy(response)?.showSoftCtas === false) {
     return [];
   }
 
@@ -1283,6 +1339,7 @@ function AiRaminInlineDebugDrawer({ response }: { response: AiRaminStructuredRes
   const sourceMetadata = response.sourceMetadata;
   const debugTrace = sourceMetadata.debugTrace;
   const routingTrace = debugTrace?.routing ?? sourceMetadata.routing;
+  const intentRoute = debugTrace?.intentRoute ?? sourceMetadata.intentRoute ?? routingTrace?.intentRoute;
   const selectedStory = debugTrace?.selectedStory ?? sourceMetadata.selectedStory;
   const selectedChunks = debugTrace?.retrieval?.selectedChunks?.slice(0, 6) ?? [];
 
@@ -1308,6 +1365,8 @@ function AiRaminInlineDebugDrawer({ response }: { response: AiRaminStructuredRes
       {routingTrace ? (
         <div>
           <span>{routingTrace.router ?? 'router unknown'}</span>
+          {intentRoute?.intent ? <span>intent {intentRoute.intent}</span> : null}
+          {intentRoute?.suggestedTone ? <span>tone {intentRoute.suggestedTone}</span> : null}
           {typeof routingTrace.confidence === 'number' ? (
             <span>{Math.round(routingTrace.confidence * 100)}% route confidence</span>
           ) : null}
@@ -1949,7 +2008,12 @@ export function AiRaminSection() {
 
         if (responsePayload?.mode) setSelectedMode(responsePayload.mode);
         if (responsePayload?.requestType) setSelectedRequestType(responsePayload.requestType);
+        const responseIntent =
+          responsePayload?.sourceMetadata?.intentRoute?.intent ||
+          responsePayload?.sourceMetadata?.routing?.intentRoute?.intent;
         const responseQuestionType =
+          responsePayload?.sourceMetadata?.intentRoute?.sourceQuestionType ||
+          responsePayload?.sourceMetadata?.routing?.primaryQuestionType ||
           responsePayload?.sourceMetadata?.answerShape?.primaryQuestionType ||
           responsePayload?.sourceMetadata?.debugTrace?.intent?.primaryQuestionType;
 
@@ -1962,7 +2026,7 @@ export function AiRaminSection() {
             response: responsePayload ?? undefined,
           },
         ]);
-        if (responseQuestionType === 'conversation_open') {
+        if (responseIntent === 'casual_chat' || responseQuestionType === 'conversation_open') {
           setIsSuggestionsOpen(true);
         }
       } catch (error) {
@@ -2217,7 +2281,7 @@ export function AiRaminSection() {
                           .find((candidate) => candidate.role === 'user')?.content ?? ''
                       : '';
                   const answerPresentation = message.response ? getAiRaminAnswerPresentation(message.response) : null;
-                  const isConversationOpenAnswer = message.response ? isAiRaminConversationOpenResponse(message.response) : false;
+                  const shouldShowFeedback = message.response ? shouldShowAiRaminFeedback(message.response) : false;
 
                   return (
                     <div
@@ -2252,7 +2316,7 @@ export function AiRaminSection() {
                               disabled={isSending}
                               onSelect={handleSoftCta}
                             />
-                            {!isConversationOpenAnswer ? (
+                            {shouldShowFeedback ? (
                               <AiRaminAnswerFeedback
                                 messageId={message.id}
                                 response={message.response}
