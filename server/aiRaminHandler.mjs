@@ -13,6 +13,7 @@ const FEEDBACK_LOG_PATH = path.join(ROOT_DIR, 'ai-ramin-section/evaluation/live-
 const DEFAULT_CONTEXT_CHAR_LIMIT = 95_000;
 const MAX_HISTORY_MESSAGES = 10;
 const MAX_HISTORY_MESSAGE_CHARS = 3_000;
+const MAX_CONVERSATION_CONTEXT_CHARS = 1_200;
 const MAX_VISITOR_MESSAGE_CHARS = 12_000;
 const MAX_FEEDBACK_NOTE_CHARS = 1_000;
 const MAX_FEEDBACK_PREVIEW_CHARS = 1_200;
@@ -1083,6 +1084,7 @@ function buildQueryIntentForQuestionType(message, requestType, primaryQuestionTy
       frameworkLimit: retrievalProfile.frameworkLimit,
       minimumAnswerableEvidence: retrievalProfile.minimumAnswerableEvidence,
     },
+    resolvedRequestType: requestType,
     guardrailSensitive: primaryQuestionType === 'guardrail_boundary' || hasGuardrailSensitiveCue(lower),
     needsFramework:
       questionTypeNeedsFramework(primaryQuestionType) ||
@@ -1259,15 +1261,231 @@ export function getQuestionTypeForIntentRoute(intent, message, requestType = 'ge
   return classifyQuestionType(message, requestType);
 }
 
-export function buildQueryIntentFromIntentRoute(route, message, requestType = 'general_chat', metadata = {}) {
+function getRequestTypeForIntentRoute(intent, currentRequestType = 'general_chat') {
+  const normalized = normalizeRequestType(currentRequestType) ?? 'general_chat';
+  if (normalized !== 'general_chat') return normalized;
+
+  return {
+    role_fit: 'role_fit',
+    product_judgment: 'product_judgment',
+    evidence_lookup: 'evidence_lookup',
+    hiring_brief: 'hiring_brief',
+  }[intent] ?? normalized;
+}
+
+export function buildQueryIntentFromIntentRoute(route, message, requestType = 'general_chat', metadata = {}, extras = {}) {
   const normalizedRoute = normalizeAiRaminIntentClassifierPayload(route);
   if (!normalizedRoute) return classifyQuery(message, requestType);
 
-  const primaryQuestionType = getQuestionTypeForIntentRoute(normalizedRoute.intent, message, requestType);
-  return buildQueryIntentForQuestionType(message, requestType, primaryQuestionType, {
+  const resolvedRequestType = getRequestTypeForIntentRoute(normalizedRoute.intent, requestType);
+  const primaryQuestionType = getQuestionTypeForIntentRoute(normalizedRoute.intent, message, resolvedRequestType);
+  return buildQueryIntentForQuestionType(message, resolvedRequestType, primaryQuestionType, {
     intentRoute: normalizedRoute,
     intentClassifier: metadata,
+    resolvedRequestType,
+    ...extras,
   });
+}
+
+function normalizeHistoryRole(value) {
+  return value === 'assistant' || value === 'model' ? 'assistant' : value === 'user' || value === 'visitor' ? 'user' : '';
+}
+
+function getHistoryMetadata(message) {
+  if (!message || typeof message !== 'object') return {};
+  const metadata = message.metadata && typeof message.metadata === 'object' ? message.metadata : {};
+  return {
+    ...metadata,
+    intentRoute: metadata.intentRoute ?? message.intentRoute,
+    answerShape: metadata.answerShape ?? message.answerShape,
+    requestType: metadata.requestType ?? message.requestType,
+    selectedStory: metadata.selectedStory ?? message.selectedStory,
+    evidenceCardTitles: metadata.evidenceCardTitles ?? message.evidenceCardTitles,
+  };
+}
+
+function summarizeHistoryContent(value, limit = MAX_CONVERSATION_CONTEXT_CHARS) {
+  return truncateForDebug(String(value ?? '').replace(/\*\*/g, ''), limit);
+}
+
+function getHistoryIntentRoute(message) {
+  const metadata = getHistoryMetadata(message);
+  const route = metadata.intentRoute && typeof metadata.intentRoute === 'object' ? metadata.intentRoute : null;
+  const normalized = normalizeAiRaminIntentClassifierPayload(route);
+  if (normalized) return normalized;
+
+  const answerShape = metadata.answerShape && typeof metadata.answerShape === 'object' ? metadata.answerShape : null;
+  const sourceQuestionType = String(answerShape?.primaryQuestionType ?? '').trim();
+  const intent = sourceQuestionType ? getIntentRouteId(sourceQuestionType) : '';
+  return intent
+    ? {
+        ...getDefaultIntentRouteBooleans(intent),
+        schemaVersion: 1,
+        intent,
+        confidence: 0.7,
+        suggestedTone: getSuggestedTone(intent, metadata.requestType ?? 'general_chat'),
+        reason: 'inferred from previous answer metadata',
+      }
+    : null;
+}
+
+function getHistoryQuestionType(message) {
+  const metadata = getHistoryMetadata(message);
+  const route = getHistoryIntentRoute(message);
+  const answerShape = metadata.answerShape && typeof metadata.answerShape === 'object' ? metadata.answerShape : null;
+  const sourceQuestionType = String(route?.sourceQuestionType ?? answerShape?.primaryQuestionType ?? '').trim();
+  return QUESTION_TYPES.has(sourceQuestionType) ? sourceQuestionType : '';
+}
+
+function isProfessionalIntent(intent) {
+  return intent && !['casual_chat', 'clarification_needed', 'guardrail_boundary'].includes(intent);
+}
+
+function getLastProfessionalConversationAnchor(history) {
+  if (!Array.isArray(history)) return null;
+
+  const recent = history
+    .filter((message) => normalizeHistoryRole(message?.role))
+    .slice(-MAX_HISTORY_MESSAGES);
+
+  for (let index = recent.length - 1; index >= 0; index -= 1) {
+    const message = recent[index];
+    const role = normalizeHistoryRole(message.role);
+    if (role !== 'assistant') continue;
+
+    const route = getHistoryIntentRoute(message);
+    if (!route || !isProfessionalIntent(route.intent)) continue;
+
+    const metadata = getHistoryMetadata(message);
+    const previousUserMessage = [...recent.slice(0, index)]
+      .reverse()
+      .find((candidate) => normalizeHistoryRole(candidate.role) === 'user');
+
+    return {
+      intent: route.intent,
+      sourceQuestionType: getHistoryQuestionType(message) || getQuestionTypeForIntentRoute(route.intent, '', metadata.requestType),
+      requestType: normalizeRequestType(metadata.requestType) ?? 'general_chat',
+      suggestedTone: route.suggestedTone,
+      confidence: normalizeConfidence(route.confidence, 0.72),
+      reason: route.reason || 'previous professional answer metadata',
+      userMessagePreview: summarizeHistoryContent(previousUserMessage?.content, 420),
+      assistantAnswerPreview: summarizeHistoryContent(message.content, 520),
+      selectedStoryTitle: summarizeHistoryContent(metadata.selectedStory?.title, 180),
+      evidenceCardTitles: Array.isArray(metadata.evidenceCardTitles)
+        ? metadata.evidenceCardTitles.map((title) => summarizeHistoryContent(title, 120)).filter(Boolean).slice(0, 4)
+        : [],
+    };
+  }
+
+  for (let index = recent.length - 1; index >= 0; index -= 1) {
+    const message = recent[index];
+    if (normalizeHistoryRole(message.role) !== 'user') continue;
+    const content = String(message.content ?? '');
+    const requestType = inferRequestType(content, undefined);
+    const queryIntent = classifyQuery(content, requestType);
+    const intent = getIntentRouteId(queryIntent.primaryQuestionType);
+    if (!isProfessionalIntent(intent)) continue;
+
+    return {
+      intent,
+      sourceQuestionType: queryIntent.primaryQuestionType,
+      requestType,
+      suggestedTone: getSuggestedTone(intent, requestType),
+      confidence: 0.62,
+      reason: 'inferred from previous substantive user message',
+      userMessagePreview: summarizeHistoryContent(content, 420),
+      assistantAnswerPreview: '',
+      selectedStoryTitle: '',
+      evidenceCardTitles: [],
+    };
+  }
+
+  return null;
+}
+
+function isContextDependentFollowUp(message) {
+  const normalized = String(message ?? '')
+    .toLowerCase()
+    .replace(/[^\p{L}\p{N}\s'?]/gu, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+  if (!normalized || hasGuardrailSensitiveCue(normalized) || isConversationOpenCue(normalized)) return false;
+
+  const tokenCount = normalized.split(/\s+/).filter(Boolean).length;
+  return (
+    /^(tell me more|go deeper|expand|expand on that|explain more|why|why not|how so|same for|same question|continue|and|also|what about|how about|what if|for .+|and for .+|compare that|stronger proof|show risks|what risks|draft that|turn that into|can you expand|can you compare|can you explain|do that for)\b/i.test(
+      normalized,
+    ) ||
+    (tokenCount <= 7 &&
+      /\b(role|company|google|meta|apple|amazon|microsoft|startup|enterprise|b2b|b2c|senior|lead|director|pm|product|risks|proof|brief|mvp|evidence)\b/i.test(
+        normalized,
+      ))
+  );
+}
+
+export function buildAiRaminConversationRouteContext({
+  visitorMessage,
+  history,
+  requestType = 'general_chat',
+  deterministicQueryIntent,
+}) {
+  const anchor = getLastProfessionalConversationAnchor(history);
+  const isFollowUp = Boolean(anchor && isContextDependentFollowUp(visitorMessage));
+  const inheritedIntent = isFollowUp ? anchor.intent : '';
+  const inheritedQuestionType = isFollowUp ? anchor.sourceQuestionType : '';
+  const inheritedRequestType = isFollowUp ? anchor.requestType : '';
+  const contextualQuery = isFollowUp
+    ? [
+        `Current follow-up: ${visitorMessage}`,
+        anchor.userMessagePreview ? `Previous visitor question: ${anchor.userMessagePreview}` : '',
+        anchor.assistantAnswerPreview ? `Previous AI Ramin answer focus: ${anchor.assistantAnswerPreview}` : '',
+        inheritedIntent ? `Inherited intent: ${inheritedIntent}` : '',
+        inheritedQuestionType ? `Inherited question type: ${inheritedQuestionType}` : '',
+        anchor.selectedStoryTitle ? `Previous lead story: ${anchor.selectedStoryTitle}` : '',
+        anchor.evidenceCardTitles.length ? `Previous evidence anchors: ${anchor.evidenceCardTitles.join('; ')}` : '',
+      ]
+        .filter(Boolean)
+        .join('\n')
+    : '';
+
+  return {
+    schemaVersion: 1,
+    hasHistory: Array.isArray(history) && history.some((message) => normalizeHistoryRole(message?.role)),
+    isFollowUp,
+    followUpReason: isFollowUp ? 'short message depends on previous professional turn' : '',
+    inheritedIntent,
+    inheritedQuestionType,
+    inheritedRequestType,
+    currentRequestType: requestType,
+    deterministicQuestionType: deterministicQueryIntent?.primaryQuestionType ?? '',
+    contextualQuery: summarizeHistoryContent(contextualQuery, MAX_CONVERSATION_CONTEXT_CHARS),
+    previousUserMessagePreview: isFollowUp ? anchor.userMessagePreview : '',
+    previousAnswerPreview: isFollowUp ? anchor.assistantAnswerPreview : '',
+    previousLeadStoryTitle: isFollowUp ? anchor.selectedStoryTitle : '',
+    previousEvidenceCardTitles: isFollowUp ? anchor.evidenceCardTitles : [],
+  };
+}
+
+function buildConversationInheritedRoute(conversationContext) {
+  const intent = conversationContext?.inheritedIntent;
+  if (!INTENT_ROUTE_IDS.has(intent) || !isProfessionalIntent(intent)) return null;
+
+  return {
+    ...getDefaultIntentRouteBooleans(intent),
+    schemaVersion: 1,
+    intent,
+    confidence: 0.76,
+    suggestedTone: getSuggestedTone(intent, conversationContext.inheritedRequestType || 'general_chat'),
+    reason: `inherited from previous ${conversationContext.inheritedIntent} answer because the visitor sent a contextual follow-up`,
+  };
+}
+
+function shouldUseConversationInheritedRoute(route, conversationContext) {
+  if (!conversationContext?.isFollowUp || !conversationContext.inheritedIntent) return false;
+  if (!route) return true;
+  if (route.intent === 'clarification_needed') return true;
+  if (route.intent === 'portfolio_overview' && conversationContext.inheritedIntent !== 'portfolio_overview') return true;
+  return false;
 }
 
 function buildRoutingPresentationPolicy(queryIntent) {
@@ -1348,6 +1566,9 @@ export function buildRoutingObservability({
   const classifier = queryIntent.intentClassifier && typeof queryIntent.intentClassifier === 'object'
     ? queryIntent.intentClassifier
     : null;
+  const conversationContext = queryIntent.conversationContext && typeof queryIntent.conversationContext === 'object'
+    ? queryIntent.conversationContext
+    : null;
   const confidence = typeof classifier?.confidence === 'number'
     ? classifier.confidence
     : getRoutingConfidence(primaryQuestionType, visitorMessage, inferredRequestType);
@@ -1394,6 +1615,7 @@ export function buildRoutingObservability({
           rawPreview: classifier.rawPreview ?? '',
         }
       : null,
+    conversationContext,
     intentRoute,
     fallthroughToPortfolioOverview,
     fallbackReason: classifier?.fallbackReason || (fallthroughToPortfolioOverview ? 'no_specific_route_matched' : ''),
@@ -1438,6 +1660,13 @@ function logAiRaminRoutingObservation(routing) {
             intent: routing.classifier.intent,
             confidence: routing.classifier.confidence,
             fallbackReason: routing.classifier.fallbackReason,
+        }
+        : null,
+      conversationContext: routing.conversationContext
+        ? {
+            isFollowUp: routing.conversationContext.isFollowUp,
+            inheritedIntent: routing.conversationContext.inheritedIntent,
+            inheritedQuestionType: routing.conversationContext.inheritedQuestionType,
           }
         : null,
       fallthroughToPortfolioOverview: routing.fallthroughToPortfolioOverview,
@@ -2277,7 +2506,8 @@ function formatRetrievedChunk(chunk, index) {
 async function loadPortfolioContext(visitorMessage, requestType, queryIntent = classifyQuery(visitorMessage, requestType)) {
   const corpus = await loadAiRaminCorpus();
   const contextCharLimit = toNumber(process.env.AI_RAMIN_CONTEXT_CHARS, DEFAULT_CONTEXT_CHAR_LIMIT);
-  const chunks = retrieveContextChunks(corpus, visitorMessage, requestType, queryIntent);
+  const retrievalMessage = queryIntent.retrievalQuery || visitorMessage;
+  const chunks = retrieveContextChunks(corpus, retrievalMessage, requestType, queryIntent);
   const contextChunks = [];
   const sources = [];
   let remaining = contextCharLimit;
@@ -2295,7 +2525,7 @@ async function loadPortfolioContext(visitorMessage, requestType, queryIntent = c
   const answerableEvidenceCount = chunks
     .slice(0, contextChunks.length)
     .filter((chunk) => chunk.can_answer_from && !['framework', 'inferred'].includes(chunk.source_role)).length;
-  const selectedStory = selectBestStoryForQuestion(visitorMessage, queryIntent, selectedChunks);
+  const selectedStory = selectBestStoryForQuestion(retrievalMessage, queryIntent, selectedChunks);
 
   return {
     text: contextChunks.join('\n\n---\n\n'),
@@ -2306,6 +2536,7 @@ async function loadPortfolioContext(visitorMessage, requestType, queryIntent = c
     truncated: chunks.length > contextChunks.length,
     corpusStats: corpus.stats,
     queryIntent,
+    retrievalMessage,
     selectedStory,
   };
 }
@@ -2449,6 +2680,7 @@ function buildAiRaminDebugTrace({
       guardrailSensitive: portfolioContext.queryIntent.guardrailSensitive,
       confidence: routing?.confidence,
       fallthroughToPortfolioOverview: Boolean(routing?.fallthroughToPortfolioOverview),
+      conversationContext: portfolioContext.queryIntent.conversationContext ?? null,
       answerShape,
     },
     intentRoute: routing?.intentRoute,
@@ -2462,6 +2694,7 @@ function buildAiRaminDebugTrace({
     },
     retrieval: {
       contextSources: portfolioContext.sources,
+      retrievalMessagePreview: truncateForDebug(portfolioContext.retrievalMessage, 420),
       selectedChunkCount: selectedChunks.length,
       selectedChunksByRole: countBy(portfolioContext.chunks, (chunk) => chunk.source_role),
       selectedChunks,
@@ -2753,6 +2986,8 @@ function sendConversationOpenResponse(res, { visitorMessage, hiringMode, request
       contextSources: [],
       contextChunkCount: 0,
       contextTruncated: false,
+      retrievalMessage: visitorMessage,
+      conversationContext: queryIntent.conversationContext ?? null,
       evidenceCardCount: 0,
       answerableEvidenceCount: 0,
       recoveryApplied: false,
@@ -2777,6 +3012,15 @@ function sendConversationOpenResponse(res, { visitorMessage, hiringMode, request
 function isInsufficientContextAnswer(sections) {
   const shortAnswer = String(sections?.short_answer ?? '').toLowerCase();
   return /\b(do not|don't|cannot|can't)\b.*\b(enough|sufficient|verified|portfolio context|context)\b/.test(shortAnswer);
+}
+
+function isPlaceholderAnswer(sections) {
+  const shortAnswer = stripMarkdownFormatting(sections?.short_answer);
+  return (
+    /^\{?\s*(?:\.{3}|…)\s*\}?$/.test(shortAnswer) ||
+    /^(?:todo|tbd|placeholder|draft answer)$/i.test(shortAnswer) ||
+    shortAnswer.length < 12
+  );
 }
 
 function isInsufficientContextText(text) {
@@ -3220,12 +3464,13 @@ export function recoverOverCautiousAnswer(sections, visitorMessage, requestType,
         };
   }
 
-  if (!isInsufficientContextAnswer(sections)) {
+  const shouldRecoverPlaceholderAnswer = isPlaceholderAnswer(sections);
+  if (!isInsufficientContextAnswer(sections) && !shouldRecoverPlaceholderAnswer) {
     return {
       sections,
       recovered: false,
       strategy: 'none',
-      reason: 'answer_not_classified_as_insufficient_context',
+      reason: 'answer_not_classified_as_insufficient_context_or_placeholder',
     };
   }
 
@@ -3246,7 +3491,12 @@ export function recoverOverCautiousAnswer(sections, visitorMessage, requestType,
   }
 
   return recoveredSections
-    ? { sections: recoveredSections, recovered: true, strategy, reason: 'model_answer_was_over_cautious' }
+    ? {
+        sections: recoveredSections,
+        recovered: true,
+        strategy,
+        reason: shouldRecoverPlaceholderAnswer ? 'model_answer_was_placeholder' : 'model_answer_was_over_cautious',
+      }
     : {
         sections,
         recovered: false,
@@ -3387,6 +3637,7 @@ function detectAnswerQualityIssues(sections, portfolioContext) {
     portfolioContext.answerableEvidenceCount >= portfolioContext.queryIntent.retrievalProfile.minimumAnswerableEvidence;
 
   if (isRawStructuredAnswerText(sections?.short_answer)) issues.add('raw_json_short_answer');
+  if (isPlaceholderAnswer(sections)) issues.add('placeholder_answer');
   if (hasLocalSourcePathLeak(answerText)) issues.add('local_source_path_leak');
   if (hasInternalMetadataLeak(answerText)) issues.add('internal_metadata_leak');
   if (hasDuplicatedSuggestedNextActionLabel(sections?.suggested_next_action)) {
@@ -3448,6 +3699,7 @@ export function applyAnswerQualityGate(sections, visitorMessage, requestType, po
           'generic_behavioral_answer',
           'behavioral_story_missing',
           'over_cautious_with_sufficient_evidence',
+          'placeholder_answer',
         ].includes(issue),
       ),
     issues,
@@ -3764,7 +4016,11 @@ function buildIntentClassifierHistorySummary(history) {
     .map((message) => {
       const role = message.role === 'assistant' ? 'assistant' : 'visitor';
       const content = truncateForDebug(message.content, 260);
-      return content ? `${role}: ${content}` : '';
+      const metadata = getHistoryMetadata(message);
+      const route = getHistoryIntentRoute(message);
+      const routeText = route?.intent ? ` [intent=${route.intent}${route.sourceQuestionType ? ` questionType=${route.sourceQuestionType}` : ''}]` : '';
+      const answerShapeText = metadata.answerShape?.primaryQuestionType ? ` [answerShape=${metadata.answerShape.primaryQuestionType}]` : '';
+      return content ? `${role}${routeText}${answerShapeText}: ${content}` : '';
     })
     .filter(Boolean);
 
@@ -3777,6 +4033,7 @@ export function buildAiRaminIntentClassifierPrompt({
   hiringMode,
   requestType,
   deterministicQueryIntent,
+  conversationContext,
 }) {
   const modeConfig = HIRING_MODE_CONFIG[hiringMode] ?? HIRING_MODE_CONFIG[DEFAULT_HIRING_MODE];
   const deterministicIntent = getIntentRouteId(deterministicQueryIntent.primaryQuestionType);
@@ -3819,10 +4076,28 @@ export function buildAiRaminIntentClassifierPrompt({
     '- For product idea plus risks or MVP, choose product_judgment.',
     '- For best, strongest, most impressive product or product he built, choose evidence_lookup.',
     '- Confidence should be below 0.62 only when truly ambiguous.',
+    '- If the conversation context says isFollowUp=true, classify the latest message relative to the inherited intent unless the latest message clearly changes topic or is casual.',
     '',
     `Current lens: ${modeConfig.label}.`,
     `Current inferred request type: ${requestType}.`,
     `Deterministic fallback route: ${deterministicIntent} / ${deterministicQueryIntent.primaryQuestionType}.`,
+    '',
+    'Resolved conversation context:',
+    conversationContext?.isFollowUp
+      ? [
+          `isFollowUp=true`,
+          `inheritedIntent=${conversationContext.inheritedIntent}`,
+          `inheritedQuestionType=${conversationContext.inheritedQuestionType}`,
+          conversationContext.previousUserMessagePreview
+            ? `previousUser=${conversationContext.previousUserMessagePreview}`
+            : '',
+          conversationContext.previousAnswerPreview
+            ? `previousAnswer=${conversationContext.previousAnswerPreview}`
+            : '',
+        ]
+          .filter(Boolean)
+          .join('\n')
+      : 'isFollowUp=false',
     '',
     'Recent chat history:',
     buildIntentClassifierHistorySummary(history),
@@ -3838,6 +4113,7 @@ async function classifyIntentWithModel({
   hiringMode,
   requestType,
   deterministicQueryIntent,
+  conversationContext,
   geminiApiKey,
 }) {
   const modelPath = getGeminiIntentClassifierModelPath();
@@ -3888,6 +4164,7 @@ async function classifyIntentWithModel({
                     hiringMode,
                     requestType,
                     deterministicQueryIntent,
+                    conversationContext,
                   }),
                 },
               ],
@@ -3959,11 +4236,18 @@ export async function resolveAiRaminQueryIntent({
 }) {
   const deterministicQueryIntent = classifyQuery(visitorMessage, requestType);
   const deterministicIntent = getIntentRouteId(deterministicQueryIntent.primaryQuestionType);
+  const conversationContext = buildAiRaminConversationRouteContext({
+    visitorMessage,
+    history,
+    requestType,
+    deterministicQueryIntent,
+  });
 
   if (shouldUseDeterministicIntentShortcut(deterministicQueryIntent)) {
     return {
       queryIntent: {
         ...deterministicQueryIntent,
+        conversationContext,
         intentClassifier: {
           router: 'deterministic_shortcut',
           provider: 'none',
@@ -3985,18 +4269,47 @@ export async function resolveAiRaminQueryIntent({
     hiringMode,
     requestType,
     deterministicQueryIntent,
+    conversationContext,
     geminiApiKey,
   });
   const threshold = getIntentClassifierConfidenceThreshold();
   const route = classification.route;
 
+  const inheritedRoute = buildConversationInheritedRoute(conversationContext);
+  const shouldInheritRoute = shouldUseConversationInheritedRoute(route, conversationContext);
+  if (inheritedRoute && shouldInheritRoute) {
+    const contextualQuery = conversationContext.contextualQuery || visitorMessage;
+    return {
+      queryIntent: buildQueryIntentFromIntentRoute(inheritedRoute, visitorMessage, requestType, {
+        router: 'conversation_context_fallback',
+        ...classification.classifier,
+        used: false,
+        intent: inheritedRoute.intent,
+        confidence: inheritedRoute.confidence,
+        reason: inheritedRoute.reason,
+        fallbackReason: route
+          ? `conversation_context_overrode_${route.intent}`
+          : classification.classifier.fallbackReason || 'conversation_context_inherited_route',
+      }, {
+        conversationContext,
+        retrievalQuery: contextualQuery,
+      }),
+    };
+  }
+
   if (route && route.confidence >= threshold) {
+    const contextualQuery = conversationContext.isFollowUp
+      ? conversationContext.contextualQuery || visitorMessage
+      : visitorMessage;
     return {
       queryIntent: buildQueryIntentFromIntentRoute(route, visitorMessage, requestType, {
         router: 'ai_intent_classifier',
         ...classification.classifier,
         used: true,
         fallbackReason: '',
+      }, {
+        conversationContext,
+        retrievalQuery: contextualQuery,
       }),
     };
   }
@@ -4008,6 +4321,10 @@ export async function resolveAiRaminQueryIntent({
   return {
     queryIntent: {
       ...deterministicQueryIntent,
+      conversationContext,
+      retrievalQuery: conversationContext.isFollowUp
+        ? conversationContext.contextualQuery || visitorMessage
+        : visitorMessage,
       intentClassifier: {
         router: 'deterministic_fallback',
         ...classification.classifier,
@@ -4252,6 +4569,21 @@ function buildVisitorPrompt(visitorMessage, hiringMode, requestType, queryIntent
   if (requestType === 'evidence_lookup') {
     promptReminders.push('Use human-readable proof and public links only; do not expose local source paths or metadata.');
   }
+  const conversationContextLines = queryIntent?.conversationContext?.isFollowUp
+    ? [
+        'Conversation follow-up context:',
+        `Inherited intent: ${queryIntent.conversationContext.inheritedIntent}`,
+        `Inherited question type: ${queryIntent.conversationContext.inheritedQuestionType}`,
+        queryIntent.conversationContext.previousUserMessagePreview
+          ? `Previous visitor question: ${queryIntent.conversationContext.previousUserMessagePreview}`
+          : '',
+        queryIntent.conversationContext.previousAnswerPreview
+          ? `Previous answer focus: ${queryIntent.conversationContext.previousAnswerPreview}`
+          : '',
+        'Answer the latest message as a follow-up to that context. Do not reset to a generic Ramin biography unless the visitor clearly changed topic.',
+        '',
+      ].filter(Boolean)
+    : [];
 
   return [
     `Visitor mode: ${modeConfig.label}`,
@@ -4260,6 +4592,7 @@ function buildVisitorPrompt(visitorMessage, hiringMode, requestType, queryIntent
     `Internal answer technique: ${answerTechnique.id}`,
     `Internal answer frame: ${answerFrame.id}`,
     ...promptReminders.map((reminder) => `Contract reminder: ${reminder}`),
+    ...conversationContextLines,
     '',
     'Answer this visitor message using the structured JSON contract from the system instructions:',
     visitorMessage,
@@ -4428,15 +4761,16 @@ export async function handleAiRaminRequest(req, res) {
 
   const traceId = randomUUID();
   const hiringMode = normalizeHiringMode(payload.hiringMode ?? payload.mode);
-  const requestType = inferRequestType(visitorMessage, payload.requestType);
+  const inferredRequestType = inferRequestType(visitorMessage, payload.requestType);
   const geminiApiKey = getGeminiApiKey();
   const { queryIntent } = await resolveAiRaminQueryIntent({
     visitorMessage,
     history: payload.history,
     hiringMode,
-    requestType,
+    requestType: inferredRequestType,
     geminiApiKey,
   });
+  const requestType = normalizeRequestType(queryIntent.resolvedRequestType) ?? inferredRequestType;
   const includeDebugTrace = shouldIncludeDebugTrace(payload);
   const initialRouting = buildRoutingObservability({
     visitorMessage,
@@ -4661,6 +4995,8 @@ export async function handleAiRaminRequest(req, res) {
       contextSources: portfolioContext.sources,
       contextChunkCount: portfolioContext.chunkCount,
       contextTruncated: portfolioContext.truncated,
+      retrievalMessage: portfolioContext.retrievalMessage,
+      conversationContext: portfolioContext.queryIntent.conversationContext ?? null,
       corpusStats: portfolioContext.corpusStats,
       evidenceCardCount: evidenceCards.length,
       answerableEvidenceCount: portfolioContext.answerableEvidenceCount,

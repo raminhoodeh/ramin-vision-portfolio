@@ -52,6 +52,7 @@ type AiRaminDebugTrace = {
     needsStory?: boolean;
     needsContact?: boolean;
     guardrailSensitive?: boolean;
+    conversationContext?: AiRaminConversationContext | null;
   };
   intentRoute?: AiRaminIntentRoute;
   routing?: AiRaminRoutingTrace;
@@ -64,6 +65,7 @@ type AiRaminDebugTrace = {
   };
   retrieval?: {
     contextSources?: string[];
+    retrievalMessagePreview?: string;
     selectedChunkCount?: number;
     selectedChunksByRole?: Record<string, number>;
     selectedChunks?: Array<{
@@ -101,6 +103,22 @@ type AiRaminDebugTrace = {
     finalSectionCounts?: Record<string, number | boolean>;
   };
 };
+type AiRaminConversationContext = {
+  schemaVersion?: number;
+  hasHistory?: boolean;
+  isFollowUp?: boolean;
+  followUpReason?: string;
+  inheritedIntent?: string;
+  inheritedQuestionType?: string;
+  inheritedRequestType?: string;
+  currentRequestType?: string;
+  deterministicQuestionType?: string;
+  contextualQuery?: string;
+  previousUserMessagePreview?: string;
+  previousAnswerPreview?: string;
+  previousLeadStoryTitle?: string;
+  previousEvidenceCardTitles?: string[];
+};
 type AiRaminRoutingTrace = {
   schemaVersion?: number;
   router?: string;
@@ -116,6 +134,7 @@ type AiRaminRoutingTrace = {
     error?: string;
     rawPreview?: string;
   } | null;
+  conversationContext?: AiRaminConversationContext | null;
   intentRoute?: AiRaminIntentRoute;
   messagePreview?: string;
   explicitRequestType?: string | null;
@@ -184,6 +203,8 @@ type AiRaminSourceMetadata = {
   contextSources: string[];
   contextChunkCount: number;
   contextTruncated: boolean;
+  retrievalMessage?: string;
+  conversationContext?: AiRaminConversationContext | null;
   corpusStats?: {
     chunks?: number;
     source_files_ingested?: number;
@@ -1390,6 +1411,11 @@ function AiRaminInlineDebugDrawer({ response }: { response: AiRaminStructuredRes
             </span>
           ) : null}
           {routingTrace.classifier?.fallbackReason ? <span>{routingTrace.classifier.fallbackReason}</span> : null}
+          {routingTrace.conversationContext?.isFollowUp ? (
+            <span>
+              follow-up from {routingTrace.conversationContext.inheritedIntent || 'prior context'}
+            </span>
+          ) : null}
           <span>{routingTrace.retrievalRan ? 'retrieval ran' : 'retrieval skipped'}</span>
           <span>{routingTrace.modelCalled ? 'model called' : 'model skipped'}</span>
           {routingTrace.fallthroughToPortfolioOverview ? <span>portfolio overview fallthrough</span> : null}
@@ -1990,6 +2016,16 @@ export function AiRaminSection() {
         .map((message) => ({
           role: message.role,
           content: message.content,
+          metadata: message.response
+            ? {
+                requestType: message.response.requestType,
+                mode: message.response.mode,
+                intentRoute: message.response.sourceMetadata?.intentRoute ?? message.response.sourceMetadata?.routing?.intentRoute,
+                answerShape: message.response.sourceMetadata?.answerShape,
+                selectedStory: message.response.sourceMetadata?.selectedStory,
+                evidenceCardTitles: message.response.evidenceCards.map((card) => card.title).slice(0, 6),
+              }
+            : undefined,
         }));
       const userMessage: AiRaminMessage = {
         id: createAiRaminMessageId('user'),

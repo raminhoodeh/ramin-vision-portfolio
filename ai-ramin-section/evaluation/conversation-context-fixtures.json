@@ -1,0 +1,121 @@
+{
+  "schemaVersion": 1,
+  "description": "Stage 3 fixtures for conversation-aware follow-up routing and retrieval context.",
+  "cases": [
+    {
+      "id": "role-fit-tell-me-more",
+      "prompt": "tell me more",
+      "requestType": "general_chat",
+      "history": [
+        {
+          "role": "user",
+          "content": "I have a senior product manager job for Ramin at a B2B SaaS company."
+        },
+        {
+          "role": "assistant",
+          "content": "Ramin looks relevant for a senior PM role because of B2B product work across climate analytics, carbon measurement, and AI-native product systems.",
+          "metadata": {
+            "requestType": "role_fit",
+            "intentRoute": {
+              "intent": "role_fit",
+              "confidence": 0.93,
+              "isSubstantive": true,
+              "needsEvidence": true,
+              "needsRetrieval": true,
+              "needsStructuredModules": true,
+              "suggestedTone": "hiring",
+              "sourceQuestionType": "role_fit",
+              "reason": "previous role fit answer"
+            },
+            "answerShape": {
+              "primaryQuestionType": "role_fit",
+              "answerFrameId": "fit_evidence_validation",
+              "answerFamily": "future_value_from_past_evidence"
+            },
+            "selectedStory": {
+              "title": "GroupM Media Carbon Calculator"
+            },
+            "evidenceCardTitles": [
+              "GroupM Media Carbon Calculator",
+              "Urgentem Element6"
+            ]
+          }
+        }
+      ],
+      "expectedFollowUp": true,
+      "expectedInheritedIntent": "role_fit",
+      "expectedInheritedQuestionType": "role_fit"
+    },
+    {
+      "id": "casual-thanks-after-role-fit",
+      "prompt": "thanks",
+      "requestType": "general_chat",
+      "history": [
+        {
+          "role": "assistant",
+          "content": "Ramin looks relevant for this senior PM role.",
+          "metadata": {
+            "requestType": "role_fit",
+            "intentRoute": {
+              "intent": "role_fit",
+              "confidence": 0.93,
+              "isSubstantive": true,
+              "needsEvidence": true,
+              "needsRetrieval": true,
+              "needsStructuredModules": true,
+              "suggestedTone": "hiring",
+              "sourceQuestionType": "role_fit",
+              "reason": "previous role fit answer"
+            },
+            "answerShape": {
+              "primaryQuestionType": "role_fit"
+            }
+          }
+        }
+      ],
+      "expectedFollowUp": false,
+      "expectedInheritedIntent": "",
+      "expectedInheritedQuestionType": ""
+    },
+    {
+      "id": "product-judgment-risk-follow-up",
+      "prompt": "what risks would he watch?",
+      "requestType": "general_chat",
+      "history": [
+        {
+          "role": "user",
+          "content": "Here is a gym app for creatives. Which parts of Ramin's experience are relevant?"
+        },
+        {
+          "role": "assistant",
+          "content": "The relevant proof combines personal training qualification context, creative-product work through nsso, and AI-native discovery process.",
+          "metadata": {
+            "requestType": "product_judgment",
+            "intentRoute": {
+              "intent": "product_judgment",
+              "confidence": 0.91,
+              "isSubstantive": true,
+              "needsEvidence": true,
+              "needsRetrieval": true,
+              "needsStructuredModules": true,
+              "suggestedTone": "analytical",
+              "sourceQuestionType": "product_judgment",
+              "reason": "previous product scenario answer"
+            },
+            "answerShape": {
+              "primaryQuestionType": "product_judgment",
+              "answerFrameId": "judgement_tradeoff_proof"
+            },
+            "evidenceCardTitles": [
+              "Ramin Qualifications",
+              "nsso"
+            ]
+          }
+        }
+      ],
+      "expectedFollowUp": true,
+      "expectedInheritedIntent": "product_judgment",
+      "expectedInheritedQuestionType": "product_judgment"
+    }
+  ]
+}
