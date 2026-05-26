@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "description": "Stage 5 fixtures for semantic intent routing. These cases validate that the AI classifier, not portfolio-overview fallthrough, separates casual chat from professional portfolio requests.",
+  "cases": [
+    {
+      "id": "social-thanks",
+      "prompt": "thanks, that's helpful",
+      "requestType": "general_chat",
+      "classifierPayload": {
+        "intent": "casual_chat",
+        "confidence": 0.97,
+        "isSubstantive": false,
+        "needsEvidence": false,
+        "needsRetrieval": false,
+        "needsStructuredModules": false,
+        "suggestedTone": "casual",
+        "reason": "visitor acknowledgement, not a portfolio request"
+      },
+      "expectedIntent": "casual_chat",
+      "expectedQuestionType": "conversation_open",
+      "expectedSuggestedTone": "casual",
+      "expectedNeedsRetrieval": false,
+      "expectedShowEvidenceDisclosure": false
+    },
+    {
+      "id": "social-status-check",
+      "prompt": "all good?",
+      "requestType": "general_chat",
+      "classifierPayload": {
+        "intent": "casual_chat",
+        "confidence": 0.95,
+        "isSubstantive": false,
+        "needsEvidence": false,
+        "needsRetrieval": false,
+        "needsStructuredModules": false,
+        "suggestedTone": "casual",
+        "reason": "small-talk status check"
+      },
+      "expectedIntent": "casual_chat",
+      "expectedQuestionType": "conversation_open",
+      "expectedSuggestedTone": "casual",
+      "expectedNeedsRetrieval": false,
+      "expectedShowEvidenceDisclosure": false
+    },
+    {
+      "id": "messy-startup-fit",
+      "prompt": "could he work in a messy early stage startup?",
+      "requestType": "general_chat",
+      "classifierPayload": {
+        "intent": "role_fit",
+        "confidence": 0.9,
+        "isSubstantive": true,
+        "needsEvidence": true,
+        "needsRetrieval": true,
+        "needsStructuredModules": true,
+        "suggestedTone": "hiring",
+        "reason": "role-fit question about work environment"
+      },
+      "expectedIntent": "role_fit",
+      "expectedQuestionType": "role_fit",
+      "expectedSuggestedTone": "hiring",
+      "expectedNeedsRetrieval": true,
+      "expectedShowEvidenceDisclosure": true
+    },
+    {
+      "id": "ai-coach-product-scenario",
+      "prompt": "if we built an AI coach for fitness creators, what would Ramin watch out for?",
+      "requestType": "general_chat",
+      "classifierPayload": {
+        "intent": "product_judgment",
+        "confidence": 0.92,
+        "isSubstantive": true,
+        "needsEvidence": true,
+        "needsRetrieval": true,
+        "needsStructuredModules": true,
+        "suggestedTone": "analytical",
+        "reason": "product scenario and risk question"
+      },
+      "expectedIntent": "product_judgment",
+      "expectedQuestionType": "product_judgment",
+      "expectedSuggestedTone": "analytical",
+      "expectedNeedsRetrieval": true,
+      "expectedShowEvidenceDisclosure": true
+    },
+    {
+      "id": "stakeholder-pushback-story",
+      "prompt": "tell me about a time he handled stakeholder pushback",
+      "requestType": "general_chat",
+      "classifierPayload": {
+        "intent": "behavioral_interview",
+        "confidence": 0.94,
+        "isSubstantive": true,
+        "needsEvidence": true,
+        "needsRetrieval": true,
+        "needsStructuredModules": false,
+        "suggestedTone": "hiring",
+        "reason": "behavioral interview story request"
+      },
+      "expectedIntent": "behavioral_interview",
+      "expectedQuestionType": "behavioral_example",
+      "expectedSuggestedTone": "hiring",
+      "expectedNeedsRetrieval": true,
+      "expectedShowEvidenceDisclosure": true
+    }
+  ]
+}

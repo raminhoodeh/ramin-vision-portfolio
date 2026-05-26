@@ -4,8 +4,10 @@ import { fileURLToPath } from 'node:url';
 import {
   AI_RAMIN_INTENT_ROUTE_IDS,
   AI_RAMIN_SUGGESTED_TONES,
+  buildQueryIntentFromIntentRoute,
   buildRoutingObservability,
   classifyQuery,
+  normalizeAiRaminIntentClassifierPayload,
 } from '../server/aiRaminHandler.mjs';
 
 const ROOT_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -55,7 +57,21 @@ for (const tone of requiredTones) {
 const fixtures = JSON.parse(fixturesSource);
 for (const fixture of fixtures.cases ?? []) {
   const requestType = fixture.requestType ?? 'general_chat';
-  const queryIntent = classifyQuery(fixture.prompt, requestType);
+  const classifierRoute = fixture.classifierPayload
+    ? normalizeAiRaminIntentClassifierPayload(fixture.classifierPayload)
+    : null;
+  const queryIntent = classifierRoute
+    ? buildQueryIntentFromIntentRoute(fixture.classifierPayload, fixture.prompt, requestType, {
+        router: fixture.expectedRouter ?? 'ai_intent_classifier',
+        provider: 'gemini',
+        model: 'gemini-3.5-flash',
+        attempted: true,
+        used: true,
+        intent: classifierRoute.intent,
+        confidence: classifierRoute.confidence,
+        reason: classifierRoute.reason,
+      })
+    : classifyQuery(fixture.prompt, requestType);
   const routing = buildRoutingObservability({
     visitorMessage: fixture.prompt,
     explicitRequestType: fixture.explicitRequestType,

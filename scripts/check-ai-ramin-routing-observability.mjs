@@ -2,8 +2,10 @@ import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
+  buildQueryIntentFromIntentRoute,
   buildRoutingObservability,
   classifyQuery,
+  normalizeAiRaminIntentClassifierPayload,
 } from '../server/aiRaminHandler.mjs';
 
 const ROOT_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -17,20 +19,36 @@ function assert(condition, message) {
 
 for (const fixture of fixtures.cases ?? []) {
   const requestType = fixture.requestType ?? 'general_chat';
-  const queryIntent = classifyQuery(fixture.prompt, requestType);
+  const classifierRoute = fixture.classifierPayload
+    ? normalizeAiRaminIntentClassifierPayload(fixture.classifierPayload)
+    : null;
+  const queryIntent = classifierRoute
+    ? buildQueryIntentFromIntentRoute(fixture.classifierPayload, fixture.prompt, requestType, {
+        router: fixture.expectedRouter ?? 'ai_intent_classifier',
+        provider: 'gemini',
+        model: 'gemini-3.5-flash',
+        attempted: true,
+        used: fixture.expectedRouter !== 'deterministic_clarification',
+        intent: classifierRoute.intent,
+        confidence: classifierRoute.confidence,
+        reason: classifierRoute.reason,
+        fallbackReason: fixture.expectedFallbackReason ?? '',
+      })
+    : classifyQuery(fixture.prompt, requestType);
+  const needsRetrieval = queryIntent.intentRoute?.needsRetrieval ?? queryIntent.primaryQuestionType !== 'conversation_open';
   const routing = buildRoutingObservability({
     visitorMessage: fixture.prompt,
     explicitRequestType: fixture.explicitRequestType,
     inferredRequestType: requestType,
     queryIntent,
-    retrievalRan: queryIntent.primaryQuestionType !== 'conversation_open',
-    modelCalled: queryIntent.primaryQuestionType !== 'conversation_open',
-    contextChunkCount: queryIntent.primaryQuestionType === 'conversation_open' ? 0 : 1,
-    evidenceCardCount: queryIntent.primaryQuestionType === 'conversation_open' ? 0 : 1,
+    retrievalRan: needsRetrieval,
+    modelCalled: needsRetrieval,
+    contextChunkCount: needsRetrieval ? 1 : 0,
+    evidenceCardCount: needsRetrieval ? 1 : 0,
   });
 
   assert(routing.schemaVersion === 1, `${fixture.id}: missing routing schema version`);
-  assert(routing.router === 'deterministic_rules', `${fixture.id}: unexpected router ${routing.router}`);
+  assert(routing.router === (fixture.expectedRouter ?? 'deterministic_rules'), `${fixture.id}: unexpected router ${routing.router}`);
   assert(routing.intentRoute?.schemaVersion === 1, `${fixture.id}: missing intent route contract schema version`);
   assert(typeof routing.intentRoute?.intent === 'string', `${fixture.id}: missing intent route id`);
   assert(typeof routing.intentRoute?.confidence === 'number', `${fixture.id}: missing intent route confidence`);

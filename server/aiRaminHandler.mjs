@@ -4062,8 +4062,10 @@ function getIntentClassifierConfidenceThreshold() {
   );
 }
 
-function shouldUseDeterministicIntentShortcut(queryIntent) {
-  return queryIntent.primaryQuestionType === 'conversation_open' || queryIntent.primaryQuestionType === 'guardrail_boundary';
+export function shouldUseDeterministicIntentShortcut(queryIntent, { geminiApiKey = '' } = {}) {
+  if (queryIntent.primaryQuestionType === 'guardrail_boundary') return true;
+  if (queryIntent.primaryQuestionType === 'conversation_open' && !geminiApiKey) return true;
+  return false;
 }
 
 function buildIntentClassifierHistorySummary(history) {
@@ -4302,7 +4304,7 @@ export async function resolveAiRaminQueryIntent({
     deterministicQueryIntent,
   });
 
-  if (shouldUseDeterministicIntentShortcut(deterministicQueryIntent)) {
+  if (shouldUseDeterministicIntentShortcut(deterministicQueryIntent, { geminiApiKey })) {
     return {
       queryIntent: {
         ...deterministicQueryIntent,
