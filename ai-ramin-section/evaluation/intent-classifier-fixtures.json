@@ -1,0 +1,98 @@
+{
+  "schemaVersion": 1,
+  "description": "Stage 2 fixtures for the AI-backed intent classifier contract. These fixtures validate mocked classifier payloads and prompt examples without making a network call.",
+  "cases": [
+    {
+      "id": "casual-acknowledgement",
+      "prompt": "cool thanks",
+      "requestType": "general_chat",
+      "classifierPayload": {
+        "intent": "casual_chat",
+        "confidence": 0.96,
+        "isSubstantive": false,
+        "needsEvidence": false,
+        "needsRetrieval": false,
+        "needsStructuredModules": false,
+        "suggestedTone": "casual",
+        "reason": "acknowledgement, not a portfolio request"
+      },
+      "expectedIntent": "casual_chat",
+      "expectedQuestionType": "conversation_open",
+      "expectedNeedsRetrieval": false
+    },
+    {
+      "id": "role-fit-follow-up",
+      "prompt": "what about for a senior PM role?",
+      "requestType": "general_chat",
+      "classifierPayload": {
+        "intent_route": {
+          "intent": "Role Fit",
+          "confidence": "0.86",
+          "is_substantive": "true",
+          "needs_evidence": "true",
+          "needs_retrieval": "true",
+          "needs_structured_modules": "true",
+          "suggested_tone": "hiring",
+          "reason": "role-fit follow-up"
+        }
+      },
+      "expectedIntent": "role_fit",
+      "expectedQuestionType": "role_fit",
+      "expectedNeedsRetrieval": true
+    },
+    {
+      "id": "behavioral-hardest-challenge",
+      "prompt": "what's the hardest product challenge that you overcame?",
+      "requestType": "general_chat",
+      "classifierPayload": {
+        "intent": "behavioral_interview",
+        "confidence": 0.93,
+        "isSubstantive": true,
+        "needsEvidence": true,
+        "needsRetrieval": true,
+        "needsStructuredModules": false,
+        "suggestedTone": "hiring",
+        "reason": "behavioral interview story request"
+      },
+      "expectedIntent": "behavioral_interview",
+      "expectedQuestionType": "behavioral_example",
+      "expectedNeedsRetrieval": true
+    },
+    {
+      "id": "best-product-proof",
+      "prompt": "what is the most impressive product Ramin has built?",
+      "requestType": "general_chat",
+      "classifierPayload": {
+        "intent": "evidence_lookup",
+        "confidence": 0.9,
+        "isSubstantive": true,
+        "needsEvidence": true,
+        "needsRetrieval": true,
+        "needsStructuredModules": true,
+        "suggestedTone": "analytical",
+        "reason": "best-supported product proof request"
+      },
+      "expectedIntent": "evidence_lookup",
+      "expectedQuestionType": "strongest_product_proof",
+      "expectedNeedsRetrieval": true
+    },
+    {
+      "id": "product-scenario",
+      "prompt": "Here is a gym app for creatives. What experience is relevant and what risks would he watch?",
+      "requestType": "general_chat",
+      "classifierPayload": {
+        "intent": "product_judgment",
+        "confidence": 0.91,
+        "isSubstantive": true,
+        "needsEvidence": true,
+        "needsRetrieval": true,
+        "needsStructuredModules": true,
+        "suggestedTone": "analytical",
+        "reason": "product scenario and risk analysis request"
+      },
+      "expectedIntent": "product_judgment",
+      "expectedQuestionType": "product_judgment",
+      "expectedNeedsRetrieval": true
+    }
+  ]
+}

@@ -104,6 +104,18 @@ type AiRaminDebugTrace = {
 type AiRaminRoutingTrace = {
   schemaVersion?: number;
   router?: string;
+  classifier?: {
+    provider?: string;
+    model?: string | null;
+    attempted?: boolean;
+    used?: boolean;
+    intent?: string | null;
+    confidence?: number | null;
+    reason?: string;
+    fallbackReason?: string;
+    error?: string;
+    rawPreview?: string;
+  } | null;
   intentRoute?: AiRaminIntentRoute;
   messagePreview?: string;
   explicitRequestType?: string | null;
@@ -1371,6 +1383,13 @@ function AiRaminInlineDebugDrawer({ response }: { response: AiRaminStructuredRes
             <span>{Math.round(routingTrace.confidence * 100)}% route confidence</span>
           ) : null}
           {routingTrace.reason ? <span>{routingTrace.reason}</span> : null}
+          {routingTrace.classifier ? (
+            <span>
+              classifier {routingTrace.classifier.attempted ? 'attempted' : 'skipped'}
+              {routingTrace.classifier.used ? ' and used' : ''}
+            </span>
+          ) : null}
+          {routingTrace.classifier?.fallbackReason ? <span>{routingTrace.classifier.fallbackReason}</span> : null}
           <span>{routingTrace.retrievalRan ? 'retrieval ran' : 'retrieval skipped'}</span>
           <span>{routingTrace.modelCalled ? 'model called' : 'model skipped'}</span>
           {routingTrace.fallthroughToPortfolioOverview ? <span>portfolio overview fallthrough</span> : null}
