@@ -384,7 +384,7 @@ const aiRaminBuildConsiderations = [
     body:
       'Gemini runs behind the local API route so the browser never receives the API key. The model can be swapped through environment configuration without changing the portfolio UI.',
     proof: [
-      { label: 'Default', value: 'gemini-2.5-pro for answers; gemini-3.5-flash for intent routing unless env overrides it' },
+      { label: 'Default', value: 'gemini-3.5-flash for answers and intent routing unless env overrides it' },
       { label: 'Integration', value: 'Answers return model, context-source count, and truncation metadata' },
     ],
   },

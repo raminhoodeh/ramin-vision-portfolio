@@ -5,7 +5,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const DEFAULT_ANSWER_MODEL = 'gemini-2.5-pro';
+const DEFAULT_ANSWER_MODEL = 'gemini-3.5-flash';
 const DEFAULT_INTENT_CLASSIFIER_MODEL = 'gemini-3.5-flash';
 const DEFAULT_INTENT_CLASSIFIER_CONFIDENCE_THRESHOLD = 0.62;
 const INTENT_CLASSIFIER_MAX_OUTPUT_TOKENS = 900;
