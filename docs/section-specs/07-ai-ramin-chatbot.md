@@ -81,14 +81,14 @@ The page should not lead with model novelty. It should lead with hiring usefulne
 
 The upgraded experience should support these hiring modes:
 
-- `Recruiter`: concise screening, role-match summary, strongest proof, gaps to clarify.
+- `Recruiter`: concise screening, role-match summary, relevant examples, gaps to clarify.
 - `Hiring Manager`: deeper examples, delivery evidence, risk judgment, first 90-day view.
 - `Founder`: speed, ownership, ambiguity, judgment under limited resources, builder signal.
 - `AI Product Lead`: Model, Context, Orchestration, Governance, Human depth; evals, guardrails, RAG, agents, MCP, cost and risk.
 - `Investor`: product taste, market thinking, founder-like signal, systems thinking, proof of independent shipping.
 - `Curious Visitor`: plain-English explanation of Ramin, projects, writing, and how the portfolio fits together.
 
-Each mode should change answer emphasis, not evidence truth. A mode can reframe an answer, but it cannot invent stronger proof.
+Each mode should change answer emphasis, not evidence truth. A mode can reframe an answer, but it cannot invent stronger evidence.
 
 ## Request Types
 
@@ -587,7 +587,7 @@ Implemented behavior:
 - `scripts/evaluate-ai-ramin.mjs` mirrors that routing for deterministic offline testing.
 - `scripts/check-ai-ramin-interview-routing.mjs` checks the mirror against the server and checks that eval cases stay aligned with the live routing contract.
 - The routing check requires every question type to have at least one eval case.
-- The routing check catches soft CTA drift, so "Draft brief", "Interview questions", "MVP plan", "Show risks", "Stronger proof", and related follow-up actions stay tied to the right answer shape.
+- The routing check catches soft CTA drift, so "Draft brief", "Interview questions", "MVP plan", "Show risks", and related follow-up actions stay tied to the right answer shape.
 - Debug-only answer-shape metadata remains hidden from normal visitors and appears only through the dev/debug drawer.
 
 ## Stage 7 Acceptance Checklist

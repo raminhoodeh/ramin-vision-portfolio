@@ -27,9 +27,9 @@ function assertExcludes(needle, label) {
 
 assertIncludes('function getAiRaminEvidenceDisclosureKicker', 'evidence disclosure label helper');
 assertIncludes('formatAiRaminSourceCount', 'source count formatting');
-assertIncludes('proof points', 'surfaced proof label');
-assertIncludes('proof in source trail', 'source-backed fallback label');
-assertIncludes('proof not surfaced', 'empty proof fallback label');
+assertIncludes('context notes', 'surfaced context label');
+assertIncludes('source trail available', 'source-backed fallback label');
+assertIncludes('no extra context surfaced', 'empty context fallback label');
 assertIncludes('sourceMetadata?.answerableEvidenceCount', 'answerable source metadata usage');
 assertIncludes("card.confidence === 'verified'", 'verified evidence-card confidence usage');
 assertIncludes("card.confidence === 'local-primary'", 'local-primary evidence-card confidence usage');
@@ -75,6 +75,8 @@ if (!evalCasesSource.includes('"conversation-open-status-check"')) {
 assertExcludes('0 verified', 'AI Ramin UI copy');
 assertExcludes('evidence · ${proofCount} verified', 'old evidence disclosure label');
 assertExcludes('verified`', 'old bare verified-count template');
+assertExcludes('Stronger proof', 'retired stronger-proof CTA');
+assertExcludes('ask_stronger_proof', 'retired stronger-proof action');
 assertExcludes('AiRaminInlineEvidenceLookupModule', 'separate evidence lookup dropdown');
 assertExcludes('<AiRaminInlineEvidenceDisclosure response={response} defaultOpen=', 'auto-open evidence disclosure');
 

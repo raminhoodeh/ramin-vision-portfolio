@@ -334,8 +334,7 @@ type AiRaminSoftCtaId =
   | 'compare_projects'
   | 'turn_into_mvp_plan'
   | 'show_risks'
-  | 'use_in_hiring_brief'
-  | 'ask_stronger_proof';
+  | 'use_in_hiring_brief';
 type AiRaminSoftCta = {
   id: AiRaminSoftCtaId;
   label: string;
@@ -407,7 +406,7 @@ const aiRaminBuildConsiderations = [
       'Interview-style answers can be shaped with STAR, situation-complication-resolution, product-sense framing, and evidence-versus-inference separation.',
     proof: [
       { label: 'Use case', value: 'Role-fit, first-90-days, AI guardrails, leadership, and project-relevance questions' },
-      { label: 'Output', value: 'Short answer first, then relevant proof when it helps the visitor decide' },
+      { label: 'Output', value: 'Short answer first, then relevant context when it helps the visitor decide' },
     ],
   },
   {
@@ -427,14 +426,14 @@ const requestTypeLabels: Record<AiRaminRequestType, string> = {
   general_chat: 'General',
   role_fit: 'Role fit',
   product_judgment: 'Product judgment',
-  evidence_lookup: 'Find proof',
+  evidence_lookup: 'Evidence lookup',
   hiring_brief: 'Hiring brief',
 };
 
 const requestTypeTemplates: Record<AiRaminRequestType, string> = {
   general_chat: '',
   role_fit:
-    'Analyze this AI Product Manager role for Ramin. Role description: [paste role description]. Return strongest proof, gaps, and interview focus.',
+    'Analyze this AI Product Manager role for Ramin. Role description: [paste role description]. Return relevant examples, gaps, and interview focus.',
   product_judgment:
     'Use Ramin\'s AI-Native Product OS on this product scenario: [paste AI product idea or risk]. Include Model, Context, Orchestration, Governance, and Human layers.',
   evidence_lookup:
@@ -447,7 +446,7 @@ const aiRaminLoadingMessages = [
   'Reading the portfolio context...',
   'Pondering...',
   "Analysing Ramin's experiences...",
-  'Mapping proof to the question...',
+  'Mapping context to the question...',
   'Reviewing product judgement examples...',
   'Looking for the cleanest evidence...',
   'Separating evidence from inference...',
@@ -464,7 +463,6 @@ const softCtaLabels: Record<AiRaminSoftCtaId, string> = {
   turn_into_mvp_plan: 'MVP plan',
   show_risks: 'Show risks',
   use_in_hiring_brief: 'Use in brief',
-  ask_stronger_proof: 'Stronger proof',
 };
 
 const confidenceLabels: Record<AiRaminEvidenceConfidence, string> = {
@@ -618,22 +616,18 @@ function getAiRaminEvidenceDisclosureKicker(response: AiRaminStructuredResponse,
   const sourceLabel = formatAiRaminSourceCount(counts.sourceCount);
 
   if (counts.proofCount > 0) {
-    return `${sourceLabel} · ${counts.proofCount} ${counts.proofCount === 1 ? 'proof point' : 'proof points'}`;
+    return `${sourceLabel} · ${counts.proofCount} ${counts.proofCount === 1 ? 'context note' : 'context notes'}`;
   }
 
   if (counts.sourcedProofCount > 0 || counts.answerableSourceCount > 0) {
-    return `${sourceLabel} · proof in source trail`;
+    return `${sourceLabel} · source trail available`;
   }
 
-  return `${sourceLabel} · proof not surfaced`;
+  return `${sourceLabel} · no extra context surfaced`;
 }
 
 function getAiRaminMinimalWeakAnswerCtas(_response: AiRaminStructuredResponse): AiRaminSoftCta[] {
-  const ctas: AiRaminSoftCta[] = [];
-
-  ctas.push(makeSoftCta('ask_stronger_proof'));
-
-  return ctas.slice(0, 2);
+  return [];
 }
 
 function findHiringMode(mode: AiRaminHiringModeId): AiRaminHiringMode {
@@ -681,14 +675,7 @@ function getAiRaminSoftCtas(response: AiRaminStructuredResponse): AiRaminSoftCta
   if (response.requestType === 'evidence_lookup') {
     return [
       makeSoftCta('use_in_hiring_brief'),
-      makeSoftCta('ask_stronger_proof'),
     ].slice(0, 3);
-  }
-
-  if (response.requestType === 'hiring_brief') {
-    return [
-      makeSoftCta('ask_stronger_proof'),
-    ].slice(0, 2);
   }
 
   return [
@@ -712,7 +699,7 @@ function buildHiringBriefPrompt(roleContext: string, response: AiRaminStructured
       'Role-fit summary:',
       roleFit.role_summary,
       '',
-      'Strongest proof:',
+      'Relevant examples:',
       ...[...roleFit.strongest_work_evidence, ...roleFit.strongest_project_evidence].map((item) => `- ${item}`),
       '',
       'Questions or gaps:',
@@ -1546,8 +1533,8 @@ function AiRaminInlineEvidenceDisclosure({
         ) : null}
         {proofItems.length ? (
           <section className="ai-ramin-evidence-disclosure-section">
-            <span>Strongest proof</span>
-            <AiRaminInlineList label="Proof" items={proofItems} limit={presentation.isWeak ? 2 : 3} />
+            <span>Supporting context</span>
+            <AiRaminInlineList label="Context" items={proofItems} limit={presentation.isWeak ? 2 : 3} />
           </section>
         ) : null}
         {!presentation.isWeak && supportingItems.length ? (
@@ -2199,7 +2186,7 @@ export function AiRaminSection() {
       if (action === 'analyze_role_fit') {
         setSelectedRequestType('general_chat');
         fillComposer(
-          'Analyze this role for Ramin. Role description: [paste role description]. Return strongest proof, likely gaps, and interview focus.',
+          'Analyze this role for Ramin. Role description: [paste role description]. Return relevant examples, likely gaps, and interview focus.',
         );
         return;
       }
@@ -2269,26 +2256,11 @@ export function AiRaminSection() {
             'Context:',
             comparisonContext,
             '',
-            'Return strongest matching projects, proof strength, and gaps or questions.',
+            'Return the most relevant matching projects, useful context, and gaps or questions.',
           ].join('\n'),
           { requestType: 'evidence_lookup' },
         );
         return;
-      }
-
-      if (action === 'ask_stronger_proof') {
-        const proofContext = response.evidenceLookupAnalysis?.query_summary || response.sections.short_answer;
-        void sendMessage(
-          [
-            'What stronger verified proof would make this answer more convincing to a hiring manager?',
-            '',
-            'Current context:',
-            proofContext,
-            '',
-            'Separate available proof from missing evidence.',
-          ].join('\n'),
-          { requestType: 'evidence_lookup' },
-        );
       }
     },
     [fillComposer, sendMessage],

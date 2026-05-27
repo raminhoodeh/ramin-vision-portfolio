@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Ramin Stage 5 Fixture</title>
+    <style>
+      [data-testid='vision-loading-screen'] {
+        display: none !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script>
+      const originalFetch = window.fetch.bind(window);
+      const baseEvidenceCards = [
+        {
+          title: 'Proud Accomplishment - GroupM Carbon Calculator',
+          type: 'work',
+          summary: 'Evidence of turning carbon methodology into a product workflow with commercial stakeholders.',
+          source_path: 'ai-ramin-section/canonical/work-experiences/groupm-carbon-calculator.md',
+          public_url: '',
+          confidence: 'local-primary',
+        },
+        {
+          title: 'AI-Native Product OS',
+          type: 'project',
+          summary: 'Evidence of AI product orchestration, retrieval context, evals, and guardrail thinking.',
+          source_path: 'ai-ramin-section/canonical/projects/ai-native-product-os.md',
+          public_url: '',
+          confidence: 'verified',
+        },
+        {
+          title: 'NSSO Review Mode',
+          type: 'project',
+          summary: 'Evidence of AI governance UX, review flows, and confidence-bound automation.',
+          source_path: 'ai-ramin-section/story-bank/product-judgement/nsso-review-mode-ai-governance.md',
+          public_url: '',
+          confidence: 'verified',
+        },
+      ];
+
+      function sections(shortAnswer) {
+        return {
+          short_answer: shortAnswer,
+          verified_proof: [
+            'GroupM Carbon Calculator shows data-to-product delivery around carbon methodology.',
+            'AI-Native Product OS shows hands-on orchestration, retrieval, eval, and guardrail work.',
+          ],
+          inferred_fit: ['Strong fit for AI PM roles that need evidence-led discovery and model governance.'],
+          confidential_boundary: ['Do not infer private Bayut or employer-confidential delivery details.'],
+          open_questions: ['Validate current team scope, domain priority, and expected technical depth.'],
+          suggested_next_action: 'Use the most relevant context in a hiring conversation.',
+        };
+      }
+
+      function sourceMetadata() {
+        return {
+          contextSources: ['canonical/profile.md', 'canonical/projects/ai-native-product-os.md'],
+          contextChunkCount: 8,
+          contextTruncated: false,
+          corpusStats: { chunks: 64, source_files_ingested: 50 },
+          evidenceCardCount: baseEvidenceCards.length,
+        };
+      }
+
+      function responseFor(message) {
+        const lower = message.toLowerCase();
+        const requestType = lower.includes('casual')
+          ? 'general_chat'
+          : lower.includes('brief')
+          ? 'hiring_brief'
+          : lower.includes('evidence') || lower.includes('proof')
+            ? 'evidence_lookup'
+            : lower.includes('mvp') || lower.includes('product')
+              ? 'product_judgment'
+              : 'role_fit';
+        const base = {
+          mode: 'hiring-manager',
+          requestType,
+          model: 'stage5-fixture',
+          evidenceCards: baseEvidenceCards,
+          sourceMetadata: sourceMetadata(),
+        };
+
+        if (requestType === 'general_chat') {
+          return {
+            ...base,
+            answer:
+              '## Short answer\nAI Ramin answers from a curated portfolio corpus and keeps proof available without turning the page into a dashboard.',
+            sections: sections('AI Ramin answers from curated portfolio context.'),
+            briefSeed: null,
+          };
+        }
+
+        if (requestType === 'role_fit') {
+          return {
+            ...base,
+            answer:
+              '## Short answer\nRamin fits best where AI product work needs evidence-led delivery, commercial judgement, and explicit guardrails.\n\n## Verified proof\n- GroupM Carbon Calculator\n- AI-Native Product OS',
+            sections: sections('Ramin fits AI PM roles needing orchestration, delivery, and guardrails.'),
+            roleFitAnalysis: {
+              role_summary: 'AI Product Manager role focused on first-90-days delivery, orchestration, and trustworthy AI workflows.',
+              strongest_work_evidence: ['GroupM Carbon Calculator', 'Urgentem climate data product work'],
+              strongest_project_evidence: ['AI-Native Product OS', 'NSSO Review Mode'],
+              ai_pm_strengths: ['Evidence-led product judgement', 'Guardrail-first AI workflow design'],
+              likely_gaps_or_questions: ['Clarify depth of hands-on model ownership', 'Clarify current domain priority'],
+              first_90_days: ['Map user workflow and trust risks', 'Ship narrow eval-backed workflow'],
+              interview_questions: ['How would you decide where automation should stop?', 'Which proof best maps to this role?'],
+              hiring_brief_handoff: 'Use the work and project proof as the hiring brief spine.',
+            },
+            briefSeed: null,
+          };
+        }
+
+        if (requestType === 'product_judgment') {
+          return {
+            ...base,
+            answer:
+              '## Short answer\nStart with a narrow AI workflow, verify source quality, and keep human review near high-impact decisions.',
+            sections: sections('Use a narrow MVP with evals, source context, and human review.'),
+            productJudgmentAnalysis: {
+              scenario_summary: 'AI concierge feature for a high-trust workflow where unsupported answers would damage confidence.',
+              model_layer: ['Use a fast model for routing and a stronger model for final synthesis.'],
+              context_layer: ['Retrieve only source-grounded portfolio or product context.'],
+              orchestration_layer: ['Separate classify, retrieve, draft, and verify steps.'],
+              governance_layer: ['Log unsupported claims and require review for low-confidence outputs.'],
+              human_layer: ['Let users inspect evidence before acting.'],
+              recommended_mvp_path: ['Prototype one workflow', 'Run offline evals before launch'],
+              riskiest_assumptions: ['Users trust the answer when evidence is visible', 'Retrieval is precise enough'],
+              eval_and_guardrail_plan: ['Track unsupported-answer rate', 'Add refusal tests and review flags'],
+              key_tradeoffs: ['Speed vs trust', 'Automation vs user control'],
+              next_questions: ['What action can the AI safely trigger?', 'What proof must be visible?'],
+            },
+            briefSeed: null,
+          };
+        }
+
+        if (requestType === 'evidence_lookup') {
+          return {
+            ...base,
+            answer:
+              '## Short answer\nThe most relevant context is a combination of work evidence and self-directed AI product systems.',
+            sections: sections('The most relevant context is GroupM plus AI-Native Product OS.'),
+            evidenceLookupAnalysis: {
+              query_summary: 'Verified proof for AI product judgement and delivery.',
+              strongest_verified_proof: ['GroupM Carbon Calculator', 'AI-Native Product OS'],
+              supporting_evidence: ['NSSO Review Mode', 'Urgentem climate data product work'],
+              public_links: ['https://raminhoodeh.com/#projects'],
+              source_filters: ['work', 'project', 'story-bank'],
+              confidence_notes: ['Work evidence is local primary; project evidence is public-safe.'],
+              missing_evidence: ['External references should be reviewed before public use.'],
+              suggested_next_actions: ['Use the proof in a hiring brief', 'Ask for stronger public proof if needed'],
+            },
+            briefSeed: null,
+          };
+        }
+
+        return {
+          ...base,
+          answer:
+            '## Hiring brief\nRamin is strongest for AI product roles that need source-grounded systems, product judgement, and delivery discipline.',
+          sections: sections('Copy-ready hiring brief for Ramin.'),
+          briefSeed: {
+            mode: 'hiring-manager',
+            requestType: 'hiring_brief',
+            headline: 'Hiring brief: Ramin Hoodeh for AI Product Manager',
+            whyRaminFits:
+              'Ramin combines hands-on AI product orchestration with commercial product delivery and a clear evidence-versus-inference operating style.',
+            mostRelevantProof: ['GroupM Carbon Calculator', 'AI-Native Product OS'],
+            relevantProjects: ['NSSO Review Mode', 'Qadam'],
+            inferredStrengths: ['AI workflow design', 'Guardrail-first product judgement'],
+            risksOrQuestions: ['Clarify exact model ownership expectations', 'Validate domain fit'],
+            evidenceCardTitles: baseEvidenceCards.map((card) => card.title),
+            selectedProofAnchors: ['GroupM Carbon Calculator', 'AI-Native Product OS'],
+            suggestedInterviewFocus: ['Ask how he sets AI guardrails', 'Ask how he sequences first 90 days'],
+            contactCta: 'Use the Contact section to confirm role-specific fit with Ramin.',
+          },
+        };
+      }
+
+      window.fetch = async (input, init) => {
+        const url = typeof input === 'string' ? input : input.url;
+        if (url.endsWith('/api/ai-ramin')) {
+          const payload = JSON.parse(init?.body || '{}');
+          return new Response(JSON.stringify(responseFor(String(payload.message || ''))), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          });
+        }
+        return originalFetch(input, init);
+      };
+
+      function waitFor(predicate, timeout = 6000) {
+        const started = Date.now();
+        return new Promise((resolve, reject) => {
+          const tick = () => {
+            if (predicate()) {
+              resolve();
+              return;
+            }
+            if (Date.now() - started > timeout) {
+              reject(new Error('Timed out waiting for Stage 5 fixture state.'));
+              return;
+            }
+            requestAnimationFrame(tick);
+          };
+          tick();
+        });
+      }
+
+      function setComposerValue(value) {
+        const input = document.querySelector('#ai-ramin-page-prompt');
+        const setter = Object.getOwnPropertyDescriptor(HTMLTextAreaElement.prototype, 'value').set;
+        setter.call(input, value);
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+      }
+
+      async function sendFixtureMessage(value, expectedModule) {
+        await waitFor(() => document.querySelector('#ai-ramin-page-prompt'));
+        setComposerValue(value);
+        document.querySelector('.ai-ramin-composer').dispatchEvent(new SubmitEvent('submit', { bubbles: true, cancelable: true }));
+        await waitFor(() => [...document.querySelectorAll('.ai-ramin-inline-module summary span')].some((node) => node.textContent === expectedModule));
+      }
+
+      window.__runAiRaminStage5Fixture = async () => {
+        await waitFor(() => document.querySelector('#ai-ramin-page-prompt'));
+        await sendFixtureMessage('Casual overview question.', 'Grounded answer');
+        await sendFixtureMessage('Analyze this role for Ramin.', 'Role fit');
+        await sendFixtureMessage('Give product judgment for an AI MVP.', 'Product judgment');
+        await sendFixtureMessage('Find evidence for AI product work.', 'Evidence lookup');
+        await sendFixtureMessage('Draft a hiring brief.', 'Hiring brief');
+        await waitFor(() => document.querySelectorAll('.ai-ramin-inline-module').length >= 8);
+        document.documentElement.dataset.stage5Ready = 'true';
+      };
+
+      window.addEventListener('load', () => {
+        window.location.hash = 'ai-ramin';
+        setTimeout(() => {
+          window.__runAiRaminStage5Fixture().catch((error) => {
+            document.documentElement.dataset.stage5Error = error.message;
+          });
+        }, 600);
+      });
+    </script>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

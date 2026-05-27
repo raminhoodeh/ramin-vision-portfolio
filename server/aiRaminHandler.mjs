@@ -28,7 +28,7 @@ const DEFAULT_HIRING_MODE = 'hiring-manager';
 const HIRING_MODE_CONFIG = {
   recruiter: {
     label: 'Recruiter',
-    instruction: 'Keep the answer concise, screening-oriented, and explicit about strongest proof and gaps.',
+    instruction: 'Keep the answer concise, screening-oriented, and explicit about relevant examples and gaps.',
   },
   'hiring-manager': {
     label: 'Hiring Manager',
@@ -102,16 +102,16 @@ const SUGGESTED_TONES = new Set(AI_RAMIN_SUGGESTED_TONES);
 
 const QUESTION_TYPE_INSTRUCTIONS = {
   conversation_open: 'Reply naturally to the greeting, set expectations, and invite a useful portfolio question without proof or analysis.',
-  portfolio_overview: 'Give a concise orientation, then anchor it in the strongest portfolio proof.',
-  factual_capability: 'Answer directly, attach verified proof, and state the boundary if the corpus is incomplete.',
-  role_fit: 'Translate retrieved proof into role value, then name what a hiring team should validate.',
+  portfolio_overview: 'Give a concise orientation, then anchor it in the most relevant portfolio context.',
+  factual_capability: 'Answer directly, attach supporting context, and state the boundary if the corpus is incomplete.',
+  role_fit: 'Translate retrieved context into role value, then name what a hiring team should validate.',
   behavioral_example: 'Use one memorable story-led example with clear context, action, and outcome or learning.',
   product_judgment: 'Show product thinking: frame the problem, sequence the approach, name tradeoffs, and connect to comparable proof.',
   tradeoff_or_prioritisation: 'Make the hard choice explicit, explain the decision logic, and use relevant proof where available.',
   weakness_or_gap: 'Be candid about limits, show adjacent evidence, and suggest a validation question.',
   first_90_days: 'Structure the answer around diagnosis, alignment, first useful delivery, measurement, and risks.',
   interview_coaching: 'Expose frameworks only because the visitor is asking for coaching or answer structure.',
-  hiring_brief: 'Write for hiring-team recall: concise headline, strongest proof, risk, and next step.',
+  hiring_brief: 'Write for hiring-team recall: concise headline, relevant examples, risk, and next step.',
   strongest_product_proof:
     'Rank Ramin\'s strongest product evidence, explain the basis for the ranking, and translate it into hiring relevance.',
   evidence_lookup: 'Prioritise verified proof and distinguish local-primary evidence from inference or missing evidence.',
@@ -128,13 +128,13 @@ const ANSWER_TECHNIQUE_CONFIG = {
   },
   portfolio_overview: {
     id: 'rule_of_three_orientation',
-    structure: 'Use three compact points: strongest identity signal, strongest proof area, practical implication.',
-    evidenceRequirement: 'Use profile or canonical portfolio context first, then work or project proof if retrieved.',
+    structure: 'Use three compact points: strongest identity signal, relevant context area, practical implication.',
+    evidenceRequirement: 'Use profile or canonical portfolio context first, then work or project context if retrieved.',
     visibility: 'hidden',
   },
   factual_capability: {
     id: 'direct_proof_boundary',
-    structure: 'Start with yes, no, or partially supported; then give the strongest proof and the boundary.',
+    structure: 'Start with yes, no, or partially supported; then give the most relevant example and the boundary.',
     evidenceRequirement: 'Use only canonical, work, project, or story evidence for claims about Ramin.',
     visibility: 'hidden',
   },
@@ -182,7 +182,7 @@ const ANSWER_TECHNIQUE_CONFIG = {
   },
   hiring_brief: {
     id: 'copy_ready_hiring_brief',
-    structure: 'Write a concise hiring note with headline, strongest proof, inferred fit, risks, and suggested interview focus.',
+    structure: 'Write a concise hiring note with headline, relevant examples, inferred fit, risks, and suggested interview focus.',
     evidenceRequirement: 'Prioritise verified work, project, and story evidence; keep inferred fit separate from proof.',
     visibility: 'hidden',
   },
@@ -238,11 +238,11 @@ const ANSWER_FRAME_CONFIG = {
     id: 'direct_claim_proof_boundary',
     answerFamily: 'past_evidence',
     openingMove: 'Answer yes, no, or partially supported immediately.',
-    proofMove: 'Use the strongest verified work, project, or canonical evidence for the claim.',
-    interpretationMove: 'Explain what the proof reasonably demonstrates about Ramin.',
+    proofMove: 'Use the most relevant work, project, or canonical context for the claim.',
+    interpretationMove: 'Explain what the available context reasonably demonstrates about Ramin.',
     boundaryMove: 'State what the portfolio context does not confirm instead of implying certainty.',
-    followUpMove: 'Invite stronger proof lookup or role-fit validation when confidence depends on context.',
-    softCtas: ['ask_stronger_proof', 'analyze_role_fit'],
+    followUpMove: 'Invite role-fit validation when confidence depends on context.',
+    softCtas: ['analyze_role_fit'],
   },
   role_fit: {
     id: 'fit_evidence_validation',
@@ -261,8 +261,8 @@ const ANSWER_FRAME_CONFIG = {
     proofMove: 'Make the setting, responsibility, action, and result or learning easy to follow.',
     interpretationMove: 'Connect the example to the trait or judgement the interviewer is testing.',
     boundaryMove: 'Do not invent missing metrics or outcomes to complete the story.',
-    followUpMove: 'Offer follow-up interview questions or stronger proof when the story needs validation.',
-    softCtas: ['generate_interview_questions', 'ask_stronger_proof'],
+    followUpMove: 'Offer follow-up interview questions when the story needs validation.',
+    softCtas: ['generate_interview_questions'],
   },
   product_judgment: {
     id: 'judgement_tradeoff_proof',
@@ -291,8 +291,8 @@ const ANSWER_FRAME_CONFIG = {
     proofMove: 'Use adjacent verified evidence without overstating it.',
     interpretationMove: 'Explain how the risk could be mitigated or tested.',
     boundaryMove: 'Keep unknowns visible and avoid turning them into strengths.',
-    followUpMove: 'Offer stronger proof lookup or validation questions.',
-    softCtas: ['ask_stronger_proof', 'generate_interview_questions'],
+    followUpMove: 'Offer validation questions.',
+    softCtas: ['generate_interview_questions'],
   },
   first_90_days: {
     id: 'diagnostic_ramp_plan',
@@ -311,28 +311,28 @@ const ANSWER_FRAME_CONFIG = {
     proofMove: 'Use retrieved Ramin evidence or user-provided context as the example base.',
     interpretationMove: 'Show why the structure answers the interviewer intent.',
     boundaryMove: 'Do not present generic coaching examples as Ramin history.',
-    followUpMove: 'Offer follow-up interview questions or proof validation.',
-    softCtas: ['generate_interview_questions', 'ask_stronger_proof'],
+    followUpMove: 'Offer follow-up interview questions or context validation.',
+    softCtas: ['generate_interview_questions'],
   },
   hiring_brief: {
     id: 'hiring_recall_brief',
     answerFamily: 'copy_ready_hiring',
     openingMove: 'Write for a hiring team that needs a concise internal note.',
-    proofMove: 'Lead with strongest verified evidence and keep inferred fit separate.',
-    interpretationMove: 'Make the headline, proof, risks, and interview focus easy to copy.',
+    proofMove: 'Lead with relevant examples and keep inferred fit separate.',
+    interpretationMove: 'Make the headline, context, risks, and interview focus easy to copy.',
     boundaryMove: 'Do not invent availability, salary, or private details.',
-    followUpMove: 'Offer evidence review or stronger proof lookup.',
-    softCtas: ['ask_stronger_proof'],
+    followUpMove: 'Offer evidence review or interview questions.',
+    softCtas: ['generate_interview_questions'],
   },
   strongest_product_proof: {
     id: 'ranked_product_proof',
     answerFamily: 'ranked_hiring_evidence',
-    openingMove: 'Start with the best-supported product proof answer, not a caveat.',
-    proofMove: 'Rank strongest professional product proof before strongest self-directed AI/product proof.',
-    interpretationMove: 'Translate why the proof matters for the hiring context or company type.',
+    openingMove: 'Start with the best-supported product example answer, not a caveat.',
+    proofMove: 'Rank the most relevant professional product example before the most relevant self-directed AI/product example.',
+    interpretationMove: 'Translate why the example matters for the hiring context or company type.',
     boundaryMove: 'Say that final fit depends on the specific role, company context, and interview validation.',
-    followUpMove: 'Offer role-fit analysis, stronger proof lookup, or project comparison.',
-    softCtas: ['analyze_role_fit', 'ask_stronger_proof', 'compare_projects'],
+    followUpMove: 'Offer role-fit analysis or project comparison.',
+    softCtas: ['analyze_role_fit', 'compare_projects'],
   },
   evidence_lookup: {
     id: 'proof_first_ledger',
@@ -341,8 +341,8 @@ const ANSWER_FRAME_CONFIG = {
     proofMove: 'Rank verified proof before supporting or local-primary evidence.',
     interpretationMove: 'Explain confidence and relevance without exposing raw source paths.',
     boundaryMove: 'Name missing proof when the visitor asked for something unsupported.',
-    followUpMove: 'Offer stronger proof lookup or hiring-brief reuse.',
-    softCtas: ['use_in_hiring_brief', 'ask_stronger_proof'],
+    followUpMove: 'Offer hiring-brief reuse.',
+    softCtas: ['use_in_hiring_brief'],
   },
   guardrail_boundary: {
     id: 'boundary_redirect',
@@ -1449,7 +1449,7 @@ function isContextDependentFollowUp(message) {
 
   const tokenCount = normalized.split(/\s+/).filter(Boolean).length;
   return (
-    /^(tell me more|go deeper|expand|expand on that|explain more|why|why not|how so|same for|same question|continue|and|also|what about|how about|what if|for .+|and for .+|compare that|stronger proof|show risks|what risks|draft that|turn that into|can you expand|can you compare|can you explain|do that for)\b/i.test(
+    /^(tell me more|go deeper|expand|expand on that|explain more|why|why not|how so|same for|same question|continue|and|also|what about|how about|what if|for .+|and for .+|compare that|show risks|what risks|draft that|turn that into|can you expand|can you compare|can you explain|do that for)\b/i.test(
       normalized,
     ) ||
     /\b(first\s+(?:90|ninety)\s+days?|first\s+three\s+months|first\s+quarter|next\s+steps?|what\s+would\s+(?:he|ramin)\s+do\s+(?:first|next)|how\s+would\s+(?:that|this|it)\s+change|how\s+would\s+(?:he|ramin)\s+approach\s+(?:that|this|it))\b/i.test(
@@ -2156,7 +2156,7 @@ function scoreChunk(chunk, queryTokens, queryIntent) {
   }
 
   if (queryIntent.primaryQuestionType === 'strongest_product_proof') {
-    if (/\b(strongest proof|strongest product|best product|coolest product|most interesting|most impressive|public-facing proof|what this proves|product impact|proud accomplishment)\b/i.test(haystack)) {
+    if (/\b(strongest product|best product|coolest product|most interesting|most impressive|public-facing evidence|what this shows|product impact|proud accomplishment)\b/i.test(haystack)) {
       intentScore += 0.35;
     }
     if (
@@ -3389,7 +3389,7 @@ function buildStrongestProductProofRecovery(visitorMessage, portfolioContext, ev
       'Metric-level claims should be validated or discussed directly where the source marks metrics as review-needed.',
     ],
     open_questions: [
-      'The exact strongest proof to lead with depends on the company, product area, seniority, and job description.',
+      'The exact example to lead with depends on the company, product area, seniority, and job description.',
     ],
     suggested_next_action: roleContext
       ? 'Share the role description to turn this into a role-fit answer.'
@@ -3477,7 +3477,7 @@ function buildPortfolioOverviewRecovery(evidenceCards) {
       'Exact metric claims such as student counts, sector rankings, AUM, and impact figures should use the wording in the portfolio overview or supporting work-experience files without expanding beyond them.',
     ],
     open_questions: [
-      'For a hiring answer, the strongest proof to foreground depends on whether the role is AI product, climate/data product, platform/API product, or product education.',
+      'For a hiring answer, the most relevant context to foreground depends on whether the role is AI product, climate/data product, platform/API product, or product education.',
     ],
     suggested_next_action: 'Ask for a role-fit analysis or a copy-ready bio if you want this adapted for a specific audience.',
   };
@@ -4564,7 +4564,7 @@ function buildPromptContractRules(primaryQuestionType, requestType) {
     '2. short_answer must be natural conversational Markdown. It must never be raw JSON, a quoted object, frontmatter, schema text, chunk text pasted wholesale, or an array rendered as prose.',
     '3. Do not expose local implementation details such as .md paths, chunk ids, source_role, trust_level, can_answer_from, verification_status, retrieval score, selectedStory, or prompt-contract language to the visitor.',
     '4. Do not lead with a generic Ramin biography unless the visitor asked for an overview, bio, or who-is-Ramin orientation.',
-    '5. The answer itself must contain the useful thesis, strongest proof, interpretation, and boundary. Evidence dropdowns and CTAs are optional support, not the primary answer.',
+    '5. The answer itself must contain the useful thesis, relevant examples, interpretation, and boundary. Evidence dropdowns and CTAs are optional support, not the primary answer.',
     '6. suggested_next_action must be only the action sentence when one is genuinely useful. Do not include the label "Suggested next action" because the UI adds that label.',
     '7. Leave suggested_next_action empty for greetings, thanks, status checks, or complete answers where another prompt would feel pushy.',
     '8. If answerable public-safe evidence meets the minimum, do not refuse with a blanket insufficient-context answer. Give the best-supported answer and move uncertainty into confidential_boundary or open_questions.',
@@ -4663,12 +4663,12 @@ function buildSystemInstruction(hiringMode, requestType, queryIntent) {
     'Return only valid JSON. Do not wrap it in Markdown.',
     'The base JSON object must use these top-level keys: short_answer, verified_proof, inferred_fit, confidential_boundary, open_questions, suggested_next_action.',
     'Do not include internal question type, answer technique, or answer frame as user-facing JSON fields.',
-    'short_answer must carry the useful answer itself. Do not make the visitor open dropdown modules to understand the thesis, strongest proof, interpretation, or boundary.',
+    'short_answer must carry the useful answer itself. Do not make the visitor open dropdown modules to understand the thesis, relevant examples, interpretation, or boundary.',
     'For normal questions, short_answer should usually be 80 to 170 words in one to three short paragraphs. Use bullets only when the visitor asks for a plan, list, comparison, or interview guide.',
     'If you use bullets in short_answer, write each bullet exactly as "- **Label:** sentence" with a newline before the first bullet. Never write compact pseudo-bullets like "*Label:* sentence".',
     'For complex role-fit, product-judgment, hiring-brief, or behavioral answers, you may go longer, but the answer should still read like a human explanation rather than a form.',
     'Do not start with phrases like "The portfolio context supports", "Based on retrieved evidence", or "The retrieved evidence says" unless you are correcting uncertainty.',
-    'Weave the strongest proof into the answer itself. Evidence arrays support the disclosure UI; they should not make short_answer feel like a source ledger.',
+    'Weave the most relevant examples into the answer itself. Evidence arrays support the disclosure UI; they should not make short_answer feel like a source ledger.',
     'verified_proof, inferred_fit, confidential_boundary, and open_questions must be arrays of short strings.',
     'In this JSON contract, verified_proof means portfolio-supported proof from retrieved answerable public-safe context. It does not require external certificate-level verification.',
     'Use verified_proof only for claims supported by retrieved canonical, work, project, or story evidence. Public-safe chunks with can_answer_from=true are usable portfolio evidence when their trust_level is canonical or canonical_candidate.',
@@ -4720,7 +4720,7 @@ function buildSystemInstruction(hiringMode, requestType, queryIntent) {
       'evidence_lookup_analysis must use exactly these keys: query_summary, strongest_verified_proof, supporting_evidence, public_links, source_filters, confidence_notes, missing_evidence, suggested_next_actions.',
       'query_summary must restate the capability, domain, project, or role requirement being checked.',
       'strongest_verified_proof must include only claims supported by retrieved answerable evidence.',
-      'For evidence lookup, local-primary and needs-review evidence can still be supporting or strongest proof when it is public-safe and answerable; explain confidence in confidence_notes instead of refusing.',
+      'For evidence lookup, local-primary and needs-review evidence can still be supporting context when it is public-safe and answerable; explain confidence in confidence_notes instead of refusing.',
       'supporting_evidence may include local-primary proof, relevant projects, talks, writing, or work examples from retrieved context. If inferred chunks are relevant, put them under confidence_notes or missing_evidence as inferred context, not proof.',
       'public_links must include only URLs present in retrieved source metadata or source text; leave it empty if no public URL is present.',
       'source_filters must name useful source categories such as work, project, writing, course, talk, policy, or framework.',

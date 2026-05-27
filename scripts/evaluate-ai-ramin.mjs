@@ -87,17 +87,17 @@ const ANSWER_FRAMES = new Set(Object.values(ANSWER_FRAME_BY_QUESTION_TYPE));
 const SOFT_CTAS_BY_QUESTION_TYPE = {
   conversation_open: [],
   portfolio_overview: ['analyze_role_fit', 'compare_projects'],
-  factual_capability: ['ask_stronger_proof', 'analyze_role_fit'],
+  factual_capability: ['analyze_role_fit'],
   role_fit: ['draft_hiring_brief', 'generate_interview_questions'],
-  behavioral_example: ['generate_interview_questions', 'ask_stronger_proof'],
+  behavioral_example: ['generate_interview_questions'],
   product_judgment: ['turn_into_mvp_plan', 'show_risks', 'compare_projects'],
   tradeoff_or_prioritisation: ['show_risks', 'compare_projects'],
-  weakness_or_gap: ['ask_stronger_proof', 'generate_interview_questions'],
+  weakness_or_gap: ['generate_interview_questions'],
   first_90_days: ['draft_hiring_brief', 'generate_interview_questions'],
-  interview_coaching: ['generate_interview_questions', 'ask_stronger_proof'],
-  hiring_brief: ['ask_stronger_proof'],
-  strongest_product_proof: ['analyze_role_fit', 'ask_stronger_proof', 'compare_projects'],
-  evidence_lookup: ['use_in_hiring_brief', 'ask_stronger_proof'],
+  interview_coaching: ['generate_interview_questions'],
+  hiring_brief: ['generate_interview_questions'],
+  strongest_product_proof: ['analyze_role_fit', 'compare_projects'],
+  evidence_lookup: ['use_in_hiring_brief'],
   guardrail_boundary: ['analyze_role_fit', 'compare_projects'],
   clarification_needed: [],
 };
@@ -465,7 +465,7 @@ function classifyQuestionType(message, requestType = 'general_chat') {
     return 'factual_capability';
   }
 
-  if (/^(tell me more|go deeper|expand|expand on that|explain more|why|why not|how so|same for|same question|continue|and|also|what about|how about|what if|for .+|and for .+|compare that|stronger proof|show risks|what risks|draft that|turn that into|can you expand|can you compare|can you explain|do that for)\b/i.test(lower)) {
+  if (/^(tell me more|go deeper|expand|expand on that|explain more|why|why not|how so|same for|same question|continue|and|also|what about|how about|what if|for .+|and for .+|compare that|show risks|what risks|draft that|turn that into|can you expand|can you compare|can you explain|do that for)\b/i.test(lower)) {
     return 'clarification_needed';
   }
 
@@ -765,7 +765,7 @@ function scoreChunk(chunk, queryTokens, queryIntent) {
   }
 
   if (queryIntent.primaryQuestionType === 'strongest_product_proof') {
-    if (/\b(strongest proof|strongest product|best product|coolest product|most interesting|most impressive|public-facing proof|what this proves|product impact|proud accomplishment)\b/i.test(haystack)) {
+    if (/\b(strongest product|best product|coolest product|most interesting|most impressive|public-facing evidence|what this shows|product impact|proud accomplishment)\b/i.test(haystack)) {
       intentScore += 0.35;
     }
     if (
