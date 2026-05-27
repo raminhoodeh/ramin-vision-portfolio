@@ -786,15 +786,15 @@ function hasGuardrailSensitiveCue(message) {
 function hasStrongestProductProofCue(message) {
   const lower = String(message ?? '').toLowerCase();
   const strongestProductPattern =
-    /\b(?:most impressive|strongest|best|standout|top)\b.{0,90}\b(?:product|project|build|thing|proof|achievement|accomplishment|work)\b/i;
+    /\b(?:coolest|most interesting|most impressive|strongest|best|standout|top)\b.{0,90}\b(?:product|project|build|thing|proof|achievement|accomplishment|work)\b/i;
   const productStrongestPattern =
-    /\b(?:product|project|build|thing|proof|achievement|accomplishment|work)\b.{0,90}\b(?:most impressive|strongest|best|standout|top)\b/i;
+    /\b(?:product|project|build|thing|proof|achievement|accomplishment|work)\b.{0,90}\b(?:coolest|most interesting|most impressive|strongest|best|standout|top)\b/i;
   const productBuiltPattern =
     /\b(?:what|which)\b.{0,35}\b(?:product|project)\b.{0,80}\b(?:ramin|he)\b.{0,35}\b(?:made|built|shipped|launched|created)\b/i;
   const directBuiltPattern =
     /\b(?:product|project)\b.{0,45}\b(?:ramin|he)\b.{0,35}\b(?:made|built|shipped|launched|created)\b/i;
   const hiringBestProofPattern =
-    /\b(?:hiring|hire|job|role|position|opening|screening|interview)\b.{0,120}\b(?:strongest|best|most impressive|standout|top)\b.{0,80}\b(?:product|project|proof|achievement|accomplishment)\b/i;
+    /\b(?:hiring|hire|job|role|position|opening|screening|interview)\b.{0,120}\b(?:coolest|most interesting|strongest|best|most impressive|standout|top)\b.{0,80}\b(?:product|project|proof|achievement|accomplishment)\b/i;
 
   return (
     strongestProductPattern.test(lower) ||
@@ -2156,7 +2156,7 @@ function scoreChunk(chunk, queryTokens, queryIntent) {
   }
 
   if (queryIntent.primaryQuestionType === 'strongest_product_proof') {
-    if (/\b(strongest proof|strongest product|best product|most impressive|public-facing proof|what this proves|product impact|proud accomplishment)\b/i.test(haystack)) {
+    if (/\b(strongest proof|strongest product|best product|coolest product|most interesting|most impressive|public-facing proof|what this proves|product impact|proud accomplishment)\b/i.test(haystack)) {
       intentScore += 0.35;
     }
     if (
@@ -3312,7 +3312,7 @@ function buildProductJudgmentRecovery(visitorMessage, portfolioContext) {
       'The most relevant MVP would probably be a lightweight discovery-led coaching loop rather than a broad workout library.',
     ],
     confidential_boundary: [
-      'The portfolio context does not prove that Ramin has operated a fitness-tech business or shipped a commercial gym app.',
+      'The available material does not prove that Ramin has operated a fitness-tech business or shipped a commercial gym app.',
       'Exercise safety, injury risk, and training-plan correctness would need expert validation and clear user guardrails before scaling.',
     ],
     open_questions: [
@@ -3354,37 +3354,46 @@ function buildStrongestProductProofRecovery(visitorMessage, portfolioContext, ev
 
   if (!professionalLead && !selfDirectedLead) return null;
 
-  const professionalPhrase = professionalLead
-    ? `professionally, ${professionalLead.title} is the strongest retrieved product proof`
-    : '';
-  const selfDirectedPhrase = selfDirectedLead
-    ? `${professionalLead ? '; ' : ''}for self-directed AI/product work, ${selfDirectedLead.title} is the strongest builder signal`
-    : '';
   const roleContext = /\b(job|role|hiring|hire|interview|screen|position|opening|company|google|meta|apple|amazon|microsoft|startup|scaleup)\b/i.test(
     visitorMessage,
   );
+  const subjectiveCue = /\b(coolest|interesting|impressive|best|strongest|standout|top)\b/i.test(visitorMessage);
+  const leadTitle = professionalLead?.title ?? selfDirectedLead?.title;
+  const selfDirectedContrast =
+    selfDirectedLead && selfDirectedLead.title !== leadTitle
+      ? `If you mean his most current AI-native builder signal, I would put **${selfDirectedLead.title}** next to it: that is the clearer window into how he now thinks about model choice, context, evals, guardrails, and human judgement.`
+      : '';
 
   return {
     short_answer: [
-      `**Best answer:** ${professionalPhrase}${selfDirectedPhrase}.`,
+      subjectiveCue
+        ? `I would point to **${leadTitle}**.`
+        : `The strongest answer I would lead with is **${leadTitle}**.`,
+      professionalLead
+        ? 'What makes it stand out is the product difficulty: Ramin was working with a complex carbon methodology, enterprise stakeholders, and a data-heavy decision surface, then helping turn that into something people could actually use.'
+        : 'What makes it stand out is the product difficulty: it shows Ramin turning an ambiguous system into a usable product surface rather than just describing an idea.',
+      selfDirectedContrast,
       roleContext
-        ? '**Why it matters for hiring:** GroupM shows Ramin translating a complex carbon methodology into an enterprise product surface; AI-Native Product OS shows how he now thinks about model choice, context, evals, guardrails, and human judgement in AI-native systems.'
-        : '**Why it matters:** GroupM shows Ramin translating a complex carbon methodology into an enterprise product surface; AI-Native Product OS shows how he now thinks about model choice, context, evals, guardrails, and human judgement in AI-native systems.',
-      '**Interview read:** the signal is not one isolated feature; it is the repeated pattern of turning complex data, AI, and ambiguous stakeholder problems into usable product systems.',
-    ].join('\n\n'),
+        ? 'For a hiring conversation, the signal is not just one product name. It is the pattern: complex data, ambiguous users, technical constraints, and a product layer that makes the system usable.'
+        : 'The broader signal is that Ramin is strongest when the product sits between complex systems and real user decisions.',
+    ]
+      .filter(Boolean)
+      .join('\n\n'),
     verified_proof: verifiedProof,
     inferred_fit: [
       'For a PM role, this points to product judgement in complex domains, cross-functional translation, and the ability to connect technical systems to user-facing product value.',
       'The strongest interview angle is not one isolated feature; it is the repeated pattern across enterprise data products, AI-native systems, and self-directed builds.',
     ],
     confidential_boundary: [
-      'This is a best-supported ranking from the current portfolio context, not an objective universal ranking.',
+      'This is a subjective ranking from the available public material, not an objective universal ranking.',
       'Metric-level claims should be validated or discussed directly where the source marks metrics as review-needed.',
     ],
     open_questions: [
       'The exact strongest proof to lead with depends on the company, product area, seniority, and job description.',
     ],
-    suggested_next_action: 'Share the role description to turn this into a role-fit analysis or compare the strongest projects side by side.',
+    suggested_next_action: roleContext
+      ? 'Share the role description to turn this into a role-fit answer.'
+      : '',
   };
 }
 
@@ -3474,25 +3483,36 @@ function buildPortfolioOverviewRecovery(evidenceCards) {
   };
 }
 
-function buildGenericEvidenceRecovery(sections, evidenceCards) {
+function buildGenericEvidenceRecovery(sections, evidenceCards, visitorMessage = '') {
   const rankedCards = sortedRecoverableEvidenceCards(evidenceCards);
   if (!rankedCards.length) return null;
 
   const proof = rankedCards.slice(0, 5).map(strongestProductProofForCard);
-  const leadTitles = rankedCards.slice(0, 2).map((card) => card.title).join(' and ');
+  const lead = rankedCards[0];
+  const secondLead = rankedCards[1];
+  const asksForRecommendation = /\b(coolest|best|strongest|most impressive|most interesting|which|what)\b/i.test(visitorMessage);
 
   return {
-    short_answer: `The portfolio context does support a useful answer. The strongest retrieved evidence is ${leadTitles}, with the exact interpretation depending on the role, domain, or proof standard being checked.`,
+    short_answer: [
+      asksForRecommendation
+        ? `I would start with **${lead.title}**.`
+        : `A useful answer starts with **${lead.title}**.`,
+      secondLead
+        ? `I would keep **${secondLead.title}** close behind as the supporting comparison.`
+        : '',
+      'The reason is practical: these examples show Ramin working where product judgement has to translate a complex domain into something usable, explainable, and decision-ready.',
+    ]
+      .filter(Boolean)
+      .join('\n\n'),
     verified_proof: proof,
     inferred_fit: sections.inferred_fit.length
       ? sections.inferred_fit
-      : ['The retrieved evidence can support a bounded answer, but the final hiring or collaboration fit should be checked against the exact role context.'],
+      : ['The available examples can support a bounded answer, but the final hiring or collaboration fit should be checked against the exact role context.'],
     confidential_boundary: sections.confidential_boundary,
     open_questions: sections.open_questions.length
       ? sections.open_questions
       : ['What exact role, company context, or proof standard should this be assessed against?'],
-    suggested_next_action:
-      sections.suggested_next_action || 'Use role-fit analysis or compare projects to tailor this to the exact context.',
+    suggested_next_action: sections.suggested_next_action,
   };
 }
 
@@ -3529,7 +3549,7 @@ function buildBehavioralStoryRecovery(sections, portfolioContext) {
     confidential_boundary: avoidBullets.length
       ? avoidBullets
       : [
-          'Use only the public-safe story details from the retrieved portfolio context.',
+          'Use only the public-safe story details from the available material.',
           'Do not add unsupported metrics, private details, or claims that Ramin acted alone.',
         ],
     open_questions: sections.open_questions.length
@@ -3623,7 +3643,7 @@ export function recoverOverCautiousAnswer(sections, visitorMessage, requestType,
     strategy = 'product_judgment_recovery';
     recoveredSections = buildProductJudgmentRecovery(visitorMessage, portfolioContext);
   } else {
-    recoveredSections = buildGenericEvidenceRecovery(sections, evidenceCards);
+    recoveredSections = buildGenericEvidenceRecovery(sections, evidenceCards, visitorMessage);
   }
 
   return recoveredSections
@@ -4218,7 +4238,7 @@ export function buildAiRaminIntentClassifierPrompt({
     '- portfolio_overview: broad bio, who-is-Ramin, overview, profile, or what-does-he-do questions.',
     '- role_fit: any hiring, company, job, role, seniority, first-90-days, validation, strengths, weakness, or fit question for any company.',
     '- product_judgment: product ideas, scenarios, discovery, MVP, risk, tradeoff, eval, AI architecture, or guardrail questions.',
-    '- evidence_lookup: proof, sources, credentials, strongest product, best product, most impressive build, has-he-done-X, or public evidence questions.',
+    '- evidence_lookup: proof, sources, credentials, coolest product, strongest product, best product, most impressive build, has-he-done-X, or public evidence questions.',
     '- behavioral_interview: hardest challenge, tell-me-about-a-time, conflict, failure, accomplishment, leadership, feedback, ambiguity, or interview story questions.',
     '- hiring_brief: requests for a copy-ready hiring note, recruiter note, brief, or shareable summary.',
     '- interview_coaching: requests to coach, structure, rewrite, practice, or generate interview questions.',
@@ -4242,7 +4262,7 @@ export function buildAiRaminIntentClassifierPrompt({
     '- For any named or unnamed company PM job, choose role_fit.',
     '- For hardest challenge or overcame questions, choose behavioral_interview.',
     '- For product idea plus risks or MVP, choose product_judgment.',
-    '- For best, strongest, most impressive product or product he built, choose evidence_lookup.',
+    '- For best, coolest, strongest, most interesting, most impressive product or product he built, choose evidence_lookup.',
     '- Confidence should be below 0.62 only when truly ambiguous.',
     '- If the conversation context says isFollowUp=true, classify the latest message relative to the inherited intent unless the latest message clearly changes topic or is casual.',
     '',
@@ -4612,7 +4632,7 @@ function buildSystemInstruction(hiringMode, requestType, queryIntent) {
   const instructions = [
     "You are AI Ramin, Ramin Hoodeh's portfolio copilot embedded in his website.",
     'Answer visitors using only the supplied retrieved portfolio context.',
-    'Default to speaking about Ramin in third person. If the visitor asks for first-person copy, clearly draft it in Ramin\'s voice.',
+    'Default to speaking as the assistant in first person, e.g. "I would point to..." or "I would ask...". Describe Ramin\'s work clearly, but do not claim to be Ramin or say "I built" for Ramin\'s achievements.',
     'Be direct, specific, and useful. Avoid generic portfolio filler.',
     'Sound like a thoughtful portfolio conversation, not a compliance report, source audit, or mission-control readout.',
     'Policy chunks are rules. Canonical, work, project, and story chunks are evidence. Inferred chunks are explicitly labelled hypothetical or adjacent-fit reasoning; they are not verified proof. Framework chunks are structure only, never evidence.',
@@ -4726,9 +4746,9 @@ function buildSystemInstruction(hiringMode, requestType, queryIntent) {
 
   if (primaryQuestionType === 'strongest_product_proof') {
     instructions.push(
-      'For strongest, best, or most impressive product questions, do not require objective certainty. Give the best-supported answer from retrieved evidence and explain the basis.',
+      'For strongest, best, coolest, most interesting, or most impressive product questions, do not require objective certainty. Give the best-supported answer from retrieved evidence and explain the basis.',
       'Separate professional product proof from self-directed project proof when both are retrieved.',
-      'Use language like "best-supported answer" or "based on the portfolio evidence" for subjective rankings.',
+      'Use conversational language such as "I would point to..." for subjective rankings; do not lead with source-audit phrases.',
       'A strong answer may rank GroupM, Urgentem, Bayut, AI-Native Product OS, Mass Social Wisdom Agent, 24Seven Concierge, nsso, Qadam, or other retrieved evidence depending on relevance. Do not require one universal winner.',
       'If a company, role, or hiring context is mentioned, translate the ranked proof into why it matters for that context, while noting that final fit depends on the exact job description.',
       'Do not answer with only "I do not have enough verified portfolio context" when retrieved answerable evidence meets the expected minimum.',

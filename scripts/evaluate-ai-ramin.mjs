@@ -307,15 +307,15 @@ function tokenizeQuery(text) {
 function hasStrongestProductProofCue(message) {
   const lower = String(message ?? '').toLowerCase();
   const strongestProductPattern =
-    /\b(?:most impressive|strongest|best|standout|top)\b.{0,90}\b(?:product|project|build|thing|proof|achievement|accomplishment|work)\b/i;
+    /\b(?:coolest|most interesting|most impressive|strongest|best|standout|top)\b.{0,90}\b(?:product|project|build|thing|proof|achievement|accomplishment|work)\b/i;
   const productStrongestPattern =
-    /\b(?:product|project|build|thing|proof|achievement|accomplishment|work)\b.{0,90}\b(?:most impressive|strongest|best|standout|top)\b/i;
+    /\b(?:product|project|build|thing|proof|achievement|accomplishment|work)\b.{0,90}\b(?:coolest|most interesting|most impressive|strongest|best|standout|top)\b/i;
   const productBuiltPattern =
     /\b(?:what|which)\b.{0,35}\b(?:product|project)\b.{0,80}\b(?:ramin|he)\b.{0,35}\b(?:made|built|shipped|launched|created)\b/i;
   const directBuiltPattern =
     /\b(?:product|project)\b.{0,45}\b(?:ramin|he)\b.{0,35}\b(?:made|built|shipped|launched|created)\b/i;
   const hiringBestProofPattern =
-    /\b(?:hiring|hire|job|role|position|opening|screening|interview)\b.{0,120}\b(?:strongest|best|most impressive|standout|top)\b.{0,80}\b(?:product|project|proof|achievement|accomplishment)\b/i;
+    /\b(?:hiring|hire|job|role|position|opening|screening|interview)\b.{0,120}\b(?:coolest|most interesting|strongest|best|most impressive|standout|top)\b.{0,80}\b(?:product|project|proof|achievement|accomplishment)\b/i;
 
   return (
     strongestProductPattern.test(lower) ||
@@ -765,7 +765,7 @@ function scoreChunk(chunk, queryTokens, queryIntent) {
   }
 
   if (queryIntent.primaryQuestionType === 'strongest_product_proof') {
-    if (/\b(strongest proof|strongest product|best product|most impressive|public-facing proof|what this proves|product impact|proud accomplishment)\b/i.test(haystack)) {
+    if (/\b(strongest proof|strongest product|best product|coolest product|most interesting|most impressive|public-facing proof|what this proves|product impact|proud accomplishment)\b/i.test(haystack)) {
       intentScore += 0.35;
     }
     if (

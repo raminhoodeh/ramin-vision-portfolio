@@ -268,7 +268,8 @@
       "qualityGateFixtureShortAnswer": "I do not have enough verified portfolio context to answer that accurately.",
       "expectedQualityGateIssues": ["over_cautious_with_sufficient_evidence"],
       "expectedQualityGateStrategy": "strongest_product_proof_recovery",
-      "expectedQualityGateRecoveredKeywords": ["GroupM", "AI-Native Product OS", "Best answer"],
+      "expectedQualityGateRecoveredKeywords": ["GroupM", "AI-Native Product OS"],
+      "expectedQualityGateAbsentKeywords": ["portfolio context", "retrieved evidence"],
       "requiredContractSections": ["short_answer", "verified_proof", "inferred_fit", "open_questions"]
     },
     {
@@ -289,6 +290,31 @@
       ],
       "expectedKeywords": ["strongest", "product", "proof"],
       "minimumAnswerableEvidenceCards": 2,
+      "requiredContractSections": ["short_answer", "verified_proof", "inferred_fit", "open_questions"]
+    },
+    {
+      "id": "coolest-product-worked-on",
+      "category": "strongest_product_proof",
+      "requestType": "general_chat",
+      "expectedQuestionType": "strongest_product_proof",
+      "expectedAnswerTechnique": "rank_prove_translate",
+      "expectedAnswerFrame": "ranked_product_proof",
+      "expectedSoftCtas": ["analyze_role_fit", "ask_stronger_proof", "compare_projects"],
+      "hiringMode": "hiring-manager",
+      "prompt": "what's the coolest product ramin has worked on",
+      "expectedSourceRoles": ["canonical", "work", "project"],
+      "expectedPathIncludes": [
+        "canonical/profile.md",
+        "canonical/work-experiences/groupm-carbon-calculator.md",
+        "canonical/projects/ai-native-product-os.md"
+      ],
+      "expectedKeywords": ["product"],
+      "minimumAnswerableEvidenceCards": 2,
+      "qualityGateFixtureShortAnswer": "I do not have enough verified portfolio context to answer that accurately.",
+      "expectedQualityGateIssues": ["over_cautious_with_sufficient_evidence"],
+      "expectedQualityGateStrategy": "strongest_product_proof_recovery",
+      "expectedQualityGateRecoveredKeywords": ["GroupM", "AI-Native Product OS", "I would point"],
+      "expectedQualityGateAbsentKeywords": ["portfolio context", "retrieved evidence", "Suggested next action"],
       "requiredContractSections": ["short_answer", "verified_proof", "inferred_fit", "open_questions"]
     },
     {
