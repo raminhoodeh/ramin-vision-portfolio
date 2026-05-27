@@ -384,19 +384,19 @@ const aiRaminBuildConsiderations = [
     body:
       'Gemini runs behind the local API route so the browser never receives the API key. The model can be swapped through environment configuration without changing the portfolio UI.',
     proof: [
-      { label: 'Default', value: 'gemini-3.5-flash unless GEMINI_MODEL overrides it' },
+      { label: 'Default', value: 'gemini-2.5-pro for answers; gemini-3.5-flash for intent routing unless env overrides it' },
       { label: 'Integration', value: 'Answers return model, context-source count, and truncation metadata' },
     ],
   },
   {
     label: '04',
     title: 'Temperature',
-    chips: ['0.35', 'Low drift', 'Evidence first'],
+    chips: ['0.45', 'Natural tone', 'Evidence first'],
     body:
-      'Generation is intentionally conservative. The goal is not a flashy persona; it is a reliable portfolio interpreter that can still structure a useful product-management answer.',
+      'Generation is tuned for conversational answers while keeping the portfolio evidence boundary intact. The goal is a useful chat, not a rigid source report.',
     proof: [
-      { label: 'Config', value: 'temperature 0.35, topP 0.9, max output 1,100 tokens' },
-      { label: 'Tradeoff', value: 'Less creative range, better factual discipline for hiring-manager questions' },
+      { label: 'Config', value: 'temperature 0.45, topP 0.92, max output 1,300 to 1,800 tokens' },
+      { label: 'Tradeoff', value: 'More natural phrasing, with factual discipline preserved by retrieval, JSON contracts, and quality gates' },
     ],
   },
   {

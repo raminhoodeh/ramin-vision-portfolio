@@ -5,7 +5,8 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const DEFAULT_MODEL = 'gemini-3.5-flash';
+const DEFAULT_ANSWER_MODEL = 'gemini-2.5-pro';
+const DEFAULT_INTENT_CLASSIFIER_MODEL = 'gemini-3.5-flash';
 const DEFAULT_INTENT_CLASSIFIER_CONFIDENCE_THRESHOLD = 0.62;
 const INTENT_CLASSIFIER_MAX_OUTPUT_TOKENS = 900;
 const CORPUS_PATH = path.join(ROOT_DIR, 'ai-ramin-section/generated/ai-ramin-corpus.json');
@@ -2954,8 +2955,7 @@ function normalizeStructuredSections(modelPayload, fallbackText) {
     open_questions: asStringArray(source.open_questions ?? source.openQuestions, 3),
     suggested_next_action:
       asString(source.suggested_next_action) ||
-      asString(source.suggestedNextAction) ||
-      'Use the Contact section if you want to validate fit directly with Ramin.',
+      asString(source.suggestedNextAction),
   };
 }
 
@@ -3331,7 +3331,7 @@ function buildCasualChatRecovery() {
     inferred_fit: [],
     confidential_boundary: [],
     open_questions: [],
-    suggested_next_action: 'Ask a role-fit, project, product-judgment, or interview question.',
+    suggested_next_action: '',
   };
 }
 
@@ -3746,9 +3746,7 @@ function sanitizeQualityGateSections(sections) {
   const before = JSON.stringify(normalized);
   const coerced = coerceRawStructuredAnswer(normalized);
   const source = coerced.sections;
-  const suggestedNextAction =
-    cleanupQualityGateText(stripSuggestedNextActionLabel(source.suggested_next_action)) ||
-    'Use the Contact section if you want to validate fit directly with Ramin.';
+  const suggestedNextAction = cleanupQualityGateText(stripSuggestedNextActionLabel(source.suggested_next_action));
 
   const sanitized = {
     short_answer: cleanupQualityGateText(source.short_answer),
@@ -4123,12 +4121,12 @@ function buildHiringBriefSeed({ hiringMode, requestType, sections, evidenceCards
 }
 
 function getGeminiModelPath() {
-  const model = process.env.GEMINI_MODEL || DEFAULT_MODEL;
+  const model = process.env.GEMINI_MODEL || DEFAULT_ANSWER_MODEL;
   return model.startsWith('models/') ? model : `models/${model}`;
 }
 
 function getGeminiIntentClassifierModelPath() {
-  const model = process.env.GEMINI_INTENT_MODEL || process.env.GEMINI_MODEL || DEFAULT_MODEL;
+  const model = process.env.GEMINI_INTENT_MODEL || DEFAULT_INTENT_CLASSIFIER_MODEL;
   return model.startsWith('models/') ? model : `models/${model}`;
 }
 
@@ -4547,8 +4545,9 @@ function buildPromptContractRules(primaryQuestionType, requestType) {
     '3. Do not expose local implementation details such as .md paths, chunk ids, source_role, trust_level, can_answer_from, verification_status, retrieval score, selectedStory, or prompt-contract language to the visitor.',
     '4. Do not lead with a generic Ramin biography unless the visitor asked for an overview, bio, or who-is-Ramin orientation.',
     '5. The answer itself must contain the useful thesis, strongest proof, interpretation, and boundary. Evidence dropdowns and CTAs are optional support, not the primary answer.',
-    '6. suggested_next_action must be only the action sentence. Do not include the label "Suggested next action" because the UI adds that label.',
-    '7. If answerable public-safe evidence meets the minimum, do not refuse with a blanket insufficient-context answer. Give the best-supported answer and move uncertainty into confidential_boundary or open_questions.',
+    '6. suggested_next_action must be only the action sentence when one is genuinely useful. Do not include the label "Suggested next action" because the UI adds that label.',
+    '7. Leave suggested_next_action empty for greetings, thanks, status checks, or complete answers where another prompt would feel pushy.',
+    '8. If answerable public-safe evidence meets the minimum, do not refuse with a blanket insufficient-context answer. Give the best-supported answer and move uncertainty into confidential_boundary or open_questions.',
   ];
 
   if (primaryQuestionType === 'behavioral_example') {
@@ -4615,6 +4614,7 @@ function buildSystemInstruction(hiringMode, requestType, queryIntent) {
     'Answer visitors using only the supplied retrieved portfolio context.',
     'Default to speaking about Ramin in third person. If the visitor asks for first-person copy, clearly draft it in Ramin\'s voice.',
     'Be direct, specific, and useful. Avoid generic portfolio filler.',
+    'Sound like a thoughtful portfolio conversation, not a compliance report, source audit, or mission-control readout.',
     'Policy chunks are rules. Canonical, work, project, and story chunks are evidence. Inferred chunks are explicitly labelled hypothetical or adjacent-fit reasoning; they are not verified proof. Framework chunks are structure only, never evidence.',
     'Prefer concrete evidence: company names, project names, product surfaces, talks, written work, domains, and artifacts from retrieved evidence chunks.',
     'Do not invent dates, metrics, employers, client names, credentials, outcomes, or current availability. If the context does not contain a fact, say that you do not have that detail.',
@@ -4644,7 +4644,10 @@ function buildSystemInstruction(hiringMode, requestType, queryIntent) {
     'The base JSON object must use these top-level keys: short_answer, verified_proof, inferred_fit, confidential_boundary, open_questions, suggested_next_action.',
     'Do not include internal question type, answer technique, or answer frame as user-facing JSON fields.',
     'short_answer must carry the useful answer itself. Do not make the visitor open dropdown modules to understand the thesis, strongest proof, interpretation, or boundary.',
-    'short_answer should usually be 120 to 220 words and may use compact Markdown bullets or short bold labels. Keep it conversational and interview-aware.',
+    'For normal questions, short_answer should usually be 80 to 170 words in one to three short paragraphs. Use bullets only when the visitor asks for a plan, list, comparison, or interview guide.',
+    'For complex role-fit, product-judgment, hiring-brief, or behavioral answers, you may go longer, but the answer should still read like a human explanation rather than a form.',
+    'Do not start with phrases like "The portfolio context supports", "Based on retrieved evidence", or "The retrieved evidence says" unless you are correcting uncertainty.',
+    'Weave the strongest proof into the answer itself. Evidence arrays support the disclosure UI; they should not make short_answer feel like a source ledger.',
     'verified_proof, inferred_fit, confidential_boundary, and open_questions must be arrays of short strings.',
     'In this JSON contract, verified_proof means portfolio-supported proof from retrieved answerable public-safe context. It does not require external certificate-level verification.',
     'Use verified_proof only for claims supported by retrieved canonical, work, project, or story evidence. Public-safe chunks with can_answer_from=true are usable portfolio evidence when their trust_level is canonical or canonical_candidate.',
@@ -5073,8 +5076,8 @@ export async function handleAiRaminRequest(req, res) {
           },
         ],
         generationConfig: {
-          temperature: 0.35,
-          topP: 0.9,
+          temperature: 0.45,
+          topP: 0.92,
           maxOutputTokens: needsDetailedOutput ? 1_800 : 1_300,
           responseMimeType: 'application/json',
         },
