@@ -35,6 +35,7 @@ assertIncludes("card.confidence === 'verified'", 'verified evidence-card confide
 assertIncludes("card.confidence === 'local-primary'", 'local-primary evidence-card confidence usage');
 assertIncludes('https?:\\/\\/[^\\s<>)]+', 'bare URL auto-linking');
 assertIncludes('renderAiRaminInlineMarkdown(item', 'inline evidence item markdown rendering');
+assertIncludes('normalizeAiRaminMarkdownContent', 'inline malformed first-bullet normalizer');
 assertIncludes('AiRaminInlineEvidenceDisclosure response={response}', 'single evidence disclosure module');
 assertIncludes('**Suggested next action:**', 'client suggested next action colon');
 assertIncludes('function getAiRaminAnswerPresentation', 'weak-answer presentation helper');
@@ -51,6 +52,9 @@ assertIncludes('route confidence', 'debug drawer routing confidence label');
 
 if (!serverSource.includes('**Suggested next action:**')) {
   failures.push('server suggested next action colon missing **Suggested next action:**');
+}
+if (!serverSource.includes('compact pseudo-bullets')) {
+  failures.push('server prompt malformed bullet prevention missing compact pseudo-bullets');
 }
 if (!serverSource.includes('conversation_open') || !serverSource.includes('sendConversationOpenResponse')) {
   failures.push('server conversation-open deterministic response missing');

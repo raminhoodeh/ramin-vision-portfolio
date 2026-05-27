@@ -943,6 +943,26 @@ async function copyAiRaminText(value: string) {
   }
 }
 
+function normalizeAiRaminMarkdownContent(content: string) {
+  return content
+    .replace(/(:)\s+\*([A-Z0-9][^*\n]{2,90}:)\*\s+/g, '$1\n- **$2** ')
+    .replace(/([.!?])\s+\*([A-Z0-9][^*\n]{2,90}:)\*\s+/g, '$1\n- **$2** ');
+}
+
+function normalizeAiRaminMarkdownLine(line: string) {
+  const compactEmphasisBulletMatch = /^\*\s*([A-Z0-9][^*\n]{2,90}:)\*\s+(.+)$/.exec(line);
+  if (compactEmphasisBulletMatch) {
+    return `- **${compactEmphasisBulletMatch[1]}** ${compactEmphasisBulletMatch[2]}`;
+  }
+
+  const compactListEmphasisBulletMatch = /^[-*]\s*\*\s*([A-Z0-9][^*\n]{2,90}:)\*\s+(.+)$/.exec(line);
+  if (compactListEmphasisBulletMatch) {
+    return `- **${compactListEmphasisBulletMatch[1]}** ${compactListEmphasisBulletMatch[2]}`;
+  }
+
+  return line;
+}
+
 function parseAiRaminMarkdown(content: string): AiRaminMarkdownBlock[] {
   const blocks: AiRaminMarkdownBlock[] = [];
   const paragraphLines: string[] = [];
@@ -960,8 +980,8 @@ function parseAiRaminMarkdown(content: string): AiRaminMarkdownBlock[] {
     listBlock = null;
   };
 
-  content.split(/\r?\n/).forEach((rawLine) => {
-    const line = rawLine.trim();
+  normalizeAiRaminMarkdownContent(content).split(/\r?\n/).forEach((rawLine) => {
+    const line = normalizeAiRaminMarkdownLine(rawLine.trim());
 
     if (!line) {
       flushParagraph();
