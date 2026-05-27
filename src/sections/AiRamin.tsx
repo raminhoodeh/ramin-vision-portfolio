@@ -630,13 +630,8 @@ function getAiRaminEvidenceDisclosureKicker(response: AiRaminStructuredResponse,
   return `${sourceLabel} · proof not surfaced`;
 }
 
-function getAiRaminMinimalWeakAnswerCtas(response: AiRaminStructuredResponse): AiRaminSoftCta[] {
-  const presentation = getAiRaminAnswerPresentation(response);
+function getAiRaminMinimalWeakAnswerCtas(_response: AiRaminStructuredResponse): AiRaminSoftCta[] {
   const ctas: AiRaminSoftCta[] = [];
-
-  if (presentation.hasEvidenceTrail) {
-    ctas.push(makeSoftCta('show_evidence'));
-  }
 
   ctas.push(makeSoftCta('ask_stronger_proof'));
 
@@ -657,7 +652,6 @@ function getAiRaminSoftCtas(response: AiRaminStructuredResponse): AiRaminSoftCta
   }
 
   const presentation = getAiRaminAnswerPresentation(response);
-  const hasEvidence = presentation.shouldShowEvidenceDisclosure;
 
   if (presentation.isWeak) {
     return getAiRaminMinimalWeakAnswerCtas(response);
@@ -665,7 +659,7 @@ function getAiRaminSoftCtas(response: AiRaminStructuredResponse): AiRaminSoftCta
 
   const frameCtas = (response.answerFrame?.softCtas ?? [])
     .filter((id): id is AiRaminSoftCtaId => Object.prototype.hasOwnProperty.call(softCtaLabels, id))
-    .filter((id) => id !== 'show_evidence' || hasEvidence)
+    .filter((id) => id !== 'show_evidence')
     .map((id) => makeSoftCta(id));
 
   if (frameCtas.length) {
@@ -676,7 +670,6 @@ function getAiRaminSoftCtas(response: AiRaminStructuredResponse): AiRaminSoftCta
     return [
       makeSoftCta('draft_hiring_brief'),
       makeSoftCta('generate_interview_questions'),
-      ...(hasEvidence ? [makeSoftCta('show_evidence')] : []),
     ].slice(0, 3);
   }
 
@@ -692,19 +685,16 @@ function getAiRaminSoftCtas(response: AiRaminStructuredResponse): AiRaminSoftCta
     return [
       makeSoftCta('use_in_hiring_brief'),
       makeSoftCta('ask_stronger_proof'),
-      ...(hasEvidence ? [makeSoftCta('show_evidence')] : []),
     ].slice(0, 3);
   }
 
   if (response.requestType === 'hiring_brief') {
     return [
-      ...(hasEvidence ? [makeSoftCta('show_evidence')] : []),
       makeSoftCta('ask_stronger_proof'),
     ].slice(0, 2);
   }
 
   return [
-    ...(hasEvidence ? [makeSoftCta('show_evidence')] : []),
     makeSoftCta('analyze_role_fit'),
     makeSoftCta('compare_projects'),
   ].slice(0, 3);
@@ -1122,6 +1112,18 @@ function AiRaminMessageMarkdown({ content }: { content: string }) {
       })}
     </div>
   );
+}
+
+function AiRaminMarkdownParagraph({
+  content,
+  className,
+  keyPrefix,
+}: {
+  content: string;
+  className?: string;
+  keyPrefix: string;
+}) {
+  return <p className={className}>{renderAiRaminInlineMarkdown(content, keyPrefix)}</p>;
 }
 
 function AiRaminSoftCtaRow({
@@ -1569,7 +1571,11 @@ function AiRaminInlineRoleFitModule({ response }: { response: AiRaminStructuredR
 
   return (
     <AiRaminInlineModule title="Role fit" kicker="work proof, project proof, interview focus" defaultOpen>
-      <p className="ai-ramin-inline-summary">{roleFit.role_summary}</p>
+      <AiRaminMarkdownParagraph
+        content={roleFit.role_summary}
+        className="ai-ramin-inline-summary"
+        keyPrefix="role-fit-summary"
+      />
       <div className="ai-ramin-inline-grid">
         <AiRaminInlineList label="Work proof" items={roleFit.strongest_work_evidence} limit={2} />
         <AiRaminInlineList label="Project proof" items={roleFit.strongest_project_evidence} limit={2} />
@@ -1588,7 +1594,11 @@ function AiRaminInlineProductJudgmentModule({ response }: { response: AiRaminStr
 
   return (
     <AiRaminInlineModule title="Product judgment" kicker="MVP, risks, evals" defaultOpen>
-      <p className="ai-ramin-inline-summary">{productJudgment.scenario_summary}</p>
+      <AiRaminMarkdownParagraph
+        content={productJudgment.scenario_summary}
+        className="ai-ramin-inline-summary"
+        keyPrefix="product-judgment-summary"
+      />
       <div className="ai-ramin-inline-layer-row" aria-label="AI product operating layers">
         {[
           ['Model', productJudgment.model_layer],
@@ -1655,7 +1665,7 @@ function AiRaminInlineBriefModule({ response }: { response: AiRaminStructuredRes
       <div className="ai-ramin-inline-brief-head">
         <div>
           <strong>{briefSeed.headline || 'Hiring brief: Ramin Hoodeh'}</strong>
-          <p>{briefSeed.whyRaminFits}</p>
+          <AiRaminMarkdownParagraph content={briefSeed.whyRaminFits} keyPrefix="hiring-brief-why" />
         </div>
         <button type="button" onClick={handleCopyBrief} disabled={!copyReadyBrief}>
           {copyStatus === 'copied' ? 'Copied' : copyStatus === 'manual' ? 'Select text' : 'Copy brief'}
