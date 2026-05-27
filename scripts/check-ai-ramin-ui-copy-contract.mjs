@@ -74,6 +74,10 @@ assertExcludes('verified`', 'old bare verified-count template');
 assertExcludes('AiRaminInlineEvidenceLookupModule', 'separate evidence lookup dropdown');
 assertExcludes('<AiRaminInlineEvidenceDisclosure response={response} defaultOpen=', 'auto-open evidence disclosure');
 
+if (source.includes('show_evidence') || serverSource.includes('show_evidence') || evalCasesSource.includes('show_evidence')) {
+  failures.push('show_evidence soft CTA contract should not be used; evidence belongs in the inline disclosure');
+}
+
 if (failures.length) {
   console.error('AI Ramin UI copy contract check failed:');
   failures.forEach((failure) => console.error(`- ${failure}`));

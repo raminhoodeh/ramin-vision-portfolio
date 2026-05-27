@@ -712,7 +712,7 @@
       "expectedQuestionType": "factual_capability",
       "expectedAnswerTechnique": "direct_proof_boundary",
       "expectedAnswerFrame": "direct_claim_proof_boundary",
-      "expectedSoftCtas": ["show_evidence", "ask_stronger_proof"],
+      "expectedSoftCtas": ["ask_stronger_proof"],
       "hiringMode": "recruiter",
       "prompt": "Does Ramin have geospatial API experience for energy or sustainability use cases?",
       "expectedSourceRoles": ["work"],

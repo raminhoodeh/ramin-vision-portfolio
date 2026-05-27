@@ -328,7 +328,6 @@ type AiRaminSendMessageOptions = {
 type AiRaminFeedbackValue = 'helpful' | 'needs_review';
 type AiRaminFeedbackStatus = 'idle' | 'submitting' | 'saved' | 'failed';
 type AiRaminSoftCtaId =
-  | 'show_evidence'
   | 'analyze_role_fit'
   | 'draft_hiring_brief'
   | 'generate_interview_questions'
@@ -458,7 +457,6 @@ const aiRaminLoadingMessages = [
 ] as const;
 
 const softCtaLabels: Record<AiRaminSoftCtaId, string> = {
-  show_evidence: 'View evidence',
   analyze_role_fit: 'Analyze a role',
   draft_hiring_brief: 'Draft brief',
   generate_interview_questions: 'Interview questions',
@@ -659,7 +657,6 @@ function getAiRaminSoftCtas(response: AiRaminStructuredResponse): AiRaminSoftCta
 
   const frameCtas = (response.answerFrame?.softCtas ?? [])
     .filter((id): id is AiRaminSoftCtaId => Object.prototype.hasOwnProperty.call(softCtaLabels, id))
-    .filter((id) => id !== 'show_evidence')
     .map((id) => makeSoftCta(id));
 
   if (frameCtas.length) {
@@ -1128,14 +1125,12 @@ function AiRaminMarkdownParagraph({
 
 function AiRaminSoftCtaRow({
   response,
-  evidenceTargetId,
   disabled,
   onSelect,
 }: {
   response: AiRaminStructuredResponse;
-  evidenceTargetId?: string;
   disabled: boolean;
-  onSelect: (action: AiRaminSoftCtaId, response: AiRaminStructuredResponse, evidenceTargetId?: string) => void;
+  onSelect: (action: AiRaminSoftCtaId, response: AiRaminStructuredResponse) => void;
 }) {
   const ctas = useMemo(() => getAiRaminSoftCtas(response), [response]);
   const presentation = useMemo(() => getAiRaminAnswerPresentation(response), [response]);
@@ -1151,7 +1146,7 @@ function AiRaminSoftCtaRow({
         <button
           key={cta.id}
           type="button"
-          onClick={() => onSelect(cta.id, response, evidenceTargetId)}
+          onClick={() => onSelect(cta.id, response)}
           disabled={disabled}
         >
           {cta.label}
@@ -1700,11 +1695,9 @@ function AiRaminInlineBriefModule({ response }: { response: AiRaminStructuredRes
 
 function AiRaminInlineStructuredModules({
   response,
-  evidenceTargetId,
   presentation = getAiRaminAnswerPresentation(response),
 }: {
   response: AiRaminStructuredResponse;
-  evidenceTargetId?: string;
   presentation?: AiRaminAnswerPresentation;
 }) {
   const showStructuredModules = presentation.shouldShowStructuredModules;
@@ -1714,7 +1707,6 @@ function AiRaminInlineStructuredModules({
 
   return (
     <div
-      id={evidenceTargetId}
       className={`ai-ramin-inline-modules ${presentation.isWeak ? 'is-simplified' : ''}`}
       aria-label="Structured answer modules"
     >
@@ -2181,22 +2173,8 @@ export function AiRaminSection() {
   }, []);
 
   const handleSoftCta = useCallback(
-    (action: AiRaminSoftCtaId, response: AiRaminStructuredResponse, evidenceTargetId?: string) => {
+    (action: AiRaminSoftCtaId, response: AiRaminStructuredResponse) => {
       setChatError(null);
-
-      if (action === 'show_evidence') {
-        const evidenceRoot = evidenceTargetId ? document.getElementById(evidenceTargetId) : null;
-        const evidenceDisclosures = Array.from(document.querySelectorAll<HTMLDetailsElement>('.ai-ramin-evidence-disclosure'));
-        const disclosure =
-          evidenceRoot?.querySelector<HTMLDetailsElement>('.ai-ramin-evidence-disclosure') ??
-          evidenceDisclosures[evidenceDisclosures.length - 1];
-
-        if (disclosure) {
-          disclosure.open = true;
-          disclosure.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-        }
-        return;
-      }
 
       if (action === 'analyze_role_fit') {
         setSelectedRequestType('general_chat');
@@ -2383,12 +2361,10 @@ export function AiRaminSection() {
                           <>
                             <AiRaminInlineStructuredModules
                               response={message.response}
-                              evidenceTargetId={`ai-ramin-evidence-${message.id}`}
                               presentation={answerPresentation ?? undefined}
                             />
                             <AiRaminSoftCtaRow
                               response={message.response}
-                              evidenceTargetId={`ai-ramin-evidence-${message.id}`}
                               disabled={isSending}
                               onSelect={handleSoftCta}
                             />

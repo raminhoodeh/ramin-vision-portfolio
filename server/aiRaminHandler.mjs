@@ -231,7 +231,7 @@ const ANSWER_FRAME_CONFIG = {
     interpretationMove: 'Translate the proof into what a hiring manager or visitor should remember.',
     boundaryMove: 'Only mention limitations if the retrieved context leaves a material gap.',
     followUpMove: 'Offer role-fit analysis or project comparison when the visitor may need deeper signal.',
-    softCtas: ['show_evidence', 'analyze_role_fit', 'compare_projects'],
+    softCtas: ['analyze_role_fit', 'compare_projects'],
   },
   factual_capability: {
     id: 'direct_claim_proof_boundary',
@@ -241,7 +241,7 @@ const ANSWER_FRAME_CONFIG = {
     interpretationMove: 'Explain what the proof reasonably demonstrates about Ramin.',
     boundaryMove: 'State what the portfolio context does not confirm instead of implying certainty.',
     followUpMove: 'Invite stronger proof lookup or role-fit validation when confidence depends on context.',
-    softCtas: ['show_evidence', 'ask_stronger_proof', 'analyze_role_fit'],
+    softCtas: ['ask_stronger_proof', 'analyze_role_fit'],
   },
   role_fit: {
     id: 'fit_evidence_validation',
@@ -251,7 +251,7 @@ const ANSWER_FRAME_CONFIG = {
     interpretationMove: 'Explain the likely value this evidence implies for the role.',
     boundaryMove: 'Name the gaps, risks, or context a hiring team should validate.',
     followUpMove: 'Offer a hiring brief or interview questions that validate the fit claim.',
-    softCtas: ['draft_hiring_brief', 'generate_interview_questions', 'show_evidence'],
+    softCtas: ['draft_hiring_brief', 'generate_interview_questions'],
   },
   behavioral_example: {
     id: 'memorable_story_arc',
@@ -261,7 +261,7 @@ const ANSWER_FRAME_CONFIG = {
     interpretationMove: 'Connect the example to the trait or judgement the interviewer is testing.',
     boundaryMove: 'Do not invent missing metrics or outcomes to complete the story.',
     followUpMove: 'Offer follow-up interview questions or stronger proof when the story needs validation.',
-    softCtas: ['generate_interview_questions', 'show_evidence', 'ask_stronger_proof'],
+    softCtas: ['generate_interview_questions', 'ask_stronger_proof'],
   },
   product_judgment: {
     id: 'judgement_tradeoff_proof',
@@ -281,7 +281,7 @@ const ANSWER_FRAME_CONFIG = {
     interpretationMove: 'Explain the decision logic and what would be protected or sacrificed.',
     boundaryMove: 'Call out assumptions that would change the decision.',
     followUpMove: 'Offer risk expansion or project comparison.',
-    softCtas: ['show_risks', 'compare_projects', 'show_evidence'],
+    softCtas: ['show_risks', 'compare_projects'],
   },
   weakness_or_gap: {
     id: 'candid_gap_mitigation',
@@ -291,7 +291,7 @@ const ANSWER_FRAME_CONFIG = {
     interpretationMove: 'Explain how the risk could be mitigated or tested.',
     boundaryMove: 'Keep unknowns visible and avoid turning them into strengths.',
     followUpMove: 'Offer stronger proof lookup or validation questions.',
-    softCtas: ['ask_stronger_proof', 'generate_interview_questions', 'show_evidence'],
+    softCtas: ['ask_stronger_proof', 'generate_interview_questions'],
   },
   first_90_days: {
     id: 'diagnostic_ramp_plan',
@@ -301,7 +301,7 @@ const ANSWER_FRAME_CONFIG = {
     interpretationMove: 'Sequence diagnosis, alignment, first useful delivery, measurement, and risk control.',
     boundaryMove: 'Make clear that this is a likely approach, not a past employment fact.',
     followUpMove: 'Offer a hiring brief or interview questions to validate the plan.',
-    softCtas: ['draft_hiring_brief', 'generate_interview_questions', 'show_evidence'],
+    softCtas: ['draft_hiring_brief', 'generate_interview_questions'],
   },
   interview_coaching: {
     id: 'explicit_coaching_scaffold',
@@ -311,7 +311,7 @@ const ANSWER_FRAME_CONFIG = {
     interpretationMove: 'Show why the structure answers the interviewer intent.',
     boundaryMove: 'Do not present generic coaching examples as Ramin history.',
     followUpMove: 'Offer follow-up interview questions or proof validation.',
-    softCtas: ['generate_interview_questions', 'show_evidence', 'ask_stronger_proof'],
+    softCtas: ['generate_interview_questions', 'ask_stronger_proof'],
   },
   hiring_brief: {
     id: 'hiring_recall_brief',
@@ -321,7 +321,7 @@ const ANSWER_FRAME_CONFIG = {
     interpretationMove: 'Make the headline, proof, risks, and interview focus easy to copy.',
     boundaryMove: 'Do not invent availability, salary, or private details.',
     followUpMove: 'Offer evidence review or stronger proof lookup.',
-    softCtas: ['show_evidence', 'ask_stronger_proof'],
+    softCtas: ['ask_stronger_proof'],
   },
   strongest_product_proof: {
     id: 'ranked_product_proof',
@@ -341,7 +341,7 @@ const ANSWER_FRAME_CONFIG = {
     interpretationMove: 'Explain confidence and relevance without exposing raw source paths.',
     boundaryMove: 'Name missing proof when the visitor asked for something unsupported.',
     followUpMove: 'Offer stronger proof lookup or hiring-brief reuse.',
-    softCtas: ['use_in_hiring_brief', 'ask_stronger_proof', 'show_evidence'],
+    softCtas: ['use_in_hiring_brief', 'ask_stronger_proof'],
   },
   guardrail_boundary: {
     id: 'boundary_redirect',
