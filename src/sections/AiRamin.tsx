@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, useId } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
 import { aiRaminPrototype, portfolioContent } from '../data/portfolio';
+import { SectionKicker } from '../components/SectionHeader';
 import type {
   AiRaminEvidenceConfidence,
   AiRaminEvidenceType,
@@ -2277,6 +2278,7 @@ export function AiRaminSection() {
             </span>
           </div>
           <div className="ai-ramin-title-lockup">
+            <SectionKicker number="07" label="AI Ramin" className="ai-ramin-section-kicker" />
             <h2 className="ai-ramin-title">{chatbot.modalTitle}</h2>
           </div>
           <div className="ai-ramin-header-action">

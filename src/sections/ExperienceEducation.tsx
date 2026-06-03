@@ -1,0 +1,717 @@
+import { useCallback, useEffect, useRef, useState } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { portfolioContent } from '../data/portfolio';
+import { SectionKicker } from '../components/SectionHeader';
+import { type ProductManagementWorkExperience, type WorkItem } from './types';
+import { resolveCompanyLogoSrc, resolveWorkVideoSrc, displayWorkCompanyName } from '../lib/assets';
+import {
+  getInitials,
+  conciseCredentialSummary,
+  educationCredentialChipName,
+  educationIssuerChipName,
+  formatSourceStatus,
+} from '../lib/text';
+import {
+  isPlaceholderValue,
+  contentValue,
+  contentItemsToText,
+  publicWorkValue,
+  type PlaceholderLike,
+} from '../lib/placeholder';
+
+function CompanyLogoMark({
+  logo,
+  name,
+  className = '',
+}: {
+  logo: string | PlaceholderLike | undefined;
+  name: string;
+  className?: string;
+}) {
+  const logoSrc = resolveCompanyLogoSrc(logo);
+
+  return (
+    <span
+      className={`flex shrink-0 items-center justify-center overflow-hidden rounded-[1rem] text-center text-[0.58rem] font-semibold uppercase leading-none tracking-[0.12em] text-muted ${
+        logoSrc ? 'bg-transparent' : 'bg-white/45 shadow-[inset_0_1px_0_rgba(255,255,255,0.42)]'
+      } ${className}`}
+      aria-hidden="true"
+    >
+      {logoSrc ? (
+        <img
+          src={logoSrc}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          className="h-full w-full object-cover"
+        />
+      ) : (
+        getInitials(name)
+      )}
+    </span>
+  );
+}
+
+function WorkMetaPill({ children }: { children: ReactNode }) {
+  return (
+    <span className="rounded-full bg-white/42 px-3 py-1.5 text-[0.65rem] font-medium uppercase tracking-[0.12em] text-muted">
+      {children}
+    </span>
+  );
+}
+
+function ExpandIndicator({ isActive }: { isActive: boolean }) {
+  return (
+    <span
+      className={`card-glass-attachment ${isActive ? 'is-active' : ''}`}
+      aria-hidden="true"
+    >
+      <span className="card-glass-attachment__glyph">
+        <span className="card-glass-attachment__line card-glass-attachment__line-horizontal" />
+        <span className="card-glass-attachment__line card-glass-attachment__line-vertical" />
+      </span>
+    </span>
+  );
+}
+
+function WorkListBlock({
+  label,
+  items,
+  maxItems,
+  compact = false,
+}: {
+  label: string;
+  items: readonly (string | PlaceholderLike)[];
+  maxItems?: number;
+  compact?: boolean;
+}) {
+  const visibleItems = (maxItems ? items.slice(0, maxItems) : items)
+    .map((item) => publicWorkValue(item))
+    .filter((item): item is string => Boolean(item));
+
+  if (!visibleItems.length) return null;
+
+  return (
+    <div className={`rounded-[1rem] bg-white/24 ${compact ? 'p-3' : 'p-4'}`}>
+      <p className="text-[0.58rem] uppercase tracking-[0.16em] text-muted">{label}</p>
+      <div className={`${compact ? 'mt-2 gap-1.5' : 'mt-3 gap-2'} grid`}>
+        {visibleItems.map((item, index) => (
+          <p
+            key={`${label}-${item}-${index}`}
+            className={`${compact ? 'text-xs leading-5' : 'text-sm leading-6'} text-text-primary`}
+          >
+            {item}
+          </p>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ProductVideoPreview({
+  entry,
+  isActive,
+}: {
+  entry: ProductManagementWorkExperience | null;
+  isActive: boolean;
+}) {
+  if (!entry || !isActive) {
+    return null;
+  }
+
+  const videoValue = contentValue(entry.productVideo);
+  const videoUrl = resolveWorkVideoSrc(entry);
+  const isNativeVideo = Boolean(videoUrl && /\.(mp4|webm|mov)(\?.*)?$/i.test(videoUrl));
+  const isExternalVideo = Boolean(videoUrl && /^https?:\/\//i.test(videoUrl) && !isNativeVideo);
+
+  return (
+    <div className="liquid-glass flex min-h-[8.5rem] flex-1 flex-col rounded-[1.35rem] p-3">
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex min-w-0 items-start gap-2.5">
+          <CompanyLogoMark logo={entry.companyLogo} name={displayWorkCompanyName(entry)} className="h-8 w-8 rounded-[0.75rem]" />
+          <div className="min-w-0">
+          <p className="text-[0.58rem] uppercase tracking-[0.18em] text-muted">Active work preview</p>
+          <h3 className="mt-1 text-xl font-semibold tracking-[-0.04em] text-text-primary">
+            {displayWorkCompanyName(entry)}
+          </h3>
+          </div>
+        </div>
+        <WorkMetaPill>Active</WorkMetaPill>
+      </div>
+
+      <div className="mt-3 flex min-h-[5.5rem] flex-1 items-center justify-center overflow-hidden rounded-[1rem] bg-white/26">
+        {isNativeVideo && videoUrl ? (
+          <video
+            src={videoUrl}
+            className="h-full w-full object-cover"
+            autoPlay
+            muted
+            loop
+            playsInline
+          />
+        ) : (
+          <div className="flex h-full min-h-[5.5rem] w-full flex-col items-center justify-center px-4 text-center">
+            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white/40 text-sm text-text-primary">
+              ▶
+            </span>
+            <p className="mt-3 text-xs font-medium text-text-primary">
+              {isExternalVideo ? 'Open product video' : `${displayWorkCompanyName(entry)} product video preview`}
+            </p>
+            <p className="mt-1 max-w-xs text-[0.72rem] leading-4 text-muted">
+              {isPlaceholderValue(entry.productVideo)
+                ? 'A role-specific media slot for a public-safe walkthrough, demo, or product snippet.'
+                : videoValue}
+            </p>
+            {isExternalVideo && videoUrl ? (
+              <a
+                href={videoUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-3 rounded-full bg-white/44 px-3 py-1.5 text-xs font-medium text-text-primary transition duration-300 hover:bg-white/70"
+              >
+                Open video
+              </a>
+            ) : null}
+          </div>
+        )}
+      </div>
+
+    </div>
+  );
+}
+
+function ProductManagementWorkCard({
+  entry,
+  index,
+  isActive,
+  onActivate,
+}: {
+  entry: ProductManagementWorkExperience;
+  index: number;
+  isActive: boolean;
+  onActivate: () => void;
+}) {
+  const companyName = displayWorkCompanyName(entry);
+  const productText = contentItemsToText(entry.productsWorkedOn, 2);
+  const location = publicWorkValue(entry.location);
+  const clients = publicWorkValue(entry.customerClientTypesAndUserNumbers);
+
+  return (
+    <motion.article
+      layout
+      data-work-index={index}
+      role="button"
+      tabIndex={0}
+      aria-expanded={isActive}
+      onClick={onActivate}
+      onKeyDown={(event) => {
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault();
+          onActivate();
+        }
+      }}
+      className={`group w-full max-w-full shrink-0 cursor-pointer rounded-[1.15rem] p-2.5 outline-none transition duration-300 ${
+        isActive
+          ? 'liquid-glass-strong shadow-[0_18px_50px_rgba(23,45,72,0.14)]'
+          : 'liquid-glass hover:-translate-y-0.5 hover:bg-white/70 focus-visible:ring-2 focus-visible:ring-white/70'
+      }`}
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{
+        duration: 0.42,
+        delay: Math.min(index * 0.025, 0.18),
+        layout: { type: 'spring', stiffness: 380, damping: 34 },
+      }}
+      whileTap={{ scale: 0.996 }}
+    >
+      <div className="grid gap-x-3 gap-y-2 md:grid-cols-[2.75rem_minmax(12rem,0.85fr)_minmax(18rem,1fr)_2.75rem] md:items-start">
+        <CompanyLogoMark logo={entry.companyLogo} name={companyName} className="h-10 w-10" />
+
+        <div className="min-w-0">
+          <p className="text-[0.62rem] uppercase tracking-[0.18em] text-muted">
+            {publicWorkValue(entry.monthYearRangeWorked)}
+          </p>
+          <h3 className="mt-1 text-lg font-semibold tracking-[-0.035em] text-text-primary">
+            {companyName}
+          </h3>
+          <p className="mt-1 text-sm leading-5 text-muted">{publicWorkValue(entry.jobTitle)}</p>
+        </div>
+
+        <div className="min-w-0">
+          <div className="flex flex-wrap gap-2 md:justify-end">
+            <WorkMetaPill>{publicWorkValue(entry.industryTag)}</WorkMetaPill>
+            <WorkMetaPill>{publicWorkValue(entry.marketType)}</WorkMetaPill>
+          </div>
+          <div className="mt-2 flex max-w-full items-center gap-2 md:justify-end">
+            <span className="shrink-0 rounded-full bg-white/34 px-2 py-1 text-[0.52rem] uppercase leading-none tracking-[0.12em] text-muted">
+              Product
+            </span>
+            <p
+              className="min-w-0 max-w-full overflow-hidden text-ellipsis whitespace-nowrap text-xs leading-5 text-muted md:text-right"
+              title={productText}
+            >
+              {productText}
+            </p>
+          </div>
+        </div>
+
+        <div className="flex justify-end">
+          <ExpandIndicator isActive={isActive} />
+        </div>
+      </div>
+
+      <AnimatePresence initial={false}>
+        {isActive ? (
+          <motion.div
+            key={`${entry.companyName}-details`}
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.24, ease: [0.25, 0.1, 0.25, 1] }}
+            className="overflow-hidden"
+          >
+            <div className="mt-3 grid gap-2 border-t border-stroke/50 pt-3">
+              {location ? (
+                <div className="grid grid-cols-[5.5rem_minmax(0,1fr)] items-baseline gap-3 rounded-[0.95rem] bg-white/20 px-3 py-2">
+                  <p className="text-[0.58rem] uppercase tracking-[0.16em] text-muted">Location</p>
+                  <p className="text-xs leading-5 text-text-primary">{location}</p>
+                </div>
+              ) : null}
+              {clients ? (
+                <div className="grid grid-cols-[5.5rem_minmax(0,1fr)] items-baseline gap-3 rounded-[0.95rem] bg-white/20 px-3 py-2">
+                  <p className="text-[0.58rem] uppercase tracking-[0.16em] text-muted">Clients</p>
+                  <p className="text-xs leading-5 text-text-primary">{clients}</p>
+                </div>
+              ) : null}
+
+              <div className="grid gap-2 xl:grid-cols-[0.85fr_1.15fr]">
+                <div className="grid gap-2">
+                  <div className="rounded-[1rem] bg-white/24 p-3">
+                    <p className="text-[0.58rem] uppercase tracking-[0.16em] text-muted">Company context</p>
+                    <p className="mt-2 text-xs leading-5 text-text-primary">
+                      {publicWorkValue(entry.companyDescription)}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="grid gap-2">
+                  <WorkListBlock label="Main achievements" items={entry.mainAchievements} maxItems={3} compact />
+                  <WorkListBlock label="Process introduced / managerial" items={entry.processesIntroducedManagerial} maxItems={1} compact />
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
+    </motion.article>
+  );
+}
+
+function ProductManagementWorkRail({
+  activeIndex,
+  onActiveIndexChange,
+}: {
+  activeIndex: number | null;
+  onActiveIndexChange: (index: number | null) => void;
+}) {
+  const { companies } = portfolioContent.productManagementWorkExperiences;
+  const railRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (activeIndex === null) return;
+    const rail = railRef.current;
+    const activeCard = rail?.querySelector<HTMLElement>(`[data-work-index="${activeIndex}"]`);
+    if (!rail || !activeCard) return;
+
+    window.requestAnimationFrame(() => {
+      const canScrollRail = rail.scrollHeight > rail.clientHeight + 1 && getComputedStyle(rail).overflowY !== 'visible';
+      const scrollContainer = canScrollRail ? rail : rail.closest<HTMLElement>('.portfolio-stage');
+      if (!scrollContainer) return;
+      const activeRect = activeCard.getBoundingClientRect();
+      const scrollRect = scrollContainer.getBoundingClientRect();
+
+      scrollContainer.scrollTo({
+        top: Math.max(scrollContainer.scrollTop + activeRect.top - scrollRect.top - 16, 0),
+        behavior: 'smooth',
+      });
+    });
+  }, [activeIndex]);
+
+  return (
+    <div className="flex min-w-0 flex-col bg-transparent p-0 lg:h-full lg:min-h-0">
+      <div
+        ref={railRef}
+        className="work-dashboard-scroll flex flex-col gap-3 py-4 pr-1 lg:min-h-0 lg:flex-1 lg:overflow-y-auto lg:py-5"
+      >
+        {companies.map((entry, index) => (
+          <ProductManagementWorkCard
+            key={`${entry.companyName}-${index}`}
+            entry={entry}
+            index={index}
+            isActive={activeIndex === index}
+            onActivate={() => onActiveIndexChange(activeIndex === index ? null : index)}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+type EducationRow = {
+  id: string;
+  logo: string | PlaceholderLike;
+  issuer: string;
+  credential: string;
+  typeLabel: string;
+  outcome: string;
+  year: string;
+  summary: string;
+  fullSummary: string;
+  modules: readonly string[];
+};
+
+function EducationSummaryChip({
+  label,
+  variant,
+}: {
+  label: string;
+  variant: 'degree' | 'certification';
+}) {
+  return (
+    <span
+      className={`education-summary-chip ${
+        variant === 'degree' ? 'education-summary-chip-degree' : 'education-summary-chip-certification'
+      }`}
+    >
+      {label}
+    </span>
+  );
+}
+
+function EducationDetailPanel({ row }: { row: EducationRow }) {
+  const [isSummaryExpanded, setIsSummaryExpanded] = useState(false);
+  const isDegree = row.typeLabel !== 'Certificate';
+  const issuerLabel = isDegree ? row.issuer : educationIssuerChipName(row.issuer);
+  const credentialLabel = isDegree ? row.credential : educationCredentialChipName(row.credential);
+  const hasFullSummary = !isDegree && row.fullSummary.trim().length > row.summary.trim().length;
+  const visibleSummary = hasFullSummary && isSummaryExpanded ? row.fullSummary : row.summary;
+
+  return (
+    <article className="rounded-[1.1rem] bg-white/26 p-3.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.26)]">
+      <div className="grid min-w-0 grid-cols-[1.575rem_minmax(0,1fr)] items-start gap-3 pr-11">
+        <CompanyLogoMark logo={row.logo} name={row.issuer} className="h-[1.575rem] w-[1.575rem] rounded-[0.6rem]" />
+        <div className="min-w-0">
+          <p className="text-[0.73rem] uppercase tracking-[0.16em] text-muted">
+            {isDegree ? 'Degree' : 'Certification'} / {row.year}
+          </p>
+          <h4 className="mt-1 text-[1.14rem] font-semibold leading-5 text-text-primary">{credentialLabel}</h4>
+          <p className="mt-1 text-[0.98rem] leading-5 text-muted">{issuerLabel}</p>
+        </div>
+      </div>
+
+      <div className="mt-3 rounded-[0.9rem] bg-white/22 px-3.5 py-2.5">
+        <p className="text-[0.98rem] leading-7 text-muted">{visibleSummary}</p>
+        {hasFullSummary ? (
+          <div className="mt-2 flex justify-end">
+            <button
+              type="button"
+              aria-expanded={isSummaryExpanded}
+              onClick={() => setIsSummaryExpanded((current) => !current)}
+              className="education-read-more-chip"
+            >
+              <span className="education-read-more-chip__label">{isSummaryExpanded ? 'Show less' : 'Read more'}</span>
+            </button>
+          </div>
+        ) : null}
+      </div>
+
+      <div className="mt-2 flex flex-wrap gap-1.5">
+        {isDegree ? (
+          <span className="rounded-full bg-white/38 px-3 py-1.5 text-[0.75rem] uppercase leading-none tracking-[0.12em] text-text-primary">
+            {row.outcome}
+          </span>
+        ) : null}
+        {row.modules.slice(0, isDegree ? 3 : 5).map((module) => (
+          <span
+            key={`${row.id}-${module}`}
+            className="rounded-full bg-white/26 px-3 py-1.5 text-[0.75rem] leading-none text-muted"
+          >
+            {module}
+          </span>
+        ))}
+      </div>
+    </article>
+  );
+}
+
+function EducationCard({
+  isActive,
+  onToggle,
+}: {
+  isActive: boolean;
+  onToggle: () => void;
+}) {
+  const { qualifications, certifications } = portfolioContent.qualifications;
+  const degreeRows: EducationRow[] = qualifications.map((entry) => ({
+    id: `degree-${entry.institutionName}`,
+    logo: entry.institutionLogo,
+    issuer: entry.institutionName,
+    credential: entry.qualification,
+    typeLabel: entry.qualificationType,
+    outcome: entry.gradeAchieved,
+    year: entry.dateAchieved,
+    summary: entry.howThisHasHelpedYouAsAPM,
+    fullSummary: entry.howThisHasHelpedYouAsAPM,
+    modules: entry.modulesOrFocusAreas,
+  }));
+  const certificateRows: EducationRow[] = certifications.map((entry) => ({
+    id: `certificate-${entry.certificationName}`,
+    logo: entry.awardingBodyLogo,
+    issuer: entry.awardingBodyName,
+    credential: entry.certificationName,
+    typeLabel: 'Certificate',
+    outcome: 'Certificate',
+    year: entry.dateAchieved,
+    summary: conciseCredentialSummary(entry.howThisHasHelpedYouAsAPM),
+    fullSummary: entry.howThisHasHelpedYouAsAPM,
+    modules: entry.modulesIncluded,
+  }));
+  const featuredDegreeRows = degreeRows.filter((row) => row.issuer === 'Imperial College London').slice(0, 1);
+  const featuredCertificateNames = new Set([
+    'AI Engineer Certification',
+    'Professional Machine Learning Engineer',
+    'MCP Advanced Topics',
+  ]);
+  const expandedCertificateNames = [
+    'AI Engineer Certification',
+    'Professional Machine Learning Engineer',
+    'Generative AI Leader',
+    'MCP Advanced Topics',
+    'MBTi Leadership Development Programme',
+  ];
+  const featuredCertificateRows = certificateRows.filter((row) => featuredCertificateNames.has(row.credential));
+  const expandedCertificateRows = expandedCertificateNames
+    .map((name) => certificateRows.find((row) => row.credential === name))
+    .filter((row): row is EducationRow => Boolean(row));
+  const detailRows = [...featuredDegreeRows, ...expandedCertificateRows];
+
+  return (
+    <section
+      data-education-card
+      aria-expanded={isActive}
+      className={`relative rounded-[1.45rem] p-3.5 outline-none transition duration-300 ${
+        isActive ? 'flex h-full flex-col liquid-glass-strong' : 'liquid-glass hover:bg-white/70'
+      }`}
+    >
+      {!isActive ? (
+        <button
+          type="button"
+          aria-expanded={isActive}
+          onClick={onToggle}
+          className="group/education block w-full rounded-[1.15rem] text-left outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+        >
+          <span className="flex items-start justify-between gap-3">
+            <span className="grid min-w-0 flex-1 gap-2.5">
+              <span className="font-display text-[1.55rem] italic leading-none tracking-[0] text-text-primary">
+                Degrees
+              </span>
+              <span className="flex min-w-0">
+                {featuredDegreeRows.map((row) => (
+                  <EducationSummaryChip
+                    key={row.id}
+                    label={`${row.typeLabel} - ${row.issuer}`}
+                    variant="degree"
+                  />
+                ))}
+              </span>
+              <span className="pt-1 font-display text-[1.55rem] italic leading-none tracking-[0] text-text-primary">
+                Certifications
+              </span>
+              <span className="education-certification-chip-row">
+                {featuredCertificateRows.map((row) => (
+                  <EducationSummaryChip
+                    key={row.id}
+                    label={`${educationCredentialChipName(row.credential)} - ${educationIssuerChipName(row.issuer)}`}
+                    variant="certification"
+                  />
+                ))}
+              </span>
+            </span>
+            <ExpandIndicator isActive={isActive} />
+          </span>
+        </button>
+      ) : (
+        <button
+          type="button"
+          aria-label="Collapse qualifications"
+          aria-expanded={isActive}
+          onClick={onToggle}
+          className="education-collapse-button rounded-full outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+        >
+          <ExpandIndicator isActive={isActive} />
+        </button>
+      )}
+
+      <AnimatePresence initial={false}>
+        {isActive ? (
+          <motion.div
+            key="education-details"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.24, ease: [0.25, 0.1, 0.25, 1] }}
+            className="min-h-0 flex-1 overflow-hidden"
+          >
+            <div className="education-detail-scroll portfolio-stage-scroll grid h-full min-h-0 content-start gap-2.5 pr-1">
+              {detailRows.map((row) => (
+                <EducationDetailPanel key={row.id} row={row} />
+              ))}
+            </div>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
+    </section>
+  );
+}
+
+function WorkFloatingHeader({ intro, hideSubtitle }: { intro: string; hideSubtitle: boolean }) {
+  if (hideSubtitle) return null;
+
+  return (
+    <div className="pointer-events-none relative z-20 px-7 pt-7 lg:absolute lg:left-10 lg:top-10 lg:max-w-[29rem] lg:p-0">
+      <SectionKicker number="02" label="Work" className="text-[0.62rem] tracking-[0.3em]" />
+      <h2 className="mt-4 font-display text-[2.7rem] font-normal italic leading-[0.9] tracking-[0] text-text-primary md:text-[3.6rem] lg:text-[3.8rem]">
+        Experiences & Qualifications
+      </h2>
+      <AnimatePresence initial={false}>
+        {!hideSubtitle ? (
+          <motion.p
+            key="work-subtitle"
+            initial={{ opacity: 0, y: -4 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }}
+            transition={{ duration: 0.2 }}
+            className="mt-5 max-w-xl text-xs leading-5 text-muted md:mt-6 md:text-sm md:leading-5"
+          >
+            {intro}
+          </motion.p>
+        ) : null}
+      </AnimatePresence>
+    </div>
+  );
+}
+
+export function ExperienceEducationSection() {
+  const { intro, companies } = portfolioContent.productManagementWorkExperiences;
+  const [activeWorkIndex, setActiveWorkIndex] = useState<number | null>(null);
+  const [isEducationExpanded, setIsEducationExpanded] = useState(false);
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const educationCardRef = useRef<HTMLDivElement | null>(null);
+  const previewEntry = activeWorkIndex === null ? null : companies[activeWorkIndex];
+
+  const handleEducationToggle = () => {
+    setIsEducationExpanded((current) => {
+      const next = !current;
+      if (next) {
+        requestAnimationFrame(() => {
+          const section = sectionRef.current;
+          const stage = section?.closest<HTMLElement>('.portfolio-stage');
+          if (!section || !stage) return;
+          stage.scrollTo({ top: section.offsetTop, left: 0, behavior: 'smooth' });
+        });
+      }
+      return next;
+    });
+  };
+
+  useEffect(() => {
+    if (!isEducationExpanded) return;
+
+    const handlePointerDown = (event: PointerEvent) => {
+      const card = educationCardRef.current;
+      if (!card || !(event.target instanceof Node) || card.contains(event.target)) return;
+      setIsEducationExpanded(false);
+    };
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setIsEducationExpanded(false);
+    };
+
+    document.addEventListener('pointerdown', handlePointerDown);
+    document.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.removeEventListener('pointerdown', handlePointerDown);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isEducationExpanded]);
+
+  return (
+    <section
+      ref={sectionRef}
+      id="experience-education"
+      className="relative isolate min-h-full overflow-visible rounded-[24px] bg-transparent p-4 sm:rounded-[34px] lg:h-full lg:min-h-0 lg:overflow-hidden lg:p-5"
+    >
+      <div className="work-section-opacity-layer absolute inset-0 z-0" aria-hidden="true" />
+      <WorkFloatingHeader intro={intro} hideSubtitle={isEducationExpanded} />
+      <AnimatePresence initial={false}>
+        {isEducationExpanded ? (
+          <motion.button
+            type="button"
+            aria-label="Collapse qualifications"
+            className="work-education-dim"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.18, ease: 'easeOut' }}
+            onClick={() => setIsEducationExpanded(false)}
+          />
+        ) : null}
+      </AnimatePresence>
+      <div className="relative min-h-full w-full max-w-none lg:h-full lg:min-h-0">
+        <div
+          className="relative grid min-h-full gap-5 lg:h-full lg:min-h-0 lg:grid-cols-[minmax(0,0.382fr)_minmax(0,0.618fr)]"
+        >
+          <motion.aside
+            className={`work-dashboard-scroll relative flex min-h-[42rem] flex-col p-0 lg:h-full lg:min-h-0 lg:overflow-y-auto ${
+              isEducationExpanded ? 'z-30' : ''
+            }`}
+            initial={{ opacity: 0, x: -18 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <div className="min-h-[14rem] shrink-0" />
+            {previewEntry ? (
+              <div className="mb-4 flex w-full min-h-0 shrink-0">
+                <ProductVideoPreview entry={previewEntry} isActive={activeWorkIndex !== null} />
+              </div>
+            ) : null}
+            <div
+              ref={educationCardRef}
+              className={`transition-[bottom,top,height] duration-300 ${
+                isEducationExpanded
+                  ? 'absolute inset-0 z-50 h-full'
+                  : 'mt-auto lg:absolute lg:bottom-0 lg:left-0 lg:right-0 lg:z-20'
+              }`}
+            >
+              <EducationCard
+                isActive={isEducationExpanded}
+                onToggle={handleEducationToggle}
+              />
+            </div>
+          </motion.aside>
+
+          <motion.div
+            className="relative z-0 min-w-0 lg:h-full lg:min-h-0"
+            initial={{ opacity: 0, x: 18 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.5, delay: 0.06 }}
+          >
+            <ProductManagementWorkRail activeIndex={activeWorkIndex} onActiveIndexChange={setActiveWorkIndex} />
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
+}
