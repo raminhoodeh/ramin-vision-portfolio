@@ -179,7 +179,7 @@ const RETRIEVAL_PROFILE_BY_QUESTION_TYPE = {
     policyLimit: 3,
     preferredEvidenceRoles: ['story', 'work', 'project', 'canonical'],
     generalEvidenceLimit: 8,
-    frameworkLimit: 5,
+    frameworkLimit: 7,
     minimumAnswerableEvidence: 0,
   },
   hiring_brief: {
