@@ -9,6 +9,7 @@ import type {
   AiRaminRequestType,
 } from '../data/portfolio';
 import { createAiRaminMessageId } from '../lib/text';
+import { SectionKicker, sectionMarkerMeta } from '../components/SectionHeader';
 import profileImageUrl from '../assets/ramin-profile-nav.webp';
 
 type AiRaminMessageRole = 'assistant' | 'user';
@@ -2276,6 +2277,7 @@ export function AiRaminSection() {
     <section id="ai-ramin" className="ai-ramin-section ai-ramin-thoughts-background relative isolate h-full min-h-full overflow-hidden">
       <div className="ai-ramin-ambient" aria-hidden="true" />
       <div className="ai-ramin-page-shell relative z-10 mx-auto flex h-full min-h-0 w-full flex-col px-5 py-8 sm:px-8 md:px-12 lg:px-16">
+        <SectionKicker {...sectionMarkerMeta['ai-ramin']} className="ai-ramin-section-eyebrow self-start" />
         <header className="ai-ramin-header">
           <div className="ai-ramin-header-avatar">
             <span className="ai-ramin-avatar">

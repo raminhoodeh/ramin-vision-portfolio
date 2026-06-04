@@ -10468,6 +10468,12 @@ a {
   max-width: min(100%, 94rem);
 }
 
+.ai-ramin-section-eyebrow {
+  position: relative;
+  z-index: 41;
+  margin: 0 0 0.5rem;
+}
+
 .ai-ramin-page-shell .ai-ramin-header {
   min-height: 6.7rem;
 }
