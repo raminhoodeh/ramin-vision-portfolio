@@ -1392,6 +1392,11 @@ function isProfessionalIntent(intent) {
   return intent && !['casual_chat', 'clarification_needed', 'guardrail_boundary'].includes(intent);
 }
 
+function extractSuggestedNextActionFromContent(content) {
+  const match = /(?:^|\n)\s*\*{0,2}\s*suggested next action\s*:?\s*\*{0,2}\s*([\s\S]+?)\s*$/i.exec(String(content ?? ''));
+  return match ? match[1].replace(/\s+/g, ' ').trim() : '';
+}
+
 function getLastProfessionalConversationAnchor(history) {
   if (!Array.isArray(history)) return null;
 
@@ -1421,6 +1426,7 @@ function getLastProfessionalConversationAnchor(history) {
       reason: route.reason || 'previous professional answer metadata',
       userMessagePreview: summarizeHistoryContent(previousUserMessage?.content, 420),
       assistantAnswerPreview: summarizeHistoryContent(message.content, 520),
+      suggestedNextAction: summarizeHistoryContent(extractSuggestedNextActionFromContent(message.content), 280),
       selectedStoryTitle: summarizeHistoryContent(metadata.selectedStory?.title, 180),
       evidenceCardTitles: Array.isArray(metadata.evidenceCardTitles)
         ? metadata.evidenceCardTitles.map((title) => summarizeHistoryContent(title, 120)).filter(Boolean).slice(0, 4)
@@ -1446,6 +1452,7 @@ function getLastProfessionalConversationAnchor(history) {
       reason: 'inferred from previous substantive user message',
       userMessagePreview: summarizeHistoryContent(content, 420),
       assistantAnswerPreview: '',
+      suggestedNextAction: '',
       selectedStoryTitle: '',
       evidenceCardTitles: [],
     };
@@ -1463,7 +1470,17 @@ function isContextDependentFollowUp(message) {
   if (!normalized || hasGuardrailSensitiveCue(normalized) || isConversationOpenCue(normalized)) return false;
 
   const tokenCount = normalized.split(/\s+/).filter(Boolean).length;
+  // Affirmatives / choices that accept the previous answer's offered next step
+  // ("yes", "yes please", "sure", "go on", "do that", "the first one", "option 2", "both").
+  const isAffirmativeOrChoiceFollowUp =
+    /^(?:yes|yeah|yep|yup|sure|absolutely|definitely|please|go (?:on|ahead|for it)|do (?:that|it|so)|please do|sounds good|let'?s|that one|both|either)\b/i.test(
+      normalized,
+    ) ||
+    /\b(?:the (?:first|second|third|latter|former)(?: one)?|option (?:1|2|3|one|two|three)|number (?:1|2|3|one|two|three))\b/i.test(
+      normalized,
+    );
   return (
+    isAffirmativeOrChoiceFollowUp ||
     /^(tell me more|go deeper|expand|expand on that|explain more|why|why not|how so|same for|same question|continue|and|also|what about|how about|what if|for .+|and for .+|compare that|show risks|what risks|draft that|turn that into|can you expand|can you compare|can you explain|do that for)\b/i.test(
       normalized,
     ) ||
@@ -1493,6 +1510,7 @@ export function buildAiRaminConversationRouteContext({
         `Current follow-up: ${visitorMessage}`,
         anchor.userMessagePreview ? `Previous visitor question: ${anchor.userMessagePreview}` : '',
         anchor.assistantAnswerPreview ? `Previous AI Ramin answer focus: ${anchor.assistantAnswerPreview}` : '',
+        anchor.suggestedNextAction ? `Previously offered next step: ${anchor.suggestedNextAction}` : '',
         inheritedIntent ? `Inherited intent: ${inheritedIntent}` : '',
         inheritedQuestionType ? `Inherited question type: ${inheritedQuestionType}` : '',
         anchor.selectedStoryTitle ? `Previous lead story: ${anchor.selectedStoryTitle}` : '',
@@ -1515,6 +1533,7 @@ export function buildAiRaminConversationRouteContext({
     contextualQuery: summarizeHistoryContent(contextualQuery, MAX_CONVERSATION_CONTEXT_CHARS),
     previousUserMessagePreview: isFollowUp ? anchor.userMessagePreview : '',
     previousAnswerPreview: isFollowUp ? anchor.assistantAnswerPreview : '',
+    previousSuggestedNextAction: isFollowUp ? anchor.suggestedNextAction : '',
     previousLeadStoryTitle: isFollowUp ? anchor.selectedStoryTitle : '',
     previousEvidenceCardTitles: isFollowUp ? anchor.evidenceCardTitles : [],
   };
@@ -1538,6 +1557,8 @@ function shouldUseConversationInheritedRoute(route, conversationContext) {
   if (!conversationContext?.isFollowUp || !conversationContext.inheritedIntent) return false;
   if (!route) return true;
   if (route.intent === 'clarification_needed') return true;
+  // A contextual follow-up (e.g. "yes please") is never a greeting; keep the professional thread.
+  if (route.intent === 'casual_chat') return true;
   if (route.intent === 'portfolio_overview' && conversationContext.inheritedIntent !== 'portfolio_overview') return true;
   return false;
 }
@@ -4823,6 +4844,9 @@ export function buildVisitorPrompt(visitorMessage, hiringMode, requestType, quer
           : '',
         queryIntent.conversationContext.previousAnswerPreview
           ? `Previous answer focus: ${queryIntent.conversationContext.previousAnswerPreview}`
+          : '',
+        queryIntent.conversationContext.previousSuggestedNextAction
+          ? `You offered this next step in your previous answer: "${queryIntent.conversationContext.previousSuggestedNextAction}". If the latest message accepts it (e.g. "yes", "yes please", "sure", "the first one"), carry out that step now instead of repeating the previous answer.`
           : '',
         queryIntent.conversationContext.previousLeadStoryTitle
           ? `Previous lead story: ${queryIntent.conversationContext.previousLeadStoryTitle}`
