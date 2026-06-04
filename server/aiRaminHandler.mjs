@@ -3376,7 +3376,7 @@ function buildStrongestProductProofRecovery(visitorMessage, portfolioContext, ev
   const leadTitle = professionalLead?.title ?? selfDirectedLead?.title;
   const selfDirectedContrast =
     selfDirectedLead && selfDirectedLead.title !== leadTitle
-      ? `If you mean his most current AI-native builder signal, I would put **${selfDirectedLead.title}** next to it: that is the clearer window into how he now thinks about model choice, context, evals, guardrails, and human judgement.`
+      ? `If you want his most current self-directed AI signal, I'd put **${selfDirectedLead.title}** alongside it — it shows how he designs model, context, and governance choices end to end.`
       : '';
 
   return {
@@ -3385,23 +3385,22 @@ function buildStrongestProductProofRecovery(visitorMessage, portfolioContext, ev
         ? `I would point to **${leadTitle}**.`
         : `The strongest answer I would lead with is **${leadTitle}**.`,
       professionalLead
-        ? 'What makes it stand out is the product difficulty: Ramin was working with a complex carbon methodology, enterprise stakeholders, and a data-heavy decision surface, then helping turn that into something people could actually use.'
-        : 'What makes it stand out is the product difficulty: it shows Ramin turning an ambiguous system into a usable product surface rather than just describing an idea.',
+        ? 'It stands out because Ramin had to turn a genuinely hard problem — a complex carbon methodology, enterprise stakeholders, and a data-heavy decision surface — into something people could actually use.'
+        : 'It stands out because it shows Ramin turning an ambiguous system into a usable product surface, not just sketching an idea.',
       selfDirectedContrast,
       roleContext
-        ? 'For a hiring conversation, the signal is not just one product name. It is the pattern: complex data, ambiguous users, technical constraints, and a product layer that makes the system usable.'
-        : 'The broader signal is that Ramin is strongest when the product sits between complex systems and real user decisions.',
+        ? 'For a hiring conversation, the signal is the recurring pattern rather than one product name: complex data, ambiguous users, technical constraints, and a product layer that makes the whole thing usable.'
+        : 'The throughline is that he is strongest where a product has to make a complex system genuinely usable for real decisions.',
     ]
       .filter(Boolean)
       .join('\n\n'),
     verified_proof: verifiedProof,
     inferred_fit: [
-      'For a PM role, this points to product judgement in complex domains, cross-functional translation, and the ability to connect technical systems to user-facing product value.',
-      'The strongest interview angle is not one isolated feature; it is the repeated pattern across enterprise data products, AI-native systems, and self-directed builds.',
+      'For a PM role, this points to product judgement in complex domains, cross-functional translation, and connecting technical systems to user-facing value.',
+      'The strongest interview angle is the repeated pattern across enterprise data products, AI-native systems, and self-directed builds — not one isolated feature.',
     ],
     confidential_boundary: [
-      'This is a subjective ranking from the available public material, not an objective universal ranking.',
-      'Metric-level claims should be validated or discussed directly where the source marks metrics as review-needed.',
+      'Specific internal revenue, client, or performance figures behind these products stay confidential.',
     ],
     open_questions: [
       'The exact example to lead with depends on the company, product area, seniority, and job description.',
@@ -3481,7 +3480,7 @@ function buildPortfolioOverviewRecovery(evidenceCards) {
 
   return {
     short_answer:
-      'Ramin Hoodeh is an AI Product Manager, TEDx speaker, author, and creator of the AI-Native Product OS. The sharp version is that he has moved from classic product management into AI-native product leadership: after building product systems across media, climate analytics, geospatial data, carbon measurement, employee benefits, and self-directed apps, he now frames AI product work around model choice, context, evals, guardrails, and human judgement.',
+      'Ramin Hoodeh is an AI Product Manager, TEDx speaker, and author who created the AI-Native Product OS. He started in classic product management and now works mostly on AI-native products — building across media, climate analytics, geospatial data, carbon measurement, employee benefits, and his own apps — with a focus on getting model behaviour, context, and governance right.',
     verified_proof: verifiedProof,
     inferred_fit: [
       'His useful angle for AI PMs is systems thinking: turning AI theory, tools, and workflows into one usable operating map.',
@@ -3489,7 +3488,7 @@ function buildPortfolioOverviewRecovery(evidenceCards) {
       'His teaching, speaking, writing, and product-building background makes the AI PM positioning both practical and communicable.',
     ],
     confidential_boundary: [
-      'Exact metric claims such as student counts, sector rankings, AUM, and impact figures should use the wording in the portfolio overview or supporting work-experience files without expanding beyond them.',
+      'Private company figures and unreleased work are not covered here.',
     ],
     open_questions: [
       'For a hiring answer, the most relevant context to foreground depends on whether the role is AI product, climate/data product, platform/API product, or product education.',
@@ -3513,9 +3512,9 @@ function buildGenericEvidenceRecovery(sections, evidenceCards, visitorMessage = 
         ? `I would start with **${lead.title}**.`
         : `A useful answer starts with **${lead.title}**.`,
       secondLead
-        ? `I would keep **${secondLead.title}** close behind as the supporting comparison.`
+        ? `**${secondLead.title}** is the natural one to put next to it.`
         : '',
-      'The reason is practical: these examples show Ramin working where product judgement has to translate a complex domain into something usable, explainable, and decision-ready.',
+      'Both are cases where Ramin had to make a hard, technical domain genuinely usable — which is the throughline of his strongest work.',
     ]
       .filter(Boolean)
       .join('\n\n'),
