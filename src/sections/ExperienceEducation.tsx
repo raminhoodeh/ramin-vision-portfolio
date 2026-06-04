@@ -2,7 +2,6 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { portfolioContent } from '../data/portfolio';
-import { SectionKicker } from '../components/SectionHeader';
 import { type ProductManagementWorkExperience, type WorkItem } from './types';
 import { resolveCompanyLogoSrc, resolveWorkVideoSrc, displayWorkCompanyName } from '../lib/assets';
 import {
@@ -13,8 +12,6 @@ import {
   formatSourceStatus,
 } from '../lib/text';
 import {
-  isPlaceholderValue,
-  contentValue,
   contentItemsToText,
   publicWorkValue,
   type PlaceholderLike,
@@ -120,64 +117,46 @@ function ProductVideoPreview({
     return null;
   }
 
-  const videoValue = contentValue(entry.productVideo);
   const videoUrl = resolveWorkVideoSrc(entry);
   const isNativeVideo = Boolean(videoUrl && /\.(mp4|webm|mov)(\?.*)?$/i.test(videoUrl));
-  const isExternalVideo = Boolean(videoUrl && /^https?:\/\//i.test(videoUrl) && !isNativeVideo);
 
   return (
-    <div className="liquid-glass flex min-h-[8.5rem] flex-1 flex-col rounded-[1.35rem] p-3">
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex min-w-0 items-start gap-2.5">
-          <CompanyLogoMark logo={entry.companyLogo} name={displayWorkCompanyName(entry)} className="h-8 w-8 rounded-[0.75rem]" />
-          <div className="min-w-0">
-          <p className="text-[0.58rem] uppercase tracking-[0.18em] text-muted">Active work preview</p>
-          <h3 className="mt-1 text-xl font-semibold tracking-[-0.04em] text-text-primary">
-            {displayWorkCompanyName(entry)}
-          </h3>
-          </div>
-        </div>
-        <WorkMetaPill>Active</WorkMetaPill>
-      </div>
-
-      <div className="mt-3 flex min-h-[5.5rem] flex-1 items-center justify-center overflow-hidden rounded-[1rem] bg-white/26">
-        {isNativeVideo && videoUrl ? (
-          <video
-            src={videoUrl}
-            className="h-full w-full object-cover"
-            autoPlay
-            muted
-            loop
-            playsInline
-          />
-        ) : (
-          <div className="flex h-full min-h-[5.5rem] w-full flex-col items-center justify-center px-4 text-center">
-            <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white/40 text-sm text-text-primary">
-              ▶
-            </span>
-            <p className="mt-3 text-xs font-medium text-text-primary">
-              {isExternalVideo ? 'Open product video' : `${displayWorkCompanyName(entry)} product video preview`}
-            </p>
-            <p className="mt-1 max-w-xs text-[0.72rem] leading-4 text-muted">
-              {isPlaceholderValue(entry.productVideo)
-                ? 'A role-specific media slot for a public-safe walkthrough, demo, or product snippet.'
-                : videoValue}
-            </p>
-            {isExternalVideo && videoUrl ? (
-              <a
-                href={videoUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="mt-3 rounded-full bg-white/44 px-3 py-1.5 text-xs font-medium text-text-primary transition duration-300 hover:bg-white/70"
-              >
-                Open video
-              </a>
-            ) : null}
-          </div>
-        )}
-      </div>
-
+    <div
+      className="relative flex aspect-video min-h-[12rem] w-full flex-1 overflow-hidden rounded-[1.45rem] bg-white/24 shadow-[0_18px_55px_rgba(23,45,72,0.16),inset_0_1px_0_rgba(255,255,255,0.42)]"
+      aria-label={`${displayWorkCompanyName(entry)} work video`}
+    >
+      {isNativeVideo && videoUrl ? (
+        <video
+          src={videoUrl}
+          className="h-full w-full object-cover"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          onLoadedData={(event) => {
+            void event.currentTarget.play().catch(() => undefined);
+          }}
+        />
+      ) : null}
     </div>
+  );
+}
+
+function SelectedCompanyContextCard({
+  entry,
+}: {
+  entry: ProductManagementWorkExperience | null;
+}) {
+  if (!entry) return null;
+
+  return (
+    <article className="liquid-glass mt-3 rounded-[1.25rem] p-4 shadow-[0_14px_44px_rgba(23,45,72,0.1)]">
+      <p className="text-[0.58rem] uppercase tracking-[0.18em] text-muted">Company context</p>
+      <p className="mt-2 text-sm leading-6 text-text-primary">
+        {publicWorkValue(entry.companyDescription)}
+      </p>
+    </article>
   );
 }
 
@@ -285,20 +264,9 @@ function ProductManagementWorkCard({
                 </div>
               ) : null}
 
-              <div className="grid gap-2 xl:grid-cols-[0.85fr_1.15fr]">
-                <div className="grid gap-2">
-                  <div className="rounded-[1rem] bg-white/24 p-3">
-                    <p className="text-[0.58rem] uppercase tracking-[0.16em] text-muted">Company context</p>
-                    <p className="mt-2 text-xs leading-5 text-text-primary">
-                      {publicWorkValue(entry.companyDescription)}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="grid gap-2">
-                  <WorkListBlock label="Main achievements" items={entry.mainAchievements} maxItems={3} compact />
-                  <WorkListBlock label="Process introduced / managerial" items={entry.processesIntroducedManagerial} maxItems={1} compact />
-                </div>
+              <div className="grid gap-2">
+                <WorkListBlock label="Main achievements" items={entry.mainAchievements} maxItems={3} compact />
+                <WorkListBlock label="Process introduced / managerial" items={entry.processesIntroducedManagerial} maxItems={1} compact />
               </div>
             </div>
           </motion.div>
@@ -342,7 +310,9 @@ function ProductManagementWorkRail({
     <div className="flex min-w-0 flex-col bg-transparent p-0 lg:h-full lg:min-h-0">
       <div
         ref={railRef}
-        className="work-dashboard-scroll flex flex-col gap-3 py-4 pr-1 lg:min-h-0 lg:flex-1 lg:overflow-y-auto lg:py-5"
+        className={`work-dashboard-scroll flex flex-col gap-3 pr-1 lg:min-h-0 lg:flex-1 lg:overflow-y-auto ${
+          activeIndex === null ? 'py-4 lg:py-5' : 'pb-4 pt-0 lg:pb-5 lg:pt-0'
+        }`}
       >
         {companies.map((entry, index) => (
           <ProductManagementWorkCard
@@ -580,7 +550,7 @@ function WorkFloatingHeader({ intro, hideSubtitle }: { intro: string; hideSubtit
 
   return (
     <div className="pointer-events-none relative z-20 px-7 pt-7 lg:absolute lg:left-10 lg:top-10 lg:max-w-[29rem] lg:p-0">
-      <SectionKicker number="02" label="Work" className="text-[0.62rem] tracking-[0.3em]" />
+      {/* Section label rendered globally via <SectionMarker> */}
       <h2 className="mt-4 font-display text-[2.7rem] font-normal italic leading-[0.9] tracking-[0] text-text-primary md:text-[3.6rem] lg:text-[3.8rem]">
         Experiences & Qualifications
       </h2>
@@ -654,7 +624,7 @@ export function ExperienceEducationSection() {
       className="relative isolate min-h-full overflow-visible rounded-[24px] bg-transparent p-4 sm:rounded-[34px] lg:h-full lg:min-h-0 lg:overflow-hidden lg:p-5"
     >
       <div className="work-section-opacity-layer absolute inset-0 z-0" aria-hidden="true" />
-      <WorkFloatingHeader intro={intro} hideSubtitle={isEducationExpanded} />
+      <WorkFloatingHeader intro={intro} hideSubtitle={isEducationExpanded || activeWorkIndex !== null} />
       <AnimatePresence initial={false}>
         {isEducationExpanded ? (
           <motion.button
@@ -681,10 +651,11 @@ export function ExperienceEducationSection() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <div className="min-h-[14rem] shrink-0" />
+            <div className={`${activeWorkIndex === null && !isEducationExpanded ? 'min-h-[14rem]' : 'min-h-0'} shrink-0`} />
             {previewEntry ? (
-              <div className="mb-4 flex w-full min-h-0 shrink-0">
+              <div className="mb-4 grid w-full min-h-0 shrink-0">
                 <ProductVideoPreview entry={previewEntry} isActive={activeWorkIndex !== null} />
+                <SelectedCompanyContextCard entry={previewEntry} />
               </div>
             ) : null}
             <div

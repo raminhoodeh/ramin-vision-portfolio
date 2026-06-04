@@ -28,7 +28,6 @@ import {
 } from '../../lib/placeholder';
 import { ContentToken } from '../../components/ContentToken';
 import { WorkflowDiagram } from '../../components/WorkflowDiagram';
-import { SectionKicker } from '../../components/SectionHeader';
 import {
   projectExperienceGroups,
   toolsSystemSignals,
@@ -412,7 +411,7 @@ export function ProjectCinematicHero({
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.75 }}
           >
-            <SectionKicker number="03" label="Projects" tone="dark" />
+            {/* Section label rendered globally via <SectionMarker> */}
           </motion.div>
           <motion.h1
             className="projects-hero-title mt-7 max-w-[12ch] text-[clamp(4.6rem,14vw,15rem)] font-black uppercase leading-[0.78] tracking-[-0.075em] text-white"

@@ -20,6 +20,32 @@ export function SectionKicker({
   );
 }
 
+export const sectionMarkerMeta: Record<string, { number: string; label: string; tone: 'default' | 'dark' }> = {
+  hero: { number: '01', label: 'Intro', tone: 'default' },
+  'experience-education': { number: '02', label: 'Work', tone: 'default' },
+  projects: { number: '03', label: 'Projects', tone: 'dark' },
+  'teaching-speaking-writing': { number: '04', label: 'Thoughts', tone: 'default' },
+  contact: { number: '05', label: 'Contact', tone: 'default' },
+  bonus: { number: '06', label: 'Bonus', tone: 'dark' },
+  'ai-ramin': { number: '07', label: 'AI Ramin', tone: 'default' },
+};
+
+/**
+ * Single, globally-consistent section label. Pinned to a fixed viewport position so the
+ * "NN / LABEL" eyebrow lands in the exact same spot on every section — framed or full-bleed.
+ * Each section's own inline kicker is removed in favour of this one source of truth.
+ */
+export function SectionMarker({ section }: { section: string }) {
+  const meta = sectionMarkerMeta[section];
+  if (!meta) return null;
+
+  return (
+    <div className="section-marker pointer-events-none fixed left-6 top-9 z-30 sm:left-8 md:left-12 md:top-10 lg:left-16">
+      <SectionKicker number={meta.number} label={meta.label} tone={meta.tone} />
+    </div>
+  );
+}
+
 export function SectionHeader({
   eyebrow,
   prefix,

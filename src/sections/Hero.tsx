@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import gsap from 'gsap';
 import { portfolioContent, roles } from '../data/portfolio';
 import { GlassImprintCta } from '../components/GlassImprintCta';
-import { SectionKicker } from '../components/SectionHeader';
 
 function ThesisGlassButton({ onClick }: { onClick: () => void }) {
   return <GlassImprintCta label="My Product Thesis" onClick={onClick} className="hero-thesis-glass-button--thesis" />;
@@ -104,9 +103,6 @@ export function Hero({ ready, onOpenThesis }: { ready: boolean; onOpenThesis: ()
         />
       </svg>
       <div className="absolute bottom-0 left-0 right-0 z-[2] h-48 bg-gradient-to-t from-bg/90 to-transparent" />
-      <div className="pointer-events-none absolute left-6 top-8 z-10 sm:left-8 md:left-12 lg:left-16">
-        <SectionKicker number="01" label="Intro" />
-      </div>
 
       <div className="relative z-10 mx-auto flex max-w-3xl flex-col items-center">
         <h1 className="sr-only">{hero.name}</h1>

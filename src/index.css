@@ -12438,3 +12438,265 @@ a {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+/* === Thoughts: three-act dividers + build crescendo === */
+.thought-act-divider {
+  position: relative;
+  margin-top: clamp(1.25rem, 3vw, 2.75rem);
+  padding: clamp(2rem, 4vw, 3.25rem) clamp(1.5rem, 3.2vw, 3rem);
+  border-radius: 2rem;
+  border: 1px solid var(--thought-hairline);
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 88% 20%, rgba(110, 139, 255, 0.12), transparent 42%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.74), rgba(255, 255, 255, 0.42));
+  -webkit-backdrop-filter: blur(22px);
+  backdrop-filter: blur(22px);
+  box-shadow: 0 30px 80px rgba(15, 23, 42, 0.1);
+}
+.thought-act-divider-rule {
+  position: absolute;
+  left: 0;
+  top: 12%;
+  height: 76%;
+  width: 4px;
+  border-radius: 0 4px 4px 0;
+  background: linear-gradient(180deg, rgba(110, 139, 255, 0), rgba(110, 139, 255, 0.6), rgba(110, 139, 255, 0));
+}
+.thought-act-divider-body {
+  position: relative;
+  z-index: 2;
+  max-width: 46rem;
+}
+.thought-act-divider-eyebrow {
+  font-size: 0.72rem;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--thought-faint);
+}
+.thought-act-divider-title {
+  margin-top: 0.85rem;
+  font-size: clamp(2.5rem, 6vw, 4.6rem);
+  font-weight: 600;
+  letter-spacing: -0.05em;
+  line-height: 0.98;
+  color: var(--thought-strong);
+}
+.thought-act-divider-copy {
+  margin-top: 1.1rem;
+  max-width: 40rem;
+  font-size: 0.98rem;
+  line-height: 1.7;
+  color: var(--thought-muted);
+}
+.thought-act-divider-numeral {
+  position: absolute;
+  right: clamp(1rem, 4vw, 3rem);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(6rem, 17vw, 14rem);
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: rgba(15, 23, 42, 0.06);
+  pointer-events: none;
+}
+
+.thoughts-build-crescendo {
+  position: relative;
+  margin-top: clamp(1.5rem, 3vw, 3rem);
+  border-radius: 2.25rem;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background:
+    radial-gradient(120% 130% at 82% -10%, rgba(110, 139, 255, 0.22), transparent 55%),
+    linear-gradient(160deg, rgba(10, 15, 26, 0.97), rgba(8, 12, 22, 0.93));
+  box-shadow: 0 50px 130px rgba(8, 12, 22, 0.45);
+}
+.thoughts-build-crescendo-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(60% 80% at 12% 115%, rgba(110, 139, 255, 0.18), transparent 60%);
+  pointer-events: none;
+}
+.thoughts-build-crescendo-inner {
+  position: relative;
+  z-index: 2;
+  padding: clamp(2.5rem, 5vw, 4.5rem) clamp(1.5rem, 4vw, 3.75rem);
+}
+.thoughts-build-eyebrow {
+  font-size: 0.72rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: rgba(159, 182, 207, 0.9);
+}
+.thoughts-build-title {
+  margin-top: 1rem;
+  max-width: 22ch;
+  font-size: clamp(2.6rem, 6.2vw, 5rem);
+  font-weight: 700;
+  letter-spacing: -0.055em;
+  line-height: 0.98;
+  color: #fff;
+}
+.thoughts-build-title-serif {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  color: #cdd8ff;
+}
+.thoughts-build-copy {
+  margin-top: 1.5rem;
+  max-width: 46rem;
+  font-size: 1rem;
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.66);
+}
+.thoughts-build-layers {
+  margin-top: 2.25rem;
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+}
+.thoughts-build-layers > div {
+  border-radius: 1.1rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.045);
+  padding: 1rem;
+}
+.thoughts-build-layers span {
+  font-size: 0.6rem;
+  letter-spacing: 0.16em;
+  color: rgba(255, 255, 255, 0.42);
+}
+.thoughts-build-layers strong {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: #fff;
+}
+.thoughts-build-layers p {
+  margin-top: 0.4rem;
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.55);
+}
+.thoughts-build-actions {
+  margin-top: 2.25rem;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.85rem;
+}
+.thoughts-build-primary,
+.thoughts-build-secondary {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 0.85rem 1.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: transform 0.2s ease, background 0.2s ease, opacity 0.2s ease;
+}
+.thoughts-build-primary {
+  background: #fff;
+  color: #0a0f1a;
+}
+.thoughts-build-primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+.thoughts-build-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.thoughts-build-secondary {
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  color: #fff;
+  font-weight: 500;
+}
+.thoughts-build-secondary:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+.thoughts-build-motif {
+  margin-top: 2.5rem;
+  padding-top: 1.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+.thoughts-build-motif p {
+  font-size: 0.72rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: rgba(159, 182, 207, 0.85);
+}
+.thoughts-build-motif h4 {
+  margin-top: 0.85rem;
+  font-size: clamp(1.5rem, 3vw, 2.4rem);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  color: #fff;
+}
+@media (max-width: 900px) {
+  .thoughts-build-layers {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .thought-act-divider-numeral {
+    opacity: 0.55;
+  }
+}
+
+/* === AI Ramin: smaller header avatar + room for the global SectionMarker + see-through title === */
+.ai-ramin-page-shell .ai-ramin-header-avatar .ai-ramin-avatar,
+.ai-ramin-header-avatar .ai-ramin-avatar {
+  width: 3.4rem;
+  height: 3.4rem;
+}
+.ai-ramin-page-shell .ai-ramin-header {
+  min-height: 4.4rem;
+  margin-top: 2rem;
+}
+.ai-ramin-title-seethrough {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: clamp(2rem, 3.1vw, 3.2rem);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 0.95;
+  background-image: linear-gradient(
+    110deg,
+    #9fb6df 0%,
+    #c7d2ee 16%,
+    #eaf0fb 32%,
+    #c3b6e6 50%,
+    #93acd9 68%,
+    #dde6f6 86%,
+    #aebfe4 100%
+  );
+  background-size: 280% 280%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: ai-ramin-title-drift 9s ease-in-out infinite;
+  user-select: none;
+}
+@keyframes ai-ramin-title-drift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ai-ramin-title-seethrough {
+    animation: none;
+  }
+}

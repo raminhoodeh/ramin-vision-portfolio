@@ -1,6 +1,5 @@
 import { motion } from 'framer-motion';
 import { portfolioContent } from '../../data/portfolio';
-import { SectionKicker } from '../../components/SectionHeader';
 import { type ThoughtFoundationEntry } from '../types';
 import { thoughtFormatNavGroups } from '../Projects/types';
 import { scrollToId } from '../../lib/scroll';
@@ -321,7 +320,7 @@ export function ThoughtEditorialHero() {
       <div className="thoughts-hero-scan absolute inset-0 opacity-70" aria-hidden="true" />
       <div className="relative z-10 mx-auto grid min-h-[calc(100svh-8rem)] max-w-[1440px] content-between gap-12">
         <div>
-          <SectionKicker number="04" label="Thoughts" tone="dark" className="text-white/54" />
+          {/* Section label rendered globally via <SectionMarker> */}
         </div>
 
         <div className="grid gap-8 xl:grid-cols-[minmax(0,0.64fr)_minmax(22rem,0.36fr)] xl:items-end">

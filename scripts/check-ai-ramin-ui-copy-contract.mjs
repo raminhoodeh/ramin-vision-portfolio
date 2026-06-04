@@ -36,6 +36,7 @@ assertIncludes("card.confidence === 'local-primary'", 'local-primary evidence-ca
 assertIncludes('https?:\\/\\/[^\\s<>)]+', 'bare URL auto-linking');
 assertIncludes('renderAiRaminInlineMarkdown(item', 'inline evidence item markdown rendering');
 assertIncludes('normalizeAiRaminMarkdownContent', 'inline malformed first-bullet normalizer');
+assertIncludes('[ \\t]+[-*][ \\t]+', 'inline dash-bullet split (glued first bullet moved to its own line)');
 assertIncludes('AiRaminInlineEvidenceDisclosure response={response}', 'single evidence disclosure module');
 assertIncludes('**Suggested next action:**', 'client suggested next action colon');
 assertIncludes('function getAiRaminAnswerPresentation', 'weak-answer presentation helper');

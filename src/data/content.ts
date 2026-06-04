@@ -206,11 +206,35 @@ const videoNeeded = () => placeholder('Video needed');
 const linkNeeded = () => placeholder('Link needed');
 const reviewNeeded = () => placeholder('Review needed');
 const qualificationLogoPath = {
-  anthropic: 'work-section/work-section-logos/anthropic-logo.png',
-  google: 'work-section/work-section-logos/google-logo.jpeg',
-  ibm: 'work-section/work-section-logos/ibm-logo.png',
-  imperial: 'work-section/work-section-logos/imperial-college-logo.jpeg',
-  mbti: 'work-section/work-section-logos/mbti.png',
+  anthropic: 'work-section/qualification-logos/anthropic-logo.png',
+  google: 'work-section/qualification-logos/google-logo.jpeg',
+  ibm: 'work-section/qualification-logos/ibm-logo.png',
+  imperial: 'work-section/qualification-logos/imperial-college-logo.jpeg',
+  mbti: 'work-section/qualification-logos/mbti.png',
+} as const;
+const companyLogoPath = {
+  bayut: 'work-section/company-logos/bayut logo.webp',
+  coxAutomotive: 'work-section/company-logos/cox automotive logo.jpg',
+  deityAi: 'work-section/company-logos/deity-ai-logo.png',
+  erm: 'work-section/company-logos/erm logo.jpg',
+  groupm: 'work-section/company-logos/groupm logo.webp',
+  ordnanceSurvey: 'work-section/company-logos/ordnance survey logo.jpg',
+  perkbox: 'work-section/company-logos/perkbox.com.png',
+  side: 'work-section/company-logos/side logo.png',
+  tesla: 'work-section/company-logos/tesla logo.png',
+  urgentem: 'work-section/company-logos/urgentem logo.jpg',
+} as const;
+const companyVideoPath = {
+  bayut: 'work-section/company-videos/bayut-work-video.mov',
+  coxAutomotive: 'work-section/company-videos/cox-auto-work-video.mov',
+  deityAi: 'work-section/company-videos/deity-work-video.mov',
+  erm: 'work-section/company-videos/erm-work-video.mov',
+  groupm: 'work-section/company-videos/groupm-work-video.mp4',
+  ordnanceSurvey: 'work-section/company-videos/ordnance-survey-video.mov',
+  perkbox: 'work-section/company-videos/perkbox-work-video.mov',
+  side: 'work-section/company-videos/side-work-video.mov',
+  tesla: 'work-section/company-videos/tesla-work-video.mov',
+  urgentem: 'work-section/company-videos/urgentem-work-video.mov',
 } as const;
 
 const firstSentence = (items?: readonly string[]) => items?.[0] ?? detailNeeded();
@@ -376,7 +400,7 @@ const thoughtPageFrame = {
       body:
         'The TEDx talk answers the next question after clarity: if I need values to choose well, I have to widen the frame enough to see what actually matters.',
       expression: {
-        eyebrow: '02 / What do I value?',
+        eyebrow: 'What do I value?',
         title: 'Cosmic perspective as a value-finding tool.',
         body:
           'The TEDx talk turns metaphysics into an embodied exercise. Instead of telling people to value better things, it asks them to feel their place in existence, then return to ordinary decisions from that larger scale.',
@@ -401,7 +425,7 @@ const thoughtPageFrame = {
       body:
         'The answer to what I value is not only a belief. It becomes a way of making: stories that make metaphysics memorable, and products that make identity clearer, more beautiful, and more future-proof.',
       expression: {
-        eyebrow: '03 / How I express it',
+        eyebrow: 'Storycraft',
         title: 'Storytelling and product craft are the same impulse.',
         body:
           'The books carry the inner search through myth, symbolism, characters, and practical guides. nsso carries the same instinct into product form: a beautiful identity surface that lets people gather their scattered selves into one coherent public story.',
@@ -421,7 +445,7 @@ const thoughtPageFrame = {
         ],
       },
       personalExpression: {
-        eyebrow: '03 / For me',
+        eyebrow: 'For me',
         title: 'Storytelling. Beautiful products. Future-proof identity.',
         quote:
           'I want to write stories; beautiful stories about the mystery of this life and the wonders of our existence.',
@@ -473,7 +497,7 @@ const thoughtPageFrame = {
       body:
         'Product Innovation Process made product work legible for teams. AI-Native Product OS updates that same instinct for probabilistic systems, where context, governance, orchestration, and human judgment become the operating model.',
       systemsStage: {
-        eyebrow: '05 / Systems',
+        eyebrow: 'Systems',
         title: 'The old process became the new loop.',
         thesis:
           'This is where metacognition becomes operational: first as a shared product process for stakeholder alignment, then as an AI-native loop for building, evaluating, and governing living systems.',
@@ -720,7 +744,7 @@ const thoughtTalks = [
     liveMoment:
       'The talk included a guided visualization exercise, asking the room to experience a version of the astronaut or spiritual-guru perspective without leaving Earth.',
     valueStage: {
-      eyebrow: '02 / What do I value?',
+      eyebrow: 'What do I value?',
       question: 'So how do I find what I value?',
       title: 'To find what you value, first understand where and what you are.',
       thesis:
@@ -786,7 +810,7 @@ const thoughtTalks = [
     liveMoment:
       'The talk connects practical career advice with the deeper argument that reducing noise helps people hear the inner voice that knows what they value.',
     integrationStage: {
-      eyebrow: '04 / Integration',
+      eyebrow: 'Integration',
       question: 'How do personal passions and professional skills reinforce each other?',
       title: 'Make the real-life job and the fantasy dream compound.',
       thesis:
@@ -1048,24 +1072,24 @@ const thoughtBooks = [
 
 const workExperienceData = [
   {
-    companyLogo: 'work-section/bayut logo.webp',
+    companyLogo: companyLogoPath.bayut,
     companyLogoAsset: {
       title: 'Bayut logo',
-      pathOrUrl: 'work-section/bayut logo.webp',
+      pathOrUrl: companyLogoPath.bayut,
       altText: 'Bayut logo',
       type: 'logo',
       status: 'ready',
       sourceNotes: 'Provided in company-logos folder.',
     },
     companyName: 'Bayut',
-    productVideo: videoNeeded(),
+    productVideo: companyVideoPath.bayut,
     productVideoAsset: {
       title: 'Bayut product video',
-      pathOrUrl: videoNeeded(),
+      pathOrUrl: companyVideoPath.bayut,
       altText: 'Bayut product video',
       type: 'video',
-      status: 'needed',
-      sourceNotes: 'Placeholder for the left-column active experience video panel.',
+      status: 'ready',
+      sourceNotes: 'Provided in company-videos folder.',
     },
     companyLink: 'https://www.bayut.com/',
     location: 'Dubai, UAE',
@@ -1100,24 +1124,24 @@ const workExperienceData = [
     links: [{ label: 'Bayut', url: 'https://www.bayut.com/', status: 'ready' }],
   },
   {
-    companyLogo: 'work-section/side logo.png',
+    companyLogo: companyLogoPath.side,
     companyLogoAsset: {
       title: 'SIDE logo',
-      pathOrUrl: 'work-section/side logo.png',
+      pathOrUrl: companyLogoPath.side,
       altText: 'SIDE logo',
       type: 'logo',
       status: 'ready',
       sourceNotes: 'Provided in company-logos folder.',
     },
     companyName: 'SIDE',
-    productVideo: videoNeeded(),
+    productVideo: companyVideoPath.side,
     productVideoAsset: {
       title: 'SIDE product video',
-      pathOrUrl: videoNeeded(),
+      pathOrUrl: companyVideoPath.side,
       altText: 'SIDE product video',
       type: 'video',
-      status: 'needed',
-      sourceNotes: 'Template notes a video may be provided in company-videos folder; final path needed.',
+      status: 'ready',
+      sourceNotes: 'Provided in company-videos folder.',
     },
     companyLink: 'https://www.side.inc/',
     location: 'London, UK',
@@ -1162,24 +1186,24 @@ const workExperienceData = [
     links: [{ label: 'Side.inc', url: 'https://www.side.inc/', status: 'ready' }],
   },
   {
-    companyLogo: 'work-section/perkbox.com.png',
+    companyLogo: companyLogoPath.perkbox,
     companyLogoAsset: {
       title: 'Perkbox logo',
-      pathOrUrl: 'work-section/perkbox.com.png',
+      pathOrUrl: companyLogoPath.perkbox,
       altText: 'Perkbox logo',
       type: 'logo',
       status: 'ready',
       sourceNotes: 'Provided in company-logos folder.',
     },
     companyName: 'Perkbox Vivup',
-    productVideo: videoNeeded(),
+    productVideo: companyVideoPath.perkbox,
     productVideoAsset: {
       title: 'Vivup App product video',
-      pathOrUrl: videoNeeded(),
+      pathOrUrl: companyVideoPath.perkbox,
       altText: 'Vivup App product video',
       type: 'video',
-      status: 'needed',
-      sourceNotes: 'Template notes a video may be provided in company-videos folder; final path needed.',
+      status: 'ready',
+      sourceNotes: 'Provided in company-videos folder.',
     },
     companyLink: 'https://www.perkbox.com/',
     location: 'London, UK',
@@ -1220,10 +1244,10 @@ const workExperienceData = [
     links: [{ label: 'Website', url: 'https://www.perkbox.com/', status: 'ready' }],
   },
   {
-    companyLogo: 'work-section/groupm logo.webp',
+    companyLogo: companyLogoPath.groupm,
     companyLogoAsset: {
       title: 'WPP Media logo',
-      pathOrUrl: 'work-section/groupm logo.webp',
+      pathOrUrl: companyLogoPath.groupm,
       altText: 'WPP Media logo',
       type: 'logo',
       status: 'needs-confirmation',
@@ -1231,14 +1255,14 @@ const workExperienceData = [
     },
     companyName: 'WPP Media',
     previousCompanyName: 'GroupM',
-    productVideo: videoNeeded(),
+    productVideo: companyVideoPath.groupm,
     productVideoAsset: {
       title: 'Carbon Calculator product video',
-      pathOrUrl: videoNeeded(),
+      pathOrUrl: companyVideoPath.groupm,
       altText: 'Carbon Calculator product video',
       type: 'video',
-      status: 'needed',
-      sourceNotes: 'Placeholder for the left-column active experience video panel.',
+      status: 'ready',
+      sourceNotes: 'Provided in company-videos folder.',
     },
     companyLink: 'https://www.wppmedia.com/',
     location: detailNeeded(),
@@ -1287,10 +1311,10 @@ const workExperienceData = [
     ],
   },
   {
-    companyLogo: 'work-section/cox automotive logo.jpg',
+    companyLogo: companyLogoPath.coxAutomotive,
     companyLogoAsset: {
       title: 'Cox Automotive logo',
-      pathOrUrl: 'work-section/cox automotive logo.jpg',
+      pathOrUrl: companyLogoPath.coxAutomotive,
       altText: 'Cox Automotive logo',
       type: 'logo',
       status: 'ready',
@@ -1298,14 +1322,14 @@ const workExperienceData = [
     },
     companyName: 'Cox Auto',
     fullCompanyName: 'Cox Automotive',
-    productVideo: videoNeeded(),
+    productVideo: companyVideoPath.coxAutomotive,
     productVideoAsset: {
       title: 'Auction platform product video',
-      pathOrUrl: videoNeeded(),
+      pathOrUrl: companyVideoPath.coxAutomotive,
       altText: 'Auction platform product video',
       type: 'video',
-      status: 'needed',
-      sourceNotes: 'Placeholder for the left-column active experience video panel.',
+      status: 'ready',
+      sourceNotes: 'Provided in company-videos folder.',
     },
     companyLink: 'https://www.coxautoinc.com/',
     location: 'London, UK',
@@ -1351,24 +1375,24 @@ const workExperienceData = [
     ],
   },
   {
-    companyLogo: 'work-section/ordnance survey logo.jpg',
+    companyLogo: companyLogoPath.ordnanceSurvey,
     companyLogoAsset: {
       title: 'Ordnance Survey logo',
-      pathOrUrl: 'work-section/ordnance survey logo.jpg',
+      pathOrUrl: companyLogoPath.ordnanceSurvey,
       altText: 'Ordnance Survey logo',
       type: 'logo',
       status: 'ready',
       sourceNotes: 'Provided in company-logos folder.',
     },
     companyName: 'Ordnance Survey',
-    productVideo: videoNeeded(),
+    productVideo: companyVideoPath.ordnanceSurvey,
     productVideoAsset: {
       title: 'Geospatial API product video',
-      pathOrUrl: videoNeeded(),
+      pathOrUrl: companyVideoPath.ordnanceSurvey,
       altText: 'Geospatial API product video',
       type: 'video',
-      status: 'needed',
-      sourceNotes: 'Placeholder for the left-column active experience video panel.',
+      status: 'ready',
+      sourceNotes: 'Provided in company-videos folder.',
     },
     companyLink: 'https://www.ordnancesurvey.co.uk/',
     location: detailNeeded(),
@@ -1416,24 +1440,24 @@ const workExperienceData = [
     ],
   },
   {
-    companyLogo: 'work-section/urgentem logo.jpg',
+    companyLogo: companyLogoPath.urgentem,
     companyLogoAsset: {
       title: 'Urgentem logo',
-      pathOrUrl: 'work-section/urgentem logo.jpg',
+      pathOrUrl: companyLogoPath.urgentem,
       altText: 'Urgentem logo',
       type: 'logo',
       status: 'ready',
       sourceNotes: 'Provided in company-logos folder.',
     },
     companyName: 'Urgentem',
-    productVideo: videoNeeded(),
+    productVideo: companyVideoPath.urgentem,
     productVideoAsset: {
       title: 'Element6 product video',
-      pathOrUrl: videoNeeded(),
+      pathOrUrl: companyVideoPath.urgentem,
       altText: 'Element6 product video',
       type: 'video',
-      status: 'needed',
-      sourceNotes: 'Placeholder for the left-column active experience video panel.',
+      status: 'ready',
+      sourceNotes: 'Provided in company-videos folder.',
     },
     companyLink: 'http://bit.ly/urgentemwebsite',
     location: 'London, UK',
@@ -1484,24 +1508,24 @@ const workExperienceData = [
     ],
   },
   {
-    companyLogo: 'work-section/deity-ai-logo.png',
+    companyLogo: companyLogoPath.deityAi,
     companyLogoAsset: {
       title: 'Deity AI logo',
-      pathOrUrl: 'work-section/deity-ai-logo.png',
+      pathOrUrl: companyLogoPath.deityAi,
       altText: 'Deity AI logo',
       type: 'logo',
       status: 'ready',
       sourceNotes: 'Provided in company-logos folder.',
     },
     companyName: 'Deity AI',
-    productVideo: videoNeeded(),
+    productVideo: companyVideoPath.deityAi,
     productVideoAsset: {
       title: 'Deity product video',
-      pathOrUrl: videoNeeded(),
+      pathOrUrl: companyVideoPath.deityAi,
       altText: 'Deity product video',
       type: 'video',
-      status: 'needed',
-      sourceNotes: 'Placeholder for the left-column active experience video panel.',
+      status: 'ready',
+      sourceNotes: 'Provided in company-videos folder.',
     },
     companyLink: 'http://www.deity.ai/',
     location: 'London, UK',
@@ -1543,24 +1567,24 @@ const workExperienceData = [
     ],
   },
   {
-    companyLogo: 'work-section/erm logo.jpg',
+    companyLogo: companyLogoPath.erm,
     companyLogoAsset: {
       title: 'ERM logo',
-      pathOrUrl: 'work-section/erm logo.jpg',
+      pathOrUrl: companyLogoPath.erm,
       altText: 'ERM logo',
       type: 'logo',
       status: 'ready',
       sourceNotes: 'Provided in company-logos folder.',
     },
     companyName: 'ERM',
-    productVideo: videoNeeded(),
+    productVideo: companyVideoPath.erm,
     productVideoAsset: {
       title: 'ERM research proof video',
-      pathOrUrl: videoNeeded(),
+      pathOrUrl: companyVideoPath.erm,
       altText: 'ERM research proof video',
       type: 'video',
-      status: 'needed',
-      sourceNotes: 'Placeholder for the left-column active experience video panel.',
+      status: 'ready',
+      sourceNotes: 'Provided in company-videos folder.',
     },
     companyLink: 'http://www.erm.com/',
     location: detailNeeded(),
@@ -1606,24 +1630,24 @@ const workExperienceData = [
     ],
   },
   {
-    companyLogo: 'work-section/tesla logo.png',
+    companyLogo: companyLogoPath.tesla,
     companyLogoAsset: {
       title: 'Tesla logo',
-      pathOrUrl: 'work-section/tesla logo.png',
+      pathOrUrl: companyLogoPath.tesla,
       altText: 'Tesla logo',
       type: 'logo',
       status: 'ready',
       sourceNotes: 'Provided in company-logos folder.',
     },
     companyName: 'Tesla',
-    productVideo: videoNeeded(),
+    productVideo: companyVideoPath.tesla,
     productVideoAsset: {
       title: 'Tesla product video',
-      pathOrUrl: videoNeeded(),
+      pathOrUrl: companyVideoPath.tesla,
       altText: 'Tesla product video',
       type: 'video',
-      status: 'needed',
-      sourceNotes: 'Placeholder for the left-column active experience video panel.',
+      status: 'ready',
+      sourceNotes: 'Provided in company-videos folder.',
     },
     companyLink: 'http://www.tesla.com',
     location: 'London, UK & Amsterdam, Netherlands',
@@ -1841,15 +1865,14 @@ const certificationData = [
 ] as const;
 
 const selfwareProjects = [
+  createProjectEntry('nsso', 'nsso', 'Web App', 'case-study'),
   createProjectEntry('Qadam', 'Qadam', 'Agent', 'case-study'),
   createProjectEntry('Dreamsea', 'Dreamsea', 'App', 'case-study'),
-  createProjectEntry('nsso', 'nsso', 'Web App', 'case-study'),
-  createProjectEntry('RazinFlix', 'RazinFlix', 'Web App', 'case-study'),
   createProjectEntry('24Seven Concierge', '24Seven Concierge', 'App', 'case-study'),
+  createProjectEntry('RazinFlix', 'RazinFlix', 'Web App', 'case-study'),
 ] as const;
 
 const toolProjects = [
-  createProjectEntry('AI Native Product OS', 'AI-Native Product OS', 'Tool', 'tool'),
   createProjectEntry('Mass Social Wisdom Agent', 'Mass Social Wisdom Agent', 'Agent', 'tool'),
   createProjectEntry('AI Costs Dashboard', 'AI Costs Dashboard', 'Tool', 'tool'),
   createProjectEntry('RAG Pipeline', 'RAG Pipeline', 'Tool', 'tool'),

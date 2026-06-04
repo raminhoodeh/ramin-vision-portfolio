@@ -18,7 +18,6 @@ import {
   getBonusRockStage,
 } from '../three/hashgraphRockMotion';
 import { portfolioContent } from '../data/portfolio';
-import { SectionKicker } from '../components/SectionHeader';
 import { isPlaceholderValue, contentValue } from '../lib/placeholder';
 import { type BonusGiftEntry } from './types';
 
@@ -939,7 +938,7 @@ export function BonusSection({
       <div className="bonus-content-shell relative z-30 mx-auto flex min-h-[calc(100dvh-10rem)] max-w-[1200px] items-start px-6 md:min-h-[calc(100dvh-11rem)] md:px-10 lg:items-center lg:px-16">
         <div className="bonus-copy-layout w-full">
           <div className="bonus-copy-card min-w-0 rounded-[2rem] p-7 md:p-10">
-            <SectionKicker number="06" label="Bonus" className="tracking-[0.3em]" />
+            {/* Section label rendered globally via <SectionMarker> */}
             <h2 className="bonus-copy-title mt-4 text-text-primary">
               {bonus.hook}
             </h2>

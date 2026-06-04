@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState, useId } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
 import { aiRaminPrototype, portfolioContent } from '../data/portfolio';
-import { SectionKicker } from '../components/SectionHeader';
 import type {
   AiRaminEvidenceConfidence,
   AiRaminEvidenceType,
@@ -933,6 +932,12 @@ async function copyAiRaminText(value: string) {
 
 function normalizeAiRaminMarkdownContent(content: string) {
   return content
+    // Break a dash bullet the model glued onto the end of the prior sentence
+    // ("...Carbon Calculator. - **Days 1–30:** ...") onto its own line so the first
+    // list item renders as a bullet instead of trailing prose. Only same-line glue is
+    // rewritten ([ \t]+, never a newline), so bullets already on their own line are left
+    // untouched.
+    .replace(/([.!?:](?:["'”’)\]])?)[ \t]+[-*][ \t]+(\*\*[A-Z0-9])/g, '$1\n- $2')
     .replace(/(:)\s+\*([A-Z0-9][^*\n]{2,90}:)\*\s+/g, '$1\n- **$2** ')
     .replace(/([.!?])\s+\*([A-Z0-9][^*\n]{2,90}:)\*\s+/g, '$1\n- **$2** ');
 }
@@ -2278,8 +2283,7 @@ export function AiRaminSection() {
             </span>
           </div>
           <div className="ai-ramin-title-lockup">
-            <SectionKicker number="07" label="AI Ramin" className="ai-ramin-section-kicker" />
-            <h2 className="ai-ramin-title">{chatbot.modalTitle}</h2>
+            <h2 className="ai-ramin-title-seethrough">{chatbot.modalTitle}</h2>
           </div>
           <div className="ai-ramin-header-action">
             <button
