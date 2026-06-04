@@ -399,7 +399,7 @@ const RETRIEVAL_PROFILE_BY_QUESTION_TYPE = {
     policyLimit: 3,
     preferredEvidenceRoles: ['story', 'work', 'project'],
     generalEvidenceLimit: 9,
-    frameworkLimit: 2,
+    frameworkLimit: 3,
     minimumAnswerableEvidence: 1,
   },
   product_judgment: {
@@ -4823,10 +4823,13 @@ export function buildVisitorPrompt(visitorMessage, hiringMode, requestType, quer
   const answerFrame = getAnswerFrame(primaryQuestionType);
   const promptReminders = [];
   if (primaryQuestionType === 'behavioral_example') {
-    promptReminders.push('Use the deterministic lead story as the answer spine; do not answer with a generic Ramin bio.');
+    promptReminders.push('Use the deterministic lead story as the answer spine, and tell it as one vivid, memorable story (setting, action, result, and what it proves) rather than a generic bio or a list.');
+  }
+  if (primaryQuestionType === 'interview_coaching') {
+    promptReminders.push('Coaching is requested, so structure may be visible: name the answer framework that fits (such as STAR, SOAR, or PAR), apply it to a concrete sample answer built from retrieved evidence, and add one or two improvement notes.');
   }
   if (['product_judgment', 'tradeoff_or_prioritisation'].includes(primaryQuestionType) || requestType === 'product_judgment') {
-    promptReminders.push('Answer the product scenario directly, then separate verified proof from inferred fit.');
+    promptReminders.push('Answer the product scenario directly using the matched product-interview playbook structure, then separate verified proof from inferred fit.');
   }
   if (primaryQuestionType === 'strongest_product_proof') {
     promptReminders.push('Give the best-supported ranking from retrieved evidence; do not refuse because the ranking is subjective.');

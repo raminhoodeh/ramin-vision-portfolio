@@ -144,7 +144,7 @@ const RETRIEVAL_PROFILE_BY_QUESTION_TYPE = {
     policyLimit: 3,
     preferredEvidenceRoles: ['story', 'work', 'project'],
     generalEvidenceLimit: 9,
-    frameworkLimit: 2,
+    frameworkLimit: 3,
     minimumAnswerableEvidence: 1,
   },
   product_judgment: {

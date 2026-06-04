@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-06-04T20:56:16.256Z",
+  "generated_at": "2026-06-04T21:08:17.810Z",
   "source_directories": [
     "ai-ramin-section/canonical",
     "ai-ramin-section/inferred",
@@ -9,10 +9,10 @@
     "ai-ramin-section/policies"
   ],
   "stats": {
-    "source_files_discovered": 79,
-    "source_files_ingested": 75,
+    "source_files_discovered": 80,
+    "source_files_ingested": 76,
     "source_files_skipped": 4,
-    "chunks": 97,
+    "chunks": 99,
     "chunks_by_role": {
       "policy": 16,
       "canonical": 11,
@@ -20,7 +20,7 @@
       "project": 9,
       "story": 13,
       "inferred": 15,
-      "framework": 23
+      "framework": 25
     }
   },
   "skipped_files": [
@@ -5705,6 +5705,129 @@
         "riskiest"
       ],
       "text": "# Assumption Testing\n\nUse this file to shape discovery, validation, MVP, and experiment answers. Do not use it as evidence about Ramin.\n\n## Riskiest Assumption Flow\n\n1. State the goal.\n2. List assumptions.\n3. Identify the riskiest assumption.\n4. Decide what evidence would prove or disprove it.\n5. Choose the cheapest credible test.\n6. Set a decision threshold before running the test.\n7. Decide whether to proceed, pivot, narrow, or stop.\n\n## Assumption Types\n\n- Value: users care enough to act.\n- Usability: users can understand and use the product.\n- Viability: the business model can work.\n- Feasibility: the team can build and operate it.\n- GTM: the product can reach buyers or users.\n- Governance: legal, safety, privacy, or compliance requirements can be met.\n- Reliability: the system behaves predictably enough for the use case.\n\n## AI Assumption Types\n\nFor AI products, include:\n\n- model capability\n- source-context quality\n- retrieval precision and recall\n- prompt and orchestration reliability\n- latency and cost\n- safety and refusal behaviour\n- user trust and correction behaviour\n- human review needs\n\n## Testing Examples\n\nUse examples as generic test types, not personal claims:\n\n- concierge prototype before full automation\n- retrieval benchmark before chatbot launch\n- smoke test before building a workflow\n- manual wizard-of-oz test before investing in model orchestration\n- small pilot before broad rollout\n- offline eval set before live traffic\n\n## Answer Boundary\n\nIf asked how Ramin validates products, retrieve `canonical/product-philosophy.md` and relevant project files first. This file should only help structure the answer."
+    },
+    {
+      "chunk_id": "airamin_cbbe224452a87b52",
+      "file_path": "ai-ramin-section/frameworks/communication-and-company-context.md",
+      "title": "Communication And Company Context Playbook",
+      "heading_path": [
+        "Communication And Company Context Playbook"
+      ],
+      "chunk_index": 0,
+      "source_type": "generic_framework",
+      "source_role": "framework",
+      "trust_level": "generic",
+      "visibility": "internal_framework_only",
+      "retrieval_priority": "medium",
+      "answer_permission": "use_as_framework_only",
+      "claim_status": "verified_or_user_confirmed",
+      "source_kind": "framework",
+      "based_on": [],
+      "forbidden_use": [],
+      "public_links": [],
+      "source_paths": [
+        "ai-ramin-context/PM Experience & Interview Prep 2a86fe2ecf3780d68f85f0edd9085933.md",
+        "ai-ramin-section/story-bank/leadership/developer-context-customer-feedback.md"
+      ],
+      "question_intents": [],
+      "entities": [],
+      "public_safe": false,
+      "can_answer_from": false,
+      "can_support_inference": false,
+      "requires_contact_fallback": false,
+      "contains_metric": false,
+      "metric_verification_status": "none",
+      "verification_status": "distilled_generic_framework",
+      "token_estimate": 509,
+      "keywords": [
+        "the",
+        "and",
+        "company",
+        "communication",
+        "context",
+        "emphasise",
+        "playbook",
+        "risk",
+        "stakeholder",
+        "tolerance",
+        "type",
+        "across",
+        "corporate",
+        "customer",
+        "decisions",
+        "documented",
+        "engineering",
+        "engineers",
+        "formal",
+        "government",
+        "hiring",
+        "how",
+        "lead",
+        "mode"
+      ],
+      "text": "# Communication And Company Context Playbook\n\nUse this file to adapt the emphasis of an answer to the company type a visitor names (startup, corporate, government), and to shape stakeholder and engineering communication points. This is an answer-shaping lens, not evidence about Ramin. Pair it with the active hiring mode: the hiring mode is the persona, the company type is the operating context.\n\n## Read The Company Type\n\nWhen a visitor names a company or company stage, tune the answer to how that kind of organisation actually works:\n\n- Start-up: informal, direct, frequent communication; fast, founder-led decisions; high risk tolerance; flat structure and evolving process; \"all hands\" culture. Emphasise ownership, speed, ambiguity, and shipping.\n- Corporate: more formal, documented communication; slower, multi-layer approvals; lower risk tolerance; defined roles and standard process. Emphasise stakeholder alignment, prioritisation discipline, and reliable delivery.\n- Government or public sector: highly formal, heavily documented, hierarchical; slowest decisions with consultation and scrutiny; lowest risk tolerance; legacy systems. Emphasise stability, feasibility, compliance, and saying no when needed.\n\nMatch the answer's tone, pace, and which proof points lead, to the context the role sits in.\n\n## Communicating With Engineers\n\nA recurring, reusable point: engineers do their best work when they can see the actual customer feedback behind a feature and understand the overarching roadmap and how their work supports it. When an answer touches engineering collaboration, lead with giving developers customer context and the bigger picture, not just tickets.\n\n## Working Across Teams\n\nThe PM is the glue across departments toward one goal. Strong cross-functional answers show: setting clear expectations, empowering ownership without micromanagement, and reading each stakeholder's underlying motivation. Keep this as structure; only state it as Ramin's practice when a canonical or story-bank source supports it."
+    },
+    {
+      "chunk_id": "airamin_68164ba68b0fc4f8",
+      "file_path": "ai-ramin-section/frameworks/communication-and-company-context.md",
+      "title": "Communication And Company Context Playbook",
+      "heading_path": [
+        "Communication And Company Context Playbook",
+        "Ramin Evidence Pointers"
+      ],
+      "chunk_index": 1,
+      "source_type": "generic_framework",
+      "source_role": "framework",
+      "trust_level": "generic",
+      "visibility": "internal_framework_only",
+      "retrieval_priority": "medium",
+      "answer_permission": "use_as_framework_only",
+      "claim_status": "verified_or_user_confirmed",
+      "source_kind": "framework",
+      "based_on": [],
+      "forbidden_use": [],
+      "public_links": [],
+      "source_paths": [
+        "ai-ramin-context/PM Experience & Interview Prep 2a86fe2ecf3780d68f85f0edd9085933.md",
+        "ai-ramin-section/story-bank/leadership/developer-context-customer-feedback.md"
+      ],
+      "question_intents": [],
+      "entities": [],
+      "public_safe": false,
+      "can_answer_from": false,
+      "can_support_inference": false,
+      "requires_contact_fallback": false,
+      "contains_metric": false,
+      "metric_verification_status": "none",
+      "verification_status": "distilled_generic_framework",
+      "token_estimate": 107,
+      "keywords": [
+        "company",
+        "and",
+        "context",
+        "not",
+        "canonical",
+        "communication",
+        "evidence",
+        "leadership",
+        "playbook",
+        "pointers",
+        "story-bank",
+        "the",
+        "visitor",
+        "developer-context-customer-feedback",
+        "did",
+        "facts",
+        "file",
+        "invent",
+        "lens",
+        "mention",
+        "named",
+        "pair",
+        "paths",
+        "product-philosophy"
+      ],
+      "text": "## Ramin Evidence Pointers\n\nPair this lens with Ramin-specific sources when a real company or context is named:\n\n- `canonical/work-experiences/*`\n- `story-bank/leadership/developer-context-customer-feedback.md`\n- `story-bank/leadership/team-alignment-product-innovation-process.md`\n- `canonical/product-philosophy.md`\n\nDo not mention these file paths to the visitor, and do not invent company facts the visitor did not provide."
     },
     {
       "chunk_id": "airamin_8591f1a0b1cde2fb",
