@@ -830,6 +830,18 @@ function hasBehavioralExampleCue(message) {
   );
 }
 
+function hasCapabilitySkillCue(message) {
+  const lower = String(message ?? '').toLowerCase();
+  // "is ramin good ...", "how good is he ...", "is he any good at ..." — a question about
+  // whether Ramin is capable/skilled at something, where Ramin/he sits near a skill word.
+  const subjectSkillPattern =
+    /\b(?:is|are|was|how)\b.{0,40}\b(?:ramin|he)\b.{0,40}\b(?:good|strong|skilled|experienced|proficient|competent|familiar|capable|expert|expertise|fluent|versed|hands[- ]on|deep|solid)\b/i;
+  // "good with evals", "strong at orchestration", "experienced in RAG", "expertise in guardrails"
+  const skillPrepositionPattern =
+    /\b(?:good|strong|skilled|experienced|proficient|competent|familiar|capable|expert|expertise|fluent|versed|hands[- ]on|background|track record)\b.{0,20}\b(?:with|in|at|on|around|when it comes to)\b/i;
+  return subjectSkillPattern.test(lower) || skillPrepositionPattern.test(lower);
+}
+
 function isConversationOpenCue(message) {
   const normalized = String(message ?? '')
     .toLowerCase()
@@ -999,7 +1011,10 @@ function classifyQuestionType(message, requestType = 'general_chat') {
     return 'evidence_lookup';
   }
 
-  if (/\b(has he|has ramin|does ramin have|can he|can ramin|does he have|worked on|experience with|able to|know about)\b/i.test(lower)) {
+  if (
+    /\b(has he|has ramin|does ramin have|can he|can ramin|does he have|worked on|experience with|able to|know about)\b/i.test(lower) ||
+    hasCapabilitySkillCue(lower)
+  ) {
     return 'factual_capability';
   }
 
@@ -3641,7 +3656,13 @@ export function recoverOverCautiousAnswer(sections, visitorMessage, requestType,
     recoveredSections = buildPortfolioOverviewRecovery(evidenceCards);
   } else if (requestType === 'product_judgment') {
     strategy = 'product_judgment_recovery';
-    recoveredSections = buildProductJudgmentRecovery(visitorMessage, portfolioContext);
+    // The specialised template only covers a couple of scenarios (fitness, creator).
+    // For any other valid product scenario it returns null, which previously left the
+    // model's over-cautious refusal as the final answer. Fall back to evidence-grounded
+    // recovery so a question with sufficient retrieved evidence never ships a bare refusal.
+    recoveredSections =
+      buildProductJudgmentRecovery(visitorMessage, portfolioContext) ??
+      buildGenericEvidenceRecovery(sections, evidenceCards, visitorMessage);
   } else {
     recoveredSections = buildGenericEvidenceRecovery(sections, evidenceCards, visitorMessage);
   }
@@ -4362,6 +4383,9 @@ async function classifyIntentWithModel({
             temperature: 0.05,
             topP: 0.2,
             maxOutputTokens: INTENT_CLASSIFIER_MAX_OUTPUT_TOKENS,
+            // Disable thinking: gemini-3.5-flash otherwise spends the whole token budget on
+            // thoughts and truncates the classifier JSON, forcing a deterministic fallback.
+            thinkingConfig: { thinkingBudget: 0 },
           },
         }),
       },
@@ -4632,7 +4656,8 @@ function buildSystemInstruction(hiringMode, requestType, queryIntent) {
   const instructions = [
     "You are AI Ramin, Ramin Hoodeh's portfolio copilot embedded in his website.",
     'Answer visitors using only the supplied retrieved portfolio context.',
-    'Default to speaking as the assistant in first person, e.g. "I would point to..." or "I would ask...". Describe Ramin\'s work clearly, but do not claim to be Ramin or say "I built" for Ramin\'s achievements.',
+    'Speak in the first person as AI Ramin (the assistant), and refer to Ramin in the third person as "Ramin" or "he". Never claim to be Ramin or take credit for his work: say "Ramin built" or "he shipped", never "I built" or "I shipped".',
+    'Write warmly and naturally, the way a sharp colleague who knows Ramin\'s work well would talk with a visitor.',
     'Be direct, specific, and useful. Avoid generic portfolio filler.',
     'Sound like a thoughtful portfolio conversation, not a compliance report, source audit, or mission-control readout.',
     'Policy chunks are rules. Canonical, work, project, and story chunks are evidence. Inferred chunks are explicitly labelled hypothetical or adjacent-fit reasoning; they are not verified proof. Framework chunks are structure only, never evidence.',
@@ -4669,6 +4694,7 @@ function buildSystemInstruction(hiringMode, requestType, queryIntent) {
     'For complex role-fit, product-judgment, hiring-brief, or behavioral answers, you may go longer, but the answer should still read like a human explanation rather than a form.',
     'Do not start with phrases like "The portfolio context supports", "Based on retrieved evidence", or "The retrieved evidence says" unless you are correcting uncertainty.',
     'Weave the most relevant examples into the answer itself. Evidence arrays support the disclosure UI; they should not make short_answer feel like a source ledger.',
+    'The verified_proof, inferred_fit, confidential_boundary, and open_questions arrays power a separate collapsible evidence panel in the UI; they are never shown inline. short_answer must read as a complete, natural reply on its own without them.',
     'verified_proof, inferred_fit, confidential_boundary, and open_questions must be arrays of short strings.',
     'In this JSON contract, verified_proof means portfolio-supported proof from retrieved answerable public-safe context. It does not require external certificate-level verification.',
     'Use verified_proof only for claims supported by retrieved canonical, work, project, or story evidence. Public-safe chunks with can_answer_from=true are usable portfolio evidence when their trust_level is canonical or canonical_candidate.',
@@ -4678,9 +4704,11 @@ function buildSystemInstruction(hiringMode, requestType, queryIntent) {
     'Use inferred_fit only for reasonable implications from verified proof or retrieved inferred chunks.',
     'If a chunk has source_role=inferred or answer_permission=inferred_fit_only, never use it as verified_proof, strongest_verified_proof, most_relevant_proof, selected_proof_anchors, or a factual past achievement. You may use it only in inferred_fit, open_questions, product_judgment_analysis, risks, assumptions, or likely approach language.',
     'Keep the distinction between professional career experience, personal projects, tools/workflows, interests/thoughts, qualifications, and inferred scenarios clear when it matters to the visitor question.',
-    'Use confidential_boundary when you are withholding or narrowing a claim because of confidentiality, missing evidence, financial advice, private details, or unsupported scope.',
+    'Use confidential_boundary ONLY to flag something genuinely private or confidential: company-confidential detail, private metrics, personal data, financial advice, or clearly unsupported scope. When there is nothing genuinely confidential to flag, return confidential_boundary as an empty array.',
+    'Never put methodology or sourcing disclaimers anywhere in the answer, e.g. "this is a subjective ranking", "metrics should be validated", "based on the available material", or any meta-commentary about your own evidence or confidence. Just give the answer.',
     'Use open_questions only for missing information that would materially improve the answer.',
     'The answer should feel conversational and interview-aware; do not render labels like Context, Action, Result, Situation, or Framework unless the visitor explicitly asks for coaching.',
+    'Vary your phrasing from answer to answer. Do not reuse the same openers or signature sentences across replies; lead with the substance of the specific question being asked.',
     'Keep responses concise enough for a website chat.',
   ];
 
@@ -4953,6 +4981,147 @@ export async function handleAiRaminFeedbackRequest(req, res) {
   });
 }
 
+const ANSWER_BASE_TEMPERATURE = 0.6;
+const ANSWER_REPROMPT_TEMPERATURE = 0.72;
+
+function buildAnswerContextTurnText(
+  portfolioContext,
+  minimumAnswerableEvidence,
+  hasSufficientAnswerableEvidence,
+  selectedStoryPrompt,
+) {
+  return [
+    'Use this retrieved portfolio context as the source of truth for this answer. Respect each chunk\'s metadata and answer permission.',
+    `Retrieved answerable evidence chunks: ${portfolioContext.answerableEvidenceCount}.`,
+    `Minimum answerable evidence expected for this question type: ${minimumAnswerableEvidence}.`,
+    `Evidence sufficiency verdict: ${hasSufficientAnswerableEvidence ? 'SUFFICIENT' : 'INSUFFICIENT'}.`,
+    hasSufficientAnswerableEvidence
+      ? 'Evidence sufficiency is SUFFICIENT, so you have enough to give a useful answer. Do NOT output "I do not have enough verified portfolio context" or any refusal / insufficient-context variant — that response is banned when sufficiency is SUFFICIENT. The policy chunks define your rules and are NOT the answer; the canonical, work, project, and story chunks are your evidence — answer from the best-supported ones and put any uncertainty or missing specifics in confidential_boundary or open_questions.'
+      : 'Because evidence sufficiency is INSUFFICIENT, keep the answer cautious and use open_questions or confidential_boundary to show what is not confirmed.',
+    portfolioContext.queryIntent.primaryQuestionType === 'strongest_product_proof'
+      ? 'This is a strongest-product-proof question. Give a best-supported ranking from the retrieved evidence, separate professional product proof from self-directed project proof where useful, and translate it into hiring relevance.'
+      : '',
+    selectedStoryPrompt,
+    'If the retrieved context contains only framework or policy chunks, say the portfolio context does not confirm the claim and use frameworks only as general structure.',
+    '',
+    portfolioContext.text,
+  ].join('\n');
+}
+
+// Single structured-answer round-trip to Gemini. Reused for the first draft and for the
+// corrective re-prompt, so the recovery layer can regenerate rather than ship a canned string.
+async function generateStructuredAnswer({
+  geminiApiKey,
+  modelPath,
+  hiringMode,
+  requestType,
+  portfolioContext,
+  history,
+  visitorMessage,
+  contextTurnText,
+  needsDetailedOutput,
+  temperature,
+  retryDirective,
+}) {
+  const contents = [
+    { role: 'user', parts: [{ text: contextTurnText }] },
+    {
+      role: 'model',
+      parts: [{ text: 'Understood. I will answer using this portfolio context and avoid unsupported claims.' }],
+    },
+    ...toGeminiHistory(history),
+    {
+      role: 'user',
+      parts: [{ text: buildVisitorPrompt(visitorMessage, hiringMode, requestType, portfolioContext.queryIntent) }],
+    },
+  ];
+  if (retryDirective) {
+    contents.push({ role: 'user', parts: [{ text: retryDirective }] });
+  }
+
+  const response = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/${modelPath}:generateContent`,
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-goog-api-key': geminiApiKey,
+      },
+      body: JSON.stringify({
+        system_instruction: {
+          parts: [{ text: buildSystemInstruction(hiringMode, requestType, portfolioContext.queryIntent) }],
+        },
+        contents,
+        generationConfig: {
+          temperature,
+          topP: 0.92,
+          maxOutputTokens: needsDetailedOutput ? 2_600 : 2_000,
+          responseMimeType: 'application/json',
+          thinkingConfig: { thinkingBudget: 0 },
+        },
+      }),
+    },
+  );
+
+  const responsePayload = await response.json().catch(() => null);
+  if (!response.ok) {
+    return {
+      ok: false,
+      status: response.status,
+      errorText: responsePayload?.error?.message || 'Gemini request failed.',
+      answerText: '',
+    };
+  }
+  return { ok: true, status: 200, errorText: '', answerText: extractGeminiText(responsePayload) };
+}
+
+// When the first draft trips the quality gate, hand the evidence back to the model with a
+// pointed correction instead of swapping in a static template.
+function buildAnswerRepromptDirective(qualityGate, portfolioContext, evidenceCards, requestType) {
+  const issues = new Set(qualityGate.issues ?? []);
+  const questionType = portfolioContext?.queryIntent?.primaryQuestionType;
+  const lines = ['STOP. Your previous draft was rejected and will not be shown to the visitor.'];
+
+  const reasons = [];
+  if (issues.has('over_cautious_with_sufficient_evidence')) {
+    reasons.push('you refused for lack of context even though enough evidence was retrieved');
+  }
+  if (issues.has('placeholder_answer')) reasons.push('it was empty or a placeholder');
+  if (issues.has('generic_behavioral_answer') || issues.has('behavioral_story_missing')) {
+    reasons.push('you gave a generic biography instead of leading with the specific story');
+  }
+  if (reasons.length) lines.push(`Reason: ${reasons.join('; ')}.`);
+
+  lines.push('Re-answer the visitor\'s exact question now — directly, specifically, and in your own words.');
+  lines.push(
+    'BANNED for this re-answer: do not write "I do not have enough verified portfolio context" or any refusal / insufficient-context / "I cannot answer" variant. Enough was retrieved to give a genuinely useful answer.',
+  );
+
+  if (requestType === 'product_judgment' || ['product_judgment', 'tradeoff_or_prioritisation'].includes(questionType)) {
+    lines.push(
+      'This is a product-judgment question. You are NOT expected to have already built this exact product. Apply Ramin\'s product judgment and discovery process to the scenario, reason it through the AI-Native Product OS layers (Model, Context, Orchestration, Governance, Human), and anchor it to the most relevant adjacent evidence. Put any missing market or user specifics into open_questions or riskiest_assumptions — never into a refusal.',
+    );
+  }
+
+  const selectedStoryTitle = portfolioContext?.selectedStory?.title;
+  if (selectedStoryTitle) lines.push(`Build the answer around this story where it fits: ${selectedStoryTitle}.`);
+
+  const anchors = Array.from(
+    new Set(
+      (qualityGate.recovery?.sections?.verified_proof ?? [])
+        .concat(evidenceCards.map((card) => card.title))
+        .map((item) => String(item).split(':')[0].trim())
+        .filter(Boolean),
+    ),
+  ).slice(0, 5);
+  if (anchors.length) lines.push(`Lean on this retrieved evidence where relevant: ${anchors.join('; ')}.`);
+
+  lines.push(
+    'Lead with a direct, human reply in short_answer. Keep confidential_boundary empty unless something is genuinely private or confidential. Return the same JSON contract.',
+  );
+  return lines.join('\n');
+}
+
 export async function handleAiRaminRequest(req, res) {
   if (req.method === 'OPTIONS') {
     res.statusCode = 204;
@@ -5046,84 +5215,73 @@ export async function handleAiRaminRequest(req, res) {
   const needsDetailedOutput =
     ['role_fit', 'product_judgment', 'evidence_lookup', 'hiring_brief'].includes(requestType) ||
     ['behavioral_example', 'first_90_days', 'interview_coaching'].includes(portfolioContext.queryIntent.primaryQuestionType);
-  const geminiResponse = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/${modelPath}:generateContent`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-goog-api-key': geminiApiKey,
-      },
-      body: JSON.stringify({
-        system_instruction: {
-          parts: [{ text: buildSystemInstruction(hiringMode, requestType, portfolioContext.queryIntent) }],
-        },
-        contents: [
-          {
-            role: 'user',
-            parts: [
-              {
-                text: [
-                  'Use this retrieved portfolio context as the source of truth for this answer. Respect each chunk\'s metadata and answer permission.',
-                  `Retrieved answerable evidence chunks: ${portfolioContext.answerableEvidenceCount}.`,
-                  `Minimum answerable evidence expected for this question type: ${minimumAnswerableEvidence}.`,
-                  `Evidence sufficiency verdict: ${hasSufficientAnswerableEvidence ? 'SUFFICIENT' : 'INSUFFICIENT'}.`,
-                  hasSufficientAnswerableEvidence
-                    ? 'Because evidence sufficiency is SUFFICIENT, do not use the generic insufficient-context fallback. Answer from the best-supported retrieved evidence, and put uncertainty or missing details in confidential_boundary or open_questions.'
-                    : 'Because evidence sufficiency is INSUFFICIENT, keep the answer cautious and use open_questions or confidential_boundary to show what is not confirmed.',
-                  portfolioContext.queryIntent.primaryQuestionType === 'strongest_product_proof'
-                    ? 'This is a strongest-product-proof question. Give a best-supported ranking from the retrieved evidence, separate professional product proof from self-directed project proof where useful, and translate it into hiring relevance.'
-                    : '',
-                  selectedStoryPrompt,
-                  'If the retrieved context contains only framework or policy chunks, say the portfolio context does not confirm the claim and use frameworks only as general structure.',
-                  '',
-                  portfolioContext.text,
-                ].join('\n'),
-              },
-            ],
-          },
-          {
-            role: 'model',
-            parts: [
-              {
-                text: 'Understood. I will answer using this portfolio context and avoid unsupported claims.',
-              },
-            ],
-          },
-          ...toGeminiHistory(payload.history),
-          {
-            role: 'user',
-            parts: [{ text: buildVisitorPrompt(visitorMessage, hiringMode, requestType, portfolioContext.queryIntent) }],
-          },
-        ],
-        generationConfig: {
-          temperature: 0.45,
-          topP: 0.92,
-          maxOutputTokens: needsDetailedOutput ? 1_800 : 1_300,
-          responseMimeType: 'application/json',
-        },
-      }),
-    },
+  const contextTurnText = buildAnswerContextTurnText(
+    portfolioContext,
+    minimumAnswerableEvidence,
+    hasSufficientAnswerableEvidence,
+    selectedStoryPrompt,
   );
+  const generateOptions = {
+    geminiApiKey,
+    modelPath,
+    hiringMode,
+    requestType,
+    portfolioContext,
+    history: payload.history,
+    visitorMessage,
+    contextTurnText,
+    needsDetailedOutput,
+  };
 
-  const responsePayload = await geminiResponse.json().catch(() => null);
-
-  if (!geminiResponse.ok) {
-    sendJson(res, geminiResponse.status, {
-      error: responsePayload?.error?.message || 'Gemini request failed.',
-    });
+  const firstAttempt = await generateStructuredAnswer({ ...generateOptions, temperature: ANSWER_BASE_TEMPERATURE });
+  if (!firstAttempt.ok) {
+    sendJson(res, firstAttempt.status, { error: firstAttempt.errorText });
     return;
   }
-
-  const answer = extractGeminiText(responsePayload);
-  if (!answer) {
+  if (!firstAttempt.answerText) {
     sendJson(res, 502, { error: 'Gemini returned an empty response.' });
     return;
   }
 
-  const parsedAnswer = parseJsonObjectFromText(answer) ?? parseLooseStructuredAnswer(answer);
-  const rawSections = normalizeStructuredSections(parsedAnswer, parsedAnswer ? '' : answer);
-  const qualityGate = applyAnswerQualityGate(rawSections, visitorMessage, requestType, portfolioContext, evidenceCards);
+  let parsedAnswer = parseJsonObjectFromText(firstAttempt.answerText) ?? parseLooseStructuredAnswer(firstAttempt.answerText);
+  let rawSections = normalizeStructuredSections(parsedAnswer, parsedAnswer ? '' : firstAttempt.answerText);
+  let qualityGate = applyAnswerQualityGate(rawSections, visitorMessage, requestType, portfolioContext, evidenceCards);
+  let answerRepromptStatus = 'not_needed';
+
+  // Demote the canned recovery templates to a last resort: when the first draft is
+  // over-cautious / placeholder / generic-but-recoverable, hand the evidence back to the
+  // model with a corrective directive and regenerate instead of shipping a static string.
+  // The deterministic templates remain the fallback if the regenerated answer also fails.
+  if (
+    qualityGate.recovery.recovered &&
+    !portfolioContext.queryIntent.guardrailSensitive &&
+    portfolioContext.queryIntent.primaryQuestionType !== 'guardrail_boundary'
+  ) {
+    answerRepromptStatus = 'attempted';
+    const retryDirective = buildAnswerRepromptDirective(qualityGate, portfolioContext, evidenceCards, requestType);
+    const retryAttempt = await generateStructuredAnswer({
+      ...generateOptions,
+      temperature: ANSWER_REPROMPT_TEMPERATURE,
+      retryDirective,
+    });
+    if (retryAttempt.ok && retryAttempt.answerText) {
+      const retryParsed = parseJsonObjectFromText(retryAttempt.answerText) ?? parseLooseStructuredAnswer(retryAttempt.answerText);
+      const retryRaw = normalizeStructuredSections(retryParsed, retryParsed ? '' : retryAttempt.answerText);
+      const retryGate = applyAnswerQualityGate(retryRaw, visitorMessage, requestType, portfolioContext, evidenceCards);
+      if (!retryGate.recovery.recovered) {
+        // The regenerated answer stands on its own — prefer it over the canned template.
+        parsedAnswer = retryParsed;
+        rawSections = retryRaw;
+        qualityGate = retryGate;
+        answerRepromptStatus = 'used_model_answer';
+      } else {
+        answerRepromptStatus = 'fell_back_to_template';
+      }
+    } else {
+      answerRepromptStatus = 'fell_back_to_template';
+    }
+  }
+
   const recovery = qualityGate.recovery;
   const sections = qualityGate.sections;
   const modelPayloadForModules = qualityGate.shouldResetModelPayload
@@ -5233,6 +5391,7 @@ export async function handleAiRaminRequest(req, res) {
       qualityGateStrategy: qualityGate.strategy,
       qualityGateReason: qualityGate.reason,
       qualityGateResetModelPayload: qualityGate.shouldResetModelPayload,
+      answerReprompt: answerRepromptStatus,
       selectedStory: portfolioContext.selectedStory,
       answerShape,
       ...(includeDebugTrace && debugTrace ? { debugTrace } : {}),
