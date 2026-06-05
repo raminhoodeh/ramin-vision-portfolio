@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000">
+  <defs>
+    <linearGradient id="cyan" x1="0" y1="0" x2="0.4" y2="1">
+      <stop offset="0" stop-color="#123a5c"/>
+      <stop offset="0.5" stop-color="#0c2b46"/>
+      <stop offset="1" stop-color="#06121f"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="22%" r="55%">
+      <stop offset="0" stop-color="#5b93c2" stop-opacity="0.30"/>
+      <stop offset="1" stop-color="#5b93c2" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="cloud" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#a9c9e0" stop-opacity="0.16"/>
+      <stop offset="1" stop-color="#a9c9e0" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#cyan)"/>
+  <rect width="1600" height="1000" fill="url(#glow)"/>
+  <ellipse cx="420" cy="300" rx="380" ry="120" fill="url(#cloud)"/>
+  <ellipse cx="1200" cy="620" rx="420" ry="140" fill="url(#cloud)"/>
+  <text x="86" y="118" font-size="42" font-style="italic" font-family="Georgia, 'Times New Roman', serif" fill="#eaf2f8">Dreamsea</text>
+  <text x="90" y="150" font-size="14" letter-spacing="3" font-family="Helvetica, Arial, sans-serif" fill="#9fc4dd">iOS · APP STORE</text>
+</svg>

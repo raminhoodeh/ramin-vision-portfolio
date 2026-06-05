@@ -1,0 +1,36 @@
+/* ── Glass container shell ── */
+.glass-container {
+  position: relative;
+  overflow: hidden;
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* ── Content sits above WebGL canvas ── */
+.glass-content-wrapper {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+}
+
+/* ── Ensure text colours remain legible over bright glass ── */
+.glass-container .tc-company a,
+.glass-container .pc-title,
+.glass-container h3,
+.glass-container h4 {
+  color: #172231;
+}
+
+.glass-container p,
+.glass-container .tc-impact,
+.glass-container .pc-desc {
+  color: rgba(48, 63, 82, 0.76);
+}
+
+/* ── Hover: lift only, no background change ── */
+.glass-container:hover {
+  background: transparent !important;
+}

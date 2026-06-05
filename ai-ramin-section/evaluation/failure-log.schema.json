@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AI Ramin Evaluation Failure Log Entry",
+  "type": "object",
+  "required": [
+    "logged_at",
+    "run_id",
+    "case_id",
+    "category",
+    "request_type",
+    "prompt",
+    "failures",
+    "top_sources",
+    "recommended_triage"
+  ],
+  "properties": {
+    "logged_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "run_id": {
+      "type": "string"
+    },
+    "case_id": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string"
+    },
+    "request_type": {
+      "type": "string"
+    },
+    "prompt": {
+      "type": "string"
+    },
+    "score": {
+      "type": "number"
+    },
+    "failures": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "top_sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["file_path", "source_role", "score"],
+        "properties": {
+          "file_path": {
+            "type": "string"
+          },
+          "source_role": {
+            "type": "string"
+          },
+          "score": {
+            "type": "number"
+          }
+        }
+      }
+    },
+    "recommended_triage": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "additionalProperties": true
+}

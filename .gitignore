@@ -1,0 +1,37 @@
+# Dependencies and build output
+node_modules/
+dist/
+.vite/
+
+# Local/generated scrape and reference output
+.firecrawl/
+scrape-output/
+extracted/
+_nuxt/
+
+# Local large media captures
+*.mov
+*.mp4
+
+# Environment and secret-bearing local notes
+.env
+.env.*
+scrape-skill.md
+ai-ramin-section/evaluation/latest-evaluation-report.json
+ai-ramin-section/evaluation/failure-log.jsonl
+ai-ramin-section/evaluation/live-feedback.jsonl
+ai-ramin-section/evaluation/latest-feedback-review.json
+
+# macOS/editor noise
+.DS_Store
+
+# Large local reference libraries. Keep the liquid-glass source used by the app.
+react libraries/*
+!react libraries/liquid-glass-js-main/
+react libraries/liquid-glass-js-main/.git/
+
+# External framework source mirrors are local references, not app source.
+shadergradient-main/
+
+# Reference codebases are separate (embedded) git repos, not portfolio source
+codebases/

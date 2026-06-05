@@ -1,0 +1,104 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AI Ramin Live Feedback Log Entry",
+  "type": "object",
+  "required": ["schemaVersion", "id", "created_at", "feedback", "review_priority"],
+  "additionalProperties": true,
+  "properties": {
+    "schemaVersion": {
+      "type": "integer",
+      "const": 1
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "feedback": {
+      "type": "string",
+      "enum": ["helpful", "needs_review"]
+    },
+    "review_priority": {
+      "type": "string",
+      "enum": ["low", "medium", "high"]
+    },
+    "note": {
+      "type": "string"
+    },
+    "message_id": {
+      "type": "string"
+    },
+    "request_type": {
+      "type": "string"
+    },
+    "hiring_mode": {
+      "type": "string"
+    },
+    "model": {
+      "type": "string"
+    },
+    "answer_shape": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "primary_question_type": {
+          "type": "string"
+        },
+        "answer_technique_id": {
+          "type": "string"
+        },
+        "answer_frame_id": {
+          "type": "string"
+        },
+        "answer_family": {
+          "type": "string"
+        },
+        "soft_ctas": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "evidence_card_count": {
+          "type": "number"
+        },
+        "answerable_evidence_count": {
+          "type": "number"
+        },
+        "context_chunk_count": {
+          "type": "number"
+        },
+        "context_truncated": {
+          "type": "boolean"
+        }
+      }
+    },
+    "user_prompt_preview": {
+      "type": "string"
+    },
+    "answer_preview": {
+      "type": "string"
+    },
+    "client": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "user_agent": {
+          "type": "string"
+        },
+        "referer": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

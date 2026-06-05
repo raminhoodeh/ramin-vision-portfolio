@@ -1,0 +1,121 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1000" viewBox="0 0 1600 1000" font-family="Arial, Helvetica, sans-serif">
+  <!-- frame -->
+  <rect width="1600" height="1000" fill="#0a0e14"/>
+  <rect x="40" y="30" width="1520" height="942" rx="20" fill="#0d1117"/>
+  <rect x="40" y="30" width="1520" height="50" rx="20" fill="#11161f"/><rect x="40" y="60" width="1520" height="20" fill="#11161f"/>
+  <circle cx="70" cy="55" r="6" fill="#f7655b"/><circle cx="92" cy="55" r="6" fill="#f7bd4f"/><circle cx="114" cy="55" r="6" fill="#5ec45e"/>
+  <rect x="610" y="42" width="380" height="26" rx="13" fill="#0a0e14"/>
+  <text x="800" y="60" font-size="14" fill="#8b97a6" text-anchor="middle">qadam.trade/dashboard</text>
+
+  <clipPath id="qp"><rect x="40" y="80" width="1520" height="892"/></clipPath>
+  <g clip-path="url(#qp)">
+    <rect x="40" y="80" width="1520" height="892" fill="#f4f1ea"/>
+
+    <!-- topbar -->
+    <text x="100" y="132" font-size="13" letter-spacing="2" fill="#6d6a63">QADAM</text>
+    <text x="100" y="168" font-size="34" font-weight="700" fill="#161616">System Map</text>
+    <rect x="1300" y="138" width="92" height="34" rx="6" fill="#ffffff" stroke="#d8d2c6"/><text x="1346" y="160" font-size="13" fill="#161616" text-anchor="middle">Settings</text>
+    <rect x="1402" y="138" width="98" height="34" rx="6" fill="#ffffff" stroke="#d8d2c6"/><text x="1451" y="160" font-size="13" fill="#161616" text-anchor="middle">Sign Out</text>
+    <line x1="100" y1="192" x2="1500" y2="192" stroke="#d8d2c6"/>
+
+    <!-- status band -->
+    <rect x="100" y="212" width="1400" height="58" rx="8" fill="#ffffff" stroke="#d8d2c6"/>
+    <circle cx="126" cy="241" r="6" fill="#185c55"/>
+    <text x="146" y="246" font-size="14" fill="#161616">Registered · PAPER MODE · GBP 100,000 trial</text>
+    <text x="1480" y="246" font-size="13" fill="#6d6a63" text-anchor="end">5 sources · 12 resources · 6 agents · execution write-enabled</text>
+
+    <!-- section labels -->
+    <text x="100" y="306" font-size="13" letter-spacing="2" fill="#6d6a63">INTELLIGENCE PIPELINES</text>
+    <text x="508" y="306" font-size="13" letter-spacing="2" fill="#6d6a63">HYBRID FUND CORE</text>
+    <text x="1104" y="306" font-size="13" letter-spacing="2" fill="#6d6a63">OUTPUTS</text>
+
+    <!-- LEFT pipelines -->
+    <g font-family="Arial">
+      <!-- card template repeated -->
+      <g>
+        <rect x="100" y="320" width="388" height="74" rx="8" fill="#ffffff" stroke="#d8d2c6"/>
+        <text x="120" y="346" font-size="12" letter-spacing="1.5" fill="#6d6a63">CONFLICT</text>
+        <text x="120" y="370" font-size="18" font-weight="700" fill="#161616">5 sources</text>
+        <text x="468" y="370" font-size="13" fill="#6d6a63" text-anchor="end">ACLED · GDELT · Oref</text>
+      </g>
+      <g>
+        <rect x="100" y="404" width="388" height="74" rx="8" fill="#ffffff" stroke="#d8d2c6"/>
+        <text x="120" y="430" font-size="12" letter-spacing="1.5" fill="#6d6a63">PHYSICAL / OSINT</text>
+        <text x="120" y="454" font-size="18" font-weight="700" fill="#161616">4 sources</text>
+        <text x="468" y="454" font-size="13" fill="#6d6a63" text-anchor="end">FIRMS · AIS · Wingbits</text>
+      </g>
+      <g>
+        <rect x="100" y="488" width="388" height="74" rx="8" fill="#ffffff" stroke="#d8d2c6"/>
+        <text x="120" y="514" font-size="12" letter-spacing="1.5" fill="#6d6a63">MACRO</text>
+        <text x="120" y="538" font-size="18" font-weight="700" fill="#161616">6 sources</text>
+        <text x="468" y="538" font-size="13" fill="#6d6a63" text-anchor="end">FRED · BLS · ECB</text>
+      </g>
+      <g>
+        <rect x="100" y="572" width="388" height="74" rx="8" fill="#ffffff" stroke="#d8d2c6"/>
+        <text x="120" y="598" font-size="12" letter-spacing="1.5" fill="#6d6a63">MARKET</text>
+        <text x="120" y="622" font-size="18" font-weight="700" fill="#161616">7 sources</text>
+        <text x="468" y="622" font-size="13" fill="#6d6a63" text-anchor="end">Alpaca · Polymarket · Kalshi</text>
+      </g>
+      <g>
+        <rect x="100" y="656" width="388" height="74" rx="8" fill="#ffffff" stroke="#d8d2c6"/>
+        <text x="120" y="682" font-size="12" letter-spacing="1.5" fill="#6d6a63">NARRATIVE / SENTIMENT</text>
+        <text x="120" y="706" font-size="18" font-weight="700" fill="#161616">9 sources</text>
+        <text x="468" y="706" font-size="13" fill="#6d6a63" text-anchor="end">RSS · Telegram · X</text>
+      </g>
+    </g>
+
+    <!-- CENTER core 2x2 -->
+    <g>
+      <g><rect x="508" y="320" width="284" height="186" rx="8" fill="#ffffff" stroke="#d8d2c6"/>
+        <text x="528" y="348" font-size="12" letter-spacing="1.5" fill="#6d6a63">LOCAL LLM</text><circle cx="770" cy="343" r="5" fill="#185c55"/>
+        <text x="528" y="392" font-size="20" font-weight="700" fill="#161616">Research Analyst</text>
+        <text x="528" y="418" font-size="13" fill="#6d6a63">Triages noise from the feeds</text>
+        <text x="528" y="486" font-size="13" fill="#185c55">Registered</text></g>
+      <g><rect x="808" y="320" width="284" height="186" rx="8" fill="#ffffff" stroke="#d8d2c6"/>
+        <text x="828" y="348" font-size="12" letter-spacing="1.5" fill="#6d6a63">FRONTIER LLM</text><circle cx="1070" cy="343" r="5" fill="#185c55"/>
+        <text x="828" y="392" font-size="20" font-weight="700" fill="#161616">Head of Strategy</text>
+        <text x="828" y="418" font-size="13" fill="#6d6a63">Builds &amp; challenges theses</text>
+        <text x="828" y="486" font-size="13" fill="#185c55">Registered</text></g>
+      <g><rect x="508" y="520" width="284" height="186" rx="8" fill="#ffffff" stroke="#d8d2c6"/>
+        <text x="528" y="548" font-size="12" letter-spacing="1.5" fill="#6d6a63">IBM QUANTUM</text><circle cx="770" cy="543" r="5" fill="#b47522"/>
+        <text x="528" y="592" font-size="20" font-weight="700" fill="#161616">Head of Quant</text>
+        <text x="528" y="618" font-size="13" fill="#6d6a63">Weekly pattern recognition</text>
+        <text x="528" y="686" font-size="13" fill="#b47522">Weekly batch</text></g>
+      <g><rect x="808" y="520" width="284" height="186" rx="8" fill="#ffffff" stroke="#d8d2c6"/>
+        <text x="828" y="548" font-size="12" letter-spacing="1.5" fill="#6d6a63">RISK AGENT</text><circle cx="1070" cy="543" r="5" fill="#185c55"/>
+        <text x="828" y="592" font-size="20" font-weight="700" fill="#161616">Hard gate</text>
+        <text x="828" y="618" font-size="13" fill="#6d6a63">Blocks unauthorised trades</text>
+        <text x="828" y="686" font-size="13" fill="#185c55">Enforced</text></g>
+    </g>
+
+    <!-- RIGHT outputs -->
+    <g>
+      <g><rect x="1104" y="320" width="396" height="88" rx="8" fill="#ffffff" stroke="#d8d2c6"/>
+        <text x="1124" y="348" font-size="12" letter-spacing="1.5" fill="#6d6a63">EVIDENCE TRAIL</text><circle cx="1478" cy="343" r="5" fill="#185c55"/>
+        <text x="1124" y="378" font-size="18" font-weight="700" fill="#161616">Append-only event log</text></g>
+      <g><rect x="1104" y="420" width="396" height="88" rx="8" fill="#ffffff" stroke="#d8d2c6"/>
+        <text x="1124" y="448" font-size="12" letter-spacing="1.5" fill="#6d6a63">SIGNAL REVIEW</text><circle cx="1478" cy="443" r="5" fill="#b47522"/>
+        <text x="1124" y="478" font-size="18" font-weight="700" fill="#161616">Phase-2 shadow signals</text></g>
+      <g><rect x="1104" y="520" width="396" height="88" rx="8" fill="#ffffff" stroke="#d8d2c6"/>
+        <text x="1124" y="548" font-size="12" letter-spacing="1.5" fill="#6d6a63">BROKER RAIL</text><circle cx="1478" cy="543" r="5" fill="#89857c"/>
+        <text x="1124" y="578" font-size="18" font-weight="700" fill="#161616">Live capital disabled</text></g>
+      <g><rect x="1104" y="620" width="396" height="88" rx="8" fill="#ffffff" stroke="#d8d2c6"/>
+        <text x="1124" y="648" font-size="12" letter-spacing="1.5" fill="#6d6a63">GOVERNANCE FORUM</text><circle cx="1478" cy="643" r="5" fill="#185c55"/>
+        <text x="1124" y="678" font-size="18" font-weight="700" fill="#161616">5 fund-manager seats</text></g>
+    </g>
+
+    <!-- live-meta pills -->
+    <g font-size="12" fill="#6d6a63">
+      <rect x="100" y="752" width="170" height="30" rx="15" fill="#ffffff" stroke="#d8d2c6"/><text x="118" y="771">Health: cockpit</text>
+      <rect x="282" y="752" width="240" height="30" rx="15" fill="#ffffff" stroke="#d8d2c6"/><text x="300" y="771">Signed in: raminhoodeh@…</text>
+      <rect x="534" y="752" width="190" height="30" rx="15" fill="#ffffff" stroke="#d8d2c6"/><text x="552" y="771">Unresolved sources: 0</text>
+      <rect x="736" y="752" width="150" height="30" rx="15" fill="#ffffff" stroke="#d8d2c6"/><text x="754" y="771">Source map: OK</text>
+      <rect x="898" y="752" width="180" height="30" rx="15" fill="#ffffff" stroke="#d8d2c6"/><text x="916" y="771">Offline stores: none</text>
+    </g>
+
+    <!-- evidence boundary note -->
+    <line x1="100" y1="816" x2="1500" y2="816" stroke="#d8d2c6"/>
+    <text x="100" y="850" font-size="13" letter-spacing="2" fill="#6d6a63">PRIVATE EVIDENCE BOUNDARY</text>
+    <text x="100" y="888" font-size="22" font-weight="700" fill="#161616">World-model claims can ask sharper questions — but they cannot trigger trades.</text>
+  </g>
+</svg>

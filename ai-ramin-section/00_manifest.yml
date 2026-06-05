@@ -1,0 +1,294 @@
+version: 6
+phase: 6
+last_audited: "2026-05-20"
+purpose: >
+  AI Ramin context manifest. This file classifies the raw source material and
+  tracks the canonical, story-bank, framework, policy, and RAG specification layers created for future ingestion.
+
+retrieval_defaults:
+  exclude_raw_archive: true
+  exclude_system_files: true
+  prefer_canonical_sources: true
+  allow_frameworks_only_as_reasoning_scaffolds: true
+  require_public_safe_visibility_for_website_answers: true
+  require_uncertainty_response_when_evidence_is_weak: true
+
+source_types:
+  canonical_personal_context: "Ramin-specific facts, experience, product philosophy, work history, metrics, and evidence."
+  work_experience: "Company or project-specific product work that can answer hiring-manager questions."
+  story_bank: "Reusable Ramin-specific proof stories shaped for behavioural, product judgement, leadership, and hiring-fit answers."
+  story_bank_candidate: "Draft interview/story material that should be converted into verified STAR/CAR/SOAR stories."
+  framework_index: "Internal index for framework cards. Do not answer from the index."
+  generic_framework: "External/general PM strategy or interview material. Use for structure only, not factual claims about Ramin."
+  answer_strategy: "Reusable answer formats such as STAR, CAR, PAR, SOAR, product case framing, tradeoff framing, and AI PM framing."
+  policy_index: "Internal index for policy cards. Do not answer from the index."
+  voice_policy: "Writing style, cover letter, resume, and tone guidance."
+  guardrail_policy: "Safety, scope, abuse, privacy, and uncertainty policies."
+  source_policy: "Source hierarchy, trust, visibility, conflict-resolution, and citation behaviour."
+  contact_policy: "Fallback behaviour for unsupported claims, current availability, scheduling, or human confirmation."
+  abuse_policy: "Spam, misuse, harassment, inappropriate content, and rate-limit guidance."
+  privacy_policy: "Private, confidential, sensitive, and credential-handling policy."
+  rag_index: "Internal index for RAG build-spec files. Do not answer from the index."
+  ingestion_policy: "Chunking, metadata, ingestion validation, and corpus update workflow."
+  retrieval_policy: "Retrieval, ranking, answer assembly, and post-generation checking guidance."
+  eval_policy: "Evaluation questions, expected retrieval, and answer-quality scoring guidance."
+  raw_archive: "Original source material retained for traceability but excluded from normal retrieval."
+  system_file: "Non-content operating-system file. Exclude."
+
+trust_levels:
+  canonical: "Safe to use as source of truth after Phase 2 cleanup."
+  draft_personal: "Contains Ramin-specific material but needs verification, cleanup, or rewriting before public use."
+  generic: "Useful for frameworks only; not evidence about Ramin."
+  private_or_sensitive: "May inform internal preparation but should not be surfaced directly."
+  exclude: "Do not ingest."
+
+files:
+  - path: "ai-ramin-context/PM Experience & Interview Prep 2a86fe2ecf3780d68f85f0edd9085933.md"
+    title: "PM Experience & Interview Prep"
+    primary_source_type: canonical_personal_context
+    secondary_source_types:
+      - work_experience
+      - story_bank_candidate
+    trust_level: draft_personal
+    visibility: public_candidate_after_cleanup
+    retrieval_permission: restructure_before_ingestion
+    priority: highest
+    notes:
+      - "Best source for Ramin-specific career context, product philosophy, company experience, GTM, revenue models, tech stacks, ESG regulation exposure, and collaboration style."
+      - "Should be split into canonical profile, product philosophy, work-experience files, and story-bank candidates."
+      - "Contains some interview-positioning language that should be rewritten for public chatbot use."
+
+  - path: "ai-ramin-context/Interview Questions and Answers 2aa6fe2ecf37809490a2fcbd613f7a3b.md"
+    title: "Interview Questions and Answers"
+    primary_source_type: story_bank_candidate
+    secondary_source_types:
+      - answer_strategy
+      - generic_framework
+    trust_level: draft_personal
+    visibility: mixed_private_and_public
+    retrieval_permission: restructure_before_ingestion
+    priority: high
+    notes:
+      - "Contains useful AI PM interview framework material and Ramin-specific draft answers."
+      - "Company-specific Novata answers should not be surfaced unless the user explicitly asks for interview/application preparation."
+      - "Extract verified stories into story-bank files and move general frameworks into frameworks."
+
+  - path: "ai-ramin-context/How to answer product manager interview questions.md"
+    title: "How to Answer Product Manager Interview Questions"
+    primary_source_type: generic_framework
+    secondary_source_types:
+      - answer_strategy
+    trust_level: generic
+    visibility: internal_framework_only
+    retrieval_permission: framework_only_after_distillation
+    priority: medium
+    notes:
+      - "Useful for answer shape, concision, and PM interview categories."
+      - "Example answers should not be represented as Ramin's experience."
+      - "Distill into answer strategy cards rather than ingesting verbatim."
+
+  - path: "ai-ramin-context/Product Manager Interview on Behavioural .md"
+    title: "Product Manager Interview on Behavioural"
+    primary_source_type: generic_framework
+    secondary_source_types:
+      - answer_strategy
+      - raw_archive
+    trust_level: generic
+    visibility: internal_framework_only
+    retrieval_permission: archive_and_distill
+    priority: medium
+    content_warnings:
+      - "Large exported file."
+      - "Contains embedded image/export artifacts."
+      - "Contains generic examples and interview coaching material."
+    notes:
+      - "Useful for behavioural interview principles, preparation mistakes, and answer structures."
+      - "Should be excluded from direct RAG retrieval until distilled into frameworks/interview-answering-strategies.md."
+
+  - path: "ai-ramin-context/Product Manager Interview Guide.md"
+    title: "Product Manager Interview Guide"
+    primary_source_type: generic_framework
+    secondary_source_types:
+      - answer_strategy
+      - raw_archive
+    trust_level: generic
+    visibility: internal_framework_only
+    retrieval_permission: archive_and_distill
+    priority: medium
+    content_warnings:
+      - "Very large exported file."
+      - "Contains embedded image/export artifacts and external article content."
+      - "Contains generic cases, examples, and frameworks."
+    notes:
+      - "Useful for assumption testing, estimation, product strategy, launch, design, pricing, tradeoffs, and metric framing."
+      - "Should be cleaned and summarized into framework cards. Do not ingest raw."
+
+  - path: "ai-ramin-context/Cover Letter Structure 3396fe2ecf3780e08b72c8b61793e234.md"
+    title: "Cover Letter Structure"
+    primary_source_type: voice_policy
+    secondary_source_types:
+      - answer_strategy
+    trust_level: generic
+    visibility: internal_policy_only
+    retrieval_permission: policy_only_after_distillation
+    priority: medium
+    notes:
+      - "Useful for AI Ramin's answer style: clear, specific, evidence-led, human tone."
+      - "Should become policies/answer-style.md rather than factual context."
+
+  - path: "ai-ramin-context/CV Resumé 3376fe2ecf3780d4bdeadc4f35cff841.md"
+    title: "CV / Resume"
+    primary_source_type: voice_policy
+    trust_level: generic
+    visibility: internal_policy_only
+    retrieval_permission: policy_only_after_distillation
+    priority: low
+    notes:
+      - "Thin resume-positioning note. Useful as resume policy, not as Ramin evidence."
+
+  - path: "ai-ramin-context/.DS_Store"
+    title: ".DS_Store"
+    primary_source_type: system_file
+    trust_level: exclude
+    visibility: none
+    retrieval_permission: exclude
+    priority: none
+    notes:
+      - "macOS metadata file. Do not ingest."
+
+phase_1_outputs:
+  - "ai-ramin-context/00_manifest.yml"
+  - "ai-ramin-context/PHASE_1_AUDIT.md"
+  - "ai-ramin-context/raw-archive/README.md"
+
+phase_2_outputs:
+  canonical:
+    - "ai-ramin-context/canonical/profile.md"
+    - "ai-ramin-context/canonical/product-philosophy.md"
+    - "ai-ramin-context/canonical/qualifications.md"
+    - "ai-ramin-context/canonical/talks-writing-courses.md"
+  work_experiences:
+    - "ai-ramin-context/canonical/work-experiences/bayut-ai-product-manager.md"
+    - "ai-ramin-context/canonical/work-experiences/side-ai-erp.md"
+    - "ai-ramin-context/canonical/work-experiences/perkbox-vivup.md"
+    - "ai-ramin-context/canonical/work-experiences/groupm-carbon-calculator.md"
+    - "ai-ramin-context/canonical/work-experiences/cox-automotive-auction-platform.md"
+    - "ai-ramin-context/canonical/work-experiences/ordnance-survey-os-maps-api.md"
+    - "ai-ramin-context/canonical/work-experiences/urgentem-element6.md"
+    - "ai-ramin-context/canonical/work-experiences/deity-ai.md"
+    - "ai-ramin-context/canonical/work-experiences/erm-tesla.md"
+  projects:
+    - "ai-ramin-context/canonical/projects/ai-native-product-os.md"
+    - "ai-ramin-context/canonical/projects/nsso.md"
+    - "ai-ramin-context/canonical/projects/dreamsea.md"
+    - "ai-ramin-context/canonical/projects/qadam.md"
+    - "ai-ramin-context/canonical/projects/24seven-concierge.md"
+    - "ai-ramin-context/canonical/projects/mass-social-wisdom-agent.md"
+    - "ai-ramin-context/canonical/projects/razinflix.md"
+    - "ai-ramin-context/canonical/projects/selfware-overview.md"
+  index:
+    - "ai-ramin-context/canonical/PHASE_2_CANONICAL_INDEX.md"
+
+phase_3_outputs:
+  story_bank_index:
+    - "ai-ramin-context/story-bank/PHASE_3_STORY_BANK_INDEX.md"
+  behavioural:
+    - "ai-ramin-context/story-bank/behavioural/proud-accomplishment-groupm-carbon-calculator.md"
+    - "ai-ramin-context/story-bank/behavioural/failure-deity-feature-creep.md"
+    - "ai-ramin-context/story-bank/behavioural/conflict-urgentem-pricing.md"
+    - "ai-ramin-context/story-bank/behavioural/competing-priorities-groupm-digital-module.md"
+    - "ai-ramin-context/story-bank/behavioural/weakness-perkbox-vivup-too-entrepreneurial.md"
+    - "ai-ramin-context/story-bank/behavioural/feedback-vivup-abit-model.md"
+  product_judgement:
+    - "ai-ramin-context/story-bank/product-judgement/saying-no-ordnance-survey-address-request.md"
+    - "ai-ramin-context/story-bank/product-judgement/urgentem-scope3-vs-scope1-tradeoff.md"
+    - "ai-ramin-context/story-bank/product-judgement/nsso-review-mode-ai-governance.md"
+    - "ai-ramin-context/story-bank/product-judgement/dreamsea-privacy-vs-depth.md"
+    - "ai-ramin-context/story-bank/product-judgement/24seven-catalog-injection-vs-rag.md"
+  leadership:
+    - "ai-ramin-context/story-bank/leadership/team-alignment-product-innovation-process.md"
+    - "ai-ramin-context/story-bank/leadership/developer-context-customer-feedback.md"
+
+phase_4_outputs:
+  framework_index:
+    - "ai-ramin-context/frameworks/PHASE_4_FRAMEWORK_INDEX.md"
+  answer_strategy:
+    - "ai-ramin-context/frameworks/interview-answering-strategies.md"
+  generic_frameworks:
+    - "ai-ramin-context/frameworks/product-management-answer-structures.md"
+    - "ai-ramin-context/frameworks/ai-product-management.md"
+    - "ai-ramin-context/frameworks/product-sense.md"
+    - "ai-ramin-context/frameworks/strategy.md"
+    - "ai-ramin-context/frameworks/execution.md"
+    - "ai-ramin-context/frameworks/tradeoffs.md"
+    - "ai-ramin-context/frameworks/assumption-testing.md"
+    - "ai-ramin-context/frameworks/pricing-metrics-estimation.md"
+
+phase_5_outputs:
+  policy_index:
+    - "ai-ramin-context/policies/PHASE_5_POLICY_INDEX.md"
+  guardrails:
+    - "ai-ramin-context/policies/guardrails.md"
+    - "ai-ramin-context/policies/prompt-injection.md"
+  source_policy:
+    - "ai-ramin-context/policies/source-priority.md"
+  voice_policy:
+    - "ai-ramin-context/policies/answer-style.md"
+  contact_policy:
+    - "ai-ramin-context/policies/contact-fallback.md"
+  abuse_policy:
+    - "ai-ramin-context/policies/abuse-and-rate-limits.md"
+  privacy_policy:
+    - "ai-ramin-context/policies/privacy-confidentiality.md"
+
+phase_6_outputs:
+  rag_index:
+    - "ai-ramin-context/rag/PHASE_6_RAG_INDEX.md"
+  ingestion_policy:
+    - "ai-ramin-context/rag/ingestion-workflow.md"
+    - "ai-ramin-context/rag/metadata-schema.md"
+    - "ai-ramin-context/rag/chunking-strategy.md"
+  retrieval_policy:
+    - "ai-ramin-context/rag/retrieval-ranking.md"
+    - "ai-ramin-context/rag/answer-assembly.md"
+  eval_policy:
+    - "ai-ramin-context/rag/evaluation-set.md"
+
+phase_2_recommended_targets:
+  canonical:
+    - "canonical/profile.md"
+    - "canonical/product-philosophy.md"
+    - "canonical/work-experiences/urgentem-element6.md"
+    - "canonical/work-experiences/groupm-carbon-calculator.md"
+    - "canonical/work-experiences/ordnance-survey-os-maps-api.md"
+    - "canonical/work-experiences/deity-ai.md"
+    - "canonical/work-experiences/vivup-family-pay.md"
+    - "canonical/work-experiences/erm-tesla.md"
+    - "canonical/qualifications.md"
+    - "canonical/talks-writing-courses.md"
+  frameworks:
+    - "frameworks/interview-answering-strategies.md"
+    - "frameworks/interview-question-philosophy.md"
+    - "frameworks/product-management-answer-structures.md"
+    - "frameworks/ai-product-management.md"
+    - "frameworks/product-sense.md"
+    - "frameworks/strategy.md"
+    - "frameworks/execution.md"
+    - "frameworks/tradeoffs.md"
+    - "frameworks/assumption-testing.md"
+    - "frameworks/pricing-metrics-estimation.md"
+  policies:
+    - "policies/guardrails.md"
+    - "policies/answer-style.md"
+    - "policies/source-priority.md"
+    - "policies/contact-fallback.md"
+    - "policies/abuse-and-rate-limits.md"
+    - "policies/privacy-confidentiality.md"
+    - "policies/prompt-injection.md"
+  rag:
+    - "rag/ingestion-workflow.md"
+    - "rag/metadata-schema.md"
+    - "rag/chunking-strategy.md"
+    - "rag/retrieval-ranking.md"
+    - "rag/answer-assembly.md"
+    - "rag/evaluation-set.md"

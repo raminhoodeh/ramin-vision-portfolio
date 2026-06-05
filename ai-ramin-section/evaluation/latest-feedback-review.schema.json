@@ -1,0 +1,134 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AI Ramin Feedback Review Report",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "generated_at",
+    "source_path",
+    "filters",
+    "summary",
+    "review_queue",
+    "recurring_issues",
+    "eval_case_candidates",
+    "next_actions"
+  ],
+  "additionalProperties": true,
+  "properties": {
+    "schemaVersion": {
+      "type": "integer",
+      "const": 1
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "source_path": {
+      "type": "string"
+    },
+    "filters": {
+      "type": "object"
+    },
+    "summary": {
+      "type": "object",
+      "required": [
+        "total_records",
+        "selected_records",
+        "needs_review_records",
+        "helpful_records",
+        "parse_error_count"
+      ],
+      "properties": {
+        "total_records": {
+          "type": "integer"
+        },
+        "selected_records": {
+          "type": "integer"
+        },
+        "needs_review_records": {
+          "type": "integer"
+        },
+        "helpful_records": {
+          "type": "integer"
+        },
+        "parse_error_count": {
+          "type": "integer"
+        },
+        "by_feedback": {
+          "type": "object"
+        },
+        "by_review_priority": {
+          "type": "object"
+        },
+        "by_request_type": {
+          "type": "object"
+        },
+        "by_answer_frame": {
+          "type": "object"
+        },
+        "by_issue_label": {
+          "type": "object"
+        }
+      }
+    },
+    "review_queue": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "feedback", "review_priority", "labels", "recommended_actions"],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "feedback": {
+            "type": "string",
+            "const": "needs_review"
+          },
+          "review_priority": {
+            "type": "string"
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "recommended_actions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "recurring_issues": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "eval_case_candidates": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "category",
+          "requestType",
+          "expectedQuestionType",
+          "hiringMode",
+          "prompt",
+          "requiredContractSections",
+          "feedbackReview"
+        ]
+      }
+    },
+    "next_actions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

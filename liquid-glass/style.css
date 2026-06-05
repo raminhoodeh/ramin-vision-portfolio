@@ -1,0 +1,21 @@
+.has-liquid-glass {
+  position: relative;
+  z-index: 1; /* Ensure content is above glass */
+}
+
+.has-liquid-glass > *:not(canvas) {
+  position: relative;
+  z-index: 2; /* All children of glass container stay above the glass canvas */
+}
+
+/* Specific overrides to allow the glass to show through */
+.project-card, .timeline-card, .teaching-card {
+  background: transparent !important;
+  backdrop-filter: none !important;
+  border-color: rgba(115, 135, 155, 0.28) !important;
+}
+
+.project-card:hover, .timeline-card:hover, .teaching-card:hover {
+  background: transparent !important;
+  border-color: rgba(95, 125, 155, 0.48) !important;
+}
