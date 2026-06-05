@@ -12665,44 +12665,23 @@ a {
   min-height: 4.4rem;
   margin-top: 2rem;
 }
-.ai-ramin-title-seethrough {
+/* AI Ramin title: a real cutout — the letters are knocked out of a frosted
+   halo so the moving shader behind the panel shows through them (not a painted
+   gradient). The halo gives contrast against the otherwise-white panel. */
+.ai-ramin-title-window {
   margin: 0;
-  font-family: var(--font-sans);
-  font-size: clamp(2rem, 3.1vw, 3.2rem);
-  font-weight: 700;
-  letter-spacing: -0.035em;
-  line-height: 0.95;
-  background-image: linear-gradient(
-    110deg,
-    #9fb6df 0%,
-    #c7d2ee 16%,
-    #eaf0fb 32%,
-    #c3b6e6 50%,
-    #93acd9 68%,
-    #dde6f6 86%,
-    #aebfe4 100%
-  );
-  background-size: 280% 280%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
-  animation: ai-ramin-title-drift 9s ease-in-out infinite;
+  width: min(92%, 30rem);
+  height: clamp(2.6rem, 6vw, 3.6rem);
   user-select: none;
 }
-@keyframes ai-ramin-title-drift {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
+.ai-ramin-title-window-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
 }
-@media (prefers-reduced-motion: reduce) {
-  .ai-ramin-title-seethrough {
-    animation: none;
-  }
+.ai-ramin-title-window-text {
+  font-family: var(--font-sans);
+  font-weight: 800;
+  font-size: 50px;
+  letter-spacing: -0.03em;
 }

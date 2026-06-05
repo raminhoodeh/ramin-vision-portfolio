@@ -2285,7 +2285,43 @@ export function AiRaminSection() {
             </span>
           </div>
           <div className="ai-ramin-title-lockup">
-            <h2 className="ai-ramin-title-seethrough">{chatbot.modalTitle}</h2>
+            <h2 className="ai-ramin-title-window" aria-label={chatbot.modalTitle}>
+              <svg
+                className="ai-ramin-title-window-svg"
+                viewBox="0 0 560 84"
+                preserveAspectRatio="xMidYMid meet"
+                aria-hidden="true"
+              >
+                <defs>
+                  <radialGradient id="ai-ramin-window-halo" cx="50%" cy="50%" r="70%">
+                    <stop offset="0%" stopColor="rgba(255,255,255,0.92)" />
+                    <stop offset="58%" stopColor="rgba(255,255,255,0.72)" />
+                    <stop offset="100%" stopColor="rgba(255,255,255,0)" />
+                  </radialGradient>
+                  <mask id="ai-ramin-window-text">
+                    <rect x="0" y="0" width="560" height="84" fill="white" />
+                    <text
+                      x="280"
+                      y="42"
+                      className="ai-ramin-title-window-text"
+                      dominantBaseline="central"
+                      textAnchor="middle"
+                      fill="black"
+                    >
+                      {chatbot.modalTitle}
+                    </text>
+                  </mask>
+                </defs>
+                <rect
+                  x="0"
+                  y="0"
+                  width="560"
+                  height="84"
+                  fill="url(#ai-ramin-window-halo)"
+                  mask="url(#ai-ramin-window-text)"
+                />
+              </svg>
+            </h2>
           </div>
           <div className="ai-ramin-header-action">
             <button
