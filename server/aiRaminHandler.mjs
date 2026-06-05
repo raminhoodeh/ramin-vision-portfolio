@@ -1461,6 +1461,26 @@ function getLastProfessionalConversationAnchor(history) {
   return null;
 }
 
+function lastAssistantWasClarification(history) {
+  if (!Array.isArray(history)) return false;
+  for (let index = history.length - 1; index >= 0; index -= 1) {
+    if (normalizeHistoryRole(history[index]?.role) !== 'assistant') continue;
+    return getHistoryIntentRoute(history[index])?.intent === 'clarification_needed';
+  }
+  return false;
+}
+
+// Map a reply to a clarification ("product judgment", "role fit", "evidence", "an example")
+// onto the direction it selects, so answering a clarification never clarifies again.
+function mapClarificationReplyToQuestionType(message) {
+  const lower = String(message ?? '').toLowerCase();
+  if (/\b(product judg(?:e?ment)?|product sense|judgement|judgment)\b/.test(lower)) return 'product_judgment';
+  if (/\b(evidence|proof|verified|shipped|track record)\b/.test(lower)) return 'evidence_lookup';
+  if (/\b(interview|behavioural|behavioral|example|story|stories|time when)\b/.test(lower)) return 'behavioral_example';
+  if (/\b(role fit|role-fit|fit|hir(?:e|ing)|first 90|90 days)\b/.test(lower)) return 'role_fit';
+  return null;
+}
+
 function isContextDependentFollowUp(message) {
   const normalized = String(message ?? '')
     .toLowerCase()
@@ -1479,11 +1499,16 @@ function isContextDependentFollowUp(message) {
     /\b(?:the (?:first|second|third|latter|former)(?: one)?|option (?:1|2|3|one|two|three)|number (?:1|2|3|one|two|three))\b/i.test(
       normalized,
     );
+  // A genuine context-dependent follow-up is short. Long, self-contained questions that
+  // merely begin with "why", "and", or "what about" are NOT follow-ups — e.g. "why should i
+  // hire ramin for a product role at anthropic" must not be treated as a bare "why?".
+  const isShort = tokenCount <= 8;
   return (
-    isAffirmativeOrChoiceFollowUp ||
-    /^(tell me more|go deeper|expand|expand on that|explain more|why|why not|how so|same for|same question|continue|and|also|what about|how about|what if|for .+|and for .+|compare that|show risks|what risks|draft that|turn that into|can you expand|can you compare|can you explain|do that for)\b/i.test(
-      normalized,
-    ) ||
+    (isShort && isAffirmativeOrChoiceFollowUp) ||
+    (isShort &&
+      /^(tell me more|go deeper|expand|expand on that|explain more|why|why not|how so|same for|same question|continue|and|also|what about|how about|what if|for .+|and for .+|compare that|show risks|what risks|draft that|turn that into|can you expand|can you compare|can you explain|do that for)\b/i.test(
+        normalized,
+      )) ||
     /\b(first\s+(?:90|ninety)\s+days?|first\s+three\s+months|first\s+quarter|next\s+steps?|what\s+would\s+(?:he|ramin)\s+do\s+(?:first|next)|how\s+would\s+(?:that|this|it)\s+change|how\s+would\s+(?:he|ramin)\s+approach\s+(?:that|this|it))\b/i.test(
       normalized,
     ) ||
@@ -4505,6 +4530,29 @@ export async function resolveAiRaminQueryIntent({
   }
 
   if (deterministicQueryIntent.primaryQuestionType === 'clarification_needed' && !conversationContext.isFollowUp) {
+    // Never clarify twice in a row. If the previous turn already asked for a direction,
+    // treat this message as the reply: map it onto the chosen direction (or default to an
+    // overview) and answer, instead of asking the same clarifying question again.
+    if (lastAssistantWasClarification(history)) {
+      const repliedType = mapClarificationReplyToQuestionType(visitorMessage) ?? 'portfolio_overview';
+      return {
+        queryIntent: {
+          ...buildQueryIntentForQuestionType(visitorMessage, requestType, repliedType),
+          conversationContext,
+          intentClassifier: {
+            router: 'clarification_reply',
+            provider: 'none',
+            model: null,
+            attempted: false,
+            used: false,
+            intent: getIntentRouteId(repliedType),
+            confidence: 0.7,
+            reason: 'resolved a reply to a prior clarification into a direction instead of clarifying again',
+            fallbackReason: 'no_consecutive_clarification',
+          },
+        },
+      };
+    }
     return {
       queryIntent: {
         ...deterministicQueryIntent,
