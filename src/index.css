@@ -12665,23 +12665,26 @@ a {
   min-height: 4.4rem;
   margin-top: 2rem;
 }
-/* AI Ramin title: a real cutout — the letters are knocked out of a frosted
-   halo so the moving shader behind the panel shows through them (not a painted
-   gradient). The halo gives contrast against the otherwise-white panel. */
+/* AI Ramin title: a true window. The letters are clipped to the SAME gradient
+   as the page background, pinned to the viewport (background-attachment: fixed),
+   so they reveal the actual background at its real position through the white
+   panel — not a separate gradient painted onto the text. */
 .ai-ramin-title-window {
   margin: 0;
-  width: min(92%, 30rem);
-  height: clamp(2.6rem, 6vw, 3.6rem);
-  user-select: none;
-}
-.ai-ramin-title-window-svg {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-.ai-ramin-title-window-text {
   font-family: var(--font-sans);
+  font-size: clamp(2rem, 3.1vw, 3.2rem);
   font-weight: 800;
-  font-size: 50px;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.035em;
+  line-height: 0.95;
+  background-image:
+    radial-gradient(circle at 34% 28%, rgba(205, 224, 238, 0.72), transparent 38%),
+    linear-gradient(135deg, #7a96a2, #acbbc4 48%, #cde0ee);
+  background-attachment: fixed;
+  background-size: 100vw 100vh;
+  background-position: center;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  user-select: none;
 }
