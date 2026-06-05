@@ -2152,6 +2152,9 @@ function scoreChunk(chunk, queryTokens, queryIntent) {
   const hasMessyInputCue = ['screenshots', 'screenshot', 'videos', 'video', 'links', 'multimodal', 'messy', 'structured'].some((token) =>
     queryTokenSet.has(token),
   );
+  const hasSizingCue = ['size', 'sizing', 'estimate', 'estimation', 'estimating', 'guesstimate', 'tam', 'sam', 'som', 'addressable'].some(
+    (token) => queryTokenSet.has(token),
+  );
   if (queryIntent.primaryQuestionType === 'product_judgment') {
     if (hasFitnessCue && chunk.file_path?.includes('qualifications.md')) {
       intentScore += 0.65;
@@ -2189,6 +2192,12 @@ function scoreChunk(chunk, queryTokens, queryIntent) {
     if (/\b(product discovery from scratch|discovery from scratch|riskiest assumptions|smallest useful test)\b/i.test(haystack)) {
       intentScore += 0.24;
     }
+  }
+
+  // Estimation / market-sizing questions are phrasing-sensitive; make the sizing playbook
+  // reliably reachable whenever the query carries a sizing cue, regardless of route.
+  if (hasSizingCue && chunk.file_path?.includes('estimation-and-market-sizing.md')) {
+    intentScore += 0.6;
   }
 
   if (queryIntent.primaryQuestionType === 'strongest_product_proof') {
