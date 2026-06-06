@@ -940,7 +940,13 @@ function normalizeAiRaminMarkdownContent(content: string) {
     // untouched.
     .replace(/([.!?:](?:["'”’)\]])?)[ \t]+[-*][ \t]+(\*\*[A-Z0-9])/g, '$1\n- $2')
     .replace(/(:)\s+\*([A-Z0-9][^*\n]{2,90}:)\*\s+/g, '$1\n- **$2** ')
-    .replace(/([.!?])\s+\*([A-Z0-9][^*\n]{2,90}:)\*\s+/g, '$1\n- **$2** ');
+    .replace(/([.!?])\s+\*([A-Z0-9][^*\n]{2,90}:)\*\s+/g, '$1\n- **$2** ')
+    // Break an inline numbered-list item the model ran into the prose
+    // ("...two key pillars: 1. **Translating...** ... 2. **AI-Native...**") onto its own
+    // line so each renders as an ordered-list item instead of one dense wall of text.
+    // Requires a preceding sentence-ender/colon, a "1." / "2)" marker, then a bold or
+    // capitalized lead, so prices, decimals, and "Section 2" prose are left untouched.
+    .replace(/([.!?:](?:["'”’)\]])?)[ \t]+(\d{1,2}[.)])[ \t]+(?=\*\*|[A-Z])/g, '$1\n$2 ');
 }
 
 function normalizeAiRaminMarkdownLine(line: string) {
@@ -2322,12 +2328,12 @@ export function AiRaminSection() {
       <div className="ai-ramin-page-shell relative z-10 mx-auto flex h-full min-h-0 w-full flex-col px-5 pt-8 pb-8 sm:px-8 md:px-12 lg:px-16">
         <SectionKicker {...sectionMarkerMeta['ai-ramin']} className="ai-ramin-section-eyebrow self-start" />
         <header className="ai-ramin-header">
-          <div className="ai-ramin-header-avatar">
-            <span className="ai-ramin-avatar">
-              <img src={profileImageUrl} alt="" decoding="async" />
-            </span>
-          </div>
           <div className="ai-ramin-title-lockup">
+            <div className="ai-ramin-header-avatar">
+              <span className="ai-ramin-avatar">
+                <img src={profileImageUrl} alt="" decoding="async" />
+              </span>
+            </div>
             <h2 className="ai-ramin-title-window">{chatbot.modalTitle}</h2>
           </div>
           <div className="ai-ramin-header-action">

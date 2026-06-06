@@ -4768,6 +4768,8 @@ function buildSystemInstruction(hiringMode, requestType, queryIntent) {
     'short_answer must carry the useful answer itself. Do not make the visitor open dropdown modules to understand the thesis, relevant examples, interpretation, or boundary.',
     'For normal questions, short_answer should usually be 80 to 170 words in one to three short paragraphs. Use bullets only when the visitor asks for a plan, list, comparison, or interview guide.',
     'If you use bullets in short_answer, write each bullet exactly as "- **Label:** sentence" with a newline before the first bullet. Never write compact pseudo-bullets like "*Label:* sentence".',
+    'Format short_answer with real line breaks for readability. Separate distinct points into short paragraphs and put a blank line (a real newline, "\\n\\n") between paragraphs instead of packing the whole reply into one dense block of text.',
+    'When you enumerate points, whether numbered ("1.", "2.") or dashed, start each item on its own line with a leading newline. Never run "1. ... 2. ..." items together inside a single paragraph.',
     'For complex role-fit, product-judgment, hiring-brief, or behavioral answers, you may go longer, but the answer should still read like a human explanation rather than a form.',
     'Do not start with phrases like "The portfolio context supports", "Based on retrieved evidence", or "The retrieved evidence says" unless you are correcting uncertainty.',
     'Weave the most relevant examples into the answer itself. Evidence arrays support the disclosure UI; they should not make short_answer feel like a source ledger.',

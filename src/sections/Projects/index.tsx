@@ -5,6 +5,7 @@ import aiCostsDashboardArtworkUrl from '../../assets/projects/ai-costs-mock.webp
 import aiNativeProductOsArtworkUrl from '../../assets/projects/ai-native-os-hero.webp';
 import conciergeSelfwareArtworkUrl from '../../assets/projects/24seven-mock.webp';
 import dreamseaSelfwareArtworkUrl from '../../assets/projects/dreamsea-mock.webp';
+import dreamseaHomepageScreenUrl from '../../../projects-section/Project Images/dreamsea-images/dreamsea-homepage.PNG';
 import massSocialWisdomAgentArtworkUrl from '../../assets/projects/mass-social.gif';
 import nssoSelfwareArtworkUrl from '../../assets/projects/nsso-mock.webp';
 import qadamSelfwareArtworkUrl from '../../assets/projects/qadam-mock.webp';
@@ -36,7 +37,6 @@ import {
   toolSystemBySlug,
   projectActNavItems,
   thoughtFormatNavGroups,
-  projectArchitectureFlow,
   getProjectReader,
 } from './types';
 import { DeepDiveOverlay } from './DeepDiveOverlay';
@@ -58,6 +58,110 @@ export const toolGeneratedArtwork: Record<string, string> = {
   'AI Costs Dashboard': aiCostsDashboardArtworkUrl,
   'RAG Pipeline': ragPipelineArtworkUrl,
 };
+
+const problemSolvedSummaries: Record<string, string> = {
+  nsso:
+    'Professional identity is scattered across profiles, portfolios, payment links, and contact channels. nsso turns that fragmented presence into one owned, intelligent profile system.',
+  Dreamsea:
+    'Vivid dreams disappear when capture requires typing, full attention, or later recall. Dreamsea lets users preserve the dream quickly by voice, then gives it an interpretive framework.',
+  Qadam:
+    'Market-moving physical-world signals often appear before consensus narrative catches up. Qadam ingests and triages those catalysts so the edge is visible earlier.',
+  '24Seven Concierge':
+    'Luxury clients had to browse disconnected inventory and then restart the conversation with a human concierge. 24Seven connects intent, catalog discovery, and handoff.',
+  RazinFlix:
+    'A personal film spreadsheet stops being useful once metadata, posters, trailers, categories, and recommendations become manual work. RazinFlix automates that curation layer.',
+  'Mass Social Wisdom Agent':
+    'Useful knowledge was trapped across links, reels, screenshots, captions, and transcripts. The agent extracts the meaning, organises it, and exports a usable document.',
+  'AI Costs Dashboard':
+    'AI product work can quietly leak cost, latency, and failure patterns across models and features. The dashboard makes spend and reliability visible enough to manage.',
+  'RAG Pipeline':
+    'One-off prompts fail when products need durable, trusted context. The pipeline gives products a repeatable way to ingest, retrieve, verify, and inject source material.',
+};
+
+type ProjectArchitectureCard = {
+  label: string;
+  value: string;
+};
+
+const implementationArchitectureSummaries: Record<string, string> = {
+  nsso:
+    'Next.js 16 and TypeScript frontend, Supabase Postgres/Storage backend, pgvector retrieval, Gemini Deity agent, PayPal and Polar payment flows.',
+  Qadam:
+    'Next.js/React cockpit over a Python orchestration backend, PostgreSQL/TimescaleDB event store, ChromaDB knowledge graph, and local/cloud AI strategy loop.',
+  Dreamsea:
+    'SwiftUI iOS app with Supabase Postgres, Storage and Edge Functions, Core Data local persistence, AVFoundation capture, and Gemini/Imagen generation.',
+  '24Seven Concierge':
+    'Expo React Native app using Expo Router, Shopify Storefront GraphQL, Lodgify calendar surfaces, Gemini planning, Zustand persistence and React Query.',
+  RazinFlix:
+    'Next.js 16 and Tailwind frontend with Supabase Postgres/Storage, TMDB metadata, Gemini enrichment, YouTube trailers and Google Vision poster validation.',
+  'Mass Social Wisdom Agent':
+    'Flask/Python web app with a threaded job runner, Gemini extraction and scoring, SociaVault transcript APIs, local file inputs and .docx export.',
+  'AI Costs Dashboard':
+    'Usage-event observability dashboard for AI spend, latency, failures, provider/model attribution, anomaly alerts and product-level cost controls.',
+  'RAG Pipeline':
+    'Reusable context infrastructure for ingestion, chunking, embeddings, retrieval, re-ranking, source verification, prompt injection and logging.',
+};
+
+const implementationArchitectureCards: Record<string, readonly ProjectArchitectureCard[]> = {
+  nsso: [
+    { label: 'Model', value: 'Turns profile advice into proposed edits, not generic chat responses.' },
+    { label: 'Context', value: 'Reads the live profile and knowledge base before advising.' },
+    { label: 'Orchestration', value: 'Routes coaching, retrieval, tool calls, and review cards.' },
+    { label: 'Governance', value: 'Blocks guest mutations and requires approval before public changes.' },
+    { label: 'Human', value: 'Keeps final identity decisions with the profile owner.' },
+  ],
+  Qadam: [
+    { label: 'Model', value: 'Separates fast local triage from deeper strategic reasoning.' },
+    { label: 'Context', value: 'Connects catalysts, sources, assets, and prior outcomes.' },
+    { label: 'Orchestration', value: 'Normalises messy world events into a decision pipeline.' },
+    { label: 'Governance', value: 'Requires trust scores, paper proof, logs, and risk gates.' },
+    { label: 'Human', value: 'Keeps final signal approval tied to explicit reasoning.' },
+  ],
+  Dreamsea: [
+    { label: 'Model', value: 'Turns voice capture into transcript, interpretation, symbols, and imagery.' },
+    { label: 'Context', value: 'Uses dream text plus tradition-specific philosophy as the lens.' },
+    { label: 'Orchestration', value: 'Captures first, then generates only after transcript review.' },
+    { label: 'Governance', value: 'Protects cost, privacy, storage, and access boundaries.' },
+    { label: 'Human', value: 'Lets expert curation shape the interpretive framework without code.' },
+  ],
+  '24Seven Concierge': [
+    { label: 'Model', value: 'Turns luxury intent into structured itinerary and recommendations.' },
+    { label: 'Context', value: 'Keeps Shopify inventory visible as the conversation evolves.' },
+    { label: 'Orchestration', value: 'Moves from request to catalog match to WhatsApp-ready handoff.' },
+    { label: 'Governance', value: 'Constrains recommendations to catalog-backed, parseable outputs.' },
+    { label: 'Human', value: 'Hands booking to a concierge instead of pretending full automation.' },
+  ],
+  RazinFlix: [
+    { label: 'Model', value: 'Transforms a film title into useful description and taste category.' },
+    { label: 'Context', value: 'Grounds enrichment in TMDB metadata and a personal taxonomy.' },
+    { label: 'Orchestration', value: 'Runs metadata, trailer, poster, category, and save steps together.' },
+    { label: 'Governance', value: 'Checks poster quality and keeps categories constrained.' },
+    { label: 'Human', value: 'Preserves owner taste through admin review and correction.' },
+  ],
+  'Mass Social Wisdom Agent': [
+    { label: 'Model', value: 'Reads messy media inputs and extracts reusable knowledge.' },
+    { label: 'Context', value: 'Carries captions, transcripts, OCR, links, and category constraints.' },
+    { label: 'Orchestration', value: 'Moves each item through inspect, compose, score, sort, and export.' },
+    { label: 'Governance', value: 'Logs failures, sanitises URLs, rate-limits, and self-checks quality.' },
+    { label: 'Human', value: 'Lets the user supply mess and keep the finished knowledge document.' },
+  ],
+  'AI Costs Dashboard': [
+    { label: 'Model', value: 'Turns model choice into a measurable cost and quality dimension.' },
+    { label: 'Context', value: 'Attaches product, feature, user segment, and request metadata.' },
+    { label: 'Orchestration', value: 'Collects usage events into daily and per-feature views.' },
+    { label: 'Governance', value: 'Surfaces spend, latency, failures, anomalies, and retry patterns.' },
+    { label: 'Human', value: 'Helps product decisions compare cost, quality, and user value.' },
+  ],
+  'RAG Pipeline': [
+    { label: 'Model', value: 'Pairs retrieval and generation models around answer quality.' },
+    { label: 'Context', value: 'Builds owned source material into chunks, metadata, and embeddings.' },
+    { label: 'Orchestration', value: 'Ingests, retrieves, re-ranks, verifies, injects, and logs.' },
+    { label: 'Governance', value: 'Controls duplication, weak matches, bad links, and prompt injection.' },
+    { label: 'Human', value: 'Keeps corpus quality and usefulness under human judgment.' },
+  ],
+};
+
+const fallbackArchitectureLabels = ['Model', 'Context', 'Orchestration', 'Governance', 'Human'] as const;
 
 function ProjectVisualSlot({
   label,
@@ -372,27 +476,28 @@ export function ProjectCinematicHero({
   const heroStats = [
     { label: 'Products', value: selfware.length },
     { label: 'Tools', value: tools.length },
-    { label: 'Layers', value: layerCount },
+    { label: 'Architecture', value: 1 },
   ];
   const heroActs = [
     {
       label: 'Products',
       title: 'Selfware',
       detail: 'Usable apps, agents, and web products with real case-study depth.',
+      targetId: 'projects-selfware-stack',
     },
     {
       label: 'Machinery',
       title: 'Tools',
       detail: 'Dashboards, workflows, and agents that turn AI into operating leverage.',
+      targetId: 'projects-tools',
     },
     {
       label: 'Thesis',
       title: 'Architecture',
-      detail: 'Model, context, orchestration, governance, and human judgement repeated across the work.',
+      detail: 'All selfware and tools built using the same underlying AI-Native Product OS framework.',
+      targetId: 'projects-architecture',
     },
   ];
-  const featuredSelfware = selfware.slice(0, 5);
-  const featuredTools = tools.slice(0, 4);
 
   return (
     <section className="relative flex min-h-[100svh] items-center overflow-hidden px-5 pb-28 pt-16 sm:px-8 md:px-12 lg:px-16">
@@ -405,7 +510,7 @@ export function ProjectCinematicHero({
       <div className="absolute left-[48%] top-[14%] z-0 h-[42rem] w-[42rem] -translate-x-1/2 rounded-full border border-white/10 bg-white/[0.025] blur-sm" />
 
       <div className="relative z-10 mx-auto grid w-full max-w-[1520px] gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(21rem,28rem)] lg:items-end">
-        <div>
+        <div className="projects-hero-copy relative">
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
@@ -434,38 +539,9 @@ export function ProjectCinematicHero({
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.18 }}
           >
-            I build products first, then turn the repeated patterns into tools, systems, and a durable AI-native product
-            architecture.
+            I build products for myself, and feed the repeated patterns into tools and a self-improving AI-native product
+            framework which, in turn, improves what I build over time.
           </motion.p>
-
-          <motion.div
-            className="mt-8 flex flex-wrap gap-3"
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.26 }}
-          >
-            <button
-              type="button"
-              onClick={() => scrollToId('projects-selfware-stack')}
-              className="rounded-full bg-white px-6 py-3 text-sm font-medium text-[#07101c] transition duration-300 hover:scale-[1.03] hover:bg-[#dce8f2]"
-            >
-              Enter atlas
-            </button>
-            <button
-              type="button"
-              onClick={() => scrollToId('projects-architecture')}
-              className="rounded-full border border-white/16 bg-white/[0.08] px-6 py-3 text-sm text-white/76 transition duration-300 hover:bg-white hover:text-[#07101c]"
-            >
-              See architecture
-            </button>
-            <button
-              type="button"
-              onClick={() => scrollToId('projects-tools')}
-              className="rounded-full border border-[#b9cad8]/20 bg-[#b9cad8]/10 px-6 py-3 text-sm text-white/76 transition duration-300 hover:bg-white hover:text-[#07101c]"
-            >
-              Open tools bay
-            </button>
-          </motion.div>
         </div>
 
         <motion.aside
@@ -475,10 +551,9 @@ export function ProjectCinematicHero({
           transition={{ duration: 0.85, delay: 0.2 }}
         >
           <div className="absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent" />
-          <p className="text-[0.62rem] uppercase tracking-[0.22em] text-white/44">Atlas control</p>
-          <p className="mt-4 text-sm leading-6 text-white/72">
-            Products people can use, tools that change how I build, and one repeatable AI-native architecture underneath
-            the whole system.
+          <p className="text-sm leading-6 text-white/72">
+            Selfware refers to software that I make for myself, inspired by the ideas and challenges of my own and those
+            around me.
           </p>
           <div className="mt-4 grid grid-cols-3 gap-2">
             {heroStats.map(({ label, value }) => (
@@ -491,7 +566,12 @@ export function ProjectCinematicHero({
 
           <div className="projects-hero-acts mt-4 grid gap-2">
             {heroActs.map((act, index) => (
-              <div key={act.title} className="grid grid-cols-[1.9rem_minmax(0,1fr)] gap-3 rounded-[1.05rem] border border-white/10 bg-white/[0.045] p-2.5">
+              <button
+                key={act.title}
+                type="button"
+                onClick={() => scrollToId(act.targetId)}
+                className="grid grid-cols-[1.9rem_minmax(0,1fr)] gap-3 rounded-[1.05rem] border border-white/10 bg-white/[0.045] p-2.5 text-left transition duration-300 hover:-translate-y-0.5 hover:border-white/24 hover:bg-white/[0.08] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/60"
+              >
                 <span className="flex h-7 w-7 items-center justify-center rounded-full border border-white/12 bg-white/[0.07] text-[0.58rem] text-white/60">
                   {String(index + 1).padStart(2, '0')}
                 </span>
@@ -502,52 +582,59 @@ export function ProjectCinematicHero({
                     {act.detail}
                   </p>
                 </div>
-              </div>
+              </button>
             ))}
           </div>
         </motion.aside>
-
-        <motion.div
-          className="grid gap-3 rounded-[1.65rem] border border-white/12 bg-black/18 p-3 shadow-[0_24px_90px_rgba(0,0,0,0.22)] backdrop-blur-xl lg:col-span-2 lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:items-center lg:p-4"
-          initial={{ opacity: 0, y: 26 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.85, delay: 0.34 }}
-        >
-          <div className="flex min-w-0 flex-wrap gap-2">
-            {featuredSelfware.map((project) => (
-              <span
-                key={`hero-selfware-${project.projectName}`}
-                className="rounded-full border border-white/10 bg-white/[0.07] px-3 py-2 text-xs text-white/70"
-              >
-                {project.projectName}
-              </span>
-            ))}
-          </div>
-          <div className="hidden items-center gap-2 px-3 text-[0.58rem] uppercase tracking-[0.2em] text-white/34 lg:flex">
-            <span className="h-px w-10 bg-white/18" />
-            becomes
-            <span className="h-px w-10 bg-white/18" />
-          </div>
-          <div className="flex min-w-0 flex-wrap gap-2 lg:justify-end">
-            {featuredTools.map((project) => (
-              <span
-                key={`hero-tool-${project.projectName}`}
-                className="rounded-full border border-[#b9cad8]/20 bg-[#b9cad8]/10 px-3 py-2 text-xs text-white/72"
-              >
-                {project.projectName}
-              </span>
-            ))}
-          </div>
-        </motion.div>
-      </div>
-
-      <div className="absolute bottom-8 left-5 z-10 hidden items-center gap-3 text-[0.62rem] uppercase tracking-[0.24em] text-white/42 sm:left-8 md:left-12 lg:flex">
-        <span>Scroll</span>
-        <span className="relative block h-px w-20 overflow-hidden bg-white/14">
-          <span className="projects-scroll-pulse absolute inset-y-0 left-0 w-8 bg-white/48" />
-        </span>
       </div>
     </section>
+  );
+}
+
+function ProjectsUnderpinnedByRow({
+  selfware,
+  tools,
+}: {
+  selfware: readonly PersonalProjectEntry[];
+  tools: readonly PersonalProjectEntry[];
+}) {
+  const featuredSelfware = selfware.slice(0, 5);
+  const featuredTools = tools.slice(0, 4);
+
+  return (
+    <motion.div
+      className="grid gap-3 rounded-[1.65rem] border border-white/12 bg-black/18 p-3 shadow-[0_24px_90px_rgba(0,0,0,0.22)] backdrop-blur-xl lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:items-center lg:p-4"
+      initial={{ opacity: 0, y: 26 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.75, ease: [0.25, 0.1, 0.25, 1] }}
+      viewport={{ once: true, margin: '-80px' }}
+    >
+      <div className="flex min-w-0 flex-wrap gap-2">
+        {featuredSelfware.map((project) => (
+          <span
+            key={`featured-selfware-${project.projectName}`}
+            className="rounded-full border border-white/10 bg-white/[0.07] px-3 py-2 text-xs text-white/70"
+          >
+            {project.projectName}
+          </span>
+        ))}
+      </div>
+      <div className="hidden items-center gap-2 px-3 text-[0.58rem] uppercase tracking-[0.2em] text-white/34 lg:flex">
+        <span className="h-px w-10 bg-white/18" />
+        underpinned by
+        <span className="h-px w-10 bg-white/18" />
+      </div>
+      <div className="flex min-w-0 flex-wrap gap-2 lg:justify-end">
+        {featuredTools.map((project) => (
+          <span
+            key={`featured-tool-${project.projectName}`}
+            className="rounded-full border border-[#b9cad8]/20 bg-[#b9cad8]/10 px-3 py-2 text-xs text-white/72"
+          >
+            {project.projectName}
+          </span>
+        ))}
+      </div>
+    </motion.div>
   );
 }
 
@@ -634,13 +721,6 @@ function CinematicProjectVisual({
       <div className="absolute left-5 top-5 rounded-full border border-white/15 bg-black/36 px-3 py-1.5 text-[0.62rem] uppercase tracking-[0.16em] text-white/72 backdrop-blur-md">
         {project.type}
       </div>
-      <div className="absolute bottom-5 left-5 right-5 flex items-end justify-between gap-4">
-        <div>
-          <p className="text-[0.62rem] uppercase tracking-[0.18em] text-white/50">System preview</p>
-          <p className="mt-2 max-w-[18rem] text-sm leading-5 text-white/76">{contentValue(project.architecture)}</p>
-        </div>
-        <span className="font-display text-6xl italic leading-none text-white/32">{String(index + 1).padStart(2, '0')}</span>
-      </div>
     </div>
   );
 }
@@ -655,14 +735,10 @@ function SelfwareShowcaseCard({
   onOpen: (item: CaseStudyEntry) => void;
 }) {
   const reader = getProjectReader(project.projectName);
-  const stackPreview = project.technicalStack.slice(0, 5);
+  const architectureCards = getProjectArchitectureCards(project);
   const liveHref = isPlaceholderValue(project.liveLink) ? undefined : project.liveLink;
   const stickyOffsetRem = 1 + Math.min(index, 4) * 0.62;
-  const productMeta = [
-    { label: 'Surface', value: project.type },
-    { label: 'Architecture', value: '5-layer AI-native stack' },
-    { label: 'Status', value: liveHref ? 'Shipped · live' : 'In progress' },
-  ];
+  const architectureSummary = getImplementationArchitectureSummary(project);
 
   return (
     <div className="relative min-h-0 py-6 md:min-h-[92svh] md:py-10">
@@ -694,24 +770,14 @@ function SelfwareShowcaseCard({
               </p>
             </div>
 
-            <div className="mt-7 grid gap-2 sm:grid-cols-3">
-              {productMeta.map((item) => (
-                <div key={`${project.projectName}-${item.label}`} className="rounded-[1rem] border border-white/10 bg-black/20 p-3">
-                  <p className="text-[0.56rem] uppercase tracking-[0.14em] text-white/36">{item.label}</p>
-                  <p className="mt-2 text-sm font-medium text-white/76">{item.value}</p>
-                </div>
-              ))}
+            <div className="mt-7 rounded-[1.2rem] border border-white/10 bg-black/20 p-4 md:p-5">
+              <p className="text-[0.56rem] uppercase tracking-[0.14em] text-white/36">Architecture</p>
+              <p className="mt-3 text-base font-medium leading-7 text-white/78">{architectureSummary}</p>
             </div>
 
-            <div className="mt-8 grid gap-2 sm:grid-cols-5">
-              {projectArchitectureFlow.map((step, stepIndex) => (
-                <div key={`${project.projectName}-${step}`} className="rounded-[1rem] border border-white/10 bg-white/[0.055] p-3">
-                  <p className="text-[0.56rem] uppercase tracking-[0.14em] text-white/38">
-                    {String(stepIndex + 1).padStart(2, '0')}
-                  </p>
-                  <p className="mt-2 text-xs font-medium text-white/78">{step}</p>
-                </div>
-              ))}
+            <div className="mt-8 rounded-[1.35rem] border border-white/10 bg-white/[0.055] p-4">
+              <p className="text-[0.58rem] uppercase tracking-[0.16em] text-white/38">Problem solved</p>
+              <p className="mt-3 text-sm leading-6 text-white/72">{getProblemSolvedSummary(project)}</p>
             </div>
 
             <div className="mt-auto flex flex-wrap items-center gap-3 pt-8">
@@ -731,21 +797,19 @@ function SelfwareShowcaseCard({
                   onClick={() => onOpen(reader)}
                   className="rounded-full border border-white/14 bg-white/[0.08] px-5 py-3 text-sm text-white/80 transition duration-300 hover:bg-white hover:text-[#07101c]"
                 >
-                  Read the build
+                  Deep dive →
                 </button>
               ) : null}
             </div>
           </div>
 
-          <div className="grid gap-4">
+          <div className="grid content-start gap-4">
             <CinematicProjectVisual project={project} index={index} />
-            <div className="grid gap-3 md:grid-cols-5">
-              {stackPreview.map((item, itemIndex) => (
-                <div key={`${project.projectName}-stack-${itemIndex}`} className="rounded-[1.15rem] border border-white/10 bg-white/[0.06] p-4">
-                  <p className="text-[0.58rem] uppercase tracking-[0.16em] text-white/40">
-                    {toolLayerColumns[itemIndex] ?? `Layer ${String(itemIndex + 1).padStart(2, '0')}`}
-                  </p>
-                  <p className="mt-3 line-clamp-4 text-xs leading-5 text-white/72">{contentValue(item)}</p>
+            <div className="grid items-start gap-3 md:grid-cols-5">
+              {architectureCards.map((item, itemIndex) => (
+                <div key={`${project.projectName}-stack-${item.label}-${itemIndex}`} className="flex h-[10.75rem] flex-col overflow-hidden rounded-[1.15rem] border border-white/10 bg-white/[0.06] px-4 pb-3 pt-4">
+                  <p className="text-[0.58rem] uppercase tracking-[0.16em] text-white/40">{item.label}</p>
+                  <p className="mt-3 line-clamp-5 text-xs leading-5 text-white/72">{item.value}</p>
                 </div>
               ))}
             </div>
@@ -798,12 +862,11 @@ function ToolConsoleCard({
   onOpen: (item: CaseStudyEntry) => void;
 }) {
   const reader = getProjectReader(project.projectName);
-  const layers = project.technicalStack.slice(0, 5);
+  const architectureCards = getProjectArchitectureCards(project);
   const liveHref = isPlaceholderValue(project.liveLink) ? undefined : project.liveLink;
   const githubHref = isPlaceholderValue(project.githubLink) ? undefined : project.githubLink;
   const primaryHref = githubHref ?? liveHref;
   const output = isPlaceholderValue(project.whatIWouldImprove) ? contentValue(project.briefDescription) : contentValue(project.whatIWouldImprove);
-  const workflowStages = ['Input', 'Route', 'Generate', 'Verify', 'Export'];
   const telemetry = [
     { label: 'Type', value: project.type },
     { label: 'Layer', value: 'Platform' },
@@ -846,20 +909,8 @@ function ToolConsoleCard({
             </div>
 
             <div className="rounded-[1.2rem] border border-white/10 bg-white/[0.045] p-4">
-              <p className="text-[0.58rem] uppercase tracking-[0.16em] text-white/36">Execution path</p>
-              <div className="mt-4 grid gap-2">
-                {workflowStages.map((stage, stageIndex) => (
-                  <div
-                    key={`${project.projectName}-${stage}`}
-                    className="grid grid-cols-[2rem_minmax(0,1fr)] items-center gap-3 rounded-full border border-white/10 bg-black/22 px-3 py-2"
-                  >
-                    <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white/[0.08] text-[0.58rem] text-white/54">
-                      {String(stageIndex + 1).padStart(2, '0')}
-                    </span>
-                    <span className="text-xs font-medium uppercase tracking-[0.13em] text-white/72">{stage}</span>
-                  </div>
-                ))}
-              </div>
+              <p className="text-[0.58rem] uppercase tracking-[0.16em] text-white/36">Problem solved</p>
+              <p className="mt-3 text-sm leading-6 text-white/72">{getProblemSolvedSummary(project)}</p>
             </div>
           </div>
         </div>
@@ -880,12 +931,10 @@ function ToolConsoleCard({
         </div>
 
         <div className="grid gap-2 sm:grid-cols-5">
-          {layers.map((layer, layerIndex) => (
-            <div key={`${project.projectName}-tool-layer-${layerIndex}`} className="rounded-[0.95rem] border border-white/10 bg-white/[0.05] p-3">
-              <p className="text-[0.54rem] uppercase tracking-[0.14em] text-white/36">
-                {toolLayerColumns[layerIndex] ?? `L${layerIndex + 1}`}
-              </p>
-              <p className="mt-2 line-clamp-3 text-xs leading-5 text-white/68">{contentValue(layer)}</p>
+          {architectureCards.map((item, itemIndex) => (
+            <div key={`${project.projectName}-tool-layer-${item.label}-${itemIndex}`} className="flex h-[10.75rem] flex-col overflow-hidden rounded-[0.95rem] border border-white/10 bg-white/[0.05] px-4 pb-3 pt-4">
+              <p className="text-[0.54rem] uppercase tracking-[0.14em] text-white/36">{item.label}</p>
+              <p className="mt-3 line-clamp-5 text-xs leading-5 text-white/68">{item.value}</p>
             </div>
           ))}
         </div>
@@ -907,7 +956,7 @@ function ToolConsoleCard({
               onClick={() => onOpen(reader)}
               className="w-fit rounded-full border border-white/16 bg-white/[0.08] px-5 py-3 text-sm text-white/80 transition duration-300 hover:bg-white hover:text-[#07101c]"
             >
-              Read the build
+              Deep dive →
             </button>
           ) : null}
         </div>
@@ -948,11 +997,43 @@ export function ToolsOperationsBay({
   );
 }
 
+function getImplementationArchitectureSummary(project: PersonalProjectEntry) {
+  return implementationArchitectureSummaries[project.projectName] ?? contentValue(project.architecture);
+}
+
+function getProjectArchitectureCards(project: PersonalProjectEntry, limit = 5) {
+  const cards = implementationArchitectureCards[project.projectName];
+
+  if (cards) return cards.slice(0, limit);
+
+  return project.technicalStack.slice(0, limit).map((item, index) =>
+    getArchitectureCardFromStackItem(item, fallbackArchitectureLabels[index] ?? `Layer ${String(index + 1).padStart(2, '0')}`),
+  );
+}
+
+function getArchitectureCardFromStackItem(item: string | PlaceholderLike, fallbackLabel: string): ProjectArchitectureCard {
+  const value = contentValue(item);
+  const separatorIndex = value.indexOf(':');
+
+  if (separatorIndex > 0 && separatorIndex < 32) {
+    return {
+      label: value.slice(0, separatorIndex).trim(),
+      value: value.slice(separatorIndex + 1).trim(),
+    };
+  }
+
+  return { label: fallbackLabel, value };
+}
+
 function getProjectLayerSummary(project: PersonalProjectEntry, layerName: string, layerIndex: number) {
   const value = contentValue(project.technicalStack[layerIndex]);
   const prefix = `${layerName}:`;
 
   return value.startsWith(prefix) ? value.slice(prefix.length).trim() : value;
+}
+
+function getProblemSolvedSummary(project: PersonalProjectEntry) {
+  return problemSolvedSummaries[project.projectName] ?? contentValue(project.problem);
 }
 
 function ArchitectureExpressionGroup({
@@ -1047,9 +1128,9 @@ export function ArchitectureKernel({ onOpen }: { onOpen: (item: CaseStudyEntry) 
           <div className="min-w-0 lg:sticky lg:top-24">
             <p className="text-xs uppercase tracking-[0.3em] text-white/44">Act 3 / Architecture</p>
             <h2 className="mt-5 text-[clamp(3rem,5vw,7.2rem)] font-black uppercase leading-[0.82] tracking-[-0.07em] text-white">
-              One Architecture
+              Implementation Stack
               <span className="block font-display italic font-normal normal-case tracking-[-0.04em] text-white/46">
-                many expressions
+                shared patterns
               </span>
             </h2>
             <p className="mt-7 max-w-xl text-base leading-8 text-white/66">{architecture.title}</p>
@@ -1081,7 +1162,7 @@ export function ArchitectureKernel({ onOpen }: { onOpen: (item: CaseStudyEntry) 
               <p className="text-[0.58rem] uppercase tracking-[0.17em] text-[#9fb6cf]">The thesis</p>
               <p className="mt-2 text-xl font-semibold text-white">AI-Native Product OS</p>
               <p className="mt-2 text-sm leading-6 text-white/64">
-                The five-layer stack every product above runs on — model · context · orchestration · governance · human.
+                The implementation stack changes by product; the repeatable product pattern is model, context, orchestration, governance, and human.
               </p>
               <div className="mt-4 flex flex-wrap gap-3">
                 {osReader ? (
@@ -1112,7 +1193,7 @@ export function ArchitectureKernel({ onOpen }: { onOpen: (item: CaseStudyEntry) 
                 <div>
                   <p className="text-[0.62rem] uppercase tracking-[0.2em] text-white/38">Kernel map</p>
                   <h3 className="mt-3 text-3xl font-semibold tracking-[-0.05em] text-white md:text-4xl 2xl:text-5xl">
-                    Same stack, different surfaces.
+                    Different stacks, shared pattern.
                   </h3>
                 </div>
                 <div className="grid grid-cols-3 gap-1 rounded-full border border-white/10 bg-white/[0.045] p-1">
@@ -1300,10 +1381,26 @@ export function ProjectActRail() {
   );
 }
 
-function FeaturedProject({ project, onOpen }: { project: PersonalProjectEntry; onOpen: (item: CaseStudyEntry) => void }) {
+function FeaturedProject({
+  project,
+  selfware,
+  tools,
+  onOpen,
+}: {
+  project: PersonalProjectEntry;
+  selfware: readonly PersonalProjectEntry[];
+  tools: readonly PersonalProjectEntry[];
+  onOpen: (item: CaseStudyEntry) => void;
+}) {
   const reader = getProjectReader(project.projectName);
   const liveHref = isPlaceholderValue(project.liveLink) ? undefined : project.liveLink;
+  const architectureSummary = getImplementationArchitectureSummary(project);
   const visual =
+    project.projectName === 'Dreamsea'
+      ? dreamseaHomepageScreenUrl
+      : selfwareGeneratedArtwork[project.projectName] ??
+        (isPlaceholderValue(project.mainPictureGif) ? undefined : project.mainPictureGif);
+  const poster =
     selfwareGeneratedArtwork[project.projectName] ??
     (isPlaceholderValue(project.mainPictureGif) ? undefined : project.mainPictureGif);
   const visualRef = useRef<HTMLDivElement>(null);
@@ -1313,7 +1410,8 @@ function FeaturedProject({ project, onOpen }: { project: PersonalProjectEntry; o
   return (
     <section id="projects-featured" className="relative px-5 pb-10 pt-4 sm:px-8 md:px-12 lg:px-16">
       <div className="mx-auto max-w-[1500px]">
-        <p className="text-sm uppercase tracking-[0.3em] text-[#9fb6cf]">★ Featured build</p>
+        <ProjectsUnderpinnedByRow selfware={selfware} tools={tools} />
+        <p className="mt-8 text-sm uppercase tracking-[0.3em] text-[#9fb6cf]">★ Featured build</p>
         <motion.article
           className="mt-5 overflow-hidden rounded-[2.5rem] border border-white/20 bg-white/[0.07] shadow-[0_50px_160px_rgba(0,0,0,0.5)] ring-1 ring-[#6e8bff]/20 backdrop-blur-2xl"
           initial={{ opacity: 0, y: 40 }}
@@ -1329,7 +1427,7 @@ function FeaturedProject({ project, onOpen }: { project: PersonalProjectEntry; o
                   <div style={{ height: '88%', aspectRatio: '0.47' }}>
                     <IPhone3D
                       screenSrc={visual}
-                      poster={visual}
+                      poster={poster ?? visual}
                       ariaLabel={`${project.projectName} shown on a rotating 3D iPhone`}
                     />
                   </div>
@@ -1346,6 +1444,10 @@ function FeaturedProject({ project, onOpen }: { project: PersonalProjectEntry; o
                 {project.projectName}
               </h3>
               <p className="max-w-xl text-base leading-8 text-white/74 md:text-lg">{contentValue(project.briefDescription)}</p>
+              <div className="rounded-[1.2rem] border border-white/10 bg-black/20 p-4 md:p-5">
+                <p className="text-[0.56rem] uppercase tracking-[0.14em] text-white/36">Architecture</p>
+                <p className="mt-3 text-base font-medium leading-7 text-white/78">{architectureSummary}</p>
+              </div>
               <div className="flex flex-wrap items-center gap-3 pt-2">
                 {liveHref ? (
                   <a
@@ -1363,7 +1465,7 @@ function FeaturedProject({ project, onOpen }: { project: PersonalProjectEntry; o
                     onClick={() => onOpen(reader)}
                     className="rounded-full border border-white/16 bg-white/[0.08] px-6 py-3.5 text-sm text-white/80 transition duration-300 hover:bg-white hover:text-[#07101c]"
                   >
-                    Read the build
+                    Deep dive →
                   </button>
                 ) : null}
               </div>
@@ -1378,13 +1480,14 @@ function FeaturedProject({ project, onOpen }: { project: PersonalProjectEntry; o
 export function CaseStudyGrid({ onOpen }: { onOpen: (item: CaseStudyEntry) => void }) {
   const { selfware, tools } = portfolioContent.personalProjects;
   const layerCount = portfolioContent.personalProjects.architectureAcrossTools.layers.length;
-  const [featured, ...restSelfware] = selfware;
+  const featured = selfware.find((project) => project.projectName === 'Dreamsea') ?? selfware[0];
+  const restSelfware = selfware.filter((project) => project.projectName !== featured?.projectName);
 
   return (
     <section id="projects" className="projects-cinematic relative isolate min-h-screen overflow-hidden bg-transparent pb-32 text-white">
       <ProjectActRail />
       <ProjectCinematicHero selfware={selfware} tools={tools} layerCount={layerCount} />
-      {featured ? <FeaturedProject project={featured} onOpen={onOpen} /> : null}
+      {featured ? <FeaturedProject project={featured} selfware={selfware} tools={tools} onOpen={onOpen} /> : null}
       <SelfwareStickyStack projects={restSelfware} onOpen={onOpen} />
       <ToolsOperationsBay projects={tools} onOpen={onOpen} />
       <ArchitectureKernel onOpen={onOpen} />

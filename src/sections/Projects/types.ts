@@ -227,8 +227,8 @@ export const thoughtArchitectureByProject = new Map(
 export const toolSystemBySlug = new Map(toolsAndSystems.map((system) => [slugifyTitle(system.title), system]));
 
 export const projectActNavItems = [
-  { id: 'projects', label: 'Atlas', index: '00' },
-  { id: 'projects-selfware-stack', label: 'Products', index: '01' },
+  { id: 'projects', label: 'Intro', index: '00' },
+  { id: 'projects-selfware-stack', label: 'Selfware', index: '01' },
   { id: 'projects-tools', label: 'Tools', index: '02' },
   { id: 'projects-architecture', label: 'Architecture', index: '03' },
 ] as const;
@@ -283,5 +283,3 @@ export const thoughtFormatNavGroups = [
     ],
   },
 ] as const;
-
-export const projectArchitectureFlow = ['Problem', 'Context', 'Reasoning', 'Review', 'Output'] as const;

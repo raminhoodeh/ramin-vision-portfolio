@@ -272,7 +272,7 @@ const createWorkExperience = (companyName: string, sourceCompany: string) => {
 const createProjectEntry = (
   projectName: string,
   sourceTitle: string,
-  type: 'App' | 'Web App' | 'Tool' | 'Agent',
+  type: 'App' | 'iOS App' | 'Web App' | 'Tool' | 'Agent',
   sourceKind: 'case-study' | 'tool',
 ) => {
   const caseStudy = findProject(sourceTitle);
@@ -1096,7 +1096,7 @@ const workExperienceData = [
     monthYearRangeWorked: 'Jan 2026 - Present',
     jobTitle: 'AI Product Manager',
     companyDescription:
-      'Bayut is the market-leading property website in the UAE, connecting buyers, sellers, landlords, tenants, and agents through extensive inventory from more than 3,500 agencies.',
+      'Bayut is a UAE real estate portal, part of Dubizzle Group, that connects buyers, renters, sellers, tenants, agents, and brokers across property search and listings.',
     industryTag: 'PropTech SaaS',
     industryTags: ['PropTech SaaS', 'eCommerce'],
     productsWorkedOn: ['Bayut web', 'Bayut App', 'Profolio app'],
@@ -1148,7 +1148,7 @@ const workExperienceData = [
     monthYearRangeWorked: 'Mar 2025 - Aug 2025',
     jobTitle: 'Senior Product Manager',
     companyDescription:
-      'Side (side.inc) is a global game development and services provider that delivers technical and creative solutions to major video game studios worldwide.',
+      'SIDE is a global video game services company that helps developers and publishers scale game development, art, audio, QA, localization, player support, datasets, testing, and IT services.',
     industryTag: 'Audio',
     industryTags: ['Audio', 'ERP'],
     productsWorkedOn: [
@@ -1210,7 +1210,7 @@ const workExperienceData = [
     monthYearRangeWorked: 'Jan 2023 - Nov 2024',
     jobTitle: 'Senior Product Manager',
     companyDescription:
-      'Perkbox is a global employee benefits and rewards platform. It provides companies with a centralized app to help motivate, celebrate, and care for their teams.',
+      'Perkbox and Vivup combined to form an employee wellbeing, benefits, rewards, and engagement platform for employers, HR teams, and their employees.',
     industryTag: 'Employee Benefits SaaS',
     industryTags: ['Employee Benefits SaaS'],
     productsWorkedOn: ['Highfive Recognition App', 'FamilyCare'],
@@ -1269,7 +1269,7 @@ const workExperienceData = [
     monthYearRangeWorked: 'Jan 2022 - Dec 2022',
     jobTitle: 'Product Manager',
     companyDescription:
-      "Formerly GroupM, WPP Media is WPP's global media collective, built for the AI era. It unifies data, technology, and human expertise to deliver measurable outcomes and intelligent growth for brands in over 80 markets.",
+      "WPP Media is WPP's global media collective, formerly GroupM, combining media agencies, data, technology, and partners to deliver growth for brands across more than 80 markets.",
     industryTag: 'Climate',
     industryTags: ['Climate', 'AdTech'],
     productsWorkedOn: ['Carbon Calculator', 'Product Innovation Process'],
@@ -1336,7 +1336,7 @@ const workExperienceData = [
     monthYearRangeWorked: 'Sept 2021 - Dec 2021',
     jobTitle: 'Product Owner [Contract]',
     companyDescription:
-      'Cox Automotive is a global automotive services and technology company that provides digital marketing, wholesale auction, software, and financial services to automobile dealers, manufacturers, and consumers.',
+      'Cox Automotive is a global automotive services and software company, part of Cox Enterprises, whose brands and technology support how vehicles are bought, sold, owned, and used.',
     industryTag: 'Automotive SaaS',
     industryTags: ['Automotive SaaS'],
     productsWorkedOn: ['Manheim Express'],
@@ -1399,7 +1399,7 @@ const workExperienceData = [
     monthYearRangeWorked: 'Dec 2020 - Sept 2021',
     jobTitle: 'Product Manager; Geospatial API',
     companyDescription:
-      'Worked within Geospatial Solutions Proposition and Innovation, gathering intelligence for positive impact and building a portfolio of next-generation geospatial solutions.',
+      "Ordnance Survey is Britain's Geospatial Intelligence agency, maintaining trusted geographic data, maps, APIs, and location products used by government, business, and the public.",
     industryTag: 'Geospatial',
     industryTags: ['Geospatial', 'Climate'],
     productsWorkedOn: ['OS Maps API on Microsoft Power Platform', 'Sustainability applications of geospatial data'],
@@ -1464,7 +1464,7 @@ const workExperienceData = [
     monthYearRangeWorked: 'Oct 2019 - Nov 2020',
     jobTitle: 'Product Manager',
     companyDescription:
-      'Climate risk analytics platform company helping investors measure and navigate climate-related risks and opportunities.',
+      'Urgentem was a London climate data and analytics company, now acquired by ICE, providing emissions data and climate risk analytics for financial institutions and investors.',
     industryTag: 'Fintech',
     industryTags: ['Fintech', 'SaaS'],
     productsWorkedOn: ['Element6'],
@@ -1532,7 +1532,7 @@ const workExperienceData = [
     monthYearRangeWorked: 'Jul 2017 - Oct 2019',
     jobTitle: 'Product Manager',
     companyDescription:
-      'Deity is a social impact start-up that recommends people and places to work remotely from, using a conversational mediator to help users move into deeper collaboration.',
+      'Deity AI was a London information-services startup building technology for social discovery, connecting people, places, and partner businesses through data-led digital and physical experiences.',
     industryTag: 'Social Networking',
     industryTags: ['Social Networking'],
     productsWorkedOn: ['Circles by Deity', 'Deity conversational chatbot mediator'],
@@ -1591,7 +1591,7 @@ const workExperienceData = [
     monthYearRangeWorked: 'Dec 2018 - Oct 2019',
     jobTitle: 'Product Stewardship Consultant',
     companyDescription:
-      "ERM is the world's leading sustainability consultancy, helping organizations manage risk, improve performance, and accelerate the transition to a sustainable future.",
+      'ERM is a global sustainability consultancy helping organizations with environmental, health, safety, risk, social, climate, and sustainability work.',
     industryTag: 'Climate',
     industryTags: ['Climate'],
     productsWorkedOn: ['DISC European Commission research project'],
@@ -1654,7 +1654,7 @@ const workExperienceData = [
     monthYearRangeWorked: 'Apr 2017 - Sept 2018',
     jobTitle: 'Senior Product Specialist',
     companyDescription:
-      "Tesla is an American automotive and clean energy company that designs, manufactures, and sells electric vehicles, battery energy storage systems, and solar energy products to accelerate the world's transition to sustainable energy.",
+      'Tesla is an automotive and clean-energy company building electric vehicles, energy storage, solar, charging, and supporting software around the transition to sustainable energy.',
     industryTag: 'Energy',
     industryTags: ['Energy', 'Automotive'],
     productsWorkedOn: ['Tesla app 3.23 Power Flow', 'Tesla Model S', 'Tesla Powerwall', 'Tesla / SpaceX marketing campaign'],
@@ -1867,7 +1867,7 @@ const certificationData = [
 const selfwareProjects = [
   createProjectEntry('nsso', 'nsso', 'Web App', 'case-study'),
   createProjectEntry('Qadam', 'Qadam', 'Agent', 'case-study'),
-  createProjectEntry('Dreamsea', 'Dreamsea', 'App', 'case-study'),
+  createProjectEntry('Dreamsea', 'Dreamsea', 'iOS App', 'case-study'),
   createProjectEntry('24Seven Concierge', '24Seven Concierge', 'App', 'case-study'),
   createProjectEntry('RazinFlix', 'RazinFlix', 'Web App', 'case-study'),
 ] as const;
@@ -2223,7 +2223,7 @@ export const portfolioContent = {
     selfware: selfwareProjects,
     tools: toolProjects,
     architectureAcrossTools: {
-      title: 'Each tool is a different expression of the same architecture.',
+      title: 'Each project uses its own implementation stack while sharing the same AI product pattern.',
       expandable: true,
       layers: [
         {
