@@ -12689,20 +12689,15 @@ a {
   font-weight: 800;
   letter-spacing: -0.035em;
   line-height: 0.95;
-  /* Vivid glassy gradient clipped to the letters — matches the shader/aurora
-     palette behind the section so the title reads as coloured glass rather
-     than flat text. No white overlay, no blend-mode complexity. */
-  background-image: linear-gradient(
-    118deg,
-    #3b6cb0 0%,
-    #6d9fd4 20%,
-    #aacbee 38%,
-    #b8a8e8 54%,
-    #6699cc 72%,
-    #9dc4e8 88%,
-    #5588c0 100%
-  );
-  background-size: 200% 100%;
+  /* True window effect: use the EXACT same gradient as .shader-gradient-surface
+     (the fixed background layer beneath the whole card), locked to the viewport
+     via background-attachment:fixed. The letters reveal that layer at its real
+     position instead of showing the white card surface — a genuine cutout. */
+  background-image:
+    radial-gradient(circle at 34% 28%, rgba(205, 224, 238, 0.72), transparent 38%),
+    linear-gradient(135deg, #7a96a2, #acbbc4 48%, #cde0ee);
+  background-attachment: fixed;
+  background-size: cover;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
