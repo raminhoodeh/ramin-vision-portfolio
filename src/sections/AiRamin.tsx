@@ -2276,7 +2276,7 @@ export function AiRaminSection() {
   return (
     <section id="ai-ramin" className="ai-ramin-section ai-ramin-thoughts-background relative isolate h-full min-h-full overflow-hidden">
       <div className="ai-ramin-ambient" aria-hidden="true" />
-      <div className="ai-ramin-page-shell relative z-10 mx-auto flex h-full min-h-0 w-full flex-col px-5 py-8 sm:px-8 md:px-12 lg:px-16">
+      <div className="ai-ramin-page-shell relative z-10 mx-auto flex h-full min-h-0 w-full flex-col px-5 pt-4 pb-8 sm:px-8 md:px-12 lg:px-16">
         <SectionKicker {...sectionMarkerMeta['ai-ramin']} className="ai-ramin-section-eyebrow self-start" />
         <header className="ai-ramin-header">
           <div className="ai-ramin-header-avatar">

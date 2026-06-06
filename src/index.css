@@ -12662,13 +12662,9 @@ a {
   height: 3.4rem;
 }
 .ai-ramin-page-shell .ai-ramin-header {
-  min-height: 4.4rem;
-  margin-top: 2rem;
+  min-height: 4rem;
+  margin-top: 0.4rem;
 }
-/* AI Ramin title: a true window. The letters are clipped to the SAME gradient
-   as the page background, pinned to the viewport (background-attachment: fixed),
-   so they reveal the actual background at its real position through the white
-   panel — not a separate gradient painted onto the text. */
 .ai-ramin-title-window {
   margin: 0;
   font-family: var(--font-sans);
@@ -12676,12 +12672,20 @@ a {
   font-weight: 800;
   letter-spacing: -0.035em;
   line-height: 0.95;
-  background-image:
-    radial-gradient(circle at 34% 28%, rgba(205, 224, 238, 0.72), transparent 38%),
-    linear-gradient(135deg, #7a96a2, #acbbc4 48%, #cde0ee);
-  background-attachment: fixed;
-  background-size: 100vw 100vh;
-  background-position: center;
+  /* Vivid glassy gradient clipped to the letters — matches the shader/aurora
+     palette behind the section so the title reads as coloured glass rather
+     than flat text. No white overlay, no blend-mode complexity. */
+  background-image: linear-gradient(
+    118deg,
+    #3b6cb0 0%,
+    #6d9fd4 20%,
+    #aacbee 38%,
+    #b8a8e8 54%,
+    #6699cc 72%,
+    #9dc4e8 88%,
+    #5588c0 100%
+  );
+  background-size: 200% 100%;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
