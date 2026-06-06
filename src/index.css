@@ -755,9 +755,8 @@ a {
 .portfolio-stage.is-ai-ramin-stage {
   z-index: 1;
   border-color: rgba(255, 255, 255, 0.21);
-  background:
-    radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.68), rgba(244, 249, 253, 0.53) 35%, rgba(238, 246, 252, 0.47) 100%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.62), rgba(241, 247, 252, 0.52));
+  /* Frosting relocated to .ai-ramin-frost so the title can be mask-knocked-out of it. */
+  background: transparent;
   box-shadow:
     0 44px 120px rgba(1, 8, 22, 0.34),
     0 10px 34px rgba(29, 62, 98, 0.2),
@@ -7205,8 +7204,8 @@ a {
 }
 
 .portfolio-stage.is-ai-ramin-stage::before {
+  /* White top moved into .ai-ramin-frost (which is mask-knocked-out); keep only accents. */
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.46), transparent 24%),
     radial-gradient(circle at 18% 18%, rgba(59, 130, 246, 0.08), transparent 32%),
     radial-gradient(circle at 82% 68%, rgba(221, 196, 154, 0.12), transparent 30%);
   opacity: 0.35;
@@ -8807,6 +8806,7 @@ a {
 }
 
 .ai-ramin-section {
+  --ai-ramin-title-mask: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='1190' height='866' preserveAspectRatio='none'><defs><mask id='k'><rect width='1190' height='866' fill='white'/><text x='595' y='73' text-anchor='middle' font-family='ui-sans-serif, system-ui, -apple-system, sans-serif' font-size='44.64' font-weight='800' letter-spacing='-1.56' fill='black'>AI Ramin</text></mask></defs><rect width='1190' height='866' fill='black' mask='url(%23k)'/></svg>");
   --bg: 210 33% 98%;
   --surface: 0 0% 100%;
   --text: 220 22% 12%;
@@ -8842,11 +8842,31 @@ a {
   inset: 0;
   z-index: 0;
   pointer-events: none;
+  /* White top moved into .ai-ramin-frost (mask-knocked-out); keep only accents. */
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.58), transparent 24%),
     radial-gradient(circle at 18% 18%, rgba(59, 130, 246, 0.08), transparent 32%),
     radial-gradient(circle at 82% 68%, rgba(221, 196, 154, 0.12), transparent 30%);
   opacity: 0.48;
+}
+
+/* Frosted card surface, with the title letters knocked out via a text mask so the
+   live shader behind the card shows through the actual letters (a real cutout). */
+.ai-ramin-frost {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.82), rgba(244, 249, 253, 0.66) 35%, rgba(238, 246, 252, 0.6) 100%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.7), rgba(241, 247, 252, 0.6));
+  -webkit-mask-image: var(--ai-ramin-title-mask);
+  mask-image: var(--ai-ramin-title-mask);
+  -webkit-mask-size: 100% 100%;
+  mask-size: 100% 100%;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: 0 0;
+  mask-position: 0 0;
 }
 
 .ai-ramin-header {
@@ -12689,7 +12709,8 @@ a {
   font-weight: 800;
   letter-spacing: -0.035em;
   line-height: 0.95;
-  /* Clean neutral baseline (Phase 1). The real shader cutout is built in Phase 2. */
-  color: rgba(65, 84, 102, 0.55);
+  /* Phase 2 cutout: the visible title is the mask-knockout in .ai-ramin-frost.
+     The h2 stays for layout + screen readers but paints nothing. */
+  color: transparent;
   user-select: none;
 }
