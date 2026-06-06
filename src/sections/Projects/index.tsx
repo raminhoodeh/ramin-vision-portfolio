@@ -102,65 +102,6 @@ const implementationArchitectureSummaries: Record<string, string> = {
     'Reusable context infrastructure for ingestion, chunking, embeddings, retrieval, re-ranking, source verification, prompt injection and logging.',
 };
 
-const implementationArchitectureCards: Record<string, readonly ProjectArchitectureCard[]> = {
-  nsso: [
-    { label: 'Model', value: 'Turns profile advice into proposed edits, not generic chat responses.' },
-    { label: 'Context', value: 'Reads the live profile and knowledge base before advising.' },
-    { label: 'Orchestration', value: 'Routes coaching, retrieval, tool calls, and review cards.' },
-    { label: 'Governance', value: 'Blocks guest mutations and requires approval before public changes.' },
-    { label: 'Human', value: 'Keeps final identity decisions with the profile owner.' },
-  ],
-  Qadam: [
-    { label: 'Model', value: 'Separates fast local triage from deeper strategic reasoning.' },
-    { label: 'Context', value: 'Connects catalysts, sources, assets, and prior outcomes.' },
-    { label: 'Orchestration', value: 'Normalises messy world events into a decision pipeline.' },
-    { label: 'Governance', value: 'Requires trust scores, paper proof, logs, and risk gates.' },
-    { label: 'Human', value: 'Keeps final signal approval tied to explicit reasoning.' },
-  ],
-  Dreamsea: [
-    { label: 'Model', value: 'Turns voice capture into transcript, interpretation, symbols, and imagery.' },
-    { label: 'Context', value: 'Uses dream text plus tradition-specific philosophy as the lens.' },
-    { label: 'Orchestration', value: 'Captures first, then generates only after transcript review.' },
-    { label: 'Governance', value: 'Protects cost, privacy, storage, and access boundaries.' },
-    { label: 'Human', value: 'Lets expert curation shape the interpretive framework without code.' },
-  ],
-  '24Seven Concierge': [
-    { label: 'Model', value: 'Turns luxury intent into structured itinerary and recommendations.' },
-    { label: 'Context', value: 'Keeps Shopify inventory visible as the conversation evolves.' },
-    { label: 'Orchestration', value: 'Moves from request to catalog match to WhatsApp-ready handoff.' },
-    { label: 'Governance', value: 'Constrains recommendations to catalog-backed, parseable outputs.' },
-    { label: 'Human', value: 'Hands booking to a concierge instead of pretending full automation.' },
-  ],
-  RazinFlix: [
-    { label: 'Model', value: 'Transforms a film title into useful description and taste category.' },
-    { label: 'Context', value: 'Grounds enrichment in TMDB metadata and a personal taxonomy.' },
-    { label: 'Orchestration', value: 'Runs metadata, trailer, poster, category, and save steps together.' },
-    { label: 'Governance', value: 'Checks poster quality and keeps categories constrained.' },
-    { label: 'Human', value: 'Preserves owner taste through admin review and correction.' },
-  ],
-  'Mass Social Wisdom Agent': [
-    { label: 'Model', value: 'Reads messy media inputs and extracts reusable knowledge.' },
-    { label: 'Context', value: 'Carries captions, transcripts, OCR, links, and category constraints.' },
-    { label: 'Orchestration', value: 'Moves each item through inspect, compose, score, sort, and export.' },
-    { label: 'Governance', value: 'Logs failures, sanitises URLs, rate-limits, and self-checks quality.' },
-    { label: 'Human', value: 'Lets the user supply mess and keep the finished knowledge document.' },
-  ],
-  'AI Costs Dashboard': [
-    { label: 'Model', value: 'Turns model choice into a measurable cost and quality dimension.' },
-    { label: 'Context', value: 'Attaches product, feature, user segment, and request metadata.' },
-    { label: 'Orchestration', value: 'Collects usage events into daily and per-feature views.' },
-    { label: 'Governance', value: 'Surfaces spend, latency, failures, anomalies, and retry patterns.' },
-    { label: 'Human', value: 'Helps product decisions compare cost, quality, and user value.' },
-  ],
-  'RAG Pipeline': [
-    { label: 'Model', value: 'Pairs retrieval and generation models around answer quality.' },
-    { label: 'Context', value: 'Builds owned source material into chunks, metadata, and embeddings.' },
-    { label: 'Orchestration', value: 'Ingests, retrieves, re-ranks, verifies, injects, and logs.' },
-    { label: 'Governance', value: 'Controls duplication, weak matches, bad links, and prompt injection.' },
-    { label: 'Human', value: 'Keeps corpus quality and usefulness under human judgment.' },
-  ],
-};
-
 const fallbackArchitectureLabels = ['Model', 'Context', 'Orchestration', 'Governance', 'Human'] as const;
 
 function ProjectVisualSlot({
@@ -1002,10 +943,6 @@ function getImplementationArchitectureSummary(project: PersonalProjectEntry) {
 }
 
 function getProjectArchitectureCards(project: PersonalProjectEntry, limit = 5) {
-  const cards = implementationArchitectureCards[project.projectName];
-
-  if (cards) return cards.slice(0, limit);
-
   return project.technicalStack.slice(0, limit).map((item, index) =>
     getArchitectureCardFromStackItem(item, fallbackArchitectureLabels[index] ?? `Layer ${String(index + 1).padStart(2, '0')}`),
   );

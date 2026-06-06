@@ -287,7 +287,13 @@ const createProjectEntry = (
     technicalStack: caseStudy
       ? caseStudy.architectureChips.map((chip) => `${chip.label}: ${chip.value}`)
       : tool
-        ? [tool.modelLayer, tool.contextLayer, tool.orchestrationLayer, tool.governanceLayer, tool.humanLayer]
+        ? [
+            `Model: ${tool.modelLayer}`,
+            `Context: ${tool.contextLayer}`,
+            `Orchestration: ${tool.orchestrationLayer}`,
+            `Governance: ${tool.governanceLayer}`,
+            `Human: ${tool.humanLayer}`,
+          ]
         : [detailNeeded()],
     domainExpertisePartner:
       sourceKind === 'case-study'
