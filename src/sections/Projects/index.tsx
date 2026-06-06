@@ -1395,6 +1395,7 @@ function FeaturedProject({
   const reader = getProjectReader(project.projectName);
   const liveHref = isPlaceholderValue(project.liveLink) ? undefined : project.liveLink;
   const architectureSummary = getImplementationArchitectureSummary(project);
+  const architectureCards = getProjectArchitectureCards(project);
   const visual =
     project.projectName === 'Dreamsea'
       ? dreamseaHomepageScreenUrl
@@ -1469,6 +1470,19 @@ function FeaturedProject({
                   </button>
                 ) : null}
               </div>
+            </div>
+          </div>
+          <div className="border-t border-white/10 p-5 md:p-6">
+            <div className="grid items-start gap-3 sm:grid-cols-5">
+              {architectureCards.map((item, itemIndex) => (
+                <div
+                  key={`${project.projectName}-featured-layer-${item.label}-${itemIndex}`}
+                  className="flex h-[10.75rem] flex-col overflow-hidden rounded-[1.15rem] border border-white/10 bg-white/[0.06] px-4 pb-3 pt-4"
+                >
+                  <p className="text-[0.58rem] uppercase tracking-[0.16em] text-white/40">{item.label}</p>
+                  <p className="mt-3 line-clamp-5 text-xs leading-5 text-white/72">{item.value}</p>
+                </div>
+              ))}
             </div>
           </div>
         </motion.article>
