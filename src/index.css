@@ -10471,7 +10471,7 @@ a {
 .ai-ramin-section-eyebrow {
   position: relative;
   z-index: 41;
-  margin: 0 0 0.5rem;
+  margin: 0 0 0.35rem;
 }
 
 .ai-ramin-page-shell .ai-ramin-header {
@@ -12662,9 +12662,26 @@ a {
   height: 3.4rem;
 }
 .ai-ramin-page-shell .ai-ramin-header {
-  min-height: 4rem;
-  margin-top: 0.4rem;
+  min-height: 3.5rem;
+  margin-top: 0;
 }
+/* Unified disclosure: sections inside the single "View details" dropdown */
+.ai-ramin-unified-section {
+  padding-block: 0.75rem;
+}
+.ai-ramin-unified-section + .ai-ramin-unified-section {
+  border-top: 1px solid rgba(15, 23, 42, 0.08);
+}
+.ai-ramin-unified-section-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(44, 57, 74, 0.44);
+}
+
 .ai-ramin-title-window {
   margin: 0;
   font-family: var(--font-sans);

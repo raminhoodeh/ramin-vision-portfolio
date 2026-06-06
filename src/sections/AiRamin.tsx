@@ -1495,12 +1495,14 @@ function AiRaminInlineDebugDrawer({ response }: { response: AiRaminStructuredRes
   );
 }
 
-function AiRaminInlineEvidenceDisclosure({
+// ─── content-only helpers (no <details> wrapper) ────────────────────────────
+
+function AiRaminEvidenceContent({
   response,
-  presentation = getAiRaminAnswerPresentation(response),
+  presentation,
 }: {
   response: AiRaminStructuredResponse;
-  presentation?: AiRaminAnswerPresentation;
+  presentation: AiRaminAnswerPresentation;
 }) {
   const evidenceLookup = response.evidenceLookupAnalysis;
   const proofItems = evidenceLookup?.strongest_verified_proof ?? response.sections.verified_proof;
@@ -1511,23 +1513,13 @@ function AiRaminInlineEvidenceDisclosure({
     ...response.sections.open_questions,
     ...(evidenceLookup?.missing_evidence ?? []),
   ];
-
-  if (!presentation.shouldShowEvidenceDisclosure) return null;
-
-  const title = 'View evidence';
-  const kicker = getAiRaminEvidenceDisclosureKicker(response, presentation);
-
   return (
-    <AiRaminInlineModule
-      title={title}
-      kicker={kicker}
-      defaultOpen={false}
-      className={`ai-ramin-evidence-disclosure ${presentation.isWeak ? 'is-simplified' : ''}`}
-    >
+    <div className={`ai-ramin-unified-section ${presentation.isWeak ? 'is-simplified' : ''}`}>
+      <span className="ai-ramin-unified-section-label">Evidence</span>
       {!presentation.isWeak && evidenceLookup?.source_filters?.length ? (
         <div className="ai-ramin-inline-source-row">
-          {getInlineItems(evidenceLookup.source_filters, 5).map((sourceFilter, index) => (
-            <small key={`${sourceFilter}-${index}`}>{sourceFilter}</small>
+          {getInlineItems(evidenceLookup.source_filters, 5).map((sf, i) => (
+            <small key={`${sf}-${i}`}>{sf}</small>
           ))}
         </div>
       ) : null}
@@ -1570,21 +1562,17 @@ function AiRaminInlineEvidenceDisclosure({
         ) : null}
       </div>
       <AiRaminInlineDebugDrawer response={response} />
-    </AiRaminInlineModule>
+    </div>
   );
 }
 
-function AiRaminInlineRoleFitModule({ response }: { response: AiRaminStructuredResponse }) {
+function AiRaminRoleFitContent({ response }: { response: AiRaminStructuredResponse }) {
   const roleFit = response.roleFitAnalysis;
   if (!roleFit) return null;
-
   return (
-    <AiRaminInlineModule title="Role fit" kicker="work proof, project proof, interview focus" defaultOpen>
-      <AiRaminMarkdownParagraph
-        content={roleFit.role_summary}
-        className="ai-ramin-inline-summary"
-        keyPrefix="role-fit-summary"
-      />
+    <div className="ai-ramin-unified-section">
+      <span className="ai-ramin-unified-section-label">Role fit</span>
+      <AiRaminMarkdownParagraph content={roleFit.role_summary} className="ai-ramin-inline-summary" keyPrefix="role-fit-summary" />
       <div className="ai-ramin-inline-grid">
         <AiRaminInlineList label="Work proof" items={roleFit.strongest_work_evidence} limit={2} />
         <AiRaminInlineList label="Project proof" items={roleFit.strongest_project_evidence} limit={2} />
@@ -1593,84 +1581,67 @@ function AiRaminInlineRoleFitModule({ response }: { response: AiRaminStructuredR
         <AiRaminInlineList label="First 90 days" items={roleFit.first_90_days} limit={2} />
         <AiRaminInlineList label="Interview focus" items={roleFit.interview_questions} limit={2} />
       </div>
-    </AiRaminInlineModule>
+    </div>
   );
 }
 
-function AiRaminInlineProductJudgmentModule({ response }: { response: AiRaminStructuredResponse }) {
-  const productJudgment = response.productJudgmentAnalysis;
-  if (!productJudgment) return null;
-
+function AiRaminProductJudgmentContent({ response }: { response: AiRaminStructuredResponse }) {
+  const pj = response.productJudgmentAnalysis;
+  if (!pj) return null;
   return (
-    <AiRaminInlineModule title="Product judgment" kicker="MVP, risks, evals" defaultOpen>
-      <AiRaminMarkdownParagraph
-        content={productJudgment.scenario_summary}
-        className="ai-ramin-inline-summary"
-        keyPrefix="product-judgment-summary"
-      />
+    <div className="ai-ramin-unified-section">
+      <span className="ai-ramin-unified-section-label">Product judgment</span>
+      <AiRaminMarkdownParagraph content={pj.scenario_summary} className="ai-ramin-inline-summary" keyPrefix="product-judgment-summary" />
       <div className="ai-ramin-inline-layer-row" aria-label="AI product operating layers">
-        {[
-          ['Model', productJudgment.model_layer],
-          ['Context', productJudgment.context_layer],
-          ['Orchestration', productJudgment.orchestration_layer],
-          ['Governance', productJudgment.governance_layer],
-          ['Human', productJudgment.human_layer],
-        ].map(([label, items]) => (
-          <span key={label}>{`${label}: ${(items as string[])[0] ?? 'No note returned'}`}</span>
+        {(
+          [
+            ['Model', pj.model_layer],
+            ['Context', pj.context_layer],
+            ['Orchestration', pj.orchestration_layer],
+            ['Governance', pj.governance_layer],
+            ['Human', pj.human_layer],
+          ] as [string, string[]][]
+        ).map(([label, items]) => (
+          <span key={label}>{`${label}: ${items[0] ?? 'No note returned'}`}</span>
         ))}
       </div>
       <div className="ai-ramin-inline-grid">
-        <AiRaminInlineList label="MVP path" items={productJudgment.recommended_mvp_path} limit={2} />
-        <AiRaminInlineList label="Risks" items={productJudgment.riskiest_assumptions} limit={2} />
-        <AiRaminInlineList label="Evals" items={productJudgment.eval_and_guardrail_plan} limit={2} />
-        <AiRaminInlineList label="Tradeoffs" items={productJudgment.key_tradeoffs} limit={2} />
+        <AiRaminInlineList label="MVP path" items={pj.recommended_mvp_path} limit={2} />
+        <AiRaminInlineList label="Risks" items={pj.riskiest_assumptions} limit={2} />
+        <AiRaminInlineList label="Evals" items={pj.eval_and_guardrail_plan} limit={2} />
+        <AiRaminInlineList label="Tradeoffs" items={pj.key_tradeoffs} limit={2} />
       </div>
-    </AiRaminInlineModule>
+    </div>
   );
 }
 
-function AiRaminInlineBriefModule({ response }: { response: AiRaminStructuredResponse }) {
+function AiRaminBriefContent({ response }: { response: AiRaminStructuredResponse }) {
   const briefSeed = response.briefSeed;
   const copyReadyBrief = useMemo(() => buildHiringBriefMarkdown(briefSeed), [briefSeed]);
   const [copyStatus, setCopyStatus] = useState<'idle' | 'copied' | 'manual'>('idle');
   const [isCopyFallbackOpen, setIsCopyFallbackOpen] = useState(false);
   const copyFallbackRef = useRef<HTMLTextAreaElement | null>(null);
 
-  useEffect(() => {
-    setCopyStatus('idle');
-    setIsCopyFallbackOpen(false);
-  }, [copyReadyBrief]);
+  useEffect(() => { setCopyStatus('idle'); setIsCopyFallbackOpen(false); }, [copyReadyBrief]);
 
   useEffect(() => {
     if (!isCopyFallbackOpen) return;
-
-    window.requestAnimationFrame(() => {
-      copyFallbackRef.current?.focus();
-      copyFallbackRef.current?.select();
-    });
+    window.requestAnimationFrame(() => { copyFallbackRef.current?.focus(); copyFallbackRef.current?.select(); });
   }, [isCopyFallbackOpen]);
 
   const handleCopyBrief = useCallback(async () => {
     if (!copyReadyBrief) return;
-
-    if (await copyAiRaminText(copyReadyBrief)) {
-      setCopyStatus('copied');
-      setIsCopyFallbackOpen(false);
-      return;
-    }
-
+    if (await copyAiRaminText(copyReadyBrief)) { setCopyStatus('copied'); setIsCopyFallbackOpen(false); return; }
     setCopyStatus('manual');
     setIsCopyFallbackOpen(true);
   }, [copyReadyBrief]);
 
   if (!briefSeed) return null;
-
-  const proofAnchors = briefSeed.selectedProofAnchors?.length
-    ? briefSeed.selectedProofAnchors
-    : briefSeed.evidenceCardTitles;
+  const proofAnchors = briefSeed.selectedProofAnchors?.length ? briefSeed.selectedProofAnchors : briefSeed.evidenceCardTitles;
 
   return (
-    <AiRaminInlineModule title="Hiring brief" kicker="copy-ready summary" defaultOpen>
+    <div className="ai-ramin-unified-section">
+      <span className="ai-ramin-unified-section-label">Hiring brief</span>
       <div className="ai-ramin-inline-brief-head">
         <div>
           <strong>{briefSeed.headline || 'Hiring brief: Ramin Hoodeh'}</strong>
@@ -1681,14 +1652,8 @@ function AiRaminInlineBriefModule({ response }: { response: AiRaminStructuredRes
         </button>
       </div>
       {isCopyFallbackOpen ? (
-        <textarea
-          ref={copyFallbackRef}
-          className="ai-ramin-inline-brief-copy-fallback"
-          value={copyReadyBrief}
-          aria-label="Copy-ready hiring brief"
-          readOnly
-          onFocus={(event) => event.currentTarget.select()}
-        />
+        <textarea ref={copyFallbackRef} className="ai-ramin-inline-brief-copy-fallback" value={copyReadyBrief}
+          aria-label="Copy-ready hiring brief" readOnly onFocus={(e) => e.currentTarget.select()} />
       ) : null}
       <div className="ai-ramin-inline-grid">
         <AiRaminInlineList label="Proof" items={briefSeed.mostRelevantProof} limit={2} />
@@ -1698,14 +1663,14 @@ function AiRaminInlineBriefModule({ response }: { response: AiRaminStructuredRes
       </div>
       {proofAnchors.length ? (
         <div className="ai-ramin-inline-source-row">
-          {proofAnchors.slice(0, 4).map((anchor, index) => (
-            <small key={`${anchor}-${index}`}>{anchor}</small>
-          ))}
+          {proofAnchors.slice(0, 4).map((anchor, i) => <small key={`${anchor}-${i}`}>{anchor}</small>)}
         </div>
       ) : null}
-    </AiRaminInlineModule>
+    </div>
   );
 }
+
+// ─── single unified collapsed disclosure ─────────────────────────────────────
 
 function AiRaminInlineStructuredModules({
   response,
@@ -1719,20 +1684,39 @@ function AiRaminInlineStructuredModules({
 
   if (!showStructuredModules && !showEvidenceDisclosure) return null;
 
+  // Build a compact kicker from what's actually present
+  const parts: string[] = [];
+  if (showEvidenceDisclosure) {
+    const n = response.evidenceCards.length;
+    if (n) parts.push(`${n} source${n !== 1 ? 's' : ''}`);
+    const noteCount = [
+      ...response.sections.verified_proof,
+      ...response.sections.inferred_fit,
+      ...response.sections.confidential_boundary,
+      ...response.sections.open_questions,
+    ].length;
+    if (noteCount) parts.push(`${noteCount} context note${noteCount !== 1 ? 's' : ''}`);
+  }
+  if (response.roleFitAnalysis) parts.push('role fit');
+  if (response.productJudgmentAnalysis) parts.push('product analysis');
+  if (response.briefSeed) parts.push('hiring brief');
+
   return (
-    <div
-      className={`ai-ramin-inline-modules ${presentation.isWeak ? 'is-simplified' : ''}`}
-      aria-label="Structured answer modules"
+    <AiRaminInlineModule
+      title="View details"
+      kicker={parts.join(' · ')}
+      defaultOpen={false}
+      className={`ai-ramin-unified-disclosure ${presentation.isWeak ? 'is-simplified' : ''}`}
     >
+      {showEvidenceDisclosure ? <AiRaminEvidenceContent response={response} presentation={presentation} /> : null}
       {showStructuredModules ? (
         <>
-          <AiRaminInlineRoleFitModule response={response} />
-          <AiRaminInlineProductJudgmentModule response={response} />
-          <AiRaminInlineBriefModule response={response} />
+          <AiRaminRoleFitContent response={response} />
+          <AiRaminProductJudgmentContent response={response} />
+          <AiRaminBriefContent response={response} />
         </>
       ) : null}
-      {showEvidenceDisclosure ? <AiRaminInlineEvidenceDisclosure response={response} presentation={presentation} /> : null}
-    </div>
+    </AiRaminInlineModule>
   );
 }
 
@@ -2276,7 +2260,7 @@ export function AiRaminSection() {
   return (
     <section id="ai-ramin" className="ai-ramin-section ai-ramin-thoughts-background relative isolate h-full min-h-full overflow-hidden">
       <div className="ai-ramin-ambient" aria-hidden="true" />
-      <div className="ai-ramin-page-shell relative z-10 mx-auto flex h-full min-h-0 w-full flex-col px-5 pt-4 pb-8 sm:px-8 md:px-12 lg:px-16">
+      <div className="ai-ramin-page-shell relative z-10 mx-auto flex h-full min-h-0 w-full flex-col px-5 pt-2 pb-8 sm:px-8 md:px-12 lg:px-16">
         <SectionKicker {...sectionMarkerMeta['ai-ramin']} className="ai-ramin-section-eyebrow self-start" />
         <header className="ai-ramin-header">
           <div className="ai-ramin-header-avatar">

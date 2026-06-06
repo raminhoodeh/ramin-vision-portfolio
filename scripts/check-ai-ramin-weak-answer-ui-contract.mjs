@@ -98,13 +98,13 @@ assertIncludes('ui', 'presentation.shouldShowEvidenceDisclosure', 'evidence disc
 assertIncludes('ui', 'ai-ramin-message-row-weak-answer', 'weak-answer row class');
 assertIncludes(
   'ui',
-  '<AiRaminInlineEvidenceDisclosure response={response} presentation={presentation} />',
+  '<AiRaminEvidenceContent response={response} presentation={presentation} />',
   'evidence disclosure presentation prop',
 );
 assertOrder(
   'ui',
   'presentation.shouldShowStructuredModules',
-  '<AiRaminInlineRoleFitModule response={response} />',
+  '<AiRaminRoleFitContent response={response} />',
   'structured modules must be gated before rendering',
 );
 
