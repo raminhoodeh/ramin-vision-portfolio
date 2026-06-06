@@ -8806,7 +8806,7 @@ a {
 }
 
 .ai-ramin-section {
-  --ai-ramin-title-mask: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='1190' height='866' preserveAspectRatio='none'><defs><mask id='k'><rect width='1190' height='866' fill='white'/><text x='595' y='73' text-anchor='middle' font-family='ui-sans-serif, system-ui, -apple-system, sans-serif' font-size='44.64' font-weight='800' letter-spacing='-1.56' fill='black'>AI Ramin</text></mask></defs><rect width='1190' height='866' fill='black' mask='url(%23k)'/></svg>");
+  --ai-ramin-title-mask: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='1190' height='866' preserveAspectRatio='none'><defs><mask id='k'><rect width='1190' height='866' fill='white'/><text x='595' y='57' text-anchor='middle' font-family='ui-sans-serif, system-ui, -apple-system, sans-serif' font-size='44.64' font-weight='800' letter-spacing='-1.56' fill='black'>AI Ramin</text></mask></defs><rect width='1190' height='866' fill='black' mask='url(%23k)'/></svg>");
   --bg: 210 33% 98%;
   --surface: 0 0% 100%;
   --text: 220 22% 12%;
@@ -10491,7 +10491,7 @@ a {
 .ai-ramin-section-eyebrow {
   position: relative;
   z-index: 41;
-  margin: 0 0 0.35rem;
+  margin: 0 0 0.1rem;
 }
 
 .ai-ramin-page-shell .ai-ramin-header {
@@ -12682,8 +12682,9 @@ a {
   height: 3.4rem;
 }
 .ai-ramin-page-shell .ai-ramin-header {
-  min-height: 3.5rem;
+  min-height: 3.2rem;
   margin-top: 0;
+  align-items: flex-start;
 }
 /* Unified disclosure: sections inside the single "View details" dropdown */
 .ai-ramin-unified-section {
