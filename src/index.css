@@ -8806,7 +8806,8 @@ a {
 }
 
 .ai-ramin-section {
-  --ai-ramin-title-mask: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='1190' height='866' preserveAspectRatio='none'><defs><mask id='k'><rect width='1190' height='866' fill='white'/><text x='595' y='57' text-anchor='middle' font-family='ui-sans-serif, system-ui, -apple-system, sans-serif' font-size='44.64' font-weight='800' letter-spacing='-1.56' fill='black'>AI Ramin</text></mask></defs><rect width='1190' height='866' fill='black' mask='url(%23k)'/></svg>");
+  /* --ai-ramin-title-mask is generated at runtime (JS-measured) so the cutout tracks the
+     title at any viewport. Falls back to no mask (solid visible title) if JS/masks absent. */
   --bg: 210 33% 98%;
   --surface: 0 0% 100%;
   --text: 220 22% 12%;
@@ -8859,8 +8860,8 @@ a {
   background:
     radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.82), rgba(244, 249, 253, 0.66) 35%, rgba(238, 246, 252, 0.6) 100%),
     linear-gradient(180deg, rgba(255, 255, 255, 0.7), rgba(241, 247, 252, 0.6));
-  -webkit-mask-image: var(--ai-ramin-title-mask);
-  mask-image: var(--ai-ramin-title-mask);
+  -webkit-mask-image: var(--ai-ramin-title-mask, none);
+  mask-image: var(--ai-ramin-title-mask, none);
   -webkit-mask-size: 100% 100%;
   mask-size: 100% 100%;
   -webkit-mask-repeat: no-repeat;
@@ -12710,8 +12711,13 @@ a {
   font-weight: 800;
   letter-spacing: -0.035em;
   line-height: 0.95;
-  /* Phase 2 cutout: the visible title is the mask-knockout in .ai-ramin-frost.
-     The h2 stays for layout + screen readers but paints nothing. */
-  color: transparent;
+  /* Default: a solid, legible title (graceful fallback when the cutout is unavailable).
+     When JS engages the cutout (data-cutout="on"), the h2 goes transparent and the
+     visible title becomes the shader showing through the .ai-ramin-frost knockout. */
+  color: rgba(65, 84, 102, 0.55);
   user-select: none;
+}
+
+.ai-ramin-section[data-cutout='on'] .ai-ramin-title-window {
+  color: transparent;
 }

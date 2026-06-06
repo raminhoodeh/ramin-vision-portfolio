@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState, useId } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, useId } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
 import { aiRaminPrototype, portfolioContent } from '../data/portfolio';
 import type {
@@ -1969,6 +1969,7 @@ export function AiRaminSection() {
   const [isContextPanelOpen, setIsContextPanelOpen] = useState(false);
   const promptInputRef = useRef<HTMLTextAreaElement | null>(null);
   const threadEndRef = useRef<HTMLDivElement | null>(null);
+  const sectionRef = useRef<HTMLElement | null>(null);
   const examplePrompts = aiRaminPrototype.examplePrompts.slice(0, 4);
   const hasChatStarted = messages.some((message) => !message.isIntro);
   const visibleMessages = useMemo(
@@ -1995,6 +1996,63 @@ export function AiRaminSection() {
   useEffect(() => {
     threadEndRef.current?.scrollIntoView({ block: 'end', behavior: 'smooth' });
   }, [messages, isSending, chatError]);
+
+  // Title cutout: generate a text-knockout mask that tracks the actual rendered
+  // title position/size, so the shader shows through the letters at any viewport.
+  // Degrades gracefully to a solid visible title where masks are unsupported.
+  useLayoutEffect(() => {
+    const section = sectionRef.current;
+    if (!section) return undefined;
+    const supportsMask =
+      typeof CSS !== 'undefined' &&
+      (CSS.supports('mask-image', 'url(#m)') || CSS.supports('-webkit-mask-image', 'url(#m)'));
+    if (!supportsMask) return undefined;
+
+    const FONT = 'ui-sans-serif, system-ui, -apple-system, Arial, sans-serif';
+    let cancelled = false;
+
+    const update = () => {
+      const title = section.querySelector('.ai-ramin-title-window');
+      if (!title) return;
+      const sb = section.getBoundingClientRect();
+      const tb = title.getBoundingClientRect();
+      if (sb.width < 1 || tb.width < 1) return;
+      const cs = window.getComputedStyle(title);
+      const fontSize = parseFloat(cs.fontSize) || 44;
+      const weight = cs.fontWeight || '800';
+      const ls = cs.letterSpacing && cs.letterSpacing !== 'normal' ? cs.letterSpacing : '0';
+      const w = Math.round(sb.width);
+      const h = Math.round(sb.height);
+      const cx = (tb.left - sb.left + tb.width / 2).toFixed(1);
+      const cy = (tb.top - sb.top + tb.height / 2).toFixed(1);
+      const text = (title.textContent || 'AI Ramin').trim();
+      const svg =
+        `<svg xmlns='http://www.w3.org/2000/svg' width='${w}' height='${h}'>` +
+        `<defs><mask id='m'><rect width='${w}' height='${h}' fill='white'/>` +
+        `<text x='${cx}' y='${cy}' text-anchor='middle' dominant-baseline='central' ` +
+        `font-family='${FONT}' font-size='${fontSize}' font-weight='${weight}' letter-spacing='${ls}' fill='black'>${text}</text>` +
+        `</mask></defs><rect width='${w}' height='${h}' fill='black' mask='url(#m)'/></svg>`;
+      section.style.setProperty('--ai-ramin-title-mask', `url("data:image/svg+xml,${encodeURIComponent(svg)}")`);
+      section.setAttribute('data-cutout', 'on');
+    };
+
+    update();
+
+    const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(() => update()) : null;
+    if (ro) {
+      ro.observe(section);
+      const title = section.querySelector('.ai-ramin-title-window');
+      if (title) ro.observe(title);
+    }
+    window.addEventListener('resize', update);
+    if (document.fonts?.ready) document.fonts.ready.then(() => { if (!cancelled) update(); });
+
+    return () => {
+      cancelled = true;
+      ro?.disconnect();
+      window.removeEventListener('resize', update);
+    };
+  }, []);
 
   useEffect(() => {
     if (!isSending) {
@@ -2258,7 +2316,7 @@ export function AiRaminSection() {
   );
 
   return (
-    <section id="ai-ramin" className="ai-ramin-section ai-ramin-thoughts-background relative isolate h-full min-h-full overflow-hidden">
+    <section ref={sectionRef} id="ai-ramin" className="ai-ramin-section ai-ramin-thoughts-background relative isolate h-full min-h-full overflow-hidden">
       <div className="ai-ramin-ambient" aria-hidden="true" />
       <div className="ai-ramin-frost" aria-hidden="true" />
       <div className="ai-ramin-page-shell relative z-10 mx-auto flex h-full min-h-0 w-full flex-col px-5 pt-1 pb-8 sm:px-8 md:px-12 lg:px-16">
