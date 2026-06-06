@@ -756,8 +756,15 @@ a {
   z-index: 1;
   border-color: rgba(255, 255, 255, 0.21);
   background:
-    radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.68), rgba(244, 249, 253, 0.53) 35%, rgba(238, 246, 252, 0.47) 100%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.62), rgba(241, 247, 252, 0.52));
+    /* Top ~18% of the card is left deliberately transparent so the shader shows through.
+       The card transitions back to a fully frosted surface below the header area. */
+    radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.14), rgba(244, 249, 253, 0.53) 38%, rgba(238, 246, 252, 0.47) 100%),
+    linear-gradient(180deg,
+      rgba(255, 255, 255, 0.08) 0%,
+      rgba(255, 255, 255, 0.08) 18%,
+      rgba(241, 247, 252, 0.56) 36%,
+      rgba(241, 247, 252, 0.52) 100%
+    );
   box-shadow:
     0 44px 120px rgba(1, 8, 22, 0.34),
     0 10px 34px rgba(29, 62, 98, 0.2),
@@ -7206,7 +7213,8 @@ a {
 
 .portfolio-stage.is-ai-ramin-stage::before {
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.46), transparent 24%),
+    /* White top gradient removed — it was blocking the shader cutout in the header.
+       Keeping only the subtle colour accents. */
     radial-gradient(circle at 18% 18%, rgba(59, 130, 246, 0.08), transparent 32%),
     radial-gradient(circle at 82% 68%, rgba(221, 196, 154, 0.12), transparent 30%);
   opacity: 0.35;
@@ -8843,7 +8851,8 @@ a {
   z-index: 0;
   pointer-events: none;
   background:
-    linear-gradient(180deg, rgba(255, 255, 255, 0.58), transparent 24%),
+    /* White top reduced from 0.58 to 0.08 so the shader is visible in the header zone. */
+    linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent 24%),
     radial-gradient(circle at 18% 18%, rgba(59, 130, 246, 0.08), transparent 32%),
     radial-gradient(circle at 82% 68%, rgba(221, 196, 154, 0.12), transparent 30%);
   opacity: 0.48;
