@@ -1,5 +1,5 @@
-import { useEffect, useRef } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { useEffect } from 'react';
+import { motion } from 'framer-motion';
 import {
   type CaseStudyEntry,
 } from '../types';
@@ -7,24 +7,17 @@ import { formatSourceStatus } from '../../lib/text';
 import { IPhone3D } from '../../components/IPhone3D';
 import dreamseaHomepageScreenUrl from '../../../projects-section/Project Images/dreamsea-images/dreamsea-homepage.PNG';
 import conciergeHomepageScreenUrl from '../../../projects-section/Project Images/24seven-concierge-images/24-seven-homepage.PNG';
-import {
-  thoughtArchitectureByProject,
-} from './types';
 
-function caseWriteupLineage(projectName: string) {
-  return thoughtArchitectureByProject.get(projectName);
-}
-
-const mobileDeepDivePresentation: Record<string, { screen: string; problemSolved: string }> = {
+const mobileDeepDivePresentation: Record<string, { screen: string; narrative: string }> = {
   Dreamsea: {
     screen: dreamseaHomepageScreenUrl,
-    problemSolved:
-      'Vivid dreams disappear when capture requires typing, full attention, or later recall. Dreamsea lets users preserve the dream quickly by voice, then gives it an interpretive framework.',
+    narrative:
+      'Dreamsea is a voice-first dream journal with multimodal generation and philosophy-specific interpretation. It solves the fragile morning-capture problem: vivid dreams disappear when recall requires typing, full attention, or later reconstruction, so the app lets users preserve the dream quickly by voice and then gives it a reflective interpretive framework.',
   },
   '24Seven Concierge': {
     screen: conciergeHomepageScreenUrl,
-    problemSolved:
-      'Luxury clients had to browse disconnected inventory and then restart the conversation with a human concierge. 24Seven connects intent, catalog discovery, and handoff.',
+    narrative:
+      '24Seven Concierge is a catalog-grounded travel concierge that plans across Shopify inventory and hands off to a human agent. It solves the luxury discovery-to-booking gap: clients had to browse disconnected inventory and then restart with a concierge, so the app connects intent, catalog discovery, itinerary structure, and human fulfilment.',
   },
 };
 
@@ -122,15 +115,7 @@ export function ProjectCaseStudyRow({
 
 
 export function CaseStudyOverlay({ item, onClose }: { item: CaseStudyEntry; onClose: () => void }) {
-  const thoughtLineage = caseWriteupLineage(item.title);
   const mobilePresentation = mobileDeepDivePresentation[item.title];
-  const readerContextCards = thoughtLineage
-    ? [
-        { label: 'Foundation', value: thoughtLineage.foundation },
-        { label: 'Product judgment', value: thoughtLineage.lens },
-        { label: 'Built result', value: thoughtLineage.outcome },
-      ]
-    : item.related.map((related) => ({ label: 'Architecture lens', value: related }));
 
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
@@ -165,10 +150,16 @@ export function CaseStudyOverlay({ item, onClose }: { item: CaseStudyEntry; onCl
       <motion.article className="relative mx-auto grid min-h-[calc(100svh-1.5rem)] max-w-[1320px] gap-4 lg:h-[calc(100svh-2.5rem)] lg:min-h-0 lg:grid-cols-[0.9fr_1.1fr] lg:overflow-hidden">
         {mobilePresentation ? (
           <aside className="deep-dive-support-rail project-deep-dive-scroll liquid-glass-strong flex min-h-[56vh] flex-col overflow-hidden rounded-[2rem] lg:h-full lg:min-h-0 lg:overflow-y-auto">
-            <div className="relative flex min-h-[32rem] shrink-0 flex-col overflow-hidden rounded-[2rem] border border-white/16 bg-[radial-gradient(circle_at_50%_22%,rgba(142,166,255,0.24),rgba(255,255,255,0.1)_38%,rgba(8,18,32,0.42)_100%)] sm:min-h-[38rem] lg:min-h-[62vh]">
+            <div className="relative min-h-[34rem] shrink-0 overflow-hidden rounded-[2rem] border border-white/16 bg-[radial-gradient(circle_at_50%_22%,rgba(142,166,255,0.24),rgba(255,255,255,0.1)_38%,rgba(8,18,32,0.42)_100%)] sm:min-h-[40rem] lg:min-h-[68vh]">
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_28%,rgba(255,255,255,0.22),transparent_58%)]" />
-              <div className="relative z-10 flex min-h-0 flex-1 items-center justify-center px-6 pt-5 sm:px-10 lg:px-7">
-                <div className="h-full max-h-[29rem] min-h-[22rem] aspect-[0.47] sm:max-h-[34rem] sm:min-h-[26rem] lg:min-h-0 lg:max-h-[42vh]">
+              <div className="pointer-events-none absolute left-7 top-7 z-10 max-w-[85%] md:left-8 md:top-8">
+                <p className="text-xs uppercase tracking-[0.28em] text-muted">{item.eyebrow}</p>
+                <h2 className="mt-4 max-w-[8.5ch] font-body text-[clamp(4.2rem,8vw,7.2rem)] font-semibold leading-[0.88] tracking-[-0.06em] text-text-primary">
+                  {item.title}
+                </h2>
+              </div>
+              <div className="absolute inset-0 z-20 flex items-center justify-center px-4 py-4 sm:px-8 lg:px-3">
+                <div className="h-[96%] max-h-[36rem] min-h-[29rem] aspect-[0.47] sm:max-h-[41rem] lg:max-h-[64vh]">
                   <IPhone3D
                     screenSrc={mobilePresentation.screen}
                     poster={mobilePresentation.screen}
@@ -176,24 +167,13 @@ export function CaseStudyOverlay({ item, onClose }: { item: CaseStudyEntry; onCl
                   />
                 </div>
               </div>
-              <div className="relative z-10 shrink-0 px-7 pb-7 pt-3 md:px-8 md:pb-8">
-                <p className="text-xs uppercase tracking-[0.28em] text-muted">{item.eyebrow}</p>
-                <h2 className="mt-4 max-w-xl font-body text-5xl font-semibold tracking-[-0.04em] text-text-primary md:text-7xl">
-                  {item.title}
-                </h2>
-              </div>
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-bg/38 via-transparent to-white/8" />
             </div>
 
-            <div className="grid shrink-0 gap-4 p-6 md:p-8">
+            <div className="shrink-0 p-6 md:p-8">
               <div className="liquid-glass rounded-[1.5rem] p-5 md:p-6">
-                <p className="text-xs uppercase tracking-[0.22em] text-muted">Product description</p>
-                <p className="mt-4 text-sm leading-7 text-text-primary md:text-base">{item.summary}</p>
-              </div>
-
-              <div className="liquid-glass rounded-[1.5rem] p-5 md:p-6">
-                <p className="text-xs uppercase tracking-[0.22em] text-muted">Problem solved</p>
-                <p className="mt-4 text-sm leading-7 text-text-primary md:text-base">{mobilePresentation.problemSolved}</p>
+                <p className="text-xs uppercase tracking-[0.22em] text-muted">Product narrative</p>
+                <p className="mt-4 text-sm leading-7 text-text-primary md:text-base">{mobilePresentation.narrative}</p>
               </div>
             </div>
           </aside>
@@ -345,21 +325,6 @@ export function CaseStudyOverlay({ item, onClose }: { item: CaseStudyEntry; onCl
               ))}
             </div>
 
-            {readerContextCards.length ? (
-              <div className="mt-5 liquid-glass rounded-[1.5rem] p-5 md:p-6">
-                <p className="text-xs uppercase tracking-[0.22em] text-muted">
-                  {thoughtLineage ? 'Thought lineage' : 'Architecture lenses'}
-                </p>
-                <div className="mt-5 grid gap-3 md:grid-cols-3">
-                  {readerContextCards.map((card) => (
-                    <div key={`${item.id}-${card.label}`} className="rounded-2xl bg-white/35 p-4">
-                      <span className="text-[0.62rem] uppercase tracking-[0.16em] text-muted">{card.label}</span>
-                      <p className="mt-2 text-sm leading-6 text-text-primary">{card.value}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ) : null}
           </div>
         </div>
       </motion.article>
