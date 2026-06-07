@@ -313,8 +313,8 @@ function ThesisDeepDiveReader({
 }) {
   return (
     <>
-      <div className="liquid-glass-strong flex min-h-[78vh] flex-col rounded-[2rem] p-6 md:p-8 lg:h-full lg:p-10">
-        <div className="flex items-center justify-between gap-5">
+      <div className="liquid-glass-strong flex min-h-[78vh] flex-col rounded-[2rem] p-6 md:p-8 lg:h-full lg:min-h-0 lg:overflow-hidden lg:p-10">
+        <div className="flex shrink-0 items-center justify-between gap-5">
           <div>
             <p className="text-xs uppercase tracking-[0.3em] text-muted">{item.eyebrow}</p>
             <p className="mt-2 text-xs uppercase tracking-[0.22em] text-muted">
@@ -330,7 +330,7 @@ function ThesisDeepDiveReader({
           </button>
         </div>
 
-        <div className="mt-9 overflow-y-auto pr-1 lg:pr-4">
+        <div className="project-deep-dive-scroll mt-9 pr-1 lg:min-h-0 lg:flex-1 lg:overflow-y-auto lg:pr-4">
           <p className="text-xs uppercase tracking-[0.24em] text-muted">Identity, Bio & AI PM Thesis</p>
           <h2 className="mt-5 max-w-3xl font-body text-5xl font-semibold tracking-[-0.045em] text-text-primary md:text-7xl">
             AI-Native <span className="font-display italic font-normal">Product OS</span>
@@ -380,7 +380,7 @@ function ThesisDeepDiveReader({
         </div>
       </div>
 
-      <aside className="deep-dive-support-rail flex flex-col gap-4 lg:h-full lg:overflow-y-auto lg:pr-1">
+      <aside className="deep-dive-support-rail project-deep-dive-scroll flex flex-col gap-4 lg:h-full lg:min-h-0 lg:overflow-y-auto lg:pr-1">
         <div className="liquid-glass-strong shrink-0 rounded-[2rem] p-6 md:p-7">
           <div className="flex items-start justify-between gap-5">
             <div>
@@ -531,7 +531,7 @@ export function DeepDiveOverlay({ item, onClose }: { item: DeepDiveItem; onClose
 
       <motion.article
         layoutId={`deep-dive-${item.slug}`}
-        className={`relative mx-auto min-h-[calc(100vh-1.5rem)] max-w-[1320px] gap-4 lg:h-[calc(100vh-2.5rem)] lg:min-h-0 ${
+        className={`relative mx-auto min-h-[calc(100svh-1.5rem)] max-w-[1320px] gap-4 lg:h-[calc(100svh-2.5rem)] lg:min-h-0 lg:overflow-hidden ${
           isThesis ? 'grid lg:grid-cols-[52fr_48fr]' : 'flex flex-col lg:flex-row'
         }`}
       >
@@ -539,8 +539,8 @@ export function DeepDiveOverlay({ item, onClose }: { item: DeepDiveItem; onClose
           <ThesisDeepDiveReader item={item} onClose={onClose} sectionRefs={sectionRefs} onJump={handleJump} />
         ) : (
           <>
-            <div className="liquid-glass-strong flex min-h-[70vh] flex-col rounded-[2rem] p-6 md:p-8 lg:h-full lg:w-[58%] lg:p-10">
-              <div className="flex items-center justify-between gap-5">
+            <div className="liquid-glass-strong flex min-h-[70vh] flex-col rounded-[2rem] p-6 md:p-8 lg:h-full lg:min-h-0 lg:w-[58%] lg:overflow-hidden lg:p-10">
+              <div className="flex shrink-0 items-center justify-between gap-5">
                 <div>
                   <p className="text-xs uppercase tracking-[0.3em] text-muted">{item.eyebrow}</p>
                   <p className="mt-2 text-xs uppercase tracking-[0.22em] text-muted">
@@ -556,7 +556,7 @@ export function DeepDiveOverlay({ item, onClose }: { item: DeepDiveItem; onClose
                 </button>
               </div>
 
-              <div className="mt-12 overflow-y-auto pr-1 lg:pr-4">
+              <div className="project-deep-dive-scroll mt-12 pr-1 lg:min-h-0 lg:flex-1 lg:overflow-y-auto lg:pr-4">
                 <h2 className="max-w-2xl font-body text-5xl font-semibold tracking-[-0.04em] text-text-primary md:text-7xl">
                   {item.title}
                 </h2>
@@ -590,7 +590,7 @@ export function DeepDiveOverlay({ item, onClose }: { item: DeepDiveItem; onClose
               </div>
             </div>
 
-            <aside className="deep-dive-support-rail flex flex-col gap-4 lg:h-full lg:w-[42%] lg:overflow-y-auto lg:pr-1">
+            <aside className="deep-dive-support-rail project-deep-dive-scroll flex flex-col gap-4 lg:h-full lg:min-h-0 lg:w-[42%] lg:overflow-y-auto lg:pr-1">
               <div className="liquid-glass-strong rounded-[2rem] p-6 md:p-7">
                 <div className="flex items-start justify-between gap-5">
                   <div>
@@ -694,4 +694,3 @@ export function DeepDiveOverlay({ item, onClose }: { item: DeepDiveItem; onClose
     </motion.div>
   );
 }
-

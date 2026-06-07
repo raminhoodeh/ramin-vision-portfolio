@@ -50,9 +50,9 @@ export function WorkCaseStudyOverlay({ item, onClose }: { item: WorkItem; onClos
 
       <motion.article
         layoutId={`work-case-${item.title}`}
-        className="relative mx-auto grid min-h-[calc(100vh-1.5rem)] max-w-[1320px] gap-4 lg:h-[calc(100vh-2.5rem)] lg:min-h-0 lg:grid-cols-[0.9fr_1.1fr]"
+        className="relative mx-auto grid min-h-[calc(100svh-1.5rem)] max-w-[1320px] gap-4 lg:h-[calc(100svh-2.5rem)] lg:min-h-0 lg:grid-cols-[0.9fr_1.1fr] lg:overflow-hidden"
       >
-        <div className="deep-dive-support-rail liquid-glass-strong flex min-h-[58vh] flex-col overflow-hidden rounded-[2rem] lg:h-full lg:overflow-y-auto">
+        <div className="deep-dive-support-rail project-deep-dive-scroll liquid-glass-strong flex min-h-[58vh] flex-col overflow-hidden rounded-[2rem] lg:h-full lg:min-h-0 lg:overflow-y-auto">
           <div className="relative min-h-[280px] flex-1 bg-[radial-gradient(circle_at_30%_18%,rgba(255,255,255,0.78),rgba(187,210,230,0.45)_38%,rgba(77,106,136,0.55)_100%)]">
             <img
               src={item.image}
@@ -135,8 +135,8 @@ export function WorkCaseStudyOverlay({ item, onClose }: { item: WorkItem; onClos
           </div>
         </div>
 
-        <div className="liquid-glass-strong flex flex-col rounded-[2rem] p-6 md:p-8 lg:min-h-0">
-          <div className="flex items-start justify-between gap-5">
+        <div className="liquid-glass-strong flex flex-col rounded-[2rem] p-6 md:p-8 lg:min-h-0 lg:overflow-hidden">
+          <div className="flex shrink-0 items-start justify-between gap-5">
             <div>
               <p className="text-xs uppercase tracking-[0.3em] text-muted">Case Study</p>
               <p className="mt-2 text-xs uppercase tracking-[0.22em] text-muted">
@@ -152,7 +152,7 @@ export function WorkCaseStudyOverlay({ item, onClose }: { item: WorkItem; onClos
             </button>
           </div>
 
-          <div className="mt-8 overflow-y-auto pr-1 lg:pr-4">
+          <div className="project-deep-dive-scroll mt-8 pr-1 lg:min-h-0 lg:flex-1 lg:overflow-y-auto lg:pr-4">
             <div className="grid gap-5">
               {caseSections.map((section, index) => (
                 <section key={section.label} className="liquid-glass rounded-[1.5rem] p-5 md:p-6">
@@ -194,4 +194,3 @@ export function WorkCaseStudyOverlay({ item, onClose }: { item: WorkItem; onClos
     </motion.div>
   );
 }
-
