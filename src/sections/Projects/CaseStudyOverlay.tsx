@@ -294,7 +294,7 @@ export function CaseStudyOverlay({ item, onClose }: { item: CaseStudyEntry; onCl
             <div>
               <p className="text-xs uppercase tracking-[0.3em] text-muted">{item.typeLabel}</p>
               <p className="mt-2 text-xs uppercase tracking-[0.22em] text-muted">
-                {item.readTime} / {item.year}
+                {item.title}
               </p>
             </div>
             <button
