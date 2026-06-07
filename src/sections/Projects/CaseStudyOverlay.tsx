@@ -4,6 +4,9 @@ import {
   type CaseStudyEntry,
 } from '../types';
 import { formatSourceStatus } from '../../lib/text';
+import { IPhone3D } from '../../components/IPhone3D';
+import dreamseaHomepageScreenUrl from '../../../projects-section/Project Images/dreamsea-images/dreamsea-homepage.PNG';
+import conciergeHomepageScreenUrl from '../../../projects-section/Project Images/24seven-concierge-images/24-seven-homepage.PNG';
 import {
   thoughtArchitectureByProject,
 } from './types';
@@ -11,6 +14,19 @@ import {
 function caseWriteupLineage(projectName: string) {
   return thoughtArchitectureByProject.get(projectName);
 }
+
+const mobileDeepDivePresentation: Record<string, { screen: string; problemSolved: string }> = {
+  Dreamsea: {
+    screen: dreamseaHomepageScreenUrl,
+    problemSolved:
+      'Vivid dreams disappear when capture requires typing, full attention, or later recall. Dreamsea lets users preserve the dream quickly by voice, then gives it an interpretive framework.',
+  },
+  '24Seven Concierge': {
+    screen: conciergeHomepageScreenUrl,
+    problemSolved:
+      'Luxury clients had to browse disconnected inventory and then restart the conversation with a human concierge. 24Seven connects intent, catalog discovery, and handoff.',
+  },
+};
 
 export function ProjectCaseStudyRow({
   entry,
@@ -107,6 +123,7 @@ export function ProjectCaseStudyRow({
 
 export function CaseStudyOverlay({ item, onClose }: { item: CaseStudyEntry; onClose: () => void }) {
   const thoughtLineage = caseWriteupLineage(item.title);
+  const mobilePresentation = mobileDeepDivePresentation[item.title];
   const readerContextCards = thoughtLineage
     ? [
         { label: 'Foundation', value: thoughtLineage.foundation },
@@ -146,115 +163,152 @@ export function CaseStudyOverlay({ item, onClose }: { item: CaseStudyEntry; onCl
       />
 
       <motion.article className="relative mx-auto grid min-h-[calc(100svh-1.5rem)] max-w-[1320px] gap-4 lg:h-[calc(100svh-2.5rem)] lg:min-h-0 lg:grid-cols-[0.9fr_1.1fr] lg:overflow-hidden">
-        <aside className="deep-dive-support-rail project-deep-dive-scroll liquid-glass-strong flex min-h-[56vh] flex-col overflow-hidden rounded-[2rem] lg:h-full lg:min-h-0 lg:overflow-y-auto">
-          <div className="relative min-h-[280px] flex-1 bg-[radial-gradient(circle_at_30%_18%,rgba(255,255,255,0.78),rgba(187,210,230,0.45)_38%,rgba(77,106,136,0.55)_100%)]">
-            {item.heroImage ? (
-              <img
-                src={item.heroImage}
-                alt={item.title}
-                decoding="async"
-                onError={(event) => {
-                  event.currentTarget.style.display = 'none';
-                }}
-                className="absolute inset-0 h-full w-full object-cover"
-              />
-            ) : (
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_28%_20%,rgba(255,255,255,0.86),rgba(137,170,204,0.42)_40%,rgba(31,49,78,0.68)_100%)]" />
-            )}
-            <div className="absolute inset-0 bg-gradient-to-t from-bg via-bg/30 to-transparent" />
-            <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
-              <p className="text-xs uppercase tracking-[0.28em] text-muted">{item.eyebrow}</p>
-              <h2 className="mt-4 font-body text-5xl font-semibold tracking-[-0.04em] text-text-primary md:text-7xl">
-                {item.title}
-              </h2>
-              <p className="mt-5 max-w-xl text-sm leading-7 text-muted md:text-base">{item.summary}</p>
+        {mobilePresentation ? (
+          <aside className="deep-dive-support-rail project-deep-dive-scroll liquid-glass-strong flex min-h-[56vh] flex-col overflow-hidden rounded-[2rem] lg:h-full lg:min-h-0 lg:overflow-y-auto">
+            <div className="relative min-h-[32rem] shrink-0 overflow-hidden rounded-[2rem] border border-white/16 bg-[radial-gradient(circle_at_50%_22%,rgba(142,166,255,0.24),rgba(255,255,255,0.1)_38%,rgba(8,18,32,0.42)_100%)] sm:min-h-[38rem] lg:min-h-[62vh]">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_28%,rgba(255,255,255,0.22),transparent_58%)]" />
+              <div className="absolute inset-0 flex items-center justify-center px-6 py-5 sm:px-10 lg:px-7">
+                <div className="h-full max-h-[96%] min-h-[28rem] aspect-[0.47] sm:min-h-[32rem] lg:min-h-0">
+                  <IPhone3D
+                    screenSrc={mobilePresentation.screen}
+                    poster={mobilePresentation.screen}
+                    ariaLabel={`${item.title} shown on a rotating 3D iPhone`}
+                  />
+                </div>
+              </div>
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-bg/38 via-transparent to-white/8" />
             </div>
-          </div>
 
-          <div className="grid shrink-0 gap-3 p-6 md:grid-cols-3 md:p-8 lg:grid-cols-1 xl:grid-cols-3">
-            {item.chips.map((chip) => (
-              <div key={`${chip.label}-${chip.value}`} className="liquid-glass rounded-[1.35rem] p-4">
-                <div className="flex items-center justify-between gap-3">
-                  <p className="text-xs uppercase tracking-[0.2em] text-muted">{chip.label}</p>
-                  {chip.sourceStatus ? (
-                    <span className="text-[0.58rem] uppercase tracking-[0.16em] text-muted/80">
-                      {formatSourceStatus(chip.sourceStatus)}
-                    </span>
+            <div className="grid shrink-0 gap-4 p-6 md:p-8">
+              <div>
+                <p className="text-xs uppercase tracking-[0.28em] text-muted">{item.eyebrow}</p>
+                <h2 className="mt-4 max-w-xl font-body text-5xl font-semibold tracking-[-0.04em] text-text-primary md:text-7xl">
+                  {item.title}
+                </h2>
+              </div>
+
+              <div className="liquid-glass rounded-[1.5rem] p-5 md:p-6">
+                <p className="text-xs uppercase tracking-[0.22em] text-muted">Product description</p>
+                <p className="mt-4 text-sm leading-7 text-text-primary md:text-base">{item.summary}</p>
+              </div>
+
+              <div className="liquid-glass rounded-[1.5rem] p-5 md:p-6">
+                <p className="text-xs uppercase tracking-[0.22em] text-muted">Problem solved</p>
+                <p className="mt-4 text-sm leading-7 text-text-primary md:text-base">{mobilePresentation.problemSolved}</p>
+              </div>
+            </div>
+          </aside>
+        ) : (
+          <aside className="deep-dive-support-rail project-deep-dive-scroll liquid-glass-strong flex min-h-[56vh] flex-col overflow-hidden rounded-[2rem] lg:h-full lg:min-h-0 lg:overflow-y-auto">
+            <div className="relative min-h-[280px] flex-1 bg-[radial-gradient(circle_at_30%_18%,rgba(255,255,255,0.78),rgba(187,210,230,0.45)_38%,rgba(77,106,136,0.55)_100%)]">
+              {item.heroImage ? (
+                <img
+                  src={item.heroImage}
+                  alt={item.title}
+                  decoding="async"
+                  onError={(event) => {
+                    event.currentTarget.style.display = 'none';
+                  }}
+                  className="absolute inset-0 h-full w-full object-cover"
+                />
+              ) : (
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_28%_20%,rgba(255,255,255,0.86),rgba(137,170,204,0.38)_42%,rgba(31,49,78,0.68)_100%)]" />
+              )}
+              <div className="absolute inset-0 bg-gradient-to-t from-bg via-bg/30 to-transparent" />
+              <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
+                <p className="text-xs uppercase tracking-[0.28em] text-muted">{item.eyebrow}</p>
+                <h2 className="mt-4 font-body text-5xl font-semibold tracking-[-0.04em] text-text-primary md:text-7xl">
+                  {item.title}
+                </h2>
+                <p className="mt-5 max-w-xl text-sm leading-7 text-muted md:text-base">{item.summary}</p>
+              </div>
+            </div>
+
+            <div className="grid shrink-0 gap-3 p-6 md:grid-cols-3 md:p-8 lg:grid-cols-1 xl:grid-cols-3">
+              {item.chips.map((chip) => (
+                <div key={`${chip.label}-${chip.value}`} className="liquid-glass rounded-[1.35rem] p-4">
+                  <div className="flex items-center justify-between gap-3">
+                    <p className="text-xs uppercase tracking-[0.2em] text-muted">{chip.label}</p>
+                    {chip.sourceStatus ? (
+                      <span className="text-[0.58rem] uppercase tracking-[0.16em] text-muted/80">
+                        {formatSourceStatus(chip.sourceStatus)}
+                      </span>
+                    ) : null}
+                  </div>
+                  <p className="mt-3 text-sm leading-6 text-text-primary">{chip.value}</p>
+                </div>
+              ))}
+            </div>
+
+            <div className="grid shrink-0 gap-4 px-6 pb-6 md:px-8 md:pb-8">
+              <div className="liquid-glass rounded-[1.5rem] p-5 md:p-6">
+                <p className="text-xs uppercase tracking-[0.22em] text-muted">Structure</p>
+                <div className="mt-5 grid gap-3">
+                  {item.structure.map((detail) => (
+                    <div key={`${detail.label}-${detail.value}`} className="flex gap-3 rounded-2xl bg-white/35 p-3">
+                      <span className="shrink-0 rounded-full bg-white/45 px-3 py-1 text-[0.62rem] uppercase tracking-[0.16em] text-muted">
+                        {detail.label}
+                      </span>
+                      <p className="text-sm leading-6 text-text-primary">{detail.value}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="liquid-glass rounded-[1.5rem] p-5 md:p-6">
+                <p className="text-xs uppercase tracking-[0.22em] text-muted">Evidence</p>
+                <div className="mt-5 grid gap-3">
+                  <div className="rounded-2xl bg-white/35 p-4">
+                    <p className="text-xs uppercase tracking-[0.18em] text-muted">Status</p>
+                    <p className="mt-2 text-sm leading-6 text-text-primary">
+                      {item.status} / {formatSourceStatus(item.sourceStatus)}
+                    </p>
+                  </div>
+
+                  {item.links.length ? (
+                    <div className="rounded-2xl bg-white/35 p-4">
+                      <p className="text-xs uppercase tracking-[0.18em] text-muted">Source links</p>
+                      <div className="mt-3 flex flex-wrap gap-2">
+                        {item.links.map((link) => (
+                          <a
+                            key={`${item.id}-${link.href}`}
+                            href={link.href}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="rounded-full bg-white/45 px-3 py-1.5 text-xs text-text-primary transition duration-300 hover:bg-white/75"
+                          >
+                            {link.label}
+                          </a>
+                        ))}
+                      </div>
+                    </div>
+                  ) : null}
+
+                  {item.assetSlots.length ? (
+                    <div className="rounded-2xl bg-white/35 p-4">
+                      <p className="text-xs uppercase tracking-[0.18em] text-muted">Next assets</p>
+                      <div className="mt-3 grid gap-3">
+                        {item.assetSlots.map((slot) => (
+                          <div key={`${item.id}-${slot.label}`}>
+                            <div className="flex items-center justify-between gap-3">
+                              <p className="text-sm font-medium text-text-primary">{slot.label}</p>
+                              {slot.sourceStatus ? (
+                                <span className="text-[0.58rem] uppercase tracking-[0.16em] text-muted/80">
+                                  {formatSourceStatus(slot.sourceStatus)}
+                                </span>
+                              ) : null}
+                            </div>
+                            <p className="mt-1 text-sm leading-6 text-muted">{slot.note}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   ) : null}
                 </div>
-                <p className="mt-3 text-sm leading-6 text-text-primary">{chip.value}</p>
-              </div>
-            ))}
-          </div>
-
-          <div className="grid shrink-0 gap-4 px-6 pb-6 md:px-8 md:pb-8">
-            <div className="liquid-glass rounded-[1.5rem] p-5 md:p-6">
-              <p className="text-xs uppercase tracking-[0.22em] text-muted">Structure</p>
-              <div className="mt-5 grid gap-3">
-                {item.structure.map((detail) => (
-                  <div key={`${detail.label}-${detail.value}`} className="flex gap-3 rounded-2xl bg-white/35 p-3">
-                    <span className="shrink-0 rounded-full bg-white/45 px-3 py-1 text-[0.62rem] uppercase tracking-[0.16em] text-muted">
-                      {detail.label}
-                    </span>
-                    <p className="text-sm leading-6 text-text-primary">{detail.value}</p>
-                  </div>
-                ))}
               </div>
             </div>
-
-            <div className="liquid-glass rounded-[1.5rem] p-5 md:p-6">
-              <p className="text-xs uppercase tracking-[0.22em] text-muted">Evidence</p>
-              <div className="mt-5 grid gap-3">
-                <div className="rounded-2xl bg-white/35 p-4">
-                  <p className="text-xs uppercase tracking-[0.18em] text-muted">Status</p>
-                  <p className="mt-2 text-sm leading-6 text-text-primary">
-                    {item.status} / {formatSourceStatus(item.sourceStatus)}
-                  </p>
-                </div>
-
-                {item.links.length ? (
-                  <div className="rounded-2xl bg-white/35 p-4">
-                    <p className="text-xs uppercase tracking-[0.18em] text-muted">Source links</p>
-                    <div className="mt-3 flex flex-wrap gap-2">
-                      {item.links.map((link) => (
-                        <a
-                          key={`${item.id}-${link.href}`}
-                          href={link.href}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="rounded-full bg-white/45 px-3 py-1.5 text-xs text-text-primary transition duration-300 hover:bg-white/75"
-                        >
-                          {link.label}
-                        </a>
-                      ))}
-                    </div>
-                  </div>
-                ) : null}
-
-                {item.assetSlots.length ? (
-                  <div className="rounded-2xl bg-white/35 p-4">
-                    <p className="text-xs uppercase tracking-[0.18em] text-muted">Next assets</p>
-                    <div className="mt-3 grid gap-3">
-                      {item.assetSlots.map((slot) => (
-                        <div key={`${item.id}-${slot.label}`}>
-                          <div className="flex items-center justify-between gap-3">
-                            <p className="text-sm font-medium text-text-primary">{slot.label}</p>
-                            {slot.sourceStatus ? (
-                              <span className="text-[0.58rem] uppercase tracking-[0.16em] text-muted/80">
-                                {formatSourceStatus(slot.sourceStatus)}
-                              </span>
-                            ) : null}
-                          </div>
-                          <p className="mt-1 text-sm leading-6 text-muted">{slot.note}</p>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ) : null}
-              </div>
-            </div>
-          </div>
-        </aside>
+          </aside>
+        )}
 
         <div className="liquid-glass-strong flex flex-col rounded-[2rem] p-6 md:p-8 lg:min-h-0 lg:overflow-hidden">
           <div className="flex shrink-0 items-start justify-between gap-5">
