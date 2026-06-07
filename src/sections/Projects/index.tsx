@@ -160,6 +160,15 @@ function getArchitectureSystemMetaLabel(system: ArchitectureSystem) {
   return `Tool / ${hasPublicSource ? 'Open-source' : toolKind}`;
 }
 
+function getArchitectureProofFilterCountLabel(filter: ArchitectureProofFilter) {
+  if (filter === 'All') return 'systems';
+  return filter === 'Product' ? 'products' : 'tools';
+}
+
+function getArchitectureLayerHeadingId(layer: ArchitectureLayerEntry) {
+  return `architecture-proof-layer-${slugifyTitle(layer.layer)}`;
+}
+
 export function ProjectCinematicHero({
   selfware,
   tools,
@@ -796,7 +805,11 @@ function ArchitectureIntro({
     <div className="grid gap-8 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] lg:items-end">
       <div>
         <p className="text-xs uppercase tracking-[0.3em] text-white/44">Act 3 / Architecture</p>
-        <h2 id="architecture-section-title" className="mt-5 text-[clamp(3rem,5.6vw,7.6rem)] font-black uppercase leading-[0.82] tracking-[-0.07em] text-white">
+        <h2
+          id="architecture-section-title"
+          aria-label="AI-Native Product OS"
+          className="mt-5 text-[clamp(3rem,5.6vw,7.6rem)] font-black uppercase leading-[0.82] tracking-[-0.07em] text-white"
+        >
           AI-Native
           <span className="block font-display italic font-normal normal-case tracking-[-0.04em] text-white/48">
             Product OS
@@ -1101,6 +1114,7 @@ function LayerProofMatrix({
     () => (activeFamily === 'All' ? systems : systems.filter((system) => system.family === activeFamily)),
     [activeFamily, systems],
   );
+  const activeFilterCountLabel = getArchitectureProofFilterCountLabel(activeFamily);
   const proofCardGridClass =
     activeFamily === 'All'
       ? 'grid auto-rows-fr gap-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4'
@@ -1119,7 +1133,7 @@ function LayerProofMatrix({
               How the same OS shows up across the work.
             </h3>
             <p id="architecture-proof-status" className="mt-3 text-sm leading-6 text-white/52" aria-live="polite" aria-atomic="true">
-              Showing {visibleSystems.length} {activeFamily === 'All' ? 'systems' : `${activeFamily.toLowerCase()}s`} across each layer.
+              Showing {visibleSystems.length} {activeFilterCountLabel} across each layer.
             </p>
           </div>
           <div
@@ -1154,10 +1168,12 @@ function LayerProofMatrix({
         <div id="architecture-layer-proof-grid" className="mt-6 grid gap-4" aria-labelledby="architecture-layer-proof-title">
           {layers.map((layer, index) => {
             const layerLabel = getArchitectureLayerLabel(layer, index);
+            const layerHeadingId = getArchitectureLayerHeadingId(layer);
 
             return (
               <motion.article
                 key={`architecture-proof-${layer.layer}`}
+                aria-labelledby={layerHeadingId}
                 className="relative overflow-hidden rounded-[1.55rem] border border-white/10 bg-white/[0.05] p-4 md:p-5"
                 initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -1170,7 +1186,7 @@ function LayerProofMatrix({
                     <p className="font-display text-5xl italic leading-none text-white/28">
                       {String(index + 1).padStart(2, '0')}
                     </p>
-                    <h4 className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-white">{layer.layer}</h4>
+                    <h4 id={layerHeadingId} className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-white">{layer.layer}</h4>
                     <p className="mt-3 text-sm leading-6 text-white/62">{contentValue(layer.purpose)}</p>
                     <p className="mt-4 text-[0.58rem] uppercase tracking-[0.16em] text-white/34">
                       {contentValue(layer.examples)}
@@ -1180,7 +1196,7 @@ function LayerProofMatrix({
                   <motion.div
                     layout
                     role="list"
-                    aria-label={`${layer.layer} examples`}
+                    aria-labelledby={layerHeadingId}
                     className={proofCardGridClass}
                   >
                     <AnimatePresence mode="popLayout">
@@ -1188,6 +1204,7 @@ function LayerProofMatrix({
                         <motion.div
                           key={`architecture-proof-${layer.layer}-${system.project.projectName}`}
                           role="listitem"
+                          aria-label={`${system.project.projectName} ${layer.layer} layer example`}
                           layout
                           className={`flex h-full min-h-[9.75rem] flex-col rounded-[1.05rem] border p-4 md:min-h-[10.25rem] ${
                             system.family === 'Product'
