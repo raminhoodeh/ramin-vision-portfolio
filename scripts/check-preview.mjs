@@ -57,20 +57,32 @@ try {
 
   const app = await get('/src/App.tsx');
   const appSource = sourceContent(app);
-  const usesTahoeNav = appSource.includes('TahoeGlassTabNav');
-  const usesLiquidGlassNav = appSource.includes('LiquidGlassJsNavShell');
+  const usesBottomNavigation = appSource.includes('BottomNavigation');
+  const bottomNavigation = usesBottomNavigation ? await get('/src/components/BottomNavigation.tsx') : '';
+  const bottomNavigationSource = sourceContent(bottomNavigation);
+  const activeNavSource = usesBottomNavigation ? bottomNavigationSource : appSource;
+  const usesTahoeNav = activeNavSource.includes('TahoeGlassTabNav');
+  const usesLiquidGlassNav = activeNavSource.includes('LiquidGlassJsNavShell');
   assert(
     usesTahoeNav || usesLiquidGlassNav,
-    'App must import a glass navigation shell with predictive preload support',
+    'App must mount a glass navigation shell with predictive preload support',
   );
   assertIncludes(app, 'ExperienceEducationSection', 'App must include ExperienceEducationSection');
+  if (usesBottomNavigation) {
+    assertIncludes(bottomNavigationSource, 'onNavIntent={onNavIntent}', 'BottomNavigation must pass predictive preload intent callbacks to the active nav shell');
+    assert(!bottomNavigation.includes('?t=stage'), 'BottomNavigation module must not include stage cache tags');
+  }
   assertIncludes(appSource, "requestBonusRockPreload('idle')", 'App must idle-preload Bonus rock assets');
-  assertIncludes(appSource, "preloadBonusRockAssets('visible')", 'visible Bonus rock scene must join the shared preloader');
   assertIncludes(appSource, 'data-bonus-rock-preload-status', 'App must expose root Bonus preload status for QA');
-  assertIncludes(appSource, 'data-rock-preload-status', 'Bonus rock scene must expose preload status for QA');
-  assertIncludes(appSource, 'gltfLoader.loadAsync(hashgraphRockAssetPipeline.modelUrl)', 'Bonus rock must load the original GLB model URL');
-  assertIncludes(appSource, 'window.innerWidth < 720 ? 1.15 : 1.25', 'Bonus rock renderer must keep the tightened DPR cap');
   assert(!app.includes('?t=stage'), 'App module must not include stage cache tags');
+
+  const bonusSection = await get('/src/sections/Bonus.tsx');
+  const bonusSectionSource = sourceContent(bonusSection);
+  assertIncludes(bonusSectionSource, "preloadBonusRockAssets('visible')", 'visible Bonus rock scene must join the shared preloader');
+  assertIncludes(bonusSectionSource, 'data-rock-preload-status', 'Bonus rock scene must expose preload status for QA');
+  assertIncludes(bonusSectionSource, 'gltfLoader.loadAsync(hashgraphRockAssetPipeline.modelUrl)', 'Bonus rock must load the original GLB model URL');
+  assertIncludes(bonusSectionSource, 'window.innerWidth < 720 ? 1.15 : 1.25', 'Bonus rock renderer must keep the tightened DPR cap');
+  assert(!bonusSection.includes('?t=stage'), 'Bonus module must not include stage cache tags');
 
   if (usesTahoeNav) {
     const tahoeNav = await get('/src/components/TahoeGlassTabNav.tsx');

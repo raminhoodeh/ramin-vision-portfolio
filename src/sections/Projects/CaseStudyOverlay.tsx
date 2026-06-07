@@ -1,10 +1,25 @@
-import { useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { useEffect, useMemo, useState } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
 import {
   type CaseStudyEntry,
 } from '../types';
-import { formatSourceStatus } from '../../lib/text';
 import { IPhone3D } from '../../components/IPhone3D';
+import aiCostsDashboardVisualUrl from '../../assets/projects/ai-costs-mock.webp';
+import aiNativeProductOsVisualUrl from '../../assets/projects/ai-native-os-hero.webp';
+import massSocialWisdomAgentVisualUrl from '../../assets/projects/mass-social.gif';
+import nssoBillboardStageUrl from '../../assets/projects/nsso-billboard-stage4.jpg';
+import nssoVisualUrl from '../../assets/projects/nsso-mock.webp';
+import qadamVisualUrl from '../../assets/projects/qadam-mock.webp';
+import ragPipelineVisualUrl from '../../assets/projects/rag-mock.webp';
+import razinflixBackdropUrl from '../../assets/projects/razinflix-backdrop.svg';
+import razinflixVisualUrl from '../../assets/projects/razinflix-mock.webp';
+import aiCostsDashboardProjectImageUrl from '../../../projects-section/Project Images/AI Costs Dashboard.webp';
+import aiNativeProductOsProjectImageUrl from '../../../projects-section/Project Images/AI Native Product OS.webp';
+import massSocialWisdomAgentProjectImageUrl from '../../../projects-section/Project Images/Mass Social Wisdom Agent.webp';
+import nssoProjectImageUrl from '../../../projects-section/Project Images/nsso.webp';
+import qadamProjectImageUrl from '../../../projects-section/Project Images/Qadam.webp';
+import ragPipelineProjectImageUrl from '../../../projects-section/Project Images/RAG Pipeline.webp';
+import razinflixProjectImageUrl from '../../../projects-section/Project Images/RazinFlix.webp';
 import dreamseaHomepageScreenUrl from '../../../projects-section/Project Images/dreamsea-images/dreamsea-homepage.PNG';
 import conciergeHomepageScreenUrl from '../../../projects-section/Project Images/24seven-concierge-images/24-seven-homepage.PNG';
 
@@ -20,6 +35,190 @@ const mobileDeepDivePresentation: Record<string, { screen: string; narrative: st
       '24Seven Concierge is a catalog-grounded travel concierge that plans across Shopify inventory and hands off to a human agent. It solves the luxury discovery-to-booking gap: clients had to browse disconnected inventory and then restart with a concierge, so the app connects intent, catalog discovery, itinerary structure, and human fulfilment.',
   },
 };
+
+type NonMobileVisualSlide = {
+  label: string;
+  detail: string;
+  image: string;
+  fit?: 'cover' | 'contain';
+  position?: string;
+};
+
+type NonMobileVisualConfig = {
+  accent: string;
+  glow: string;
+  surface: string;
+  slides: readonly NonMobileVisualSlide[];
+};
+
+const nonMobileDeepDiveVisuals: Record<string, NonMobileVisualConfig> = {
+  nsso: {
+    accent: '#d4e5f4',
+    glow: 'rgba(186, 213, 237, 0.34)',
+    surface: 'rgba(12, 21, 33, 0.58)',
+    slides: [
+      {
+        label: 'Public identity surface',
+        detail: 'Profile, storefront, proof, payments, and Deity context in one owned professional home.',
+        image: nssoVisualUrl,
+      },
+      {
+        label: 'Billboard proof',
+        detail: 'The product behaves like a public identity billboard rather than a static portfolio page.',
+        image: nssoBillboardStageUrl,
+      },
+      {
+        label: 'Product system view',
+        detail: 'A compact view of the same profile, shop, and AI-coach architecture used in the build.',
+        image: nssoProjectImageUrl,
+      },
+    ],
+  },
+  Qadam: {
+    accent: '#89aacc',
+    glow: 'rgba(102, 132, 178, 0.36)',
+    surface: 'rgba(4, 12, 22, 0.68)',
+    slides: [
+      {
+        label: 'Market cockpit',
+        detail: 'Catalyst, source, signal, and paper-proof posture arranged as an intelligence surface.',
+        image: qadamVisualUrl,
+      },
+      {
+        label: 'Command layer',
+        detail: 'The visual language is closer to a decision room than a generic finance dashboard.',
+        image: qadamProjectImageUrl,
+      },
+    ],
+  },
+  RazinFlix: {
+    accent: '#d9b074',
+    glow: 'rgba(217, 176, 116, 0.34)',
+    surface: 'rgba(17, 12, 14, 0.66)',
+    slides: [
+      {
+        label: 'Streaming-style library',
+        detail: 'A personal film spreadsheet becomes a browsable canon with posters, shelves, and atmosphere.',
+        image: razinflixVisualUrl,
+      },
+      {
+        label: 'Cinematic proof',
+        detail: 'The surface is intentionally poster-led: taste is visible before metadata has to explain it.',
+        image: razinflixProjectImageUrl,
+      },
+      {
+        label: 'Backdrop system',
+        detail: 'The enrichment layer supports the theatre-like browsing treatment rather than a table view.',
+        image: razinflixBackdropUrl,
+        fit: 'contain',
+      },
+    ],
+  },
+  'Mass Social Wisdom Agent': {
+    accent: '#9fb6cf',
+    glow: 'rgba(159, 182, 207, 0.32)',
+    surface: 'rgba(7, 16, 27, 0.68)',
+    slides: [
+      {
+        label: 'Live extraction run',
+        detail: 'Messy URLs and screenshots become a visible processing run with logs and extracted items.',
+        image: massSocialWisdomAgentVisualUrl,
+      },
+      {
+        label: 'Knowledge output',
+        detail: 'The workflow resolves into structured material ready for a document or Notion import.',
+        image: massSocialWisdomAgentProjectImageUrl,
+      },
+    ],
+  },
+  'AI Costs Dashboard': {
+    accent: '#93c5fd',
+    glow: 'rgba(147, 197, 253, 0.28)',
+    surface: 'rgba(7, 17, 30, 0.68)',
+    slides: [
+      {
+        label: 'Cost observability',
+        detail: 'Provider, model, spend, latency, and failure data become an operating surface.',
+        image: aiCostsDashboardVisualUrl,
+      },
+      {
+        label: 'Usage intelligence',
+        detail: 'The dashboard turns AI product cost from an invoice surprise into a managed signal.',
+        image: aiCostsDashboardProjectImageUrl,
+      },
+    ],
+  },
+  'RAG Pipeline': {
+    accent: '#a7f3d0',
+    glow: 'rgba(167, 243, 208, 0.22)',
+    surface: 'rgba(7, 20, 22, 0.66)',
+    slides: [
+      {
+        label: 'Retrieval infrastructure',
+        detail: 'Ingestion, chunking, embeddings, retrieval, reranking, and context injection as one reusable product layer.',
+        image: ragPipelineVisualUrl,
+      },
+      {
+        label: 'Grounded answers',
+        detail: 'The useful product is not chat; it is a reliable context path into the model.',
+        image: ragPipelineProjectImageUrl,
+      },
+    ],
+  },
+  'AI Native Product OS': {
+    accent: '#a5b4fc',
+    glow: 'rgba(165, 180, 252, 0.3)',
+    surface: 'rgba(9, 13, 28, 0.68)',
+    slides: [
+      {
+        label: 'Operating system',
+        detail: 'The five-layer stack and product loop expressed as a reusable AI-native working model.',
+        image: aiNativeProductOsVisualUrl,
+      },
+      {
+        label: 'Thesis surface',
+        detail: 'The essay is treated as a product artifact: model, context, orchestration, governance, and human judgment.',
+        image: aiNativeProductOsProjectImageUrl,
+      },
+    ],
+  },
+  'AI-Native Product OS': {
+    accent: '#a5b4fc',
+    glow: 'rgba(165, 180, 252, 0.3)',
+    surface: 'rgba(9, 13, 28, 0.68)',
+    slides: [
+      {
+        label: 'Operating system',
+        detail: 'The five-layer stack and product loop expressed as a reusable AI-native working model.',
+        image: aiNativeProductOsVisualUrl,
+      },
+      {
+        label: 'Thesis surface',
+        detail: 'The essay is treated as a product artifact: model, context, orchestration, governance, and human judgment.',
+        image: aiNativeProductOsProjectImageUrl,
+      },
+    ],
+  },
+};
+
+function getNonMobileVisualConfig(item: CaseStudyEntry): NonMobileVisualConfig {
+  const configured = nonMobileDeepDiveVisuals[item.title];
+  if (configured) return configured;
+
+  const fallbackImage = item.heroImage ?? aiNativeProductOsVisualUrl;
+  return {
+    accent: '#9fb6cf',
+    glow: 'rgba(159, 182, 207, 0.28)',
+    surface: 'rgba(9, 18, 31, 0.66)',
+    slides: [
+      {
+        label: 'Product surface',
+        detail: item.summary,
+        image: fallbackImage,
+      },
+    ],
+  };
+}
 
 export function ProjectCaseStudyRow({
   entry,
@@ -113,9 +312,181 @@ export function ProjectCaseStudyRow({
   );
 }
 
+function NonMobileCaseStudyVisualPanel({ item }: { item: CaseStudyEntry }) {
+  const shouldReduceMotion = useReducedMotion();
+  const config = useMemo(() => getNonMobileVisualConfig(item), [item]);
+  const slides = config.slides;
+  const [activeIndex, setActiveIndex] = useState(0);
+  const activeSlide = slides[activeIndex] ?? slides[0];
+  const sourceLinks = item.links.slice(0, 2);
+
+  useEffect(() => {
+    setActiveIndex(0);
+  }, [item.id]);
+
+  useEffect(() => {
+    if (shouldReduceMotion || slides.length <= 1) return;
+
+    const timer = window.setInterval(() => {
+      setActiveIndex((current) => (current + 1) % slides.length);
+    }, 5200);
+
+    return () => window.clearInterval(timer);
+  }, [shouldReduceMotion, slides.length]);
+
+  return (
+    <aside className="deep-dive-support-rail liquid-glass-strong flex min-h-[64vh] flex-col overflow-hidden rounded-[2rem] lg:h-full lg:min-h-0">
+      <div
+        className="relative flex min-h-[38rem] flex-1 flex-col overflow-hidden rounded-[2rem] border border-white/14 shadow-[inset_0_1px_0_rgba(255,255,255,0.14)]"
+        style={{ backgroundColor: config.surface }}
+      >
+        <div className="absolute inset-0">
+          <motion.img
+            key={`${item.id}-${activeSlide.image}-backdrop`}
+            src={activeSlide.image}
+            alt=""
+            decoding="async"
+            className="h-full w-full scale-110 object-cover opacity-28 blur-2xl saturate-[1.15]"
+            style={{ objectPosition: activeSlide.position ?? '50% 50%' }}
+            initial={shouldReduceMotion ? false : { opacity: 0, scale: 1.16 }}
+            animate={shouldReduceMotion ? undefined : { opacity: 0.28, scale: 1.1 }}
+            transition={{ duration: 0.7, ease: [0.25, 0.1, 0.25, 1] }}
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              background: `radial-gradient(circle at 28% 18%, ${config.glow}, transparent 38%), linear-gradient(135deg, rgba(255,255,255,0.22), rgba(255,255,255,0.03) 34%, rgba(1,6,14,0.58) 100%)`,
+            }}
+          />
+          <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(255,255,255,0.16)_1px,transparent_1px)] bg-[length:5px_5px] opacity-[0.12]" />
+        </div>
+
+        <div className="pointer-events-none absolute -left-5 top-20 z-10 max-w-[115%] select-none overflow-hidden whitespace-nowrap font-body text-[clamp(4.8rem,9vw,8.6rem)] font-black uppercase leading-none tracking-[-0.08em] text-white/[0.105] sm:left-6 lg:-left-6">
+          {item.title}
+        </div>
+
+        <div className="relative z-20 flex min-h-0 flex-1 flex-col p-5 md:p-7">
+          <div className="flex shrink-0 items-start justify-between gap-5">
+            <div>
+              <p className="text-xs uppercase tracking-[0.28em] text-white/48">Visual proof</p>
+              <p className="mt-2 max-w-sm text-sm leading-6 text-white/62">{item.summary}</p>
+            </div>
+            <div
+              aria-hidden="true"
+              className="h-12 w-12 shrink-0 rounded-full border border-white/16"
+              style={{
+                background: `radial-gradient(circle at 35% 30%, rgba(255,255,255,0.78), ${config.accent} 42%, transparent 70%)`,
+                boxShadow: `0 0 44px ${config.glow}`,
+              }}
+            />
+          </div>
+
+          <div className="mt-6 flex min-h-[18rem] flex-1 items-center">
+            <motion.div
+              key={`${item.id}-${activeSlide.label}`}
+              className="w-full overflow-hidden rounded-[1.45rem] border border-white/18 bg-black/26 shadow-[0_34px_110px_rgba(0,0,0,0.38)] backdrop-blur-xl"
+              initial={shouldReduceMotion ? false : { opacity: 0, y: 18, scale: 0.985 }}
+              animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0, scale: 1 }}
+              transition={{ duration: 0.58, ease: [0.25, 0.1, 0.25, 1] }}
+            >
+              <div className="flex h-9 items-center justify-between border-b border-white/10 bg-white/[0.075] px-4">
+                <div className="flex items-center gap-1.5">
+                  <span className="h-2.5 w-2.5 rounded-full bg-white/42" />
+                  <span className="h-2.5 w-2.5 rounded-full bg-white/28" />
+                  <span className="h-2.5 w-2.5 rounded-full bg-white/18" />
+                </div>
+                <p className="max-w-[56%] truncate text-[0.56rem] uppercase tracking-[0.14em] text-white/42">
+                  {activeSlide.label}
+                </p>
+              </div>
+              <div className="relative aspect-[16/9] overflow-hidden bg-black/30">
+                <img
+                  src={activeSlide.image}
+                  alt={`${item.title} ${activeSlide.label}`}
+                  decoding="async"
+                  className={`h-full w-full ${activeSlide.fit === 'contain' ? 'object-contain p-5' : 'object-cover'}`}
+                  style={{ objectPosition: activeSlide.position ?? '50% 50%' }}
+                  onError={(event) => {
+                    event.currentTarget.style.display = 'none';
+                  }}
+                />
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/28 via-transparent to-white/[0.035]" />
+              </div>
+            </motion.div>
+          </div>
+
+          <div className="mt-5 shrink-0">
+            <div className="rounded-[1.35rem] border border-white/12 bg-black/18 p-4 backdrop-blur-xl">
+              <p className="text-[0.58rem] uppercase tracking-[0.18em] text-white/40">{activeSlide.label}</p>
+              <p className="mt-2 text-sm leading-6 text-white/72">{activeSlide.detail}</p>
+            </div>
+
+            <div className="mt-3 grid gap-2 sm:grid-cols-3">
+              {slides.map((slide, index) => {
+                const isActive = index === activeIndex;
+
+                return (
+                  <button
+                    key={`${item.id}-${slide.label}`}
+                    type="button"
+                    aria-label={`Show ${slide.label}`}
+                    aria-pressed={isActive}
+                    onClick={() => setActiveIndex(index)}
+                    className={`group overflow-hidden rounded-[1rem] border p-1 text-left transition duration-300 ${
+                      isActive
+                        ? 'border-white/40 bg-white/[0.16]'
+                        : 'border-white/10 bg-white/[0.055] hover:border-white/24 hover:bg-white/[0.11]'
+                    }`}
+                  >
+                    <div className="relative aspect-[16/9] overflow-hidden rounded-[0.75rem] bg-black/22">
+                      <img
+                        src={slide.image}
+                        alt=""
+                        loading="lazy"
+                        decoding="async"
+                        className={`h-full w-full transition duration-500 group-hover:scale-[1.04] ${
+                          slide.fit === 'contain' ? 'object-contain p-2' : 'object-cover'
+                        }`}
+                        style={{ objectPosition: slide.position ?? '50% 50%' }}
+                        onError={(event) => {
+                          event.currentTarget.style.display = 'none';
+                        }}
+                      />
+                    </div>
+                    <p className="truncate px-2 py-2 text-[0.58rem] uppercase tracking-[0.12em] text-white/54">{slide.label}</p>
+                  </button>
+                );
+              })}
+            </div>
+
+            {sourceLinks.length ? (
+              <div className="mt-4 flex flex-wrap gap-2">
+                {sourceLinks.map((link) => (
+                  <a
+                    key={`${item.id}-${link.href}`}
+                    href={link.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="rounded-full border border-white/12 bg-white/[0.08] px-3 py-2 text-xs text-white/70 transition duration-300 hover:bg-white hover:text-[#07101c]"
+                  >
+                    {link.label} →
+                  </a>
+                ))}
+              </div>
+            ) : null}
+          </div>
+        </div>
+      </div>
+    </aside>
+  );
+}
+
 
 export function CaseStudyOverlay({ item, onClose }: { item: CaseStudyEntry; onClose: () => void }) {
   const mobilePresentation = mobileDeepDivePresentation[item.title];
+  const sections = mobilePresentation
+    ? [{ label: 'Overview', body: [mobilePresentation.narrative] }, ...item.sections]
+    : item.sections;
 
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
@@ -134,7 +505,7 @@ export function CaseStudyOverlay({ item, onClose }: { item: CaseStudyEntry; onCl
 
   return (
     <motion.div
-      className="fixed inset-0 z-[100] overflow-y-auto px-3 py-3 text-text-primary sm:px-5 sm:py-5"
+      className="fixed inset-0 z-[220] overflow-y-auto px-3 py-3 text-text-primary sm:px-5 sm:py-5"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -149,17 +520,17 @@ export function CaseStudyOverlay({ item, onClose }: { item: CaseStudyEntry; onCl
 
       <motion.article className="relative mx-auto grid min-h-[calc(100svh-1.5rem)] max-w-[1320px] gap-4 lg:h-[calc(100svh-2.5rem)] lg:min-h-0 lg:grid-cols-[0.9fr_1.1fr] lg:overflow-hidden">
         {mobilePresentation ? (
-          <aside className="deep-dive-support-rail project-deep-dive-scroll liquid-glass-strong flex min-h-[56vh] flex-col overflow-hidden rounded-[2rem] lg:h-full lg:min-h-0 lg:overflow-y-auto">
-            <div className="relative min-h-[34rem] shrink-0 overflow-hidden rounded-[2rem] border border-white/12 bg-white/[0.07] shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] ring-1 ring-[#6e8bff]/20 backdrop-blur-2xl sm:min-h-[40rem] lg:min-h-[68vh]">
+          <aside className="deep-dive-support-rail liquid-glass-strong flex min-h-[64vh] flex-col overflow-hidden rounded-[2rem] lg:h-full lg:min-h-0">
+            <div className="relative min-h-[38rem] flex-1 overflow-hidden rounded-[2rem] border border-white/12 bg-white/[0.07] shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] ring-1 ring-[#6e8bff]/20 backdrop-blur-2xl sm:min-h-[44rem] lg:h-full lg:min-h-0">
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_32%,rgba(110,139,255,0.22),transparent_62%)]" />
               <div className="pointer-events-none absolute left-7 top-7 z-10 max-w-[85%] md:left-8 md:top-8">
                 <p className="text-xs uppercase tracking-[0.28em] text-muted">{item.eyebrow}</p>
-                <h2 className="mt-4 max-w-[8.5ch] font-body text-[clamp(4.2rem,8vw,7.2rem)] font-semibold leading-[0.88] tracking-[-0.06em] text-text-primary">
+                <h2 className="mt-4 max-w-[8.5ch] font-body text-[clamp(4.2rem,8vw,7.2rem)] font-semibold leading-[0.88] tracking-[-0.06em] text-text-primary/75">
                   {item.title}
                 </h2>
               </div>
-              <div className="absolute inset-0 z-20 flex items-center justify-center px-4 py-4 sm:px-8 lg:px-3">
-                <div className="h-[96%] max-h-[36rem] min-h-[29rem] aspect-[0.47] sm:max-h-[41rem] lg:max-h-[64vh]">
+              <div className="absolute inset-0 z-20 flex items-center justify-center px-2 py-2 sm:px-5 lg:px-1">
+                <div className="h-[108%] max-h-[44rem] min-h-[32rem] aspect-[0.47] translate-y-10 sm:max-h-[50rem] sm:translate-y-12 lg:max-h-[82vh] lg:translate-y-14">
                   <IPhone3D
                     screenSrc={mobilePresentation.screen}
                     poster={mobilePresentation.screen}
@@ -169,124 +540,9 @@ export function CaseStudyOverlay({ item, onClose }: { item: CaseStudyEntry; onCl
               </div>
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent lg:bg-gradient-to-r lg:from-transparent lg:to-[#08111d]/55" />
             </div>
-
-            <div className="shrink-0 p-6 md:p-8">
-              <div className="liquid-glass rounded-[1.5rem] p-5 md:p-6">
-                <p className="text-xs uppercase tracking-[0.22em] text-muted">Product narrative</p>
-                <p className="mt-4 text-sm leading-7 text-text-primary md:text-base">{mobilePresentation.narrative}</p>
-              </div>
-            </div>
           </aside>
         ) : (
-          <aside className="deep-dive-support-rail project-deep-dive-scroll liquid-glass-strong flex min-h-[56vh] flex-col overflow-hidden rounded-[2rem] lg:h-full lg:min-h-0 lg:overflow-y-auto">
-            <div className="relative min-h-[280px] flex-1 bg-[radial-gradient(circle_at_30%_18%,rgba(255,255,255,0.78),rgba(187,210,230,0.45)_38%,rgba(77,106,136,0.55)_100%)]">
-              {item.heroImage ? (
-                <img
-                  src={item.heroImage}
-                  alt={item.title}
-                  decoding="async"
-                  onError={(event) => {
-                    event.currentTarget.style.display = 'none';
-                  }}
-                  className="absolute inset-0 h-full w-full object-cover"
-                />
-              ) : (
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_28%_20%,rgba(255,255,255,0.86),rgba(137,170,204,0.38)_42%,rgba(31,49,78,0.68)_100%)]" />
-              )}
-              <div className="absolute inset-0 bg-gradient-to-t from-bg via-bg/30 to-transparent" />
-              <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
-                <p className="text-xs uppercase tracking-[0.28em] text-muted">{item.eyebrow}</p>
-                <h2 className="mt-4 font-body text-5xl font-semibold tracking-[-0.04em] text-text-primary md:text-7xl">
-                  {item.title}
-                </h2>
-                <p className="mt-5 max-w-xl text-sm leading-7 text-muted md:text-base">{item.summary}</p>
-              </div>
-            </div>
-
-            <div className="grid shrink-0 gap-3 p-6 md:grid-cols-3 md:p-8 lg:grid-cols-1 xl:grid-cols-3">
-              {item.chips.map((chip) => (
-                <div key={`${chip.label}-${chip.value}`} className="liquid-glass rounded-[1.35rem] p-4">
-                  <div className="flex items-center justify-between gap-3">
-                    <p className="text-xs uppercase tracking-[0.2em] text-muted">{chip.label}</p>
-                    {chip.sourceStatus ? (
-                      <span className="text-[0.58rem] uppercase tracking-[0.16em] text-muted/80">
-                        {formatSourceStatus(chip.sourceStatus)}
-                      </span>
-                    ) : null}
-                  </div>
-                  <p className="mt-3 text-sm leading-6 text-text-primary">{chip.value}</p>
-                </div>
-              ))}
-            </div>
-
-            <div className="grid shrink-0 gap-4 px-6 pb-6 md:px-8 md:pb-8">
-              <div className="liquid-glass rounded-[1.5rem] p-5 md:p-6">
-                <p className="text-xs uppercase tracking-[0.22em] text-muted">Structure</p>
-                <div className="mt-5 grid gap-3">
-                  {item.structure.map((detail) => (
-                    <div key={`${detail.label}-${detail.value}`} className="flex gap-3 rounded-2xl bg-white/35 p-3">
-                      <span className="shrink-0 rounded-full bg-white/45 px-3 py-1 text-[0.62rem] uppercase tracking-[0.16em] text-muted">
-                        {detail.label}
-                      </span>
-                      <p className="text-sm leading-6 text-text-primary">{detail.value}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="liquid-glass rounded-[1.5rem] p-5 md:p-6">
-                <p className="text-xs uppercase tracking-[0.22em] text-muted">Evidence</p>
-                <div className="mt-5 grid gap-3">
-                  <div className="rounded-2xl bg-white/35 p-4">
-                    <p className="text-xs uppercase tracking-[0.18em] text-muted">Status</p>
-                    <p className="mt-2 text-sm leading-6 text-text-primary">
-                      {item.status} / {formatSourceStatus(item.sourceStatus)}
-                    </p>
-                  </div>
-
-                  {item.links.length ? (
-                    <div className="rounded-2xl bg-white/35 p-4">
-                      <p className="text-xs uppercase tracking-[0.18em] text-muted">Source links</p>
-                      <div className="mt-3 flex flex-wrap gap-2">
-                        {item.links.map((link) => (
-                          <a
-                            key={`${item.id}-${link.href}`}
-                            href={link.href}
-                            target="_blank"
-                            rel="noreferrer"
-                            className="rounded-full bg-white/45 px-3 py-1.5 text-xs text-text-primary transition duration-300 hover:bg-white/75"
-                          >
-                            {link.label}
-                          </a>
-                        ))}
-                      </div>
-                    </div>
-                  ) : null}
-
-                  {item.assetSlots.length ? (
-                    <div className="rounded-2xl bg-white/35 p-4">
-                      <p className="text-xs uppercase tracking-[0.18em] text-muted">Next assets</p>
-                      <div className="mt-3 grid gap-3">
-                        {item.assetSlots.map((slot) => (
-                          <div key={`${item.id}-${slot.label}`}>
-                            <div className="flex items-center justify-between gap-3">
-                              <p className="text-sm font-medium text-text-primary">{slot.label}</p>
-                              {slot.sourceStatus ? (
-                                <span className="text-[0.58rem] uppercase tracking-[0.16em] text-muted/80">
-                                  {formatSourceStatus(slot.sourceStatus)}
-                                </span>
-                              ) : null}
-                            </div>
-                            <p className="mt-1 text-sm leading-6 text-muted">{slot.note}</p>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  ) : null}
-                </div>
-              </div>
-            </div>
-          </aside>
+          <NonMobileCaseStudyVisualPanel item={item} />
         )}
 
         <div className="liquid-glass-strong flex flex-col rounded-[2rem] p-6 md:p-8 lg:min-h-0 lg:overflow-hidden">
@@ -294,22 +550,25 @@ export function CaseStudyOverlay({ item, onClose }: { item: CaseStudyEntry; onCl
             <div>
               <p className="text-xs uppercase tracking-[0.3em] text-muted">{item.typeLabel}</p>
               <p className="mt-2 text-xs uppercase tracking-[0.22em] text-muted">
-                {item.title}
+                // {item.title}
               </p>
             </div>
             <button
               type="button"
               aria-label="Close case study"
               onClick={onClose}
-              className="liquid-glass-control rounded-full px-5 py-3 text-sm text-text-primary transition-transform duration-300 hover:scale-105"
+              className="card-glass-attachment is-active"
             >
-              Close
+              <span className="card-glass-attachment__glyph">
+                <span className="card-glass-attachment__line card-glass-attachment__line-horizontal" />
+                <span className="card-glass-attachment__line card-glass-attachment__line-vertical" />
+              </span>
             </button>
           </div>
 
           <div className="project-deep-dive-scroll mt-8 pr-1 lg:min-h-0 lg:flex-1 lg:overflow-y-auto lg:pr-4">
             <div className="grid gap-5">
-              {item.sections.map((section, index) => (
+              {sections.map((section, index) => (
                 <section key={`${item.id}-${section.label}`} className="liquid-glass rounded-[1.5rem] p-5 md:p-6">
                   <p className="text-xs uppercase tracking-[0.22em] text-muted">
                     {String(index + 1).padStart(2, '0')} / {section.label}
