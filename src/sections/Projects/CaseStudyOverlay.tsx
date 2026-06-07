@@ -150,8 +150,8 @@ export function CaseStudyOverlay({ item, onClose }: { item: CaseStudyEntry; onCl
       <motion.article className="relative mx-auto grid min-h-[calc(100svh-1.5rem)] max-w-[1320px] gap-4 lg:h-[calc(100svh-2.5rem)] lg:min-h-0 lg:grid-cols-[0.9fr_1.1fr] lg:overflow-hidden">
         {mobilePresentation ? (
           <aside className="deep-dive-support-rail project-deep-dive-scroll liquid-glass-strong flex min-h-[56vh] flex-col overflow-hidden rounded-[2rem] lg:h-full lg:min-h-0 lg:overflow-y-auto">
-            <div className="relative min-h-[34rem] shrink-0 overflow-hidden rounded-[2rem] border border-white/16 bg-[radial-gradient(circle_at_50%_22%,rgba(142,166,255,0.24),rgba(255,255,255,0.1)_38%,rgba(8,18,32,0.42)_100%)] sm:min-h-[40rem] lg:min-h-[68vh]">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_28%,rgba(255,255,255,0.22),transparent_58%)]" />
+            <div className="relative min-h-[34rem] shrink-0 overflow-hidden rounded-[2rem] border border-white/12 bg-white/[0.07] shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] ring-1 ring-[#6e8bff]/20 backdrop-blur-2xl sm:min-h-[40rem] lg:min-h-[68vh]">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_32%,rgba(110,139,255,0.22),transparent_62%)]" />
               <div className="pointer-events-none absolute left-7 top-7 z-10 max-w-[85%] md:left-8 md:top-8">
                 <p className="text-xs uppercase tracking-[0.28em] text-muted">{item.eyebrow}</p>
                 <h2 className="mt-4 max-w-[8.5ch] font-body text-[clamp(4.2rem,8vw,7.2rem)] font-semibold leading-[0.88] tracking-[-0.06em] text-text-primary">
@@ -167,7 +167,7 @@ export function CaseStudyOverlay({ item, onClose }: { item: CaseStudyEntry; onCl
                   />
                 </div>
               </div>
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-bg/38 via-transparent to-white/8" />
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent lg:bg-gradient-to-r lg:from-transparent lg:to-[#08111d]/55" />
             </div>
 
             <div className="shrink-0 p-6 md:p-8">
