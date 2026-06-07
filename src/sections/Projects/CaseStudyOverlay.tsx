@@ -165,10 +165,10 @@ export function CaseStudyOverlay({ item, onClose }: { item: CaseStudyEntry; onCl
       <motion.article className="relative mx-auto grid min-h-[calc(100svh-1.5rem)] max-w-[1320px] gap-4 lg:h-[calc(100svh-2.5rem)] lg:min-h-0 lg:grid-cols-[0.9fr_1.1fr] lg:overflow-hidden">
         {mobilePresentation ? (
           <aside className="deep-dive-support-rail project-deep-dive-scroll liquid-glass-strong flex min-h-[56vh] flex-col overflow-hidden rounded-[2rem] lg:h-full lg:min-h-0 lg:overflow-y-auto">
-            <div className="relative min-h-[32rem] shrink-0 overflow-hidden rounded-[2rem] border border-white/16 bg-[radial-gradient(circle_at_50%_22%,rgba(142,166,255,0.24),rgba(255,255,255,0.1)_38%,rgba(8,18,32,0.42)_100%)] sm:min-h-[38rem] lg:min-h-[62vh]">
+            <div className="relative flex min-h-[32rem] shrink-0 flex-col overflow-hidden rounded-[2rem] border border-white/16 bg-[radial-gradient(circle_at_50%_22%,rgba(142,166,255,0.24),rgba(255,255,255,0.1)_38%,rgba(8,18,32,0.42)_100%)] sm:min-h-[38rem] lg:min-h-[62vh]">
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_28%,rgba(255,255,255,0.22),transparent_58%)]" />
-              <div className="absolute inset-0 flex items-center justify-center px-6 py-5 sm:px-10 lg:px-7">
-                <div className="h-full max-h-[96%] min-h-[28rem] aspect-[0.47] sm:min-h-[32rem] lg:min-h-0">
+              <div className="relative z-10 flex min-h-0 flex-1 items-center justify-center px-6 pt-5 sm:px-10 lg:px-7">
+                <div className="h-full max-h-[29rem] min-h-[22rem] aspect-[0.47] sm:max-h-[34rem] sm:min-h-[26rem] lg:min-h-0 lg:max-h-[42vh]">
                   <IPhone3D
                     screenSrc={mobilePresentation.screen}
                     poster={mobilePresentation.screen}
@@ -176,17 +176,16 @@ export function CaseStudyOverlay({ item, onClose }: { item: CaseStudyEntry; onCl
                   />
                 </div>
               </div>
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-bg/38 via-transparent to-white/8" />
-            </div>
-
-            <div className="grid shrink-0 gap-4 p-6 md:p-8">
-              <div>
+              <div className="relative z-10 shrink-0 px-7 pb-7 pt-3 md:px-8 md:pb-8">
                 <p className="text-xs uppercase tracking-[0.28em] text-muted">{item.eyebrow}</p>
                 <h2 className="mt-4 max-w-xl font-body text-5xl font-semibold tracking-[-0.04em] text-text-primary md:text-7xl">
                   {item.title}
                 </h2>
               </div>
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-bg/38 via-transparent to-white/8" />
+            </div>
 
+            <div className="grid shrink-0 gap-4 p-6 md:p-8">
               <div className="liquid-glass rounded-[1.5rem] p-5 md:p-6">
                 <p className="text-xs uppercase tracking-[0.22em] text-muted">Product description</p>
                 <p className="mt-4 text-sm leading-7 text-text-primary md:text-base">{item.summary}</p>
