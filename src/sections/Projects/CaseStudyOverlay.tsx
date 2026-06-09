@@ -3,6 +3,8 @@ import { motion, useReducedMotion } from 'framer-motion';
 import {
   type CaseStudyEntry,
 } from '../types';
+import { portfolioContent } from '../../data/portfolio';
+import { getProjectCardDescriptionByName } from './projectCopy';
 import { IPhone3D } from '../../components/IPhone3D';
 import aiCostsDashboardVisualUrl from '../../assets/projects/ai-costs-mock.webp';
 import aiNativeProductOsVisualUrl from '../../assets/projects/ai-native-os-hero.webp';
@@ -23,18 +25,16 @@ import razinflixProjectImageUrl from '../../../projects-section/Project Images/R
 import dreamseaHomepageScreenUrl from '../../../projects-section/Project Images/dreamsea-images/dreamsea-homepage.PNG';
 import conciergeHomepageScreenUrl from '../../../projects-section/Project Images/24seven-concierge-images/24-seven-homepage.PNG';
 
-const mobileDeepDivePresentation: Record<string, { screen: string; narrative: string }> = {
+const mobileDeepDivePresentation: Record<string, { screen: string }> = {
   Dreamsea: {
     screen: dreamseaHomepageScreenUrl,
-    narrative:
-      'Dreamsea is a voice-first dream journal with multimodal generation and philosophy-specific interpretation. It solves the fragile morning-capture problem: vivid dreams disappear when recall requires typing, full attention, or later reconstruction, so the app lets users preserve the dream quickly by voice and then gives it a reflective interpretive framework.',
   },
   '24Seven Concierge': {
     screen: conciergeHomepageScreenUrl,
-    narrative:
-      '24Seven Concierge is a catalog-grounded travel concierge that plans across Shopify inventory and hands off to a human agent. It solves the luxury discovery-to-booking gap: clients had to browse disconnected inventory and then restart with a concierge, so the app connects intent, catalog discovery, itinerary structure, and human fulfilment.',
   },
 };
+
+const toolCaseStudyTitles = new Set(portfolioContent.personalProjects.tools.map((project) => project.projectName));
 
 type NonMobileVisualSlide = {
   label: string;
@@ -49,6 +49,49 @@ type NonMobileVisualConfig = {
   glow: string;
   surface: string;
   slides: readonly NonMobileVisualSlide[];
+};
+
+type ProofCtaKind = 'app-store' | 'github' | 'live';
+
+type ProofCta = {
+  kind: ProofCtaKind;
+  href: string;
+  label: string;
+  eyebrow: string;
+  description: string;
+};
+
+const proofCtaDescriptions: Record<string, string> = {
+  nsso:
+    'Open the live nsso product surface in a new tab. Use it to inspect the public profile system, profile storefront, Deity profile-coach access, and the working Ramin profile example.',
+  Dreamsea:
+    'Open the public App Store listing. Download it on iPhone to inspect the live voice-capture dream journal, interpretation flow, and symbolic generation experience.',
+  Qadam:
+    'Open the live Qadam web surface in a new tab. The link shows the catalyst-driven intelligence product and the public paper-proof framing before any live-capital claim.',
+  '24Seven Concierge':
+    'Open the public App Store listing. Download the iPhone app to inspect the live travel concierge, destination browsing, catalog-led planning, and AI-to-human handoff.',
+  RazinFlix:
+    'Open the live RazinFlix route in a new tab. The link shows the poster-led film library, category rows, search, trailer modal, and recommendation surface.',
+  'AI-Native Product Manager OS':
+    'Open the public GitHub repository. Clone or download it to inspect the installable local PM operating system, workflow files, templates, review panels, and governance checks.',
+  'AI Native Product OS':
+    'Open the public GitHub repository. Use it to inspect the five-layer operating-system materials, thesis assets, and reusable AI-native product-management structure.',
+  'AI-Native Product OS':
+    'Open the public GitHub repository. Use it to inspect the five-layer operating-system materials, thesis assets, and reusable AI-native product-management structure.',
+  'Mass Social Wisdom Agent':
+    'Open the public GitHub repository. Review the Flask and Gemini workflow, live extraction logs, URL/image ingestion path, and .docx export implementation.',
+  'AI Costs Dashboard':
+    'Open the public GitHub repository. Review the dashboard implementation for usage events, spend visibility, latency, failure tracking, and model/provider attribution.',
+  'RAG Pipeline':
+    'Open the public GitHub repository. Review the reusable ingestion, chunking, embedding, retrieval, reranking, verification, and context-injection pipeline.',
+};
+
+const productDeepDiveQuotes: Record<string, string> = {
+  Qadam: '“A hedge fund team that fits inside your laptop.”',
+  nsso: '“The CV of the future.”',
+  RazinFlix: '“From watchlist to personal Netflix.”',
+  Dreamsea: '“A dream interpreter under your pillow.”',
+  '24Seven Concierge': '“A holiday concierge in your pocket.”',
 };
 
 const nonMobileDeepDiveVisuals: Record<string, NonMobileVisualConfig> = {
@@ -182,6 +225,23 @@ const nonMobileDeepDiveVisuals: Record<string, NonMobileVisualConfig> = {
       },
     ],
   },
+  'AI-Native Product Manager OS': {
+    accent: '#a5b4fc',
+    glow: 'rgba(165, 180, 252, 0.3)',
+    surface: 'rgba(9, 13, 28, 0.68)',
+    slides: [
+      {
+        label: 'Installable workspace',
+        detail: 'A local folder a PM can open in Codex, Claude Code, Cursor, or Antigravity to run AI-native product work from durable context.',
+        image: aiNativeProductOsVisualUrl,
+      },
+      {
+        label: 'Course companion',
+        detail: 'The product turns the course thesis into files: context library, workflows, templates, review panels, governance, outputs, and adapters.',
+        image: aiNativeProductOsProjectImageUrl,
+      },
+    ],
+  },
   'AI-Native Product OS': {
     accent: '#a5b4fc',
     glow: 'rgba(165, 180, 252, 0.3)',
@@ -218,6 +278,63 @@ function getNonMobileVisualConfig(item: CaseStudyEntry): NonMobileVisualConfig {
       },
     ],
   };
+}
+
+function classifyProofLink(link: CaseStudyEntry['links'][number]): ProofCtaKind {
+  const signature = `${link.label} ${link.href}`.toLowerCase();
+  if (signature.includes('apps.apple.com') || signature.includes('app store')) return 'app-store';
+  if (signature.includes('github.com') || signature.includes('github')) return 'github';
+  return 'live';
+}
+
+function getPreferredProofLink(item: CaseStudyEntry) {
+  const appStoreLink = item.links.find((link) => classifyProofLink(link) === 'app-store');
+  const liveLink = item.links.find((link) => classifyProofLink(link) === 'live' && /open live|live|product|profile|site/i.test(link.label));
+  const githubLink = item.links.find((link) => classifyProofLink(link) === 'github');
+
+  return appStoreLink ?? liveLink ?? githubLink ?? item.links[0];
+}
+
+function getProofCta(item: CaseStudyEntry): ProofCta | null {
+  const link = getPreferredProofLink(item);
+  if (!link) return null;
+
+  const kind = classifyProofLink(link);
+  const defaults: Record<ProofCtaKind, Pick<ProofCta, 'eyebrow' | 'label' | 'description'>> = {
+    'app-store': {
+      eyebrow: 'App Store proof',
+      label: 'View App Store →',
+      description: 'Open the public App Store listing to download the live mobile product and inspect the user-facing release.',
+    },
+    github: {
+      eyebrow: 'Repository proof',
+      label: 'View GitHub →',
+      description: 'Open the public GitHub repository to inspect the source, architecture, and implementation details behind the tool.',
+    },
+    live: {
+      eyebrow: 'Live product proof',
+      label: 'Open live →',
+      description: 'Open the live product in a new tab to inspect the public surface rather than only the portfolio write-up.',
+    },
+  };
+  const fallback = defaults[kind];
+
+  return {
+    kind,
+    href: link.href,
+    label: fallback.label,
+    eyebrow: fallback.eyebrow,
+    description: proofCtaDescriptions[item.title] ?? fallback.description,
+  };
+}
+
+function isDemoProofSection(label: string) {
+  const normalisedLabel = label.toLowerCase();
+  return normalisedLabel.includes('demo') && normalisedLabel.includes('proof');
+}
+
+function shouldShowToolArchitectureLayers(item: CaseStudyEntry, sectionLabel: string) {
+  return sectionLabel.toLowerCase() === 'architecture' && toolCaseStudyTitles.has(item.title) && item.structure.length > 0;
 }
 
 export function ProjectCaseStudyRow({
@@ -318,7 +435,9 @@ function NonMobileCaseStudyVisualPanel({ item }: { item: CaseStudyEntry }) {
   const slides = config.slides;
   const [activeIndex, setActiveIndex] = useState(0);
   const activeSlide = slides[activeIndex] ?? slides[0];
-  const sourceLinks = item.links.slice(0, 2);
+  const sourceLinks = item.links
+    .filter((link) => !(item.title === 'nsso' && link.label === 'Public profile'))
+    .slice(0, 2);
 
   useEffect(() => {
     setActiveIndex(0);
@@ -361,27 +480,12 @@ function NonMobileCaseStudyVisualPanel({ item }: { item: CaseStudyEntry }) {
           <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(255,255,255,0.16)_1px,transparent_1px)] bg-[length:5px_5px] opacity-[0.12]" />
         </div>
 
-        <div className="pointer-events-none absolute -left-5 top-20 z-10 max-w-[115%] select-none overflow-hidden whitespace-nowrap font-body text-[clamp(4.8rem,9vw,8.6rem)] font-black uppercase leading-none tracking-[-0.08em] text-white/[0.105] sm:left-6 lg:-left-6">
+        <div className="pointer-events-none absolute left-5 right-5 top-6 z-10 select-none overflow-visible whitespace-nowrap pr-[0.16em] font-body text-[clamp(4.5rem,8.6vw,8.2rem)] font-black leading-none tracking-[-0.08em] text-white/[0.09] sm:left-7 sm:right-7">
           {item.title}
         </div>
 
-        <div className="relative z-20 flex min-h-0 flex-1 flex-col p-5 md:p-7">
-          <div className="flex shrink-0 items-start justify-between gap-5">
-            <div>
-              <p className="text-xs uppercase tracking-[0.28em] text-white/48">Visual proof</p>
-              <p className="mt-2 max-w-sm text-sm leading-6 text-white/62">{item.summary}</p>
-            </div>
-            <div
-              aria-hidden="true"
-              className="h-12 w-12 shrink-0 rounded-full border border-white/16"
-              style={{
-                background: `radial-gradient(circle at 35% 30%, rgba(255,255,255,0.78), ${config.accent} 42%, transparent 70%)`,
-                boxShadow: `0 0 44px ${config.glow}`,
-              }}
-            />
-          </div>
-
-          <div className="mt-6 flex min-h-[18rem] flex-1 items-center">
+        <div className="relative z-20 flex min-h-0 flex-1 flex-col p-5 pt-[7.25rem] md:p-7 md:pt-[8rem]">
+          <div className="flex min-h-[18rem] flex-1 items-center">
             <motion.div
               key={`${item.id}-${activeSlide.label}`}
               className="w-full overflow-hidden rounded-[1.45rem] border border-white/18 bg-black/26 shadow-[0_34px_110px_rgba(0,0,0,0.38)] backdrop-blur-xl"
@@ -432,7 +536,7 @@ function NonMobileCaseStudyVisualPanel({ item }: { item: CaseStudyEntry }) {
                     aria-label={`Show ${slide.label}`}
                     aria-pressed={isActive}
                     onClick={() => setActiveIndex(index)}
-                    className={`group overflow-hidden rounded-[1rem] border p-1 text-left transition duration-300 ${
+                    className={`group overflow-hidden rounded-[1rem] border p-1 transition duration-300 ${
                       isActive
                         ? 'border-white/40 bg-white/[0.16]'
                         : 'border-white/10 bg-white/[0.055] hover:border-white/24 hover:bg-white/[0.11]'
@@ -453,7 +557,6 @@ function NonMobileCaseStudyVisualPanel({ item }: { item: CaseStudyEntry }) {
                         }}
                       />
                     </div>
-                    <p className="truncate px-2 py-2 text-[0.58rem] uppercase tracking-[0.12em] text-white/54">{slide.label}</p>
                   </button>
                 );
               })}
@@ -484,9 +587,13 @@ function NonMobileCaseStudyVisualPanel({ item }: { item: CaseStudyEntry }) {
 
 export function CaseStudyOverlay({ item, onClose }: { item: CaseStudyEntry; onClose: () => void }) {
   const mobilePresentation = mobileDeepDivePresentation[item.title];
-  const sections = mobilePresentation
-    ? [{ label: 'Overview', body: [mobilePresentation.narrative] }, ...item.sections]
-    : item.sections;
+  const overviewBody = getProjectCardDescriptionByName(item.title, item.summary);
+  const proofCta = getProofCta(item);
+  const productQuote = productDeepDiveQuotes[item.title];
+  const sections = [
+    { label: 'Overview', body: [overviewBody] },
+    ...item.sections.filter((section) => section.label.toLowerCase() !== 'overview'),
+  ];
 
   useEffect(() => {
     const previousOverflow = document.body.style.overflow;
@@ -567,21 +674,64 @@ export function CaseStudyOverlay({ item, onClose }: { item: CaseStudyEntry; onCl
           </div>
 
           <div className="project-deep-dive-scroll mt-8 pr-1 lg:min-h-0 lg:flex-1 lg:overflow-y-auto lg:pr-4">
+            {productQuote ? (
+              <figure className="mb-6 border-b border-[#89AACC]/18 pb-6">
+                <blockquote className="font-display text-[clamp(2.5rem,5vw,4.8rem)] italic leading-[0.9] tracking-[-0.045em] text-text-primary/78">
+                  {productQuote}
+                </blockquote>
+              </figure>
+            ) : null}
             <div className="grid gap-5">
-              {sections.map((section, index) => (
-                <section key={`${item.id}-${section.label}`} className="liquid-glass rounded-[1.5rem] p-5 md:p-6">
-                  <p className="text-xs uppercase tracking-[0.22em] text-muted">
-                    {String(index + 1).padStart(2, '0')} / {section.label}
-                  </p>
-                  <div className="mt-4 space-y-4">
-                    {section.body.map((paragraph) => (
-                      <p key={paragraph} className="text-sm leading-7 text-text-primary md:text-base">
-                        {paragraph}
-                      </p>
-                    ))}
-                  </div>
-                </section>
-              ))}
+              {sections.map((section, index) => {
+                const showToolArchitectureLayers = shouldShowToolArchitectureLayers(item, section.label);
+
+                return (
+                  <section key={`${item.id}-${section.label}`} className="liquid-glass rounded-[1.5rem] p-5 md:p-6">
+                    <p className={`text-xs uppercase tracking-[0.22em] text-muted ${section.label === 'Overview' ? 'font-semibold' : ''}`}>
+                      {String(index + 1).padStart(2, '0')} / {section.label}
+                    </p>
+                    <div className="mt-4 space-y-4">
+                      {section.body.map((paragraph) => (
+                        <p
+                          key={paragraph}
+                          className={`text-sm leading-7 text-text-primary md:text-base ${
+                            section.label === 'Overview' ? 'font-semibold' : ''
+                          }`}
+                        >
+                          {paragraph}
+                        </p>
+                      ))}
+                    </div>
+                    {showToolArchitectureLayers ? (
+                      <div className="mt-5 grid auto-rows-fr gap-3 sm:grid-cols-2">
+                        {item.structure.map((detail) => (
+                          <div
+                            key={`${item.id}-architecture-layer-${detail.label}`}
+                            className="rounded-[1.05rem] border border-[#89AACC]/18 bg-[#89AACC]/[0.07] p-4"
+                          >
+                            <p className="text-[0.58rem] uppercase tracking-[0.16em] text-muted">{detail.label}</p>
+                            <p className="mt-3 text-sm leading-6 text-text-primary/78">{detail.value}</p>
+                          </div>
+                        ))}
+                      </div>
+                    ) : null}
+                    {proofCta && isDemoProofSection(section.label) ? (
+                      <div className="mt-5 rounded-[1.15rem] border border-[#89AACC]/24 bg-[#89AACC]/[0.08] p-4 md:p-5">
+                        <p className="text-[0.58rem] uppercase tracking-[0.16em] text-muted">{proofCta.eyebrow}</p>
+                        <p className="mt-3 text-sm leading-6 text-text-primary/78 md:text-base">{proofCta.description}</p>
+                        <a
+                          href={proofCta.href}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="mt-4 inline-flex w-fit items-center rounded-full bg-text-primary px-5 py-3 text-sm font-medium text-bg transition duration-300 hover:scale-[1.03] hover:bg-[#dce8f2] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-text-primary/70 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+                        >
+                          {proofCta.label}
+                        </a>
+                      </div>
+                    ) : null}
+                  </section>
+                );
+              })}
             </div>
 
           </div>

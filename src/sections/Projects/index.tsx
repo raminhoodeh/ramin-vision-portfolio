@@ -3,8 +3,8 @@ import type { ReactNode, CSSProperties } from 'react';
 import { AnimatePresence, motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import aiCostsDashboardArtworkUrl from '../../assets/projects/ai-costs-mock.webp';
 import aiNativeProductOsArtworkUrl from '../../assets/projects/ai-native-os-hero.webp';
-import conciergeSelfwareArtworkUrl from '../../assets/projects/24seven-mock.webp';
-import dreamseaSelfwareArtworkUrl from '../../assets/projects/dreamsea-mock.webp';
+import conciergeSelfwareArtworkUrl from '../../../projects-section/Project Images/24seven-concierge-images/24-seven-main-project-image.jpg';
+import dreamseaSelfwareArtworkUrl from '../../../projects-section/Project Images/dreamsea-images/dreamsea-project-main-picture.jpg';
 import dreamseaHomepageScreenUrl from '../../../projects-section/Project Images/dreamsea-images/dreamsea-homepage.PNG';
 import massSocialWisdomAgentArtworkUrl from '../../assets/projects/mass-social.gif';
 import nssoSelfwareArtworkUrl from '../../assets/projects/nsso-mock.webp';
@@ -42,6 +42,8 @@ import { DeepDiveOverlay } from './DeepDiveOverlay';
 import { CaseStudyOverlay } from './CaseStudyOverlay';
 import { WorkCaseStudyOverlay } from './WorkCaseStudyOverlay';
 import { IPhone3D } from '../../components/IPhone3D';
+import { GlassImprintCta } from '../../components/GlassImprintCta';
+import { getProjectDescription } from './projectCopy';
 
 export const selfwareGeneratedArtwork: Record<string, string> = {
   Qadam: qadamSelfwareArtworkUrl,
@@ -52,35 +54,20 @@ export const selfwareGeneratedArtwork: Record<string, string> = {
 };
 
 export const toolGeneratedArtwork: Record<string, string> = {
+  'AI-Native Product Manager OS': aiNativeProductOsArtworkUrl,
   'AI Native Product OS': aiNativeProductOsArtworkUrl,
   'Mass Social Wisdom Agent': massSocialWisdomAgentArtworkUrl,
   'AI Costs Dashboard': aiCostsDashboardArtworkUrl,
   'RAG Pipeline': ragPipelineArtworkUrl,
 };
 
-const projectDescriptions: Record<string, string> = {
-  nsso:
-    'NSSO is an owned professional identity platform: profile, CV, projects, storefront, payments, and an AI profile coach in one public home. It turns scattered proof into a living identity surface that can be updated, monetised, and understood at a glance.',
-  Dreamsea:
-    'Dreamsea is a voice-first iOS dream journal for the half-awake moment when memory is still fragile. It captures a dream by voice, then turns it into a transcript, symbolic interpretations, archetypal motifs, and watercolor imagery for private reflection.',
-  Qadam:
-    'Qadam is a catalyst-driven market intelligence system built around the gap between physical events and market consensus. It watches logistics, conflict, macro, order-flow, and narrative signals so price-moving context is visible before it becomes a headline.',
-  '24Seven Concierge':
-    '24Seven Concierge is a luxury travel app that turns loose trip intent into a catalog-grounded itinerary and WhatsApp handoff. Shopify inventory, AI planning, and human concierge fulfilment work together so clients move from browsing to a real booking conversation without starting over.',
-  RazinFlix:
-    'RazinFlix is a personal streaming-style film library shaped around taste rather than generic genre shelves. It enriches a flat title list with metadata, trailers, posters, atmospheric descriptions, curated categories, and recommendations so a stale spreadsheet becomes a browsable personal canon.',
-  'Mass Social Wisdom Agent':
-    'Mass Social Wisdom Agent is a Flask and Gemini workflow for turning messy social inputs into structured knowledge. Links, transcripts, screenshots, captions, and carousel posts become a clean .docx export, replacing the usual backlog of saved content with something ready to read, search, and import into Notion.',
-  'AI Costs Dashboard':
-    'AI Costs Dashboard is an observability surface for AI product usage, spend, latency, failures, and provider/model attribution. It gives teams a way to see where money, reliability, and product value are drifting before small leaks become operating problems.',
-  'RAG Pipeline':
-    'RAG Pipeline is reusable context infrastructure for AI products that need trusted source material, not one-off prompting. It handles ingestion, chunking, embeddings, retrieval, re-ranking, verification, and context injection so answers stay grounded in the right knowledge.',
-};
-
 type ProjectArchitectureCard = {
   label: string;
   value: string;
 };
+
+const productInnovationProcessHref =
+  'https://docs.google.com/document/d/1WA3bAjACbkhMYAi7xiZTq5UO29Tqxsb3/edit?usp=sharing&ouid=110264933146795409149&rtpof=true&sd=true';
 
 const implementationArchitectureSummaries: Record<string, string> = {
   nsso:
@@ -95,6 +82,8 @@ const implementationArchitectureSummaries: Record<string, string> = {
     'Next.js 16 and Tailwind frontend with Supabase Postgres/Storage, TMDB metadata, Gemini enrichment, YouTube trailers and Google Vision poster validation.',
   'Mass Social Wisdom Agent':
     'Flask/Python web app with a threaded job runner, Gemini extraction and scoring, SociaVault transcript APIs, local file inputs and .docx export.',
+  'AI-Native Product Manager OS':
+    'Markdown-first local OS with runtime adapters for Codex, Claude Code, Cursor and Antigravity, reusable PM workflows, governance templates, Python validation and release packaging.',
   'AI Costs Dashboard':
     'Usage-event observability dashboard for AI spend, latency, failures, provider/model attribution, anomaly alerts and product-level cost controls.',
   'RAG Pipeline':
@@ -146,6 +135,30 @@ function ProjectVisualChipOverlay({ chips }: { chips?: readonly string[] }) {
 
 function getProjectTypeLabel(project: PersonalProjectEntry) {
   return project.type === 'App' || project.type === 'iOS App' ? 'Mobile App' : project.type;
+}
+
+function ProjectDeepDiveAttachmentButton({
+  projectName,
+  onClick,
+}: {
+  projectName: string;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      aria-label={`Open ${projectName} deep dive`}
+      title="Deep dive"
+      onClick={onClick}
+      className="card-glass-attachment card-glass-attachment--deep-dive project-action-button"
+    >
+      <span className="card-glass-attachment__label">Deep dive</span>
+      <span className="card-glass-attachment__glyph">
+        <span className="card-glass-attachment__line card-glass-attachment__line-horizontal" />
+        <span className="card-glass-attachment__line card-glass-attachment__line-vertical" />
+      </span>
+    </button>
+  );
 }
 
 function getArchitectureSystemMetaLabel(system: ArchitectureSystem) {
@@ -357,32 +370,18 @@ function CinematicProjectVisual({
   const generatedArtwork =
     tone === 'tool' ? toolGeneratedArtwork[project.projectName] : selfwareGeneratedArtwork[project.projectName];
   const image = generatedArtwork ?? (isPlaceholderValue(project.mainPictureGif) ? undefined : project.mainPictureGif);
-  const isPhoneApp =
-    tone !== 'tool' &&
-    Boolean(image) &&
-    (project.projectName === 'Dreamsea' || project.projectName === '24Seven Concierge');
   const gradientStops =
     tone === 'tool'
       ? ['rgba(48,85,120,0.86)', 'rgba(9,19,32,0.92)', 'rgba(220,235,247,0.48)']
       : ['rgba(104,137,170,0.82)', 'rgba(8,18,32,0.86)', 'rgba(255,255,255,0.52)'];
+  const panelClassName =
+    tone === 'tool'
+      ? 'projects-visual-panel relative aspect-[16/9] min-h-[17rem] overflow-hidden rounded-[1.55rem] border border-white/12 bg-black/34 shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] md:min-h-[20rem]'
+      : 'projects-visual-panel relative min-h-[22rem] overflow-hidden rounded-[2rem] border border-white/12 bg-black/34 shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] md:min-h-[30rem]';
 
   return (
-    <div className="projects-visual-panel relative min-h-[22rem] overflow-hidden rounded-[2rem] border border-white/12 bg-black/34 shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] md:min-h-[30rem]">
-      {isPhoneApp ? (
-        <>
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_30%,rgba(110,139,255,0.2),transparent_60%)]" />
-          <div className="absolute inset-0 flex items-center justify-center p-5">
-            <div style={{ height: '90%', aspectRatio: '0.47' }}>
-              <IPhone3D
-                screenSrc={image as string}
-                poster={image}
-                ariaLabel={`${project.projectName} shown on a rotating 3D iPhone`}
-              />
-            </div>
-          </div>
-          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-        </>
-      ) : image ? (
+    <div className={panelClassName}>
+      {image ? (
         <>
           <img
             src={image}
@@ -392,9 +391,9 @@ function CinematicProjectVisual({
             decoding="async"
             draggable={false}
             sizes={tone === 'tool' ? '(min-width: 1280px) 38vw, (min-width: 768px) 60vw, 100vw' : '(min-width: 1024px) 48vw, 100vw'}
-            className="absolute inset-0 h-full w-full object-cover opacity-80"
+            className="absolute inset-0 h-full w-full object-cover opacity-95"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/24 to-black/5" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/22 via-black/8 to-transparent" />
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_16%,rgba(255,255,255,0.26),transparent_24%)] mix-blend-screen" />
         </>
       ) : (
@@ -459,9 +458,12 @@ function SelfwareShowcaseCard({
         <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-stretch">
           <div className="flex min-h-[28rem] flex-col p-2 md:p-3">
             <div className="mt-3">
-              <p className="font-display text-7xl italic leading-none text-white/26 md:text-8xl">
-                {String(index + 1).padStart(2, '0')}
-              </p>
+              <div className="flex flex-wrap items-center gap-3">
+                <p className="font-display text-7xl italic leading-none text-white/26 md:text-8xl">
+                  {String(index + 1).padStart(2, '0')}
+                </p>
+                <ProjectCinematicPill>{getProjectTypeLabel(project)}</ProjectCinematicPill>
+              </div>
               <h3 className="mt-5 text-[clamp(3rem,7vw,7rem)] font-black uppercase leading-[0.84] tracking-[-0.07em] text-white">
                 {project.projectName}
               </h3>
@@ -481,19 +483,13 @@ function SelfwareShowcaseCard({
                   href={liveHref}
                   target="_blank"
                   rel="noreferrer"
-                  className="rounded-full bg-white px-5 py-3 text-sm font-medium text-[#07101c] transition duration-300 hover:scale-[1.03] hover:bg-[#dce8f2]"
+                  className="project-action-button rounded-full bg-white px-5 text-sm font-medium text-[#07101c] transition duration-300 hover:scale-[1.03] hover:bg-[#dce8f2]"
                 >
                   Open live →
                 </a>
               ) : null}
               {reader ? (
-                <button
-                  type="button"
-                  onClick={() => onOpen(reader)}
-                  className="rounded-full border border-white/14 bg-white/[0.08] px-5 py-3 text-sm text-white/80 transition duration-300 hover:bg-white hover:text-[#07101c]"
-                >
-                  Deep dive +
-                </button>
+                <ProjectDeepDiveAttachmentButton projectName={project.projectName} onClick={() => onOpen(reader)} />
               ) : null}
             </div>
           </div>
@@ -502,7 +498,6 @@ function SelfwareShowcaseCard({
             <CinematicProjectVisual
               project={project}
               index={index}
-              overlayChips={[getProjectTypeLabel(project)]}
             />
             <div className="grid items-start gap-3 md:grid-cols-5">
               {architectureCards.map((item, itemIndex) => (
@@ -531,15 +526,11 @@ export function SelfwareStickyStack({
       <div className="mx-auto max-w-[1500px]">
         <div className="mb-8 flex flex-col gap-4 md:mb-12 md:flex-row md:items-end md:justify-between">
           <div>
-            <p className="text-xs uppercase tracking-[0.3em] text-white/44">Act 1 / Products</p>
+            <p className="text-xs uppercase tracking-[0.3em] text-white/44">Part 1 / Products</p>
             <h2 className="mt-4 text-[clamp(3.2rem,9vw,8.5rem)] font-black uppercase leading-[0.82] tracking-[-0.07em] text-white">
               Selfware
             </h2>
           </div>
-          <p className="max-w-md text-sm leading-7 text-white/62">
-            Apps, web apps, and agents presented as shipped product systems, each with visible architecture beneath the
-            user-facing surface.
-          </p>
         </div>
         <div id="projects-selfware-stack" className="scroll-mt-4">
           {projects.map((project, index) => (
@@ -561,100 +552,48 @@ function ToolConsoleCard({
   onOpen: (item: CaseStudyEntry) => void;
 }) {
   const reader = getProjectReader(project.projectName);
-  const architectureCards = getProjectArchitectureCards(project);
-  const liveHref = isPlaceholderValue(project.liveLink) ? undefined : project.liveLink;
   const githubHref = isPlaceholderValue(project.githubLink) ? undefined : project.githubLink;
-  const primaryHref = githubHref ?? liveHref;
-  const output = isPlaceholderValue(project.whatIWouldImprove) ? contentValue(project.briefDescription) : contentValue(project.whatIWouldImprove);
-  const telemetry = [
-    { label: 'Type', value: project.type },
-    { label: 'Layer', value: 'Platform' },
-    { label: 'Status', value: primaryHref ? 'Open-source' : 'Internal' },
-  ];
 
   return (
     <motion.article
-      className="group relative overflow-hidden rounded-[2rem] border border-white/12 bg-black/36 p-4 text-white shadow-[0_24px_90px_rgba(0,0,0,0.3)] backdrop-blur-xl transition duration-300 hover:-translate-y-1 hover:border-white/30 hover:bg-white/[0.075] md:p-5"
+      className="group relative flex h-full flex-col overflow-hidden rounded-[2rem] border border-white/12 bg-black/36 p-5 text-white shadow-[0_24px_90px_rgba(0,0,0,0.3)] backdrop-blur-xl transition duration-300 hover:-translate-y-1 hover:border-white/30 hover:bg-white/[0.075] sm:p-6 md:p-8"
       initial={{ opacity: 0, y: 26 }}
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.7, delay: Math.min(index * 0.06, 0.18) }}
       viewport={{ once: true, margin: '-100px' }}
     >
-      <div className="absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-[#b9cad8]/62 to-transparent opacity-0 transition duration-300 group-hover:opacity-100" />
-      <div className="flex flex-col gap-5">
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <p className="text-[0.62rem] uppercase tracking-[0.22em] text-white/42">Tool / {String(index + 1).padStart(2, '0')}</p>
-            <h3 className="mt-3 text-3xl font-semibold leading-none tracking-[-0.045em] text-white md:text-4xl">
-              {project.projectName}
-            </h3>
-            <p className="mt-3 max-w-2xl text-sm leading-6 text-white/62">{getProjectDescription(project)}</p>
-          </div>
+      <div className="absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-[#b9cad8]/62 to-transparent opacity-0 transition duration-300 group-hover:opacity-100" />
+      <div className="flex h-full flex-col gap-6">
+        <div>
+          <h3 className="max-w-2xl text-3xl font-semibold leading-[0.98] tracking-[-0.045em] text-white md:text-4xl">
+            {project.projectName}
+          </h3>
         </div>
 
-        <div className="grid gap-4 xl:grid-cols-[1.05fr_0.95fr]">
-          <CinematicProjectVisual
-            project={project}
-            index={index}
-            tone="tool"
-            overlayChips={[getProjectTypeLabel(project), primaryHref ? 'Open-source' : 'Internal']}
-          />
-          <div className="grid content-start gap-3">
-            <div className="grid grid-cols-3 gap-2">
-              {telemetry.map((item) => (
-                <div key={`${project.projectName}-${item.label}`} className="rounded-[1rem] border border-white/10 bg-white/[0.055] p-3">
-                  <p className="text-[0.54rem] uppercase tracking-[0.14em] text-white/34">{item.label}</p>
-                  <p className="mt-2 text-sm font-medium text-white/76">{item.value}</p>
-                </div>
-              ))}
-            </div>
+        <CinematicProjectVisual
+          project={project}
+          index={index}
+          tone="tool"
+          overlayChips={[getProjectTypeLabel(project)]}
+        />
 
-          </div>
+        <div className="max-w-3xl">
+          <p className="text-sm leading-6 text-white/64 md:text-[0.95rem] md:leading-7">{getProjectDescription(project)}</p>
         </div>
 
-        <div className="grid gap-3 md:grid-cols-3">
-          <div className="rounded-[1.1rem] border border-white/10 bg-white/[0.055] p-4">
-            <p className="text-[0.58rem] uppercase tracking-[0.16em] text-white/38">Input</p>
-            <p className="mt-3 text-sm leading-6 text-white/72">{contentValue(project.problem)}</p>
-          </div>
-          <div className="rounded-[1.1rem] border border-white/10 bg-white/[0.055] p-4">
-            <p className="text-[0.58rem] uppercase tracking-[0.16em] text-white/38">Process</p>
-            <p className="mt-3 text-sm leading-6 text-white/72">{contentValue(project.architecture)}</p>
-          </div>
-          <div className="rounded-[1.1rem] border border-white/10 bg-white/[0.055] p-4">
-            <p className="text-[0.58rem] uppercase tracking-[0.16em] text-white/38">Output</p>
-            <p className="mt-3 text-sm leading-6 text-white/72">{output}</p>
-          </div>
-        </div>
-
-        <div className="grid gap-2 sm:grid-cols-5">
-          {architectureCards.map((item, itemIndex) => (
-            <div key={`${project.projectName}-tool-layer-${item.label}-${itemIndex}`} className="flex h-[14rem] flex-col overflow-hidden rounded-[0.95rem] border border-white/10 bg-white/[0.05] px-4 pb-4 pt-4">
-              <p className="text-[0.54rem] uppercase tracking-[0.14em] text-white/36">{item.label}</p>
-              <p className="mt-3 text-xs leading-5 text-white/68">{item.value}</p>
-            </div>
-          ))}
-        </div>
-
-        <div className="flex flex-wrap items-center gap-3">
-          {primaryHref ? (
+        <div className="mt-auto flex flex-wrap items-center gap-3 pt-3">
+          {githubHref ? (
             <a
-              href={primaryHref}
+              href={githubHref}
               target="_blank"
               rel="noreferrer"
-              className="w-fit rounded-full bg-white px-5 py-3 text-sm font-medium text-[#07101c] transition duration-300 hover:scale-[1.03] hover:bg-[#dce8f2]"
+              className="project-action-button w-fit rounded-full bg-white px-5 text-sm font-medium text-[#07101c] transition duration-300 hover:scale-[1.03] hover:bg-[#dce8f2]"
             >
-              {githubHref ? 'View on GitHub →' : 'Open live →'}
+              View on GitHub →
             </a>
           ) : null}
           {reader ? (
-            <button
-              type="button"
-              onClick={() => onOpen(reader)}
-              className="w-fit rounded-full border border-white/16 bg-white/[0.08] px-5 py-3 text-sm text-white/80 transition duration-300 hover:bg-white hover:text-[#07101c]"
-            >
-              Deep dive +
-            </button>
+            <ProjectDeepDiveAttachmentButton projectName={project.projectName} onClick={() => onOpen(reader)} />
           ) : null}
         </div>
       </div>
@@ -674,7 +613,7 @@ export function ToolsOperationsBay({
       <div className="mx-auto max-w-[1500px]">
         <div className="mb-10 grid gap-6 lg:grid-cols-[0.8fr_1.2fr] lg:items-end">
           <div>
-            <p className="text-xs uppercase tracking-[0.3em] text-white/44">Act 2 / Tools</p>
+            <p className="text-xs uppercase tracking-[0.3em] text-white/44">Part 2 / Tools</p>
             <h2 className="mt-4 text-[clamp(3.2rem,9vw,8.5rem)] font-black uppercase leading-[0.82] tracking-[-0.07em] text-white">
               Operations Bay
             </h2>
@@ -684,7 +623,7 @@ export function ToolsOperationsBay({
             becomes a repeatable way to ship AI-native product work.
           </p>
         </div>
-        <div className="grid gap-5 xl:grid-cols-2">
+        <div className="grid auto-rows-fr gap-5 lg:grid-cols-2">
           {projects.map((project, index) => (
             <ToolConsoleCard key={project.projectName} project={project} index={index} onOpen={onOpen} />
           ))}
@@ -725,10 +664,6 @@ function getProjectLayerSummary(project: PersonalProjectEntry, layerName: string
   return value.startsWith(prefix) ? value.slice(prefix.length).trim() : value;
 }
 
-function getProjectDescription(project: PersonalProjectEntry) {
-  return projectDescriptions[project.projectName] ?? contentValue(project.briefDescription);
-}
-
 type ArchitectureLayerEntry = {
   layer: string;
   purpose: string | PlaceholderLike;
@@ -747,31 +682,31 @@ const oldOperatingStages = ['Idea', 'Design', 'Concept', 'Alpha/Beta', 'Live'] a
 
 const architectureProofFilters = ['All', 'Product', 'Tool'] as const satisfies readonly ArchitectureProofFilter[];
 
-const aiNativeLoopStages: Array<{ label: string; detail: string; position: CSSProperties }> = [
+const aiNativeLoopStages: Array<{ label: string; detail: string; point: CSSProperties }> = [
   {
     label: 'Talk',
     detail: 'Load intent, taste, constraints, and context before the model acts.',
-    position: { left: '63%', top: '22%', transform: 'translate(-50%, -50%)' },
+    point: { left: '79.1%', top: '29.6%' },
   },
   {
     label: 'Decide',
     detail: 'Use human judgment and governance to choose the next move.',
-    position: { left: '73%', top: '62%', transform: 'translate(-50%, -50%)' },
+    point: { left: '79.1%', top: '70.4%' },
   },
   {
     label: 'Build',
     detail: 'Wire models into tools, jobs, outputs, and product surfaces.',
-    position: { left: '45%', top: '82%', transform: 'translate(-50%, -50%)' },
+    point: { left: '50%', top: '85.5%' },
   },
   {
     label: 'Observe',
     detail: 'Read traces, failures, quality, user behavior, and cost.',
-    position: { left: '20%', top: '58%', transform: 'translate(-50%, -50%)' },
+    point: { left: '20.9%', top: '70.4%' },
   },
   {
     label: 'Iterate',
     detail: 'Feed what was learned back into all five layers.',
-    position: { left: '28%', top: '24%', transform: 'translate(-50%, -50%)' },
+    point: { left: '20.9%', top: '29.6%' },
   },
 ];
 
@@ -804,7 +739,7 @@ function ArchitectureIntro({
   return (
     <div className="grid gap-8 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] lg:items-end">
       <div>
-        <p className="text-xs uppercase tracking-[0.3em] text-white/44">Act 3 / Architecture</p>
+        <p className="text-xs uppercase tracking-[0.3em] text-white/44">Part 3 / Architecture</p>
         <h2
           id="architecture-section-title"
           aria-label="AI-Native Product OS"
@@ -980,7 +915,7 @@ function OperatingLoopDiagram() {
       <div data-architecture-desktop-loop="true" className="relative z-10 mx-auto mt-6 hidden aspect-square max-w-[31rem] md:block">
         <motion.div
           aria-hidden="true"
-          className="absolute inset-[8%] rounded-full border border-[#ff4f3f]/20"
+          className="absolute inset-[14.5%] rounded-full border border-[#ff4f3f]/20"
           animate={shouldReduceMotion ? undefined : { rotate: 360 }}
           transition={{ duration: 38, repeat: Infinity, ease: 'linear' }}
         >
@@ -1007,37 +942,41 @@ function OperatingLoopDiagram() {
           Product OS
         </motion.div>
         {aiNativeLoopStages.map((stage, index) => (
-          <motion.div
-            key={`ai-native-loop-node-${stage.label}`}
-            className="absolute w-[10rem] rounded-[1.15rem] border border-white/12 bg-[#111923]/88 p-3 shadow-[0_18px_50px_rgba(0,0,0,0.28)] backdrop-blur-xl"
-            style={stage.position}
-            initial={{ opacity: 0, scale: 0.92 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            animate={
-              shouldReduceMotion
-                ? undefined
-                : {
-                    y: [0, -4, 0],
-                    borderColor: ['rgba(255,255,255,0.12)', 'rgba(255,79,63,0.34)', 'rgba(255,255,255,0.12)'],
-                  }
-            }
-            transition={{
-              opacity: { duration: 0.42, delay: index * 0.07 },
-              scale: { duration: 0.42, delay: index * 0.07 },
-              y: { duration: 5, delay: index * 0.35, repeat: Infinity, ease: 'easeInOut' },
-              borderColor: { duration: 5, delay: index * 0.35, repeat: Infinity, ease: 'easeInOut' },
-            }}
-            viewport={{ once: true, margin: '-80px' }}
-            whileHover={{ scale: 1.035, y: -6 }}
+          <div
+            key={`ai-native-loop-anchor-${stage.label}`}
+            className="absolute -translate-x-1/2 -translate-y-1/2"
+            style={stage.point}
           >
-            <div className="flex items-center gap-2">
-              <span className="flex h-7 w-7 items-center justify-center rounded-full border border-[#ff4f3f]/45 bg-[#ff4f3f]/18 text-[0.58rem] font-semibold text-[#ffb3ac]">
-                {String(index + 1).padStart(2, '0')}
-              </span>
-              <p className="text-sm font-semibold text-white">{stage.label}</p>
-            </div>
-            <p className="mt-2 text-xs leading-5 text-white/54">{stage.detail}</p>
-          </motion.div>
+            <motion.div
+              className="w-[9.75rem] rounded-[1.15rem] border border-white/12 bg-[#111923]/88 p-3 shadow-[0_18px_50px_rgba(0,0,0,0.28)] backdrop-blur-xl"
+              initial={{ opacity: 0, scale: 0.92 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              animate={
+                shouldReduceMotion
+                  ? undefined
+                  : {
+                      y: [0, -4, 0],
+                      borderColor: ['rgba(255,255,255,0.12)', 'rgba(255,79,63,0.34)', 'rgba(255,255,255,0.12)'],
+                    }
+              }
+              transition={{
+                opacity: { duration: 0.42, delay: index * 0.07 },
+                scale: { duration: 0.42, delay: index * 0.07 },
+                y: { duration: 5, delay: index * 0.35, repeat: Infinity, ease: 'easeInOut' },
+                borderColor: { duration: 5, delay: index * 0.35, repeat: Infinity, ease: 'easeInOut' },
+              }}
+              viewport={{ once: true, margin: '-80px' }}
+              whileHover={{ scale: 1.035, y: -6 }}
+            >
+              <div className="flex items-center gap-2">
+                <span className="flex h-7 w-7 items-center justify-center rounded-full border border-[#ff4f3f]/45 bg-[#ff4f3f]/18 text-[0.58rem] font-semibold text-[#ffb3ac]">
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+                <p className="text-sm font-semibold text-white">{stage.label}</p>
+              </div>
+              <p className="mt-2 text-xs leading-5 text-white/54">{stage.detail}</p>
+            </motion.div>
+          </div>
         ))}
       </div>
     </motion.article>
@@ -1045,6 +984,7 @@ function OperatingLoopDiagram() {
 }
 
 function FiveLayerTriangle({ layers }: { layers: readonly ArchitectureLayerEntry[] }) {
+  const [activeLayerName, setActiveLayerName] = useState<string | null>(null);
   const triangleRef = useRef<HTMLElement | null>(null);
   const { scrollYProgress } = useScroll({ target: triangleRef, offset: ['start 0.85', 'end 0.35'] });
   const activationScaleY = useTransform(scrollYProgress, [0, 1], [0.05, 1]);
@@ -1079,24 +1019,67 @@ function FiveLayerTriangle({ layers }: { layers: readonly ArchitectureLayerEntry
           className="absolute bottom-0 left-1/2 top-0 w-px origin-bottom -translate-x-1/2 bg-gradient-to-t from-[#89AACC]/70 via-white/40 to-transparent"
           style={{ scaleY: activationScaleY, opacity: activationOpacity }}
         />
-        {displayLayers.map((layer, displayIndex) => (
-          <motion.div
-            key={`ai-native-triangle-${layer.layer}`}
-            className="relative min-h-[4.8rem] overflow-hidden rounded-[1.15rem] border border-white/12 bg-gradient-to-br from-[#9abbe0]/[0.22] via-white/[0.075] to-[#111923]/[0.72] px-5 py-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.12)]"
-            style={{ width: triangleWidths[displayIndex] }}
-            initial={{ opacity: 0, y: 22, scale: 0.98 }}
-            whileInView={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.58, delay: displayIndex * 0.07 }}
-            viewport={{ once: true, margin: '-80px' }}
-            whileHover={{ scale: 1.015, borderColor: 'rgba(255,255,255,0.24)' }}
-          >
-            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/45 to-transparent" />
-            <p className="text-center text-[0.6rem] uppercase tracking-[0.18em] text-white/48">
-              {String(layers.length - displayIndex).padStart(2, '0')}
-            </p>
-            <p className="mt-1 text-center text-xl font-semibold tracking-[-0.03em] text-white">{layer.layer}</p>
-          </motion.div>
-        ))}
+        {displayLayers.map((layer, displayIndex) => {
+          const isActive = activeLayerName === layer.layer;
+          const tooltipId = `architecture-layer-tooltip-${slugifyTitle(layer.layer)}`;
+          const tooltipAbove = displayIndex >= displayLayers.length - 2;
+
+          return (
+            <div
+              key={`ai-native-triangle-${layer.layer}`}
+              style={{ width: triangleWidths[displayIndex] }}
+              className="relative flex justify-center overflow-visible"
+              onMouseLeave={() => setActiveLayerName(null)}
+            >
+              <motion.button
+                type="button"
+                aria-pressed={isActive}
+                aria-describedby={isActive ? tooltipId : undefined}
+                onMouseEnter={() => setActiveLayerName(layer.layer)}
+                onFocus={() => setActiveLayerName(layer.layer)}
+                onBlur={() => setActiveLayerName(null)}
+                onClick={() => setActiveLayerName((current) => (current === layer.layer ? null : layer.layer))}
+                className={`relative min-h-[4.8rem] w-full overflow-hidden rounded-[1.15rem] border px-5 py-4 text-left shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] outline-none transition duration-300 focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-[#07101c] ${
+                  isActive
+                    ? 'border-[#b8cde3]/46 bg-gradient-to-br from-[#b8cde3]/[0.32] via-white/[0.11] to-[#111923]/[0.74]'
+                    : 'border-white/12 bg-gradient-to-br from-[#9abbe0]/[0.22] via-white/[0.075] to-[#111923]/[0.72]'
+                }`}
+                initial={{ opacity: 0, y: 22, scale: 0.98 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ duration: 0.58, delay: displayIndex * 0.07 }}
+                viewport={{ once: true, margin: '-80px' }}
+                whileHover={{ scale: 1.015, borderColor: 'rgba(255,255,255,0.24)' }}
+              >
+                <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/45 to-transparent" />
+                <p className="text-center text-[0.6rem] uppercase tracking-[0.18em] text-white/48">
+                  {String(layers.length - displayIndex).padStart(2, '0')}
+                </p>
+                <p className="mt-1 text-center text-xl font-semibold tracking-[-0.03em] text-white">{layer.layer}</p>
+              </motion.button>
+
+              <AnimatePresence>
+                {isActive ? (
+                  <motion.div
+                    id={tooltipId}
+                    role="tooltip"
+                    className={`pointer-events-none absolute left-1/2 z-30 w-[min(18rem,calc(100vw-3rem))] rounded-2xl border border-white/16 bg-[#07101c]/88 px-3.5 py-3 text-center shadow-[0_18px_48px_rgba(0,0,0,0.36)] backdrop-blur-xl ${
+                      tooltipAbove ? 'bottom-[calc(100%+0.5rem)]' : 'top-[calc(100%+0.5rem)]'
+                    }`}
+                    initial={{ opacity: 0, x: '-50%', y: tooltipAbove ? 8 : -8, scale: 0.96 }}
+                    animate={{ opacity: 1, x: '-50%', y: 0, scale: 1 }}
+                    exit={{ opacity: 0, x: '-50%', y: tooltipAbove ? 6 : -6, scale: 0.97 }}
+                    transition={{ duration: 0.18 }}
+                  >
+                    <p className="text-[0.52rem] uppercase tracking-[0.16em] text-[#b8cde3]/70">
+                      {layer.layer} layer
+                    </p>
+                    <p className="mt-1.5 text-xs leading-5 text-white/76">{contentValue(layer.purpose)}</p>
+                  </motion.div>
+                ) : null}
+              </AnimatePresence>
+            </div>
+          );
+        })}
       </div>
     </motion.article>
   );
@@ -1110,6 +1093,18 @@ function LayerProofMatrix({
   systems: readonly ArchitectureSystem[];
 }) {
   const [activeFamily, setActiveFamily] = useState<ArchitectureProofFilter>('All');
+  const [expandedLayerNames, setExpandedLayerNames] = useState<Set<string>>(() => new Set());
+  const toggleLayerProof = useCallback((layerName: string) => {
+    setExpandedLayerNames((current) => {
+      const next = new Set(current);
+      if (next.has(layerName)) {
+        next.delete(layerName);
+      } else {
+        next.add(layerName);
+      }
+      return next;
+    });
+  }, []);
   const visibleSystems = useMemo(
     () => (activeFamily === 'All' ? systems : systems.filter((system) => system.family === activeFamily)),
     [activeFamily, systems],
@@ -1118,6 +1113,8 @@ function LayerProofMatrix({
   const proofCardGridClass =
     activeFamily === 'All'
       ? 'grid auto-rows-fr gap-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4'
+      : activeFamily === 'Tool'
+        ? 'grid auto-rows-fr gap-3 sm:grid-cols-2 xl:grid-cols-4'
       : 'grid auto-rows-fr gap-3 sm:grid-cols-2 xl:grid-cols-3';
 
   return (
@@ -1133,7 +1130,7 @@ function LayerProofMatrix({
               How the same OS shows up across the work.
             </h3>
             <p id="architecture-proof-status" className="mt-3 text-sm leading-6 text-white/52" aria-live="polite" aria-atomic="true">
-              Showing {visibleSystems.length} {activeFilterCountLabel} across each layer.
+              {visibleSystems.length} {activeFilterCountLabel} available inside each expanded layer.
             </p>
           </div>
           <div
@@ -1169,6 +1166,8 @@ function LayerProofMatrix({
           {layers.map((layer, index) => {
             const layerLabel = getArchitectureLayerLabel(layer, index);
             const layerHeadingId = getArchitectureLayerHeadingId(layer);
+            const layerContentId = `${layerHeadingId}-systems`;
+            const isExpanded = expandedLayerNames.has(layer.layer);
 
             return (
               <motion.article
@@ -1181,68 +1180,105 @@ function LayerProofMatrix({
                 viewport={{ once: true, margin: '-80px' }}
               >
                 <div className="absolute inset-y-0 left-0 w-1 bg-gradient-to-b from-transparent via-[#89AACC]/60 to-transparent opacity-50" />
-                <div className="grid gap-5 xl:grid-cols-[16rem_minmax(0,1fr)]">
-                  <div>
-                    <p className="font-display text-5xl italic leading-none text-white/28">
+                <div
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`${isExpanded ? 'Collapse' : 'Expand'} ${layer.layer} layer proof`}
+                  aria-expanded={isExpanded}
+                  aria-controls={layerContentId}
+                  onClick={() => toggleLayerProof(layer.layer)}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                      event.preventDefault();
+                      toggleLayerProof(layer.layer);
+                    }
+                  }}
+                  className="grid cursor-pointer gap-4 rounded-[1.2rem] outline-none transition duration-300 hover:bg-white/[0.035] focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-[#07101c] md:grid-cols-[minmax(0,1fr)_2.75rem] md:items-start"
+                >
+                  <div className="grid gap-4 xl:grid-cols-[6rem_minmax(0,0.9fr)_minmax(0,1fr)] xl:items-start">
+                    <p className="font-display text-5xl italic leading-none text-white/28 xl:text-6xl">
                       {String(index + 1).padStart(2, '0')}
                     </p>
-                    <h4 id={layerHeadingId} className="mt-3 text-2xl font-semibold tracking-[-0.04em] text-white">{layer.layer}</h4>
-                    <p className="mt-3 text-sm leading-6 text-white/62">{contentValue(layer.purpose)}</p>
-                    <p className="mt-4 text-[0.58rem] uppercase tracking-[0.16em] text-white/34">
+                    <div>
+                      <h4 id={layerHeadingId} className="text-2xl font-semibold tracking-[-0.04em] text-white">
+                        {layer.layer}
+                      </h4>
+                      <p className="mt-3 text-sm leading-6 text-white/62">{contentValue(layer.purpose)}</p>
+                    </div>
+                    <p className="text-[0.58rem] uppercase leading-5 tracking-[0.16em] text-white/34">
                       {contentValue(layer.examples)}
                     </p>
                   </div>
 
-                  <motion.div
-                    layout
-                    role="list"
-                    aria-labelledby={layerHeadingId}
-                    className={proofCardGridClass}
+                  <span
+                    aria-hidden="true"
+                    className={`card-glass-attachment pointer-events-none justify-self-end ${isExpanded ? 'is-active' : ''}`}
                   >
-                    <AnimatePresence mode="popLayout">
-                      {visibleSystems.map((system, systemIndex) => (
-                        <motion.div
-                          key={`architecture-proof-${layer.layer}-${system.project.projectName}`}
-                          role="listitem"
-                          aria-label={`${system.project.projectName} ${layer.layer} layer example`}
-                          layout
-                          className={`flex h-full min-h-[9.75rem] flex-col rounded-[1.05rem] border p-4 md:min-h-[10.25rem] ${
-                            system.family === 'Product'
-                              ? 'border-white/12 bg-white/[0.065]'
-                              : 'border-[#89AACC]/22 bg-[#89AACC]/[0.085]'
-                          }`}
-                          initial={{ opacity: 0, y: 16 }}
-                          whileInView={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: 8, scale: 0.98 }}
-                          transition={{ duration: 0.42, delay: Math.min(systemIndex * 0.025, 0.14) }}
-                          viewport={{ once: true, margin: '-70px' }}
-                          whileHover={{
-                            y: -4,
-                            borderColor:
-                              system.family === 'Product' ? 'rgba(255,255,255,0.25)' : 'rgba(137,170,204,0.42)',
-                          }}
-                        >
-                          <div className="flex items-start justify-between gap-3">
-                            <div className="min-w-0">
-                              <p className="truncate text-sm font-semibold tracking-[-0.02em] text-white">
-                                {system.project.projectName}
-                              </p>
-                              <p className="mt-1 text-[0.54rem] uppercase tracking-[0.13em] text-white/38">
-                                {getArchitectureSystemMetaLabel(system)}
-                              </p>
-                            </div>
-                            <span className="shrink-0 rounded-full border border-white/12 bg-black/18 px-2 py-1 text-[0.52rem] uppercase tracking-[0.1em] text-white/44">
-                              {system.code}
-                            </span>
-                          </div>
-                          <p className="mt-4 text-xs leading-5 text-white/62">
-                            {getProjectLayerSummary(system.project, layerLabel, index)}
-                          </p>
-                        </motion.div>
-                      ))}
-                    </AnimatePresence>
-                  </motion.div>
+                    <span className="card-glass-attachment__glyph">
+                      <span className="card-glass-attachment__line card-glass-attachment__line-horizontal" />
+                      <span className="card-glass-attachment__line card-glass-attachment__line-vertical" />
+                    </span>
+                  </span>
                 </div>
+
+                <AnimatePresence initial={false}>
+                  {isExpanded ? (
+                    <motion.div
+                      key={`${layer.layer}-expanded-systems`}
+                      id={layerContentId}
+                      layout
+                      role="list"
+                      aria-labelledby={layerHeadingId}
+                      className={`${proofCardGridClass} mt-5 border-t border-white/10 pt-5`}
+                      initial={{ opacity: 0, height: 0, y: -8 }}
+                      animate={{ opacity: 1, height: 'auto', y: 0 }}
+                      exit={{ opacity: 0, height: 0, y: -8 }}
+                      transition={{ duration: 0.34, ease: [0.25, 0.1, 0.25, 1] }}
+                    >
+                      <AnimatePresence mode="popLayout">
+                        {visibleSystems.map((system, systemIndex) => (
+                          <motion.div
+                            key={`architecture-proof-${layer.layer}-${system.project.projectName}`}
+                            role="listitem"
+                            aria-label={`${system.project.projectName} ${layer.layer} layer example`}
+                            layout
+                            className={`flex h-full min-h-[9.75rem] flex-col rounded-[1.05rem] border p-4 md:min-h-[10.25rem] ${
+                              system.family === 'Product'
+                                ? 'border-white/12 bg-white/[0.065]'
+                                : 'border-[#89AACC]/22 bg-[#89AACC]/[0.085]'
+                            }`}
+                            initial={{ opacity: 0, y: 16 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: 8, scale: 0.98 }}
+                            transition={{ duration: 0.42, delay: Math.min(systemIndex * 0.025, 0.14) }}
+                            whileHover={{
+                              y: -4,
+                              borderColor:
+                                system.family === 'Product' ? 'rgba(255,255,255,0.25)' : 'rgba(137,170,204,0.42)',
+                            }}
+                          >
+                            <div className="flex items-start justify-between gap-3">
+                              <div className="min-w-0">
+                                <p className="text-sm font-semibold leading-snug tracking-[-0.02em] text-white [overflow-wrap:anywhere]">
+                                  {system.project.projectName}
+                                </p>
+                                <p className="mt-1 text-[0.54rem] uppercase tracking-[0.13em] text-white/38">
+                                  {getArchitectureSystemMetaLabel(system)}
+                                </p>
+                              </div>
+                              <span className="shrink-0 rounded-full border border-white/12 bg-black/18 px-2 py-1 text-[0.52rem] uppercase tracking-[0.1em] text-white/44">
+                                {system.code}
+                              </span>
+                            </div>
+                            <p className="mt-4 text-xs leading-5 text-white/62">
+                              {getProjectLayerSummary(system.project, layerLabel, index)}
+                            </p>
+                          </motion.div>
+                        ))}
+                      </AnimatePresence>
+                    </motion.div>
+                  ) : null}
+                </AnimatePresence>
               </motion.article>
             );
           })}
@@ -1267,47 +1303,48 @@ function ArchitectureCTA({
     <motion.div
       ref={thesisRef}
       aria-labelledby="architecture-thesis-title"
-      className="mt-8 grid gap-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center"
+      className="mt-7"
       initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.62 }}
       viewport={{ once: true, margin: '-80px' }}
     >
-      <div className="relative overflow-hidden rounded-[1.7rem] border border-[#6e8bff]/24 bg-[#6e8bff]/[0.06] p-5 backdrop-blur-xl md:p-6">
+      <div className="relative overflow-hidden rounded-[1.7rem] border border-[#6e8bff]/24 bg-[#6e8bff]/[0.06] p-5 backdrop-blur-xl md:px-6 md:py-5">
         <motion.div
           aria-hidden="true"
           className="absolute inset-x-0 bottom-0 h-px origin-left bg-gradient-to-r from-[#89AACC]/0 via-[#89AACC]/80 to-white/0"
           style={{ scaleX: thesisProgress }}
         />
-        <p className="text-[0.58rem] uppercase tracking-[0.17em] text-[#9fb6cf]">The thesis</p>
-        <p id="architecture-thesis-title" className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-white">
-          AI-Native Product OS
-        </p>
-        <p className="mt-2 max-w-3xl text-sm leading-6 text-white/64">
-          These projects are not separate experiments with AI sprinkled on top. They are different expressions of the same operating system: choose the model, load the context, orchestrate execution, govern the risk, and keep human judgment in charge.
-        </p>
-      </div>
-
-      <div className="flex flex-wrap gap-3 lg:justify-end">
-        {osReader ? (
-          <button
-            type="button"
-            aria-label="Read the AI-Native Product OS thesis"
-            onClick={() => onOpen(osReader)}
-            className="rounded-full bg-white px-5 py-2.5 text-sm font-medium text-[#07101c] outline-none transition duration-300 hover:scale-[1.03] hover:bg-[#dce8f2] focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-[#07101c]"
-          >
-            Read the thesis
-          </button>
-        ) : null}
-        <a
-          href="https://maven.com/raminhoodeh/ai-product"
-          target="_blank"
-          rel="noreferrer"
-          aria-label="Take the AI Product course on Maven, opens in a new tab"
-          className="rounded-full border border-white/16 bg-white/[0.08] px-5 py-2.5 text-sm text-white/80 outline-none transition duration-300 hover:bg-white hover:text-[#07101c] focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-[#07101c]"
-        >
-          Take the course →
-        </a>
+        <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
+          <div>
+            <p className="text-[0.58rem] uppercase tracking-[0.17em] text-[#9fb6cf]">The thesis</p>
+            <p id="architecture-thesis-title" className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-white">
+              AI-Native Product OS
+            </p>
+            <p className="mt-2 max-w-3xl text-sm leading-6 text-white/64">
+              AI-Native Product OS is the natural evolution of my earlier{' '}
+              <a
+                href={productInnovationProcessHref}
+                target="_blank"
+                rel="noreferrer"
+                className="font-medium text-[#d8e8f5] underline decoration-[#89AACC]/45 underline-offset-4 transition duration-300 hover:text-white hover:decoration-white/80"
+              >
+                Product Innovation Process
+              </a>
+              . The original framework made product work legible by moving teams from ambiguity to a shared source of truth; this version keeps that discipline, but adapts it for probabilistic AI systems: choose the model, load the context, orchestrate execution, govern the risk, and keep human judgment in charge.
+            </p>
+          </div>
+          {osReader ? (
+            <div className="justify-self-start lg:justify-self-end [&_.hero-thesis-glass-button]:text-white [&_.hero-thesis-glass-button_*]:text-white">
+              <GlassImprintCta
+                label="Read the thesis"
+                ariaLabel="Read the AI-Native Product OS thesis"
+                onClick={() => onOpen(osReader)}
+                className="hero-thesis-glass-button--thesis text-white"
+              />
+            </div>
+          ) : null}
+        </div>
       </div>
     </motion.div>
   );
@@ -1343,7 +1380,7 @@ export function ArchitectureKernel({ onOpen }: { onOpen: (item: CaseStudyEntry) 
       id="projects-architecture"
       data-architecture-section="ai-native-product-os"
       aria-labelledby="architecture-section-title"
-      className="relative min-h-[100svh] overflow-hidden px-5 pb-40 pt-24 sm:px-8 md:pb-48 md:px-12 lg:px-16"
+      className="relative overflow-hidden px-5 pb-6 pt-24 sm:px-8 md:px-12 lg:px-16"
     >
       <div aria-hidden="true" className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/26 to-transparent" />
       <motion.div
@@ -1501,7 +1538,7 @@ function FeaturedProject({
                   </div>
                 </motion.div>
               ) : null}
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent lg:bg-gradient-to-r lg:from-transparent lg:to-[#08111d]/55" />
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent lg:bg-gradient-to-r lg:from-transparent lg:to-[#08111d]/26" />
               <ProjectVisualChipOverlay chips={[getProjectTypeLabel(project)]} />
             </div>
             <div className="flex flex-col justify-center gap-6 p-8 md:p-12">
@@ -1519,19 +1556,13 @@ function FeaturedProject({
                     href={liveHref}
                     target="_blank"
                     rel="noreferrer"
-                    className="rounded-full bg-white px-6 py-3.5 text-sm font-medium text-[#07101c] transition duration-300 hover:scale-[1.03] hover:bg-[#dce8f2]"
+                    className="project-action-button rounded-full bg-white px-6 text-sm font-medium text-[#07101c] transition duration-300 hover:scale-[1.03] hover:bg-[#dce8f2]"
                   >
                     Open live →
                   </a>
                 ) : null}
                 {reader ? (
-                  <button
-                    type="button"
-                    onClick={() => onOpen(reader)}
-                    className="rounded-full border border-white/16 bg-white/[0.08] px-6 py-3.5 text-sm text-white/80 transition duration-300 hover:bg-white hover:text-[#07101c]"
-                  >
-                    Deep dive +
-                  </button>
+                  <ProjectDeepDiveAttachmentButton projectName={project.projectName} onClick={() => onOpen(reader)} />
                 ) : null}
               </div>
             </div>
@@ -1548,7 +1579,7 @@ export function CaseStudyGrid({ onOpen }: { onOpen: (item: CaseStudyEntry) => vo
   const featured = selfware.find((project) => project.projectName === 'Dreamsea') ?? selfware[0];
 
   return (
-    <section id="projects" className="projects-cinematic relative isolate min-h-screen overflow-hidden bg-transparent pb-32 text-white">
+    <section id="projects" className="projects-cinematic relative isolate min-h-screen overflow-hidden bg-transparent pb-0 text-white">
       <ProjectActRail />
       <ProjectCinematicHero selfware={selfware} tools={tools} layerCount={layerCount} />
       {featured ? <FeaturedProject project={featured} selfware={selfware} tools={tools} onOpen={onOpen} /> : null}

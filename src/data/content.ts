@@ -51,8 +51,8 @@ export const assetRequests = [
       'Dreamsea generation pipeline screenshot or sequence diagram',
       '24Seven catalog-to-itinerary diagram',
       'Mass Social Wisdom Agent workflow screenshot or demo GIF',
-      'AI Costs Dashboard write-up plus screenshot or anonymised chart',
-      'RAG Pipeline write-up plus source-safe ingestion/retrieval diagram',
+      'AI Costs Dashboard screenshot, routing-decision diagram, or anonymised chart',
+      'RAG Pipeline source-safe ingestion/retrieval diagram',
       'Source links for public RAG, agent, or evaluation systems',
     ],
   },
@@ -247,6 +247,12 @@ type SourceLink = { label: string; href: string; sourceStatus: SourceStatus };
 const firstLink = (links?: readonly SourceLink[]) => links?.[0]?.href ?? linkNeeded();
 const githubLink = (links?: readonly SourceLink[]) =>
   links?.find((link) => /github/i.test(link.label))?.href ?? linkNeeded();
+const projectGithubLinks: Record<string, string> = {
+  'AI-Native Product Manager OS': 'https://github.com/raminhoodeh/AI-Native-Product-OS',
+  'Mass Social Wisdom Agent': 'https://github.com/raminhoodeh/mass-social-wisdom-agent',
+  'AI Costs Dashboard': 'https://github.com/raminhoodeh/ai-costs-dashboard',
+  'RAG Pipeline': 'https://github.com/raminhoodeh/unified-rag-pipeline',
+};
 
 const createWorkExperience = (companyName: string, sourceCompany: string) => {
   const source = findExperience(sourceCompany);
@@ -308,7 +314,7 @@ const createProjectEntry = (
     tradeoffs: caseStudy ? firstSentence(caseStudy.tradeoffs) : detailNeeded(),
     whatIWouldImprove: caseStudy ? firstSentence(caseStudy.improve) : detailNeeded(),
     liveLink: firstLink(caseStudy?.links),
-    githubLink: githubLink(caseStudy?.links),
+    githubLink: projectGithubLinks[projectName] ?? githubLink(caseStudy?.links),
     fullWriteupLink: linkNeeded(),
   };
 };
@@ -1879,9 +1885,10 @@ const selfwareProjects = [
 ] as const;
 
 const toolProjects = [
-  createProjectEntry('Mass Social Wisdom Agent', 'Mass Social Wisdom Agent', 'Agent', 'tool'),
-  createProjectEntry('AI Costs Dashboard', 'AI Costs Dashboard', 'Tool', 'tool'),
-  createProjectEntry('RAG Pipeline', 'RAG Pipeline', 'Tool', 'tool'),
+  createProjectEntry('AI-Native Product Manager OS', 'AI-Native Product Manager OS', 'Tool', 'case-study'),
+  createProjectEntry('Mass Social Wisdom Agent', 'Mass Social Wisdom Agent', 'Agent', 'case-study'),
+  createProjectEntry('AI Costs Dashboard', 'AI Costs Dashboard', 'Tool', 'case-study'),
+  createProjectEntry('RAG Pipeline', 'RAG Pipeline', 'Tool', 'case-study'),
 ] as const;
 
 const aiNativeProductOsSource = deepDives.find((item) => item.slug === 'ai-native-product-os');

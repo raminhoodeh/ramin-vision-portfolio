@@ -182,7 +182,7 @@ export const projectExperienceGroups = [
     shortLabel: 'Tool',
     indexLabel: '02C',
     description: 'Agents, extraction workflows, dashboards, and reusable operating systems.',
-    titles: ['Mass Social Wisdom Agent'],
+    titles: ['AI-Native Product Manager OS', 'Mass Social Wisdom Agent', 'AI Costs Dashboard', 'RAG Pipeline'],
   },
 ] as const;
 
