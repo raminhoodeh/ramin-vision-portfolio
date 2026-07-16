@@ -20,7 +20,7 @@ The currently refreshed implementation specs are Navigation, Experience & Educat
 - Content should come from `src/data/portfolio.ts`.
 - Public UI should follow the hierarchy above.
 - Public navigation should follow [00 Navigation](./00-navigation.md).
-- Do not reintroduce old standalone sections such as separate `Work`, separate `Qualifications`, `Thoughts`, or `Ramin.AI` as a normal scroll section.
+- Do not reintroduce old standalone sections such as separate `Work`, separate `Qualifications`, or `Ramin.AI` as a normal scroll section.
 - AI Ramin is currently mounted as the `ai-ramin` active portfolio section from the bottom nav.
 - Missing real content must use intentional placeholders, not invented proof.
 
@@ -36,13 +36,14 @@ The currently refreshed implementation specs are Navigation, Experience & Educat
 - The nav sits low against the stage, with a small visible gap below it.
 - Navigation changes the active section and mounts only that section in the main portfolio stage.
 - The URL hash reflects the selected normal section.
+- `Thoughts` navigates to the `thoughts` section, whose full structural label is `Teaching, Speaking & Writing`.
 - `AI Ramin` navigates to the dedicated AI Ramin page section from the bottom bar.
 
 ## Current Implementation Components
 
 - `experience-education` mounts `ExperienceEducationSection`.
 - `projects` mounts `CaseStudyGrid`.
-- `teaching-speaking-writing` mounts `TeachingWritingShelf`.
+- `thoughts` mounts `TeachingWritingShelf`.
 - `ai-ramin` mounts `AiRaminSection`.
 - `hero`, `contact`, and `bonus` are documented in their own specs but were not updated in this documentation pass.
 

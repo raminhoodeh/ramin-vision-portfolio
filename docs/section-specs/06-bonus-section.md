@@ -15,7 +15,7 @@ Reward the user for reaching the end of the site with an interactive, memorable 
 - Icon: `bonus`
 - Current implementation: selected through the bottom liquid-glass `BottomNavigation` bar.
 - On selection, `activeSection` becomes `bonus`, the hash becomes `#bonus`, and `ActivePortfolioSection` mounts only `BonusSection`.
-- The WebGL rock remains inside this section; it should not be moved into navigation or the AI Ramin modal.
+- The WebGL rock remains inside this section; it should not be moved into navigation or the AI Ramin section.
 
 ## Source Data
 

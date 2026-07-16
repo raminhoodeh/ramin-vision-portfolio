@@ -1,143 +1,67 @@
 # RazinFlix - Portfolio Write-up
 
----
+## Problem
 
-## 1. Problem — What You Were Solving
+RazinFlix started because I was bored of the selection on traditional streaming services. I love films with meaning, and the best recommendations I was getting did not come from Netflix or Prime algorithms. They came from cinephile friends, family, social media rabbit holes, and personal conversations.
 
-I had been maintaining a personal film library as a spreadsheet for years — a flat list of titles, rough ratings, and half-remembered notes that was entirely useless the moment I wanted to find something to watch. The problem was not that a spreadsheet is the wrong tool for cataloguing; it is that cataloguing at any useful depth — descriptions, trailers, accurate metadata, sensible categorisation — is manual work that scales with library size and eventually stops happening. By the time the list hit a few hundred titles, it was stale, inconsistent, and had no interface. The gap was not a missing streaming app; it was the absence of a pipeline that could take a list of film titles and turn them into something you could actually navigate and discover within — without any human doing the enrichment work.
+The main problem was that all of those films ended up in a spreadsheet. The quality of the list was high, but the experience was dead. I wanted the browsing experience of Netflix, but with a film library curated by people whose taste I actually wanted and trusted.
 
----
+## Architecture
 
-## 2. Architecture — How You Built It
+### Model
 
-### Ingestion Pipeline (4-API Parallel Execution)
+RazinFlix does not currently use a runtime LLM in the frontend. The model layer is closer to a metadata and classification system. Python scripts enrich each film using TMDb, YouTube, IMDb, Wikipedia, Google Knowledge Graph, and cached lookup data. The system pulls posters, trailer keys, descriptions, type information, ratings, and genre signals, then applies deterministic category rules and manual overrides.
 
-**Batch Ingestion with Terminal Log UI**
+That choice matters. This project is not trying to hallucinate film knowledge. It is trying to take a messy, human-curated film list and make it browsable, searchable, and self-organising enough that I can keep maintaining it with family and friends.
 
-The Add Film modal accepts a multi-film text input: a comma-separated or line-break-separated list of film titles, with optional year hints in the format `Film Title (2019)`. Each title is parsed into a `{ title, year }` pair before the pipeline executes. Films are processed sequentially rather than in parallel to respect API rate limits and prevent race conditions on the Supabase insert sequence.
+### Context
 
-During processing, the modal transitions from an input view to a terminal-style log panel: a monospace green-on-black display that streams a step-by-step log of exactly what each API is doing in real time — TMDB scan, Gemini synthesis, YouTube search, Vision scan, Supabase save. A CSS `@keyframes indeterminate` progress bar animates beneath the log. The visual design mirrors a CI/CD deployment terminal, making the wait feel like a system doing serious work rather than a spinner.
+The context layer is the film database itself. The original source is CSV-based, with titles, years, directors, descriptions, IMDb IDs, and ratings. Around that, RazinFlix has a cache, bad-trailer reports, manual poster and trailer overrides, corrected poster assets, and category logic.
 
-**The 4-API Pipeline**
+The final frontend context is a `films.json` script, originally sourced from my watchlist spreadsheet. In the current build, it contains 337 films, all with posters, and 319 with trailer keys. The catalog is grouped into 13 curated shelves: Japanese Anime, Television & Miniseries, Global Documentaries, Crime & Thriller, Mind-Bending Sci-Fi & Fantasy, Surrealism & The Subconscious, Iranian Cinema & Middle East, Love & Heartbreak, Coming of Age & Youth, Historical Epics & Period Pieces, Psychological & Character Studies, Contemporary Comedy & Satire, and World Cinema & Drama.
 
-When an admin types a film title into the Add Film modal, four external APIs fire in near-parallel inside a single Next.js API route (`/api/razinflix/add`):
+That is the product layer. The value is that the list keeps the taste of the people who recommended the films, while still giving me the browsing affordances of a modern streaming app.
 
-**TMDB API**
-Searches the TMDB movie database by title with optional year. If the primary release year yields no results, the route retries with ±1 year automatically before falling back — handling the common case where TMDB records a release year slightly differently from the cultural memory of the film. Returns: poster URL, IMDb vote average, release year, and TMDB overview text.
+### Orchestration
 
-**Gemini 2.5 Flash (Description)**
-Takes the TMDB overview as background context and rewrites it as a 2–3 sentence atmospheric, emotionally resonant plot description. The prompt explicitly forbids: including the title or year, using quotes or bold formatting, and returning introductory text — producing a clean, display-ready string. If the model wraps the response in quotation marks despite the instruction, the route strips them programmatically before saving.
+The orchestration layer is a pipeline that reads a CSV, or a plain-text film name and year entered in an Add Film button. It deduplicates entries, enriches missing posters and trailers, checks TMDb first, falls back to YouTube or Wikipedia where needed, applies manual overrides, and writes the finished JSON film data used by the React app.
 
-**Gemini 2.5 Flash (Category)**
-A second, independent Gemini call taxonomically assigns the film to one of 14 curated category strings. The taxonomy was designed to replace TMDB's generic genre tags (Action, Drama, Thriller) with opinionated, atmosphere-forward labels: "Critically-Acclaimed Mind-Bending Sci-Fi," "Surreal & Left-of-Center Cinema," "Gritty Heist & Crime Thrillers." The prompt enforces strict list membership — the model is instructed to return only the exact string from the allowed list, and the route applies a substring fallback match before defaulting to a catch-all if the response is non-conforming.
+There are also maintenance scripts that check database health, find missing trailers, verify suspicious trailer/title mismatches, patch bad trailer keys, mutate categories, and query Supabase records. This is the part that turns RazinFlix from a static toy into a small catalog system. The frontend stays simple because the messy work happens before the app loads.
 
-**YouTube Data API v3 (Trailer)**
-Constructs a search query in the format `[title] [year] official trailer -review -reaction -full -gameplay` — the negative terms are deliberate: they suppress the most common sources of wrong results (review channels, reaction videos, full-film uploads) and bias the top result toward official distributor uploads. Returns an 11-character YouTube video ID stored as `trailer_key`.
+The app itself is a React/Vite interface. It imports the film JSON, groups films into category rows, supports search across title, director, and description, and opens a modal for each film. If a trailer key exists, the modal plays the YouTube trailer. If not, it falls back to the poster and film details.
 
-**Google Cloud Vision API (Poster Validation)**
-After the TMDB poster URL is resolved, the Vision API's `TEXT_DETECTION` feature scans the poster image and returns all text found in the artwork. The route then checks whether at least one word of the film title longer than two characters appears in the extracted text. If it does, the poster is considered verified. If not — indicating either a blank placeholder, a foreign-language localisation, or a stylised design where the title is rendered as an image rather than text — the `_posterVerified` flag is returned as `false` to the client for surfacing in the admin UI. Placeholder URLs ([via.placeholder.com](http://via.placeholder.com/)) are excluded from Vision processing.
+### Governance
 
-**Result:** One text input → a fully enriched, described, categorised, trailer-linked, poster-verified database record committed to Supabase in a single insert, with optimistic state prepended to the React film array without a page reload.
+The governance layer is still early, but the project already shows the shape of it. There are scripts for missing fields, suspicious trailer mismatches, duplicate cleanup, and manual correction. That matters because film metadata APIs are useful but imperfect. They can return the wrong poster, wrong trailer, wrong title match, or wrong media type.
 
-**Duplicate Resolver (Migration-Time)**
+The main governance gap is secret handling and repeatability. Some of my API keys and Supabase details are hard-coded in scripts, which should not survive into a public repo. The next version should move all credentials into environment variables, document the pipeline, and add automated checks before publishing a new catalog build. Additionally, users need a password to add a film to RazinFlix.
 
-The original spreadsheet-to-database migration used a Python `resolve_dups.py` script employing Levenshtein distance fuzzing and token overlap scoring to detect near-identical entries (e.g. `Bladerunner 2049` vs `Blade Runner 2049`). For each detected pair, the script automatically scrubs the lower-quality record based on a data completeness score — number of populated fields, description length, poster presence — preserving the richer record.
+### Human
 
----
+The human layer is the most important part of RazinFlix. The app only makes sense because the source list comes from people: friends, family, social media discoveries, and my own taste. Additionally, the categories are curatorial shelves that I feel serve the viewing moods of a variety of casual and deeper occasions.
 
-### Self-Healing Database Layer
+That is why manual overrides are also fundamental to the product. The system can fetch metadata and organise the collection, but the human layer decides what belongs, what is meaningful, and what is worth watching.
 
-**Update Mode** is a dedicated view mode (`viewMode === 'update_mode'`) that re-sorts the entire film grid to prioritise records with missing or broken assets. On activation, the frontend initiates a batched background sweep across every film's poster URL: for each URL, a hidden `Image` element is constructed with a 4-second timeout; if the image fails to load or hangs, the film's ID is added to a `brokenPosters` Set. The Update Mode sort comparator places films with missing or broken posters first, followed by films with null `trailer_key` values, making the data gap queue immediately visible without any server-side scan.
+## Why This Approach
 
-**Autonomous Category Repair** (`scripts/cleanup-categories.mjs`) is a standalone Node script that reads the full film database, identifies any record whose category string is not in the 14-item canonical list (orphaned strings from previous taxonomy iterations, "Recently Added" placeholders, "Uncategorized" fallbacks, or categories with fewer than 5 films — indicating a taxonomy gap), and fires a Gemini 2.5 Flash call for each affected record to re-classify it. The script writes the corrected category directly to Supabase and rate-limits itself to 800ms between records to respect the Gemini API quota. It is designed to be run without downtime — reads and writes to the live table — and produces a terminal log of every migration made.
+The obvious version would have been to build another movie database: connect an API, show popular films, add search, and call it done. But that would have recreated the same problem I had with streaming services: lots of content, not enough trust.
 
-**Bulk Migration Pipeline** (`scripts/migrate-razinflix.ts`) handled the one-time data ingestion from the original `films.json` flat file into Supabase, inserting in batches of 50 records and clearing the table first to guarantee a clean slate. It was used once at project initialisation and is retained as a reproducible migration artifact.
+So I chose a curated catalog first, and a streaming-style interface second. The spreadsheet had the taste; it just needed a better experience. RazinFlix keeps human curation at the centre, then uses automation to make that list easier to browse, organise, and maintain.
 
----
+## Tradeoffs
 
-### Recommendations Engine (Client-Side Jaccard Similarity)
+RazinFlix gives up infinite choice for trusted curation. Traditional streaming services win on volume, but that was exactly the problem. I did not want another endless catalog of average options. I wanted a smaller library where each film had a reason to be there.
 
-When a film detail modal opens, a `useEffect` hook scores every other film in the loaded dataset against the currently selected film using a three-factor weighted algorithm:
+It gives up algorithmic personalisation for human taste. Netflix can optimise for what keeps someone watching, but RazinFlix is optimised around recommendations from people I trust: family, friends, cinephiles, and my own discoveries. That makes the catalog more meaningful, but also more subjective.
 
-- **Director match** (+50 points) — the strongest signal; two films by the same director are the highest-confidence recommendation
-- **Category intersection** (+10 points per shared category) — rewards films that share the curated taxonomy labels
-- **Description keyword Jaccard overlap** (+2 points per shared token) — strips stop-words, tokenises descriptions, and scores on token overlap between the selected film's description and each candidate
+It gives up instant availability for discovery quality. RazinFlix is not trying to solve licensing or become a streaming platform. It helps me decide what is worth watching, even if I still have to find the film somewhere else afterward.
 
-The top 15 films by total score are rendered as a horizontal scroll carousel below the trailer — equivalent to Netflix's "More Like This" row. Navigation between recommended films is supported inline without closing the modal.
+## Demo
 
----
+You can access RazinFlix here: https://www.nsso.me/film/razinflix
 
-### Netflix-Fidelity Frontend
+## What I Would Improve
 
-**Hero Billboard:** The page loads 5 randomly selected films with trailers and renders an autoplay YouTube embed at `scale-[1.35]` with `opacity-60`, creating a full-bleed cinematic backdrop. Bi-directional gradient overlays (bottom-to-top and left-to-right) render the film title and description legibly over the video. Desktop: clicking anywhere on the hero background toggles volume, mirroring native Netflix behaviour. Mobile: the same click event opens the film detail modal; swipe gestures (delta > 50px) cycle through the featured films.
+The honest limitation is that RazinFlix already has the browsing experience I wanted, but not yet the shared maintenance experience. Right now, the system can organise and enrich the list, but adding or correcting films still feels too close to editing scripts and spreadsheets.
 
-**Category Carousels:** The category grouping logic runs as a `useMemo` computation over the full film array. Categories with fewer than 5 films are dissolved and their films merged into the "Visually Striking Emotional Dramas" catch-all, preventing thin rows from degrading the grid. The "Recently Added" category is always sorted to the top of the page. Japanese Anime receives special-case treatment: because films may have been assigned a second category, the grouping logic explicitly checks for "Japanese Anime" membership and prioritises it over the primary category string, ensuring the Anime row always surfaces.
-
-**Alternative View Modes:** The navbar dropdown exposes five view modes beyond Category: alphabetical (A–Z), newest release date, highest IMDb rating, lowest IMDb rating, and Update Mode. Switching view modes collapses the category carousels and renders a flat responsive grid (2 → 6 columns at breakpoints), with rating parsing that correctly handles "N/A" and "TBD" strings by sorting them to the bottom.
-
-**Full-Text Search:** The search bar filters across title, director, AND description simultaneously — not just titles. Entering a director's name surfaces every film by that person across all categories. The search state switches the view to a flat "Search Results" category row regardless of the active view mode, and clears back to category view on input clear.
-
-**Director and Category Click-to-Search:** In the film detail modal, clicking the director's name or clicking any category tag dispatches a search for that value, programmatically populating the search bar and switching the grid to Search Results mode — enabling one-tap exploration of a director's full filmography or all films in a category.
-
-**Keyboard Navigation:** The modal supports full keyboard control: `Escape` closes, `ArrowLeft` / `ArrowRight` navigate between films in the active context list. Scroll carousel auto-scrolls to the active film card using `scrollIntoView({ behavior: 'smooth', inline: 'center' })`.
-
-**Admin Layer:** All write operations (add, edit, delete) are gated behind a password prompt (`window.prompt`) checked against a `NEXT_PUBLIC_ADMIN_PASSWORD` environment variable. The edit modal exposes a constrained category `<select>` — only the 14 canonical values plus "Uncategorized" — and the backend API independently rejects non-conforming payloads. Destructive deletes execute a client-side recursive state-tree sweep across all relevant state slices without a page reload.
-
-**Poster Upload to Supabase Storage:** In the film edit modal, admins can upload a replacement poster image directly. The upload routes through `/api/razinflix/update` using `multipart/form-data`, stores the file in the `razinflix_posters` Supabase Storage bucket, and replaces the TMDB poster URL with the public Supabase URL in the database — persisting the correction permanently rather than re-fetching from TMDB.
-
-**Inline Film Navigation Without Modal Close:** In both the film detail modal and the Similar Films carousel, navigating to a new film updates the modal content in place — no close/open cycle. The carousel auto-scrolls to the newly active card and the trailer iframe re-mounts with the new `trailer_key`.
-
----
-
-### Tech Stack
-
-| Layer | Technology |
-| --- | --- |
-| Frontend | Next.js 16 (App Router), TypeScript |
-| Styling | Tailwind CSS 4 |
-| Database | Supabase Postgres |
-| Poster Storage | Supabase Storage (`razinflix_posters` bucket) |
-| AI Description & Taxonomy | Google Gemini 2.5 Flash |
-| Poster Validation | Google Cloud Vision API (TEXT_DETECTION) |
-| Trailer Resolution | YouTube Data API v3 |
-| Film Metadata | TMDB API |
-
----
-
-## 3. Why This Approach — My Reasoning
-
-The decision to override TMDB's genre taxonomy entirely was the most deliberate design choice in the project. TMDB's genre tags (Action, Drama, Thriller, etc.) are accurate but artistically inert — they describe what a film contains mechanically, not what it feels like to watch it. A personal streaming platform curated around taste needs a taxonomy that encodes aesthetic intent. "Surreal & Left-of-Center Cinema" communicates something about why you would choose to watch a film in that category that "Drama" does not. Gemini 2.5 Flash, given a film title, year, and its own atmospheric description as context, reliably assigns films to the correct curated category because the category names themselves are descriptive enough to act as a zero-shot prompt — no examples needed.
-
-The Google Cloud Vision OCR step is the least obvious design decision and the one most people would omit. The problem it solves is specific: TMDB serves localised poster variants based on region, and their default API response sometimes returns a foreign-language poster for non-English-speaking markets rather than the English-language version. A poster where the title is written in Arabic or Korean is not useful in a platform built around English discovery. Rather than attempting to detect locale headers or filter by ISO language codes — which would require understanding TMDB's region system — OCR directly answers the question of whether the English title is physically on the artwork. It is a pixel-level truth check, not a metadata inference.
-
-All four API calls in the ingestion pipeline run in parallel by design: the API route fires `fetch` for TMDB, constructs the Gemini calls after receiving the TMDB result (since they depend on the title and overview), and fires the YouTube and Vision calls independently. The Gemini calls are the latency bottleneck — two sequential model calls on the hot path. This was accepted over a batched request approach because Gemini Flash's cold-start latency is low enough that the sequential model calls complete within the visual duration of the terminal log animation in the Add Film modal, making the wait feel purposeful rather than slow.
-
----
-
-## 4. Tradeoffs — What You Gave Up
-
-**Vision API OCR false-negative rate on stylised posters.** The title-word matching heuristic — "does any word longer than two characters from the title appear in the OCR output?" — is effective for most posters but breaks on films with highly stylised typography where the title is rendered as a graphic element rather than machine-readable text. For example, a film where the title logo is an elaborate custom letterform will return no OCR text even when the English title is clearly visible to a human viewer. The `_posterVerified: false` flag is surfaced in the admin log but does not block the record from being saved — the poster is kept and the gap is flagged for manual review. A more robust approach would use Vision's `LOGO_DETECTION` or `OBJECT_LOCALIZATION` features alongside text detection, but the incremental accuracy gain was not worth the added API complexity for a personal library tool.
-
-**The ingestion pipeline has no idempotency guard.** If the same film title is submitted twice, two records are created. There is no deduplication check at the API route level — no lookup against existing titles before insert. For a single-admin personal platform, this is acceptable; the duplicate resolver script (`resolve_dups.py`) using Levenshtein distance and token overlap scoring was built to handle the initial migration's duplicates and is not integrated into the live Add Film flow. Adding a pre-insert fuzzy-match query would eliminate the gap but would add latency to every add operation and introduce its own false-positive risk (blocking legitimate entries for films with similar titles).
-
-**No user accounts or access control beyond a shared password.** The admin layer is a `window.prompt` checking a hardcoded environment variable. This is appropriate for a single-owner personal platform but is not extensible to multi-user or role-based access without a full auth layer. Supabase Row Level Security is enabled with a public read policy and service-role-key writes — there is no RLS policy for authenticated write access because the anticipated access pattern is one owner, one environment.
-
-**Client-side similarity engine with no feedback loop.** The Jaccard + director + category scoring is a deterministic algorithm with fixed weights that does not improve over time and does not incorporate any user behaviour signal (watches, skips, session duration). The director weight (+50) was calibrated heuristically — it produces the right intuition (two Christopher Nolan films should always appear in each other's recommendations) but will systematically over-recommend within a director's filmography even when the films are stylistically dissimilar. A learned embedding model over the Gemini-generated descriptions would produce more nuanced recommendations, but the infrastructure cost for a personal library did not justify it.
-
----
-
-## 5. Demo — A Live, Clickable URL
-
-The platform is deployed and accessible at:
-
-[**nsso.me/](https://nsso.me/ramin)film/razinflix** — navigate to the RazinFlix section from the dashboard
-
-The Add Film flow, category carousels, hero billboard, and film detail modals are all accessible on the live deployment.
-
----
-
-## 6. What I Would Improve — Honest Self-Assessment
-
-The most significant architectural gap is that the ingestion pipeline is not observable after the fact. The terminal log in the Add Film modal shows real-time pipeline execution during the add operation, but once the modal closes that data is gone. There is no per-record audit trail of which APIs succeeded, what the Vision API returned, or what category Gemini originally assigned before any manual corrections. This makes debugging data quality issues retroactive — you can see that a record is wrong in Update Mode, but you cannot see why it ended up that way. A simple `ingestion_log` JSONB column on the `razinflix_films` table, written at insert time with the raw API responses and confidence flags, would make every data quality decision auditable without adding any latency to the pipeline.
-
-The category repair script (`cleanup-categories.mjs`) also has no run-once guard. If executed multiple times, it will re-classify every film in an orphaned or thin category on each run — potentially moving films that were manually corrected back to Gemini's preferred category. An `auto_categorized: boolean` flag on the schema, set to `false` after any manual category edit, would allow the script to skip human-reviewed records and run safely on a schedule.
+The next meaningful improvement is a small curator dashboard where I, my family, and friends can add recommendations, explain why they matter, correct metadata, and assign categories without touching the code. The best version of RazinFlix is a living, easy-to-use, self-organising cinema library where trusted human taste stays at the centre.

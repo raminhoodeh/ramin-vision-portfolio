@@ -2,6 +2,7 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import { fileURLToPath, URL } from 'node:url';
 import { handleAiRaminFeedbackRequest, handleAiRaminRequest } from './server/aiRaminHandler.mjs';
+import { handleMassSocialWisdomRequest } from './server/massSocialWisdomHandler.mjs';
 
 const decoderAssetFileName = (assetInfo) => {
   const names = [
@@ -28,6 +29,14 @@ export default defineConfig({
     {
       name: 'ai-ramin-api',
       configureServer(server) {
+        server.middlewares.use('/api/mass-social-wisdom', (req, res) => {
+          void handleMassSocialWisdomRequest(req, res).catch((error) => {
+            console.error(error);
+            res.statusCode = 500;
+            res.setHeader('Content-Type', 'application/json; charset=utf-8');
+            res.end(JSON.stringify({ error: 'Mass Social Wisdom request failed.' }));
+          });
+        });
         server.middlewares.use('/api/ai-ramin/feedback', (req, res) => {
           void handleAiRaminFeedbackRequest(req, res).catch((error) => {
             console.error(error);

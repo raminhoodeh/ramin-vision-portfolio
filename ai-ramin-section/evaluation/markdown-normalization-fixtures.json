@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "description": "Regression fixtures for AI Ramin chat markdown normalization. These target renderer-only formatting defects before React renders the message blocks.",
+  "cases": [
+    {
+      "id": "break-why-this-matters-after-sentence",
+      "input": "Ramin turns complex systems into usable product surfaces. **Why this matters for your team:** it gives hiring teams a clearer signal than generic AI familiarity.",
+      "expectedIncludes": [
+        "surfaces.\n\n**Why this matters for your team:**"
+      ],
+      "expectedExcludes": [
+        "surfaces. **Why this matters for your team:**"
+      ]
+    },
+    {
+      "id": "break-why-this-matters-after-colon",
+      "input": "The practical signal is simple: **Why this matters:** Ramin can translate complex product systems into a usable decision surface.",
+      "expectedIncludes": [
+        "simple:\n\n**Why this matters:**"
+      ],
+      "expectedExcludes": [
+        "simple: **Why this matters:**"
+      ]
+    },
+    {
+      "id": "break-inline-suggested-next-action",
+      "input": "The strongest next step is to compare the evidence against the actual scorecard. **Suggested next action:** Share the role description and ask for a role-fit pass.",
+      "expectedIncludes": [
+        "scorecard.\n\n**Suggested next action:**"
+      ],
+      "expectedExcludes": [
+        "scorecard. **Suggested next action:**"
+      ]
+    },
+    {
+      "id": "preserve-existing-why-this-matters-break",
+      "input": "Ramin's strongest signal is product judgment.\n\n**Why this matters:** the examples become easier to evaluate.",
+      "expectedIncludes": [
+        "judgment.\n\n**Why this matters:**"
+      ],
+      "expectedExcludes": [
+        "judgment. **Why this matters:**",
+        "judgment.\n\n\n**Why this matters:**"
+      ]
+    },
+    {
+      "id": "do-not-break-normal-inline-bold-labels",
+      "input": "Ramin built **Review Mode:** a human-control pattern for AI-assisted profile updates.",
+      "expectedIncludes": [
+        "built **Review Mode:** a human-control pattern"
+      ],
+      "expectedExcludes": [
+        "built\n\n**Review Mode:**"
+      ]
+    },
+    {
+      "id": "keep-existing-numbered-list-normalization",
+      "input": "The proof has two parts: 1. **Enterprise work:** GroupM and Urgentem. 2. **AI-native work:** nsso and 24Seven.",
+      "expectedIncludes": [
+        "parts:\n1. **Enterprise work:**",
+        "Urgentem.\n2. **AI-native work:**"
+      ],
+      "expectedExcludes": [
+        "parts: 1. **Enterprise work:**",
+        "Urgentem. 2. **AI-native work:**"
+      ]
+    }
+  ]
+}

@@ -57,6 +57,63 @@
       ]
     },
     {
+      "id": "accepted-suggested-action-routes-to-hiring-brief",
+      "prompt": "yes please",
+      "requestType": "general_chat",
+      "history": [
+        {
+          "role": "user",
+          "content": "What is Ramin's strongest product proof for a PM role?"
+        },
+        {
+          "role": "assistant",
+          "content": "Ramin's strongest product proof is the GroupM Carbon Calculator and Urgentem Element6 because both show complex data translated into decision-ready product surfaces.\n\n**Suggested next action:** Draft a copy-ready hiring brief from this evidence.",
+          "metadata": {
+            "requestType": "evidence_lookup",
+            "intentRoute": {
+              "intent": "evidence_lookup",
+              "confidence": 0.93,
+              "isSubstantive": true,
+              "needsEvidence": true,
+              "needsRetrieval": true,
+              "needsStructuredModules": true,
+              "suggestedTone": "hiring",
+              "sourceQuestionType": "strongest_product_proof",
+              "reason": "previous strongest proof answer"
+            },
+            "answerShape": {
+              "primaryQuestionType": "strongest_product_proof",
+              "answerFrameId": "rank_prove_translate"
+            },
+            "evidenceCardTitles": [
+              "GroupM Media Carbon Calculator",
+              "Urgentem Element6"
+            ]
+          }
+        }
+      ],
+      "expectedFollowUp": true,
+      "expectedInheritedIntent": "hiring_brief",
+      "expectedInheritedQuestionType": "hiring_brief",
+      "expectedAcceptedSuggestedNextAction": true,
+      "expectedSuggestedActionQuestionType": "hiring_brief",
+      "expectedResolvedIntent": "hiring_brief",
+      "expectedResolvedQuestionType": "hiring_brief",
+      "expectedResolvedRequestType": "hiring_brief",
+      "expectedContextualQueryIncludes": [
+        "Accepted suggested next action: Draft a copy-ready hiring brief from this evidence.",
+        "Suggested action question type: hiring_brief",
+        "Inherited intent: hiring_brief",
+        "Inherited question type: hiring_brief"
+      ],
+      "expectedPromptIncludes": [
+        "Internal question type: hiring_brief",
+        "Inherited intent: hiring_brief",
+        "Inherited question type: hiring_brief",
+        "The latest message accepts that next step. Carry it out as hiring_brief."
+      ]
+    },
+    {
       "id": "casual-thanks-after-role-fit",
       "prompt": "thanks",
       "requestType": "general_chat",

@@ -1,16 +1,39 @@
-import { useCallback, useEffect, useLayoutEffect, useRef, useState, useMemo } from 'react';
-import type { ReactNode, CSSProperties } from 'react';
-import { AnimatePresence, motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
+import { useCallback, useEffect, useId, useLayoutEffect, useRef, useState, useMemo } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
+import { AnimatePresence, LayoutGroup, motion, useReducedMotion, useScroll, useTransform } from 'framer-motion';
 import aiCostsDashboardArtworkUrl from '../../assets/projects/ai-costs-mock.webp';
 import aiNativeProductOsArtworkUrl from '../../assets/projects/ai-native-os-hero.webp';
+import aiNativeProductOsThesisPortraitUrl from '../../assets/projects/ai-native-os-thesis-portrait.jpg';
 import conciergeSelfwareArtworkUrl from '../../../projects-section/Project Images/24seven-concierge-images/24-seven-main-project-image.jpg';
+import conciergeCarousel1Url from '../../../projects-section/Project Images/24seven-concierge-images/24-seven-carousel/24-seven-1.webp';
+import conciergeCarousel2Url from '../../../projects-section/Project Images/24seven-concierge-images/24-seven-carousel/24-seven-2.webp';
+import conciergeCarousel3Url from '../../../projects-section/Project Images/24seven-concierge-images/24-seven-carousel/24-seven-3.webp';
+import conciergeCarousel4Url from '../../../projects-section/Project Images/24seven-concierge-images/24-seven-carousel/24-seven-4.webp';
+import conciergeCarousel5Url from '../../../projects-section/Project Images/24seven-concierge-images/24-seven-carousel/24-seven-5.webp';
 import dreamseaSelfwareArtworkUrl from '../../../projects-section/Project Images/dreamsea-images/dreamsea-project-main-picture.jpg';
+import dreamseaCarousel1Url from '../../../projects-section/Project Images/dreamsea-images/dreamsea-carousel/dreamsea-1.webp';
+import dreamseaCarousel2Url from '../../../projects-section/Project Images/dreamsea-images/dreamsea-carousel/dreamsea-2.webp';
+import dreamseaCarousel3Url from '../../../projects-section/Project Images/dreamsea-images/dreamsea-carousel/dreamsea-3.webp';
+import dreamseaCarousel4Url from '../../../projects-section/Project Images/dreamsea-images/dreamsea-carousel/dreamsea-4.webp';
+import dreamseaCarousel5Url from '../../../projects-section/Project Images/dreamsea-images/dreamsea-carousel/dreamsea-5.webp';
+import dreamseaCarousel6Url from '../../../projects-section/Project Images/dreamsea-images/dreamsea-carousel/dreamsea-6.webp';
+import dreamseaCarousel7Url from '../../../projects-section/Project Images/dreamsea-images/dreamsea-carousel/dreamsea-7.webp';
+import dreamseaCarousel8Url from '../../../projects-section/Project Images/dreamsea-images/dreamsea-carousel/dreamsea-8.webp';
 import dreamseaHomepageScreenUrl from '../../../projects-section/Project Images/dreamsea-images/dreamsea-homepage.PNG';
+import dreamseaIphoneRecordingUrl from '../../../projects-section/Project Images/dreamsea-fixed-recording-3d-island.webm';
 import massSocialWisdomAgentArtworkUrl from '../../assets/projects/mass-social.gif';
 import nssoSelfwareArtworkUrl from '../../assets/projects/nsso-mock.webp';
+import nssoProjectAnimationVideoUrl from '../../../projects-section/Project Images/nsso-recording-fixed.webm';
 import qadamSelfwareArtworkUrl from '../../assets/projects/qadam-mock.webp';
+import qadamProjectAnimationVideoUrl from '../../../projects-section/Project Images/qadam-recording-fixed.webm';
 import ragPipelineArtworkUrl from '../../assets/projects/rag-mock.webp';
 import razinflixSelfwareArtworkUrl from '../../assets/projects/razinflix-mock.webp';
+import razinflixProjectAnimationVideoUrl from '../../../projects-section/Project Images/razinflix-project-recording.webm';
+import conciergeProjectLogoUrl from '../../../projects-section/project-logos/24-seven-logo.png';
+import dreamseaProjectLogoUrl from '../../../projects-section/project-logos/dreamsea-logo.jpg';
+import nssoProjectLogoUrl from '../../../projects-section/project-logos/nsso-logo.png';
+import qadamProjectLogoUrl from '../../../projects-section/project-logos/qadam-logo.png';
+import razinflixProjectLogoUrl from '../../../projects-section/project-logos/RazinFlix-logo-project.png';
 import { portfolioContent, toolsAndSystems, architectureLayers } from '../../data/portfolio';
 import {
   type PersonalProjectEntry,
@@ -43,6 +66,8 @@ import { CaseStudyOverlay } from './CaseStudyOverlay';
 import { WorkCaseStudyOverlay } from './WorkCaseStudyOverlay';
 import { IPhone3D } from '../../components/IPhone3D';
 import { GlassImprintCta } from '../../components/GlassImprintCta';
+import { TahoeGlassChip } from '../../components/TahoeGlassChip';
+import Aurora from '../../components/Aurora';
 import { getProjectDescription } from './projectCopy';
 
 export const selfwareGeneratedArtwork: Record<string, string> = {
@@ -61,17 +86,56 @@ export const toolGeneratedArtwork: Record<string, string> = {
   'RAG Pipeline': ragPipelineArtworkUrl,
 };
 
+const selfwareCarouselArtwork: Record<string, readonly string[]> = {
+  Dreamsea: [
+    dreamseaCarousel1Url,
+    dreamseaCarousel2Url,
+    dreamseaCarousel3Url,
+    dreamseaCarousel4Url,
+    dreamseaCarousel5Url,
+    dreamseaCarousel6Url,
+    dreamseaCarousel7Url,
+    dreamseaCarousel8Url,
+  ],
+  '24Seven Concierge': [
+    conciergeCarousel1Url,
+    conciergeCarousel2Url,
+    conciergeCarousel3Url,
+    conciergeCarousel4Url,
+    conciergeCarousel5Url,
+  ],
+};
+
+const selfwareVideoArtwork: Record<string, string> = {
+  nsso: nssoProjectAnimationVideoUrl,
+  Qadam: qadamProjectAnimationVideoUrl,
+  RazinFlix: razinflixProjectAnimationVideoUrl,
+};
+
+const selfwareProjectLogos: Record<string, { src: string; isAppIcon?: boolean }> = {
+  nsso: { src: nssoProjectLogoUrl },
+  Qadam: { src: qadamProjectLogoUrl },
+  Dreamsea: { src: dreamseaProjectLogoUrl, isAppIcon: true },
+  '24Seven Concierge': { src: conciergeProjectLogoUrl, isAppIcon: true },
+  RazinFlix: { src: razinflixProjectLogoUrl },
+};
+
 type ProjectArchitectureCard = {
   label: string;
   value: string;
 };
 
+function getProjectShowcaseTitle(project: PersonalProjectEntry) {
+  return project.projectName === '24Seven Concierge' ? '24Seven' : project.projectName;
+}
+
 const productInnovationProcessHref =
   'https://docs.google.com/document/d/1WA3bAjACbkhMYAi7xiZTq5UO29Tqxsb3/edit?usp=sharing&ouid=110264933146795409149&rtpof=true&sd=true';
+const aiNativeProductOsGithubHref = 'https://github.com/raminhoodeh/AI-Native-Product-OS';
 
 const implementationArchitectureSummaries: Record<string, string> = {
   nsso:
-    'Next.js 16 and TypeScript frontend, Supabase Postgres/Storage backend, pgvector retrieval, Gemini Deity agent, PayPal and Polar payment flows.',
+    'Next.js 16 and TypeScript frontend, Supabase Postgres/Storage, pgvector profile-aware retrieval, Gemini Deity streaming tool calls, Review Mode, PayPal sanitisation, and Polar payment flows.',
   Qadam:
     'Next.js/React cockpit over a Python orchestration backend, PostgreSQL/TimescaleDB event store, ChromaDB knowledge graph, and local/cloud AI strategy loop.',
   Dreamsea:
@@ -113,23 +177,90 @@ export function ProjectLink({
   );
 }
 
-function ProjectCinematicPill({ children }: { children: ReactNode }) {
-  return (
-    <span className="inline-flex items-center rounded-full border border-white/15 bg-white/[0.08] px-3 py-1.5 text-[0.64rem] uppercase tracking-[0.16em] text-white/68 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
-      {children}
-    </span>
-  );
-}
-
 function ProjectVisualChipOverlay({ chips }: { chips?: readonly string[] }) {
   if (!chips?.length) return null;
 
   return (
     <div className="pointer-events-none absolute left-5 top-5 z-30 flex max-w-[calc(100%-2.5rem)] flex-wrap gap-2 sm:left-6 sm:top-6 sm:max-w-[calc(100%-3rem)]">
       {chips.map((chip) => (
-        <ProjectCinematicPill key={chip}>{chip}</ProjectCinematicPill>
+        <TahoeGlassChip
+          key={chip}
+          className="project-action-button project-visual-type-chip"
+        >
+          {chip}
+        </TahoeGlassChip>
       ))}
     </div>
+  );
+}
+
+function ProjectShowcaseLogoBadge({ projectName }: { projectName: string }) {
+  const logo = selfwareProjectLogos[projectName];
+
+  if (!logo) return null;
+
+  return (
+    <motion.span
+      layout
+      layoutId={`project-showcase-logo-${slugifyTitle(projectName)}`}
+      className={`project-showcase-logo-badge${logo.isAppIcon ? ' project-showcase-logo-badge--app' : ''}${
+        projectName === 'RazinFlix' ? ' project-showcase-logo-badge--razinflix' : ''
+      }`}
+      transition={{ type: 'spring', stiffness: 420, damping: 36, mass: 0.85 }}
+    >
+      <img src={logo.src} alt={`${projectName} logo`} loading="eager" decoding="async" draggable={false} />
+    </motion.span>
+  );
+}
+
+function ProjectArchitectureHeaderLogo({ projectName }: { projectName: string }) {
+  const logo = selfwareProjectLogos[projectName];
+
+  if (!logo) return null;
+
+  return (
+    <motion.span
+      layout
+      layoutId={`project-showcase-logo-${slugifyTitle(projectName)}`}
+      className={`project-architecture-header-logo${logo.isAppIcon ? ' project-architecture-header-logo--app' : ''}${
+        projectName === 'RazinFlix' ? ' project-architecture-header-logo--razinflix' : ''
+      }`}
+      aria-hidden="true"
+      transition={{ type: 'spring', stiffness: 420, damping: 36, mass: 0.85 }}
+    >
+      <img src={logo.src} alt="" loading="eager" decoding="async" draggable={false} />
+    </motion.span>
+  );
+}
+
+function ProjectShowcaseGlassRefraction() {
+  const filterId = `portfolio-project-showcase-glass-${useId().replace(/:/g, '')}`;
+  const glassStyle = { '--project-showcase-glass-filter': `url(#${filterId})` } as CSSProperties & {
+    '--project-showcase-glass-filter': string;
+  };
+
+  return (
+    <span className="project-showcase-glass-refraction" style={glassStyle} aria-hidden="true">
+      <svg className="tahoe-glass-filter-defs" aria-hidden="true" focusable="false">
+        <filter id={filterId} primitiveUnits="objectBoundingBox">
+          <feTurbulence type="fractalNoise" baseFrequency="0.012 0.028" numOctaves="1" seed="17" result="grain" />
+          <feColorMatrix
+            in="grain"
+            type="matrix"
+            values="
+              0.08 0 0 0 0.46
+              0 0.08 0 0 0.46
+              0 0 0.08 0 0.46
+              0 0 0 1 0"
+            result="map"
+          />
+          <feGaussianBlur in="SourceGraphic" stdDeviation="0.003" result="blur" />
+          <feDisplacementMap in="blur" in2="map" scale="0.022" xChannelSelector="R" yChannelSelector="G" />
+        </filter>
+      </svg>
+      <span className="project-showcase-glass-refraction__lens" />
+      <span className="project-showcase-glass-refraction__ripple" />
+    </span>
   );
 }
 
@@ -137,27 +268,137 @@ function getProjectTypeLabel(project: PersonalProjectEntry) {
   return project.type === 'App' || project.type === 'iOS App' ? 'Mobile App' : project.type;
 }
 
+function getProjectTypeChips(project: PersonalProjectEntry) {
+  const primaryLabel = getProjectTypeLabel(project);
+  return project.projectName === 'Qadam' ? [primaryLabel, 'Web App'] : [primaryLabel];
+}
+
+function getUnderpinnedToolLabel(project: PersonalProjectEntry) {
+  return project.projectName === 'AI-Native Product Manager OS' ? 'AI-Native PM OS' : project.projectName;
+}
+
+function ProjectMediaCarousel({
+  images,
+  projectName,
+  index,
+}: {
+  images: readonly string[];
+  projectName: string;
+  index: number;
+}) {
+  const duration = Math.max(52, images.length * 9);
+  const sequences = [0, 1] as const;
+
+  return (
+    <div
+      className="project-media-carousel"
+      style={{ '--project-carousel-duration': `${duration}s` } as CSSProperties}
+      aria-label={`${projectName} screenshot carousel`}
+    >
+      <div className="project-media-carousel-track">
+        {sequences.map((sequence) => (
+          <div
+            key={`${projectName}-carousel-sequence-${sequence}`}
+            className="project-media-carousel-sequence"
+            aria-hidden={sequence === 1}
+          >
+            {images.map((image, imageIndex) => (
+              <div
+                key={`${projectName}-carousel-${sequence}-${imageIndex}`}
+                className="project-media-carousel-card"
+              >
+                <img
+                  src={image}
+                  alt={sequence === 0 ? `${projectName} app screenshot ${imageIndex + 1}` : ''}
+                  loading={index <= 1 ? 'eager' : 'lazy'}
+                  fetchPriority={index <= 1 ? 'low' : 'auto'}
+                  decoding="async"
+                  draggable={false}
+                />
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function ProjectDeepDiveAttachmentButton({
   projectName,
+  label = 'Deep dive',
+  title = 'Deep dive',
   onClick,
 }: {
   projectName: string;
+  label?: string;
+  title?: string;
   onClick: () => void;
 }) {
   return (
     <button
       type="button"
-      aria-label={`Open ${projectName} deep dive`}
-      title="Deep dive"
+      aria-label={`${label} for ${projectName}`}
+      title={title}
       onClick={onClick}
-      className="card-glass-attachment card-glass-attachment--deep-dive project-action-button"
+      className="card-glass-attachment card-glass-attachment--deep-dive"
     >
-      <span className="card-glass-attachment__label">Deep dive</span>
+      <span className="card-glass-attachment__label">{label}</span>
       <span className="card-glass-attachment__glyph">
         <span className="card-glass-attachment__line card-glass-attachment__line-horizontal" />
         <span className="card-glass-attachment__line card-glass-attachment__line-vertical" />
       </span>
     </button>
+  );
+}
+
+function ProjectArchitectureRevealCard({
+  children,
+  headerLogo,
+  isExpanded: controlledExpanded,
+  onExpandedChange,
+  summary,
+}: {
+  children?: ReactNode;
+  headerLogo?: ReactNode;
+  isExpanded?: boolean;
+  onExpandedChange?: (isExpanded: boolean) => void;
+  summary: string;
+}) {
+  const [internalExpanded, setInternalExpanded] = useState(false);
+  const isExpanded = controlledExpanded ?? internalExpanded;
+  const hasDetails = Boolean(children);
+  const toggleExpanded = () => {
+    const nextExpanded = !isExpanded;
+    if (controlledExpanded === undefined) {
+      setInternalExpanded(nextExpanded);
+    }
+    onExpandedChange?.(nextExpanded);
+  };
+
+  return (
+    <div className={`project-architecture-reveal-card ${isExpanded ? 'is-expanded' : ''}`}>
+      <button
+        type="button"
+        className="project-architecture-reveal-card__header"
+        aria-expanded={isExpanded}
+        onClick={toggleExpanded}
+      >
+        <span className="project-architecture-reveal-card__title-cluster">
+          <p className="project-architecture-reveal-card__label">Architecture</p>
+          {headerLogo ? <span className="project-architecture-reveal-card__header-logo-slot">{headerLogo}</span> : null}
+        </span>
+        <span className="project-architecture-reveal-card__plus" aria-hidden="true">
+          +
+        </span>
+      </button>
+      <div className={`project-architecture-reveal-card__content ${hasDetails ? 'project-architecture-reveal-card__content--split' : ''}`}>
+        <div className="project-architecture-reveal-card__summary-column">
+          <p className="project-architecture-reveal-card__body">{summary}</p>
+        </div>
+        {hasDetails ? <div className="project-architecture-reveal-card__layers-column">{children}</div> : null}
+      </div>
+    </div>
   );
 }
 
@@ -227,7 +468,7 @@ export function ProjectCinematicHero({
       <div className="absolute right-[-8rem] top-[10%] z-0 h-[36rem] w-[36rem] rounded-full border border-white/10 bg-white/[0.025] blur-sm" />
       <div className="absolute left-[48%] top-[14%] z-0 h-[42rem] w-[42rem] -translate-x-1/2 rounded-full border border-white/10 bg-white/[0.025] blur-sm" />
 
-      <div className="relative z-10 mx-auto grid w-full max-w-[1520px] gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(21rem,28rem)] lg:items-end">
+      <div className="relative z-10 mx-auto grid w-full max-w-[1520px] gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(18rem,24.5rem)] lg:items-end">
         <div className="projects-hero-copy relative">
           <motion.div
             initial={{ opacity: 0, y: 16 }}
@@ -263,7 +504,7 @@ export function ProjectCinematicHero({
         </div>
 
         <motion.aside
-          className="projects-hero-aside relative overflow-hidden rounded-[1.75rem] border border-white/14 bg-black/26 p-4 text-white shadow-[0_28px_90px_rgba(0,0,0,0.3)] backdrop-blur-xl md:p-5"
+          className="projects-hero-aside relative overflow-hidden rounded-[1.75rem] border border-white/14 bg-black/26 p-4 text-white shadow-[0_28px_90px_rgba(0,0,0,0.3)] backdrop-blur-xl md:p-5 lg:p-4"
           initial={{ opacity: 0, y: 28 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.85, delay: 0.2 }}
@@ -321,34 +562,34 @@ function ProjectsUnderpinnedByRow({
 
   return (
     <motion.div
-      className="grid gap-3 rounded-[1.65rem] border border-white/12 bg-black/18 p-3 shadow-[0_24px_90px_rgba(0,0,0,0.22)] backdrop-blur-xl lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:items-center lg:p-4"
+      className="projects-underpinned-row rounded-[1.65rem] border border-white/12 bg-black/18 p-3 shadow-[0_24px_90px_rgba(0,0,0,0.22)] backdrop-blur-xl lg:p-4"
       initial={{ opacity: 0, y: 26 }}
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.75, ease: [0.25, 0.1, 0.25, 1] }}
       viewport={{ once: true, margin: '-80px' }}
     >
-      <div className="flex min-w-0 flex-wrap gap-2">
+      <div className="projects-underpinned-chip-group projects-underpinned-chip-group--selfware">
         {featuredSelfware.map((project) => (
           <span
             key={`featured-selfware-${project.projectName}`}
-            className="rounded-full border border-white/10 bg-white/[0.07] px-3 py-2 text-xs text-white/70"
+            className="projects-underpinned-chip projects-underpinned-chip--selfware"
           >
             {project.projectName}
           </span>
         ))}
       </div>
-      <div className="hidden items-center gap-2 px-3 text-[0.58rem] uppercase tracking-[0.2em] text-white/34 lg:flex">
-        <span className="h-px w-10 bg-white/18" />
-        underpinned by
-        <span className="h-px w-10 bg-white/18" />
+      <div className="projects-underpinned-divider hidden items-center gap-2 px-3 text-[0.58rem] uppercase tracking-[0.2em] lg:flex">
+        <span className="projects-underpinned-line h-px w-10" />
+        <span className="projects-underpinned-label">underpinned by</span>
+        <span className="projects-underpinned-line h-px w-10" />
       </div>
-      <div className="flex min-w-0 flex-wrap gap-2 lg:justify-end">
+      <div className="projects-underpinned-chip-group projects-underpinned-chip-group--tools">
         {featuredTools.map((project) => (
           <span
             key={`featured-tool-${project.projectName}`}
-            className="rounded-full border border-[#b9cad8]/20 bg-[#b9cad8]/10 px-3 py-2 text-xs text-white/72"
+            className="projects-underpinned-chip projects-underpinned-chip--tool"
           >
-            {project.projectName}
+            {getUnderpinnedToolLabel(project)}
           </span>
         ))}
       </div>
@@ -370,18 +611,53 @@ function CinematicProjectVisual({
   const generatedArtwork =
     tone === 'tool' ? toolGeneratedArtwork[project.projectName] : selfwareGeneratedArtwork[project.projectName];
   const image = generatedArtwork ?? (isPlaceholderValue(project.mainPictureGif) ? undefined : project.mainPictureGif);
+  const carouselImages = tone === 'product' ? selfwareCarouselArtwork[project.projectName] : undefined;
+  const video = tone === 'product' ? selfwareVideoArtwork[project.projectName] : undefined;
   const gradientStops =
     tone === 'tool'
       ? ['rgba(48,85,120,0.86)', 'rgba(9,19,32,0.92)', 'rgba(220,235,247,0.48)']
       : ['rgba(104,137,170,0.82)', 'rgba(8,18,32,0.86)', 'rgba(255,255,255,0.52)'];
   const panelClassName =
     tone === 'tool'
-      ? 'projects-visual-panel relative aspect-[16/9] min-h-[17rem] overflow-hidden rounded-[1.55rem] border border-white/12 bg-black/34 shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] md:min-h-[20rem]'
-      : 'projects-visual-panel relative min-h-[22rem] overflow-hidden rounded-[2rem] border border-white/12 bg-black/34 shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] md:min-h-[30rem]';
+      ? 'projects-visual-panel relative aspect-[16/10] min-h-[15.2rem] overflow-hidden rounded-[1.55rem] border border-white/12 bg-black/34 shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] md:min-h-[18.4rem]'
+      : 'projects-visual-panel projects-visual-panel--product relative min-h-[18.4rem] overflow-hidden rounded-[2rem] border border-white/12 bg-black/34 shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] md:min-h-[28.8rem]';
 
   return (
     <div className={panelClassName}>
-      {image ? (
+      {carouselImages?.length ? (
+        <>
+          <div
+            className="absolute inset-0"
+            style={{
+              background: `radial-gradient(circle at 24% 18%, ${gradientStops[2]}, transparent 25%), linear-gradient(135deg, ${gradientStops[0]}, ${gradientStops[1]})`,
+            }}
+          />
+          <ProjectMediaCarousel images={carouselImages} projectName={project.projectName} index={index} />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-black/44" />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-black/12" />
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_16%,rgba(255,255,255,0.22),transparent_24%)] mix-blend-screen" />
+        </>
+      ) : video ? (
+        <>
+          <video
+            aria-label={`${project.projectName} project screen recording`}
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+            poster={image}
+            onLoadedData={(event) => {
+              void event.currentTarget.play().catch(() => undefined);
+            }}
+            className="absolute inset-0 h-full w-full object-cover opacity-95"
+          >
+            <source src={video} type="video/webm" />
+          </video>
+          <div className="absolute inset-0 bg-gradient-to-t from-black/22 via-black/8 to-transparent" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_16%,rgba(255,255,255,0.26),transparent_24%)] mix-blend-screen" />
+        </>
+      ) : image ? (
         <>
           <img
             src={image}
@@ -443,72 +719,78 @@ function SelfwareShowcaseCard({
   const liveHref = isPlaceholderValue(project.liveLink) ? undefined : project.liveLink;
   const stickyOffsetRem = 1 + Math.min(index, 4) * 0.62;
   const architectureSummary = getImplementationArchitectureSummary(project);
+  const [isArchitectureExpanded, setIsArchitectureExpanded] = useState(false);
 
   return (
     <div className="relative min-h-0 py-6 md:min-h-[92svh] md:py-10">
       <motion.article
-        className="overflow-hidden rounded-[2.4rem] border border-white/14 bg-[#08111d]/84 p-4 text-white shadow-[0_32px_120px_rgba(0,0,0,0.42)] backdrop-blur-xl sm:p-5 md:sticky md:rounded-[3rem] md:p-8"
+        className="project-showcase-card relative overflow-hidden rounded-[2.4rem] border border-white/16 p-4 text-white shadow-[0_32px_120px_rgba(0,0,0,0.42)] backdrop-blur-2xl sm:p-5 md:sticky md:rounded-[3rem] md:p-8"
         style={{ top: `calc(${stickyOffsetRem}rem + env(safe-area-inset-top))`, zIndex: index + 1, transformOrigin: '50% 0%' }}
-        initial={{ opacity: 0, y: 42 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: Math.min(index * 0.04, 0.18), ease: [0.25, 0.1, 0.25, 1] }}
-        viewport={{ once: true, margin: '-120px' }}
       >
-        <div className="absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-white/46 to-transparent" />
-        <div className="grid gap-6 lg:grid-cols-[0.9fr_1.1fr] lg:items-stretch">
-          <div className="flex min-h-[28rem] flex-col p-2 md:p-3">
-            <div className="mt-3">
-              <div className="flex flex-wrap items-center gap-3">
-                <p className="font-display text-7xl italic leading-none text-white/26 md:text-8xl">
-                  {String(index + 1).padStart(2, '0')}
-                </p>
-                <ProjectCinematicPill>{getProjectTypeLabel(project)}</ProjectCinematicPill>
-              </div>
-              <h3 className="mt-5 text-[clamp(3rem,7vw,7rem)] font-black uppercase leading-[0.84] tracking-[-0.07em] text-white">
-                {project.projectName}
-              </h3>
-              <p className="mt-6 max-w-xl text-base leading-8 text-white/68 md:text-lg">
-                {getProjectDescription(project)}
-              </p>
-            </div>
-
-            <div className="mt-7 rounded-[1.2rem] border border-white/10 bg-black/20 p-4 md:p-5">
-              <p className="text-[0.56rem] uppercase tracking-[0.14em] text-white/36">Architecture</p>
-              <p className="mt-3 text-base font-medium leading-7 text-white/78">{architectureSummary}</p>
-            </div>
-
-            <div className="mt-auto flex flex-wrap items-center gap-3 pt-8">
-              {liveHref ? (
-                <a
-                  href={liveHref}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="project-action-button rounded-full bg-white px-5 text-sm font-medium text-[#07101c] transition duration-300 hover:scale-[1.03] hover:bg-[#dce8f2]"
-                >
-                  Open live →
-                </a>
-              ) : null}
-              {reader ? (
-                <ProjectDeepDiveAttachmentButton projectName={project.projectName} onClick={() => onOpen(reader)} />
-              ) : null}
-            </div>
-          </div>
-
-          <div className="grid content-start gap-4">
-            <CinematicProjectVisual
-              project={project}
-              index={index}
-            />
-            <div className="grid items-start gap-3 md:grid-cols-5">
-              {architectureCards.map((item, itemIndex) => (
-                <div key={`${project.projectName}-stack-${item.label}-${itemIndex}`} className="flex h-[14rem] flex-col overflow-hidden rounded-[1.15rem] border border-white/10 bg-white/[0.06] px-4 pb-4 pt-4">
-                  <p className="text-[0.58rem] uppercase tracking-[0.16em] text-white/40">{item.label}</p>
-                  <p className="mt-3 text-xs leading-5 text-white/72">{item.value}</p>
+        <LayoutGroup id={`project-showcase-${slugifyTitle(project.projectName)}`}>
+          <ProjectShowcaseGlassRefraction />
+          <div className="project-showcase-top-shine absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-white/46 to-transparent" />
+          <div className="project-showcase-layout grid gap-6 lg:grid-cols-[minmax(0,0.88fr)_minmax(0,1.12fr)] lg:items-stretch">
+            <div className="project-showcase-copy flex min-h-[28rem] flex-col p-2 md:p-3">
+              <div className="project-showcase-heading mt-3">
+                <div className="project-showcase-index-row flex flex-wrap items-center gap-3">
+                  <p className="project-showcase-index font-display text-7xl italic leading-none text-white/26 md:text-8xl">
+                    {String(index + 1).padStart(2, '0')}
+                  </p>
                 </div>
-              ))}
+                <h3 className="project-showcase-title mt-5 text-[clamp(3rem,7vw,7rem)] font-black uppercase leading-[0.84] tracking-[-0.07em] text-white">
+                  {getProjectShowcaseTitle(project)}
+                </h3>
+                <p className="project-showcase-description mt-6 max-w-xl text-base leading-8 text-white/68 md:text-lg">
+                  {getProjectDescription(project)}
+                </p>
+              </div>
+
+              <div className="project-showcase-actions flex flex-wrap items-center gap-3">
+                {liveHref ? (
+                  <a
+                    href={liveHref}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="project-action-button rounded-full bg-white px-5 text-sm font-medium text-[#07101c] transition duration-300 hover:scale-[1.03] hover:bg-[#dce8f2]"
+                  >
+                    Open live →
+                  </a>
+                ) : null}
+                {reader ? (
+                  <ProjectDeepDiveAttachmentButton projectName={project.projectName} onClick={() => onOpen(reader)} />
+                ) : null}
+              </div>
             </div>
+
+            <div className="project-showcase-visual-stack grid content-start gap-4">
+              <CinematicProjectVisual
+                project={project}
+                index={index}
+                overlayChips={getProjectTypeChips(project)}
+              />
+            </div>
+
+            <div className="project-showcase-architecture-slot">
+              <ProjectArchitectureRevealCard
+                headerLogo={isArchitectureExpanded ? <ProjectArchitectureHeaderLogo projectName={project.projectName} /> : null}
+                isExpanded={isArchitectureExpanded}
+                onExpandedChange={setIsArchitectureExpanded}
+                summary={architectureSummary}
+              >
+                <div className="project-architecture-layer-grid grid items-stretch gap-3 md:grid-cols-5">
+                  {architectureCards.map((item, itemIndex) => (
+                    <div key={`${project.projectName}-stack-${item.label}-${itemIndex}`} className="project-architecture-layer-card flex h-full flex-col rounded-[1.15rem] border border-white/10 bg-white/[0.06] px-[0.78rem] pb-[0.8rem] pt-[0.78rem]">
+                      <p className="text-[0.58rem] uppercase tracking-[0.16em] text-white/40">{item.label}</p>
+                      <p className="project-architecture-layer-card__value mt-2 text-[0.66rem] leading-[1.44] text-white/72">{item.value}</p>
+                    </div>
+                  ))}
+                </div>
+              </ProjectArchitectureRevealCard>
+            </div>
+            {!isArchitectureExpanded ? <ProjectShowcaseLogoBadge projectName={project.projectName} /> : null}
           </div>
-        </div>
+        </LayoutGroup>
       </motion.article>
     </div>
   );
@@ -523,7 +805,7 @@ export function SelfwareStickyStack({
 }) {
   return (
     <section id="projects-selfware" className="relative px-5 py-16 sm:px-8 md:px-12 lg:px-16">
-      <div className="mx-auto max-w-[1500px]">
+      <div className="relative z-10 mx-auto max-w-[1500px]">
         <div className="mb-8 flex flex-col gap-4 md:mb-12 md:flex-row md:items-end md:justify-between">
           <div>
             <p className="text-xs uppercase tracking-[0.3em] text-white/44">Part 1 / Products</p>
@@ -553,6 +835,7 @@ function ToolConsoleCard({
 }) {
   const reader = getProjectReader(project.projectName);
   const githubHref = isPlaceholderValue(project.githubLink) ? undefined : project.githubLink;
+  const shouldShowTryItOut = project.projectName === 'Mass Social Wisdom Agent';
 
   return (
     <motion.article
@@ -574,14 +857,14 @@ function ToolConsoleCard({
           project={project}
           index={index}
           tone="tool"
-          overlayChips={[getProjectTypeLabel(project)]}
+          overlayChips={getProjectTypeChips(project)}
         />
 
         <div className="max-w-3xl">
           <p className="text-sm leading-6 text-white/64 md:text-[0.95rem] md:leading-7">{getProjectDescription(project)}</p>
         </div>
 
-        <div className="mt-auto flex flex-wrap items-center gap-3 pt-3">
+        <div className="-mt-3 flex flex-wrap items-center justify-end gap-3">
           {githubHref ? (
             <a
               href={githubHref}
@@ -592,8 +875,13 @@ function ToolConsoleCard({
               View on GitHub →
             </a>
           ) : null}
-          {reader ? (
-            <ProjectDeepDiveAttachmentButton projectName={project.projectName} onClick={() => onOpen(reader)} />
+          {reader && shouldShowTryItOut ? (
+            <ProjectDeepDiveAttachmentButton
+              projectName={project.projectName}
+              label="Try it out"
+              title="Try it out"
+              onClick={() => onOpen(reader)}
+            />
           ) : null}
         </div>
       </div>
@@ -682,33 +970,52 @@ const oldOperatingStages = ['Idea', 'Design', 'Concept', 'Alpha/Beta', 'Live'] a
 
 const architectureProofFilters = ['All', 'Product', 'Tool'] as const satisfies readonly ArchitectureProofFilter[];
 
-const aiNativeLoopStages: Array<{ label: string; detail: string; point: CSSProperties }> = [
+type AiNativeLoopStage = {
+  label: string;
+  detail: string;
+  cardPoint: CSSProperties;
+  transitionLabel: string;
+};
+
+const aiNativeLoopStages: AiNativeLoopStage[] = [
   {
     label: 'Talk',
     detail: 'Load intent, taste, constraints, and context before the model acts.',
-    point: { left: '79.1%', top: '29.6%' },
+    cardPoint: { left: '81.5%', top: '31%' },
+    transitionLabel: 'context',
   },
   {
     label: 'Decide',
     detail: 'Use human judgment and governance to choose the next move.',
-    point: { left: '79.1%', top: '70.4%' },
+    cardPoint: { left: '81.5%', top: '70%' },
+    transitionLabel: 'judgment',
   },
   {
     label: 'Build',
     detail: 'Wire models into tools, jobs, outputs, and product surfaces.',
-    point: { left: '50%', top: '85.5%' },
+    cardPoint: { left: '50%', top: '86%' },
+    transitionLabel: 'artifact',
   },
   {
     label: 'Observe',
     detail: 'Read traces, failures, quality, user behavior, and cost.',
-    point: { left: '20.9%', top: '70.4%' },
+    cardPoint: { left: '18.5%', top: '70%' },
+    transitionLabel: 'signals',
   },
   {
     label: 'Iterate',
     detail: 'Feed what was learned back into all five layers.',
-    point: { left: '20.9%', top: '29.6%' },
+    cardPoint: { left: '18.5%', top: '31%' },
+    transitionLabel: 'learning',
   },
 ];
+
+const aiNativeLoopOrbits = [
+  { radius: 34, duration: '21s', delay: '-2.1s', dotSize: '0.42rem', strokeOpacity: 0.1, traceOpacity: 0.1 },
+  { radius: 28, duration: '17s', delay: '-7.4s', dotSize: '0.46rem', strokeOpacity: 0.12, traceOpacity: 0.12 },
+  { radius: 22, duration: '13s', delay: '-4.8s', dotSize: '0.5rem', strokeOpacity: 0.14, traceOpacity: 0.14 },
+  { radius: 16, duration: '9.5s', delay: '-1.8s', dotSize: '0.54rem', strokeOpacity: 0.16, traceOpacity: 0.16 },
+] as const;
 
 const triangleWidths = ['34%', '49%', '64%', '79%', '94%'] as const;
 
@@ -869,7 +1176,7 @@ function OperatingLoopDiagram() {
     <motion.article
       aria-describedby="architecture-loop-description"
       aria-labelledby="architecture-loop-title"
-      className="relative min-h-0 overflow-hidden rounded-[2.2rem] border border-white/12 bg-black/20 p-5 shadow-[0_34px_120px_rgba(0,0,0,0.28)] backdrop-blur-2xl md:min-h-[34rem] md:p-7"
+      className="relative min-h-0 overflow-hidden rounded-[2.2rem] border border-white/12 bg-black/20 p-5 pt-8 shadow-[0_34px_120px_rgba(0,0,0,0.28)] backdrop-blur-2xl md:min-h-[34rem] md:p-7 md:pt-10"
       initial={{ opacity: 0, y: 28 }}
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.7 }}
@@ -884,6 +1191,8 @@ function OperatingLoopDiagram() {
           </h3>
           <p id="architecture-loop-description" className="sr-only">
             The AI-native operating loop moves through Talk, Decide, Build, Observe, and Iterate, replacing a fixed linear product process with repeated learning.
+            Context moves from Talk to Decide, judgment moves from Decide to Build, artifacts move from Build to Observe,
+            signals move from Observe to Iterate, and learning moves from Iterate back into Talk.
           </p>
         </div>
         <span className="rounded-full border border-white/12 bg-white/[0.06] px-3 py-1.5 text-[0.58rem] uppercase tracking-[0.15em] text-white/46">
@@ -893,83 +1202,116 @@ function OperatingLoopDiagram() {
 
       <div data-architecture-mobile-loop="true" className="relative z-10 mt-6 grid gap-2 md:hidden">
         {aiNativeLoopStages.map((stage, index) => (
-          <motion.div
-            key={`ai-native-mobile-loop-${stage.label}`}
-            className="grid grid-cols-[2.4rem_minmax(0,1fr)] gap-3 rounded-[1.1rem] border border-white/12 bg-white/[0.055] p-3"
-            initial={{ opacity: 0, x: -12 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.42, delay: index * 0.055 }}
-            viewport={{ once: true, margin: '-60px' }}
-          >
-            <span className="flex h-9 w-9 items-center justify-center rounded-full border border-[#ff4f3f]/40 bg-[#ff4f3f]/14 text-[0.6rem] font-semibold text-[#ffb3ac]">
-              {String(index + 1).padStart(2, '0')}
+          <div key={`ai-native-mobile-loop-${stage.label}`} className="grid gap-2">
+            <motion.div
+              className="grid grid-cols-[2.4rem_minmax(0,1fr)] gap-3 rounded-[1.1rem] border border-white/12 bg-white/[0.055] p-3"
+              initial={{ opacity: 0, x: -12 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.42, delay: index * 0.055 }}
+              viewport={{ once: true, margin: '-60px' }}
+            >
+              <span className="flex h-9 w-9 items-center justify-center rounded-full border border-white/18 bg-white/[0.06] text-[0.6rem] font-semibold text-white/68">
+                {String(index + 1).padStart(2, '0')}
+              </span>
+              <span className="min-w-0">
+                <span className="block text-sm font-semibold text-white">{stage.label}</span>
+                <span className="mt-1 block text-xs leading-5 text-white/56">{stage.detail}</span>
+              </span>
+            </motion.div>
+            <span className="ml-12 w-fit rounded-full border border-white/14 bg-white/[0.055] px-2.5 py-1 text-[0.54rem] uppercase tracking-[0.13em] text-white/56">
+              {stage.transitionLabel} →
             </span>
-            <span className="min-w-0">
-              <span className="block text-sm font-semibold text-white">{stage.label}</span>
-              <span className="mt-1 block text-xs leading-5 text-white/56">{stage.detail}</span>
-            </span>
-          </motion.div>
+          </div>
         ))}
       </div>
 
       <div data-architecture-desktop-loop="true" className="relative z-10 mx-auto mt-6 hidden aspect-square max-w-[31rem] md:block">
-        <motion.div
+        <svg
           aria-hidden="true"
-          className="absolute inset-[14.5%] rounded-full border border-[#ff4f3f]/20"
-          animate={shouldReduceMotion ? undefined : { rotate: 360 }}
-          transition={{ duration: 38, repeat: Infinity, ease: 'linear' }}
+          className="absolute inset-0 z-0 overflow-visible"
+          viewBox="0 0 100 100"
+          preserveAspectRatio="xMidYMid meet"
         >
-          <span className="absolute left-1/2 top-0 h-3 w-3 -translate-x-1/2 -translate-y-1/2 rounded-full border border-[#ff4f3f]/70 bg-[#ff4f3f]/80 shadow-[0_0_26px_rgba(255,79,63,0.48)]" />
-          <span className="absolute bottom-[12%] right-[4%] h-2.5 w-2.5 rounded-full border border-[#ff4f3f]/55 bg-[#ff4f3f]/55 shadow-[0_0_22px_rgba(255,79,63,0.38)]" />
-        </motion.div>
-        {[0, 1, 2, 3].map((ring) => (
-          <motion.div
-            key={`ai-native-loop-ring-${ring}`}
-            className="absolute rounded-full border border-white/12"
-            style={{
-              inset: `${ring * 11}%`,
-              opacity: 0.68 - ring * 0.11,
-            }}
-            animate={shouldReduceMotion ? undefined : { opacity: [0.5 - ring * 0.07, 0.72 - ring * 0.1, 0.5 - ring * 0.07] }}
-            transition={{ duration: 5.5 + ring * 0.7, repeat: Infinity, ease: 'easeInOut' }}
-          />
+          {aiNativeLoopOrbits.map((orbit) => (
+            <circle
+              key={`ai-native-loop-svg-ring-${orbit.radius}`}
+              data-ai-native-loop-ring="true"
+              cx="50"
+              cy="50"
+              r={orbit.radius}
+              fill="none"
+              stroke={`rgba(230, 237, 244, ${orbit.strokeOpacity})`}
+              strokeWidth="0.42"
+            />
+          ))}
+        </svg>
+        {aiNativeLoopOrbits.map((orbit) => (
+          <div
+            key={`ai-native-loop-orbit-${orbit.radius}`}
+            data-ai-native-loop-marker="true"
+            aria-hidden="true"
+            className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2"
+            style={{ height: `${orbit.radius * 2}%`, width: `${orbit.radius * 2}%` }}
+          >
+            <div
+              className="architecture-loop-orbit-spinner relative h-full w-full"
+              style={{
+                animationDuration: orbit.duration,
+                animationDelay: orbit.delay,
+              }}
+            >
+              <span
+                data-ai-native-loop-trace="true"
+                className="absolute inset-0 rounded-full"
+                style={{
+                  opacity: orbit.traceOpacity,
+                  background:
+                    'conic-gradient(from -90deg, transparent 0deg, transparent 310deg, rgba(230,237,244,0.24) 338deg, rgba(230,237,244,0.9) 352deg, transparent 360deg)',
+                  WebkitMask:
+                    'radial-gradient(farthest-side, transparent calc(100% - 2.4px), #000 calc(100% - 1.7px), #000 calc(100% - 0.9px), transparent 100%)',
+                  mask:
+                    'radial-gradient(farthest-side, transparent calc(100% - 2.4px), #000 calc(100% - 1.7px), #000 calc(100% - 0.9px), transparent 100%)',
+                }}
+              />
+              <span
+                data-ai-native-loop-dot="true"
+                className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2"
+                style={{ height: orbit.dotSize, width: orbit.dotSize }}
+              >
+                <span className="absolute inset-[-0.22rem] rounded-full border border-white/16 bg-white/8 blur-[0.4px]" />
+                <span className="absolute inset-0 rounded-full border border-white/80 bg-[#e6edf4] shadow-[0_0_12px_rgba(230,237,244,0.36)]" />
+              </span>
+            </div>
+          </div>
         ))}
         <motion.div
-          className="absolute left-1/2 top-1/2 flex h-28 w-28 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-white/14 bg-white/[0.075] text-center text-[0.62rem] uppercase tracking-[0.17em] text-white/58 backdrop-blur-xl"
+          className="absolute left-1/2 top-1/2 z-20 flex h-28 w-28 -translate-x-1/2 -translate-y-1/2 flex-col items-center justify-center rounded-full border border-white/14 bg-white/[0.075] text-center text-[0.56rem] uppercase tracking-[0.15em] text-white/58 backdrop-blur-xl"
           animate={shouldReduceMotion ? undefined : { boxShadow: ['0 0 0 rgba(137,170,204,0)', '0 0 44px rgba(137,170,204,0.18)', '0 0 0 rgba(137,170,204,0)'] }}
           transition={{ duration: 5.2, repeat: Infinity, ease: 'easeInOut' }}
         >
-          Product OS
+          <span>Product OS</span>
+          <span className="mt-1 text-[0.42rem] tracking-[0.12em] text-white/34">process layer</span>
         </motion.div>
         {aiNativeLoopStages.map((stage, index) => (
           <div
             key={`ai-native-loop-anchor-${stage.label}`}
-            className="absolute -translate-x-1/2 -translate-y-1/2"
-            style={stage.point}
+            data-ai-native-loop-card="true"
+            className="absolute z-20 -translate-x-1/2 -translate-y-1/2"
+            style={stage.cardPoint}
           >
             <motion.div
               className="w-[9.75rem] rounded-[1.15rem] border border-white/12 bg-[#111923]/88 p-3 shadow-[0_18px_50px_rgba(0,0,0,0.28)] backdrop-blur-xl"
               initial={{ opacity: 0, scale: 0.92 }}
               whileInView={{ opacity: 1, scale: 1 }}
-              animate={
-                shouldReduceMotion
-                  ? undefined
-                  : {
-                      y: [0, -4, 0],
-                      borderColor: ['rgba(255,255,255,0.12)', 'rgba(255,79,63,0.34)', 'rgba(255,255,255,0.12)'],
-                    }
-              }
               transition={{
                 opacity: { duration: 0.42, delay: index * 0.07 },
                 scale: { duration: 0.42, delay: index * 0.07 },
-                y: { duration: 5, delay: index * 0.35, repeat: Infinity, ease: 'easeInOut' },
-                borderColor: { duration: 5, delay: index * 0.35, repeat: Infinity, ease: 'easeInOut' },
               }}
               viewport={{ once: true, margin: '-80px' }}
-              whileHover={{ scale: 1.035, y: -6 }}
+              whileHover={{ scale: 1.025, y: -3 }}
             >
               <div className="flex items-center gap-2">
-                <span className="flex h-7 w-7 items-center justify-center rounded-full border border-[#ff4f3f]/45 bg-[#ff4f3f]/18 text-[0.58rem] font-semibold text-[#ffb3ac]">
+                <span className="flex h-7 w-7 items-center justify-center rounded-full border border-white/18 bg-white/[0.06] text-[0.58rem] font-semibold text-white/68">
                   {String(index + 1).padStart(2, '0')}
                 </span>
                 <p className="text-sm font-semibold text-white">{stage.label}</p>
@@ -1112,10 +1454,10 @@ function LayerProofMatrix({
   const activeFilterCountLabel = getArchitectureProofFilterCountLabel(activeFamily);
   const proofCardGridClass =
     activeFamily === 'All'
-      ? 'grid auto-rows-fr gap-3 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4'
+      ? 'grid gap-3 sm:auto-rows-fr sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4'
       : activeFamily === 'Tool'
-        ? 'grid auto-rows-fr gap-3 sm:grid-cols-2 xl:grid-cols-4'
-      : 'grid auto-rows-fr gap-3 sm:grid-cols-2 xl:grid-cols-3';
+        ? 'grid gap-3 sm:auto-rows-fr sm:grid-cols-2 xl:grid-cols-4'
+      : 'grid gap-3 sm:auto-rows-fr sm:grid-cols-2 xl:grid-cols-3';
 
   return (
     <div
@@ -1242,7 +1584,7 @@ function LayerProofMatrix({
                             role="listitem"
                             aria-label={`${system.project.projectName} ${layer.layer} layer example`}
                             layout
-                            className={`flex h-full min-h-[9.75rem] flex-col rounded-[1.05rem] border p-4 md:min-h-[10.25rem] ${
+                            className={`flex min-h-0 flex-col rounded-[1.05rem] border p-3 sm:h-full sm:min-h-[9.75rem] sm:p-4 md:min-h-[10.25rem] ${
                               system.family === 'Product'
                                 ? 'border-white/12 bg-white/[0.065]'
                                 : 'border-[#89AACC]/22 bg-[#89AACC]/[0.085]'
@@ -1270,7 +1612,7 @@ function LayerProofMatrix({
                                 {system.code}
                               </span>
                             </div>
-                            <p className="mt-4 text-xs leading-5 text-white/62">
+                            <p className="mt-2 text-xs leading-5 text-white/62 sm:mt-4">
                               {getProjectLayerSummary(system.project, layerLabel, index)}
                             </p>
                           </motion.div>
@@ -1309,13 +1651,13 @@ function ArchitectureCTA({
       transition={{ duration: 0.62 }}
       viewport={{ once: true, margin: '-80px' }}
     >
-      <div className="relative overflow-hidden rounded-[1.7rem] border border-[#6e8bff]/24 bg-[#6e8bff]/[0.06] p-5 backdrop-blur-xl md:px-6 md:py-5">
+      <div className="architecture-thesis-card relative overflow-hidden rounded-[1.7rem] border border-[#6e8bff]/24 bg-[#6e8bff]/[0.06] p-5 backdrop-blur-xl md:px-6 md:py-5">
         <motion.div
           aria-hidden="true"
           className="absolute inset-x-0 bottom-0 h-px origin-left bg-gradient-to-r from-[#89AACC]/0 via-[#89AACC]/80 to-white/0"
           style={{ scaleX: thesisProgress }}
         />
-        <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
+        <div className="architecture-thesis-grid grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,38rem)] lg:items-stretch">
           <div>
             <p className="text-[0.58rem] uppercase tracking-[0.17em] text-[#9fb6cf]">The thesis</p>
             <p id="architecture-thesis-title" className="mt-2 text-2xl font-semibold tracking-[-0.04em] text-white">
@@ -1335,13 +1677,26 @@ function ArchitectureCTA({
             </p>
           </div>
           {osReader ? (
-            <div className="justify-self-start lg:justify-self-end [&_.hero-thesis-glass-button]:text-white [&_.hero-thesis-glass-button_*]:text-white">
-              <GlassImprintCta
-                label="Read the thesis"
-                ariaLabel="Read the AI-Native Product OS thesis"
-                onClick={() => onOpen(osReader)}
-                className="hero-thesis-glass-button--thesis text-white"
-              />
+            <div className="architecture-thesis-action-cluster justify-self-start lg:justify-self-end">
+              <div className="architecture-thesis-image-frame" aria-hidden="true">
+                <img src={aiNativeProductOsThesisPortraitUrl} alt="" loading="lazy" />
+              </div>
+              <div className="architecture-thesis-cta-stack">
+                <GlassImprintCta
+                  label="Read the thesis"
+                  ariaLabel="Read the AI-Native Product OS thesis"
+                  onClick={() => onOpen(osReader)}
+                  className="projects-thesis-glass-button"
+                />
+                <a
+                  href={aiNativeProductOsGithubHref}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="architecture-thesis-install-button project-action-button rounded-full bg-white px-5 text-sm font-medium text-[#07101c] transition duration-300 hover:scale-[1.03] hover:bg-[#dce8f2]"
+                >
+                  Install the OS
+                </a>
+              </div>
             </div>
           ) : null}
         </div>
@@ -1505,9 +1860,12 @@ function FeaturedProject({
       ? dreamseaHomepageScreenUrl
       : selfwareGeneratedArtwork[project.projectName] ??
         (isPlaceholderValue(project.mainPictureGif) ? undefined : project.mainPictureGif);
+  const screenVideo = project.projectName === 'Dreamsea' ? dreamseaIphoneRecordingUrl : undefined;
   const poster =
-    selfwareGeneratedArtwork[project.projectName] ??
-    (isPlaceholderValue(project.mainPictureGif) ? undefined : project.mainPictureGif);
+    project.projectName === 'Dreamsea'
+      ? dreamseaHomepageScreenUrl
+      : selfwareGeneratedArtwork[project.projectName] ??
+        (isPlaceholderValue(project.mainPictureGif) ? undefined : project.mainPictureGif);
   const visualRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: visualRef, offset: ['start end', 'end start'] });
   const parallaxY = useTransform(scrollYProgress, [0, 1], ['-5%', '5%']);
@@ -1529,9 +1887,10 @@ function FeaturedProject({
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_32%,rgba(110,139,255,0.22),transparent_62%)]" />
               {visual ? (
                 <motion.div style={{ y: parallaxY }} className="absolute inset-0 flex items-center justify-center p-6 md:p-10">
-                  <div style={{ height: '88%', aspectRatio: '0.47' }}>
+                  <div style={{ height: '117%', aspectRatio: '0.47', transform: 'translateY(6%)' }}>
                     <IPhone3D
                       screenSrc={visual}
+                      screenVideoSrc={screenVideo}
                       poster={poster ?? visual}
                       ariaLabel={`${project.projectName} shown on a rotating 3D iPhone`}
                     />
@@ -1539,17 +1898,14 @@ function FeaturedProject({
                 </motion.div>
               ) : null}
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent lg:bg-gradient-to-r lg:from-transparent lg:to-[#08111d]/26" />
-              <ProjectVisualChipOverlay chips={[getProjectTypeLabel(project)]} />
+              <ProjectVisualChipOverlay chips={getProjectTypeChips(project)} />
             </div>
             <div className="flex flex-col justify-center gap-6 p-8 md:p-12">
               <h3 className="text-[clamp(3rem,6vw,5.6rem)] font-black uppercase leading-[0.84] tracking-[-0.06em] text-white">
                 {project.projectName}
               </h3>
               <p className="max-w-xl text-base leading-8 text-white/74 md:text-lg">{getProjectDescription(project)}</p>
-              <div className="rounded-[1.2rem] border border-white/10 bg-black/20 p-4 md:p-5">
-                <p className="text-[0.56rem] uppercase tracking-[0.14em] text-white/36">Architecture</p>
-                <p className="mt-3 text-base font-medium leading-7 text-white/78">{architectureSummary}</p>
-              </div>
+              <ProjectArchitectureRevealCard summary={architectureSummary} />
               <div className="flex flex-wrap items-center gap-3 pt-2">
                 {liveHref ? (
                   <a
@@ -1579,13 +1935,26 @@ export function CaseStudyGrid({ onOpen }: { onOpen: (item: CaseStudyEntry) => vo
   const featured = selfware.find((project) => project.projectName === 'Dreamsea') ?? selfware[0];
 
   return (
-    <section id="projects" className="projects-cinematic relative isolate min-h-screen overflow-hidden bg-transparent pb-0 text-white">
-      <ProjectActRail />
-      <ProjectCinematicHero selfware={selfware} tools={tools} layerCount={layerCount} />
-      {featured ? <FeaturedProject project={featured} selfware={selfware} tools={tools} onOpen={onOpen} /> : null}
-      <SelfwareStickyStack projects={selfware} onOpen={onOpen} />
-      <ToolsOperationsBay projects={tools} onOpen={onOpen} />
-      <ArchitectureKernel onOpen={onOpen} />
+    <section
+      id="projects"
+      className="projects-cinematic relative isolate min-h-screen bg-transparent text-white"
+      style={{ paddingBottom: '5svh' }}
+    >
+      <div className="projects-page-content relative z-10">
+        <ProjectActRail />
+        <ProjectCinematicHero selfware={selfware} tools={tools} layerCount={layerCount} />
+        {featured ? <FeaturedProject project={featured} selfware={selfware} tools={tools} onOpen={onOpen} /> : null}
+        <div className="projects-build-aurora-zone relative isolate">
+          <div className="projects-build-aurora-canvas" aria-hidden="true">
+            <Aurora colorStops={['#07101c', '#f4fef2', '#08111d']} amplitude={1} blend={1} speed={0.58} />
+          </div>
+          <div className="relative z-10">
+            <SelfwareStickyStack projects={selfware} onOpen={onOpen} />
+            <ToolsOperationsBay projects={tools} onOpen={onOpen} />
+          </div>
+        </div>
+        <ArchitectureKernel onOpen={onOpen} />
+      </div>
     </section>
   );
 }

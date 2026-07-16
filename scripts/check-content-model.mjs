@@ -46,7 +46,7 @@ const expectedNav = [
   ["Hero", "hero"],
   ["Experience & Education", "experience-education"],
   ["Projects", "projects"],
-  ["Teaching, Speaking & Writing", "teaching-speaking-writing"],
+  ["Teaching, Speaking & Writing", "thoughts"],
   ["Contact", "contact"],
   ["Bonus", "bonus"],
   ["AI Ramin", "ai-ramin"],

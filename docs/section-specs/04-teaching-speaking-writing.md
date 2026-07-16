@@ -6,21 +6,21 @@ Group Ramin's public thought leadership, courses, talks, books, articles, thesis
 
 ## Public Anchor
 
-- `teaching-speaking-writing`
+- `thoughts`
 
 ## Navigation Spec
 
 - Bottom nav label: `Thoughts`
-- Nav target: `teaching-speaking-writing`
+- Nav target: `thoughts`
 - Icon: `thoughts`
 - Current implementation: selected through the shared bottom liquid-glass `BottomNavigation`.
-- On selection, `activeSection` becomes `teaching-speaking-writing`, the hash becomes `#teaching-speaking-writing`, and `ActivePortfolioSection` mounts only `TeachingWritingShelf`.
+- On selection, `activeSection` becomes `thoughts`, the URL becomes `/thoughts`, and `ActivePortfolioSection` mounts only `TeachingWritingShelf`.
 - `Thoughts` is only the short bottom-nav display label; the underlying section remains `Teaching, Speaking & Writing`.
 - Teaching, Speaking, Books, Articles, AI-Native Product OS, and Case Studies are internal sub-categories, not separate top-level nav targets.
 
 ## Current Implementation Files
 
-- `src/App.tsx`: mounts `TeachingWritingShelf` for `teaching-speaking-writing` and passes the shared reader open handler
+- `src/App.tsx`: mounts `TeachingWritingShelf` for `thoughts` and passes the shared reader open handler
 - `src/components/TeachingWritingShelf.tsx`: thought section layout, rails, cards, diagrams, writing rows
 - `src/data/portfolio.ts`: teaching, speaking, writing, thesis, article, and case-study content
 
@@ -50,7 +50,7 @@ The current section is built from these primary components:
 
 ## Current Section UX
 
-- The section uses `id="teaching-speaking-writing"`.
+- The section uses `id="thoughts"`.
 - Content is constrained to a wide portfolio layout with a sticky left rail and larger right content column.
 - The left rail uses a strong liquid-glass panel with:
   - `04 / Thoughts`

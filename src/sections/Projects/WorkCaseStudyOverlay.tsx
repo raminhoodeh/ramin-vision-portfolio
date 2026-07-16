@@ -35,7 +35,7 @@ export function WorkCaseStudyOverlay({ item, onClose }: { item: WorkItem; onClos
 
   return (
     <motion.div
-      className="fixed inset-0 z-[100] overflow-y-auto px-3 py-3 text-text-primary sm:px-5 sm:py-5"
+      className="portfolio-deep-dive-overlay fixed inset-0 z-[100] overflow-y-auto px-3 py-3 text-text-primary sm:px-5 sm:py-5"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -44,13 +44,13 @@ export function WorkCaseStudyOverlay({ item, onClose }: { item: WorkItem; onClos
       <button
         type="button"
         aria-label="Close project case study"
-        className="absolute inset-0 bg-bg/20 backdrop-blur-[3px]"
+        className="portfolio-deep-dive-backdrop absolute inset-0 bg-bg/20 backdrop-blur-[3px]"
         onClick={onClose}
       />
 
       <motion.article
         layoutId={`work-case-${item.title}`}
-        className="relative mx-auto grid min-h-[calc(100svh-1.5rem)] max-w-[1320px] gap-4 lg:h-[calc(100svh-2.5rem)] lg:min-h-0 lg:grid-cols-[0.9fr_1.1fr] lg:overflow-hidden"
+        className="portfolio-deep-dive-shell relative mx-auto grid min-h-[calc(100svh-1.5rem)] max-w-[1320px] gap-4 lg:h-[calc(100svh-2.5rem)] lg:min-h-0 lg:grid-cols-[0.9fr_1.1fr] lg:overflow-hidden"
       >
         <div className="deep-dive-support-rail project-deep-dive-scroll liquid-glass-strong flex min-h-[58vh] flex-col overflow-hidden rounded-[2rem] lg:h-full lg:min-h-0 lg:overflow-y-auto">
           <div className="relative min-h-[280px] flex-1 bg-[radial-gradient(circle_at_30%_18%,rgba(255,255,255,0.78),rgba(187,210,230,0.45)_38%,rgba(77,106,136,0.55)_100%)]">
@@ -135,8 +135,8 @@ export function WorkCaseStudyOverlay({ item, onClose }: { item: WorkItem; onClos
           </div>
         </div>
 
-        <div className="liquid-glass-strong flex flex-col rounded-[2rem] p-6 md:p-8 lg:min-h-0 lg:overflow-hidden">
-          <div className="flex shrink-0 items-start justify-between gap-5">
+        <div className="portfolio-deep-dive-reader-panel liquid-glass-strong flex flex-col rounded-[2rem] p-6 md:p-8 lg:min-h-0 lg:overflow-hidden">
+          <div className="portfolio-deep-dive-header flex shrink-0 items-start justify-between gap-5">
             <div>
               <p className="text-xs uppercase tracking-[0.3em] text-muted">Case Study</p>
               <p className="mt-2 text-xs uppercase tracking-[0.22em] text-muted">
@@ -146,7 +146,7 @@ export function WorkCaseStudyOverlay({ item, onClose }: { item: WorkItem; onClos
             <button
               type="button"
               onClick={onClose}
-              className="liquid-glass-control rounded-full px-5 py-3 text-sm text-text-primary transition-transform duration-300 hover:scale-105"
+              className="portfolio-deep-dive-inline-close liquid-glass-control rounded-full px-5 py-3 text-sm text-text-primary transition-transform duration-300 hover:scale-105"
             >
               Close
             </button>

@@ -1,117 +1,91 @@
-# Qadam — Portfolio Write-Up
+# Qadam - Portfolio Write-Up
 
-# Qadam
+## Problem
 
-## Catalyst-Driven Macro Intelligence Platform
+I started Qadam when I realised something had changed in software. For most of my life, building a serious intelligent trading system would have needed a full engineering team. Data engineers. Backend engineers. Quant researchers. Frontend engineers. DevOps. A whole room of people just to wire together the infrastructure before you even got to the trading logic.
 
----
+But with the new AI coding tools, I could suddenly build systems that were more complex than anything I would have attempted before. And because my product work had exposed me to APIs across geospatial, climate, automotive, finance, and other industries, I knew how much useful data was sitting out there, disconnected.
 
-# 1. Problem
+That was the spark. Could I build a transparent, self-improving paper-trading system that spots patterns across data sources that are usually never compared, maps those patterns to strategies I had learned from successful trader friends, and tests them with paper money in the real world? Qadam became that challenge.
 
-Financial markets are information-processing machines — but they process information reactively. Physical events that will materially move asset prices (a refinery fire detected by satellite, a shipping lane blockage identified via vessel tracking, a surge in military flight activity captured by ADS-B sensors) register in the physical world hours to days before they enter the consensus narrative. During that interval, the options chain still reflects a near-normal probability distribution, systematically underpricing the tail risk that the physical world has already flagged.
+## Architecture
 
-The problem is not the absence of data. The data exists — satellite thermal feeds, maritime AIS streams, conflict-event APIs, dark-pool order flow. The problem is that no single retail-accessible system ingests, triages, and reasons over this data fast enough to act on it before it becomes consensus. By the time a Bloomberg headline runs, the edge has closed.
+### Model
 
-Qadam was built to occupy that window: the gap between physical reality and market awareness.
+The model layer is a small fund team turned into software.
 
----
+A local LLM, Gemma 4, acts like the Research Analyst. It reads noisy inputs and turns them into cleaner research context. A frontier LLM, Gemini 3.5 Pro, acts like the Strategy Lead. It challenges the trade thesis, looks for weak evidence, and asks what would prove the idea wrong. A quantum and classical review layer, Q-CTRL Opal / IBM Quantum, acts like the Head of Quant. That part came from my own curiosity about quantum computers and their promise around nonlinear pattern recognition.
 
-# 2. Architecture
+I wanted to give quantum a real product job in Qadam. Linear pattern recognition can test clean relationships, such as whether one source tends to lead price. Nonlinear review is for messier cases, where the relationship may depend on regime, timing, multiple source combinations, or hidden interaction effects.
 
-Qadam is structured as two distinct but connected layers.
+A Python program sits underneath all of this as the COO. It runs the system. It checks files. It blocks unsafe paths. It writes artifacts. It makes sure no model gets direct broker authority.
 
-**Layer A — The Intelligence Engine** is the cognitive and mathematical stack. It ingests alternative data, reasons over it with a multi-model pipeline, runs quantum-assisted pattern recognition on a weekly batch cadence, and surfaces high-conviction signals with a full, auditable evidence trail.
+### Context
 
-**Layer B — The Orchestration Layer** is the autonomous execution stack. It receives approved signals from Layer A, executes trades within hard-coded risk guardrails on a paper broker account, and manages the human-in-the-loop approval process.
+The context layer is where Qadam gets its edge. It is connected to a broad source universe rather than one market feed. The five major data categories are market and technical data, macro and policy data, geopolitical and physical-world signals, social and narrative data, and institutional or alternative finance data such as filings, Capitol trades, broker paper state, and prediction-market context: 50+ APIs in total.
 
-## The Agent Pipeline (Layer A)
+The point is not to collect APIs for the sake of it. The point is to compare sources that normally sit in different worlds. A geopolitical event might affect oil. A shipping signal might affect supply chains. A Reddit narrative might show retail attention forming before price fully moves. A prediction market might move before traditional media catches up. Capitol trades or filings might create a longer-term thesis. Qadam tries to turn those disconnected signals into structured evidence.
 
-**Gemma 4 — Triage / Noise Gate**
+It then maps that evidence to strategy frameworks inspired by my friends who worked in finance and were successful traders. Their strategies were not random indicator chasing. They were built around patience, catalysts, conviction, confirmation, risk, and knowing when not to trade. That became central to Qadam's strategy layer.
 
-Runs 24/7 locally on the MacBook Air M5 Neural Engine via Apple's MLX framework (4-bit quantised). Monitors 450+ concurrent data streams — Telegram OSINT channels, RSS feeds, Twitter/X, Reddit — and performs binary triage: pass an anomaly up the stack, or discard it. Gemma does not reason; it filters. Events below a dynamic Trust Score threshold are quarantined and logged but never passed to the reasoning layer.
+### Orchestration
 
-**Gemini 3.1 Pro — Strategist / Swarm Engine**
+The orchestration layer turns raw data into decisions. The flow is simple to describe.
 
-Accessed via Google Cloud API. Receives escalated anomalies and performs deep geopolitical reasoning: causal chain analysis, cross-referencing against the Knowledge Graph, and a 100-persona Swarm Simulation where synthetic Hedge Fund Managers, Logistics Experts, Regional Diplomats, and Retail Traders each reason independently about a catalyst's likely market impact. The output is a probability distribution over outcomes — not a single prediction — with a documented Evidence Trail and swarm dissent score. Signals only advance if the thesis-side tail mass exceeds the options chain's implied distribution by 15 percentage points or more.
+Qadam watches sources. It creates evidence packets. It turns those into research goals. It forms hypotheses. It checks those hypotheses against trader-inspired strategy filters. It runs linear and nonlinear pattern review. It routes promising setups into PaperOps. If a setup passes every gate, it can move through the guarded Alpaca Paper route.
 
-**Quantum Engine — Oracle (Weekly Batch)**
+Then the system watches what happened. Did the trade fill? Did it work? Did it fail? Was the original evidence meaningful? Did the model overread the signal? Did the strategy need adjustment? That loop matters because Qadam is meant to improve from outcomes, not just generate impressive-sounding ideas.
 
-Accessed via IBM Quantum and Q-CTRL cloud APIs on a weekly batch cadence (not real-time). Runs two jobs every Sunday evening. Job 1: a non-linear cross-dataset pattern scan using QAOA circuits, identifying co-occurrence relationships across all five data pipelines that classical correlation matrices miss. Job 2: the Strategy Collapse — identifying the specific option strike, expiry, and structure where the Black-Scholes model is most mispriced against Qadam's estimated true probability. Outputs a Black-Scholes Gap Report and a Quantum Ambiguity Score. If ambiguity exceeds the configured threshold, the system compounds patience rather than capital.
+### Governance
 
-**Python Orchestrator — Nervous System**
+The governance layer is deliberately strict. Qadam is paper-trading first. It does not use live capital. It does not let LLMs touch broker credentials. Its Telegram bot and the dashboard cannot place trades. Backtests and shadow simulations do not count as proof. Missing evidence blocks the system. Stale sources block the system. Duplicate exposure blocks the system.
 
-Built on Python 3.12+ with asyncio and uvloop. The connective tissue of the entire system. Routes every API call, enforces Trust Score rules at every ingestion point, manages all inter-component handoffs, writes every event to an append-only PostgreSQL audit log, monitors all 35 data source heartbeats, and applies Bayesian weight updates after each closed-trade postmortem. The Orchestrator has no intelligence of its own; it follows routing rules defined in a Markdown file and coordinates the rest of the system with deterministic precision.
+This was a product choice. In my view, if a trading system cannot explain why it should act, it should not. Governance is what stops Qadam from becoming a flashy black box and opens up a level of transparency that allows me to better understand and work with Qadam to improve it over time.
 
-## The Data Pipelines (World Monitor)
+### Human
 
-Five specialised pipelines stream raw data into the Orchestrator, each normalised into a unified event schema before any model processes it:
+The human layer is me and my trading friends. I am the product manager; they are the operators, fund managers, and critics of the system. Together, we decide what the system should be allowed to do, inspect the dashboard, and review whether the reasoning is legible. Overall, we shape the strategy universe and judge whether the system is becoming more useful or just more complex.
 
-- **Pipeline A — Geopolitical & Conflict:** ACLED, UCDP, GDELT, Oref (Israeli Home Front Command real-time red alerts). Detects armed conflict escalation and political instability before it enters mainstream news.
-- **Pipeline B — Logistics, Infrastructure & OSINT:** NASA FIRMS (satellite thermal anomaly detection), AIS Maritime APIs (real-time vessel tracking via Spire and MarineTraffic), Wingbits ADS-B (military flight tracking), GPS jamming monitors. The primary physical-to-paper catalyst source.
-- **Pipeline C — Economic & Macro:** FRED, BLS, ECB, UN Comtrade, USGS Earthquake API. Calibrates the magnitude of physical catalysts against the prevailing macro regime.
-- **Pipeline D — Market Microstructure & Order Flow:** UnusualWhales (institutional dark pool activity), Polymarket/Kalshi (prediction market probability shifts), Alpaca (options chain data), Coinglass (crypto derivatives). Detects where institutional capital is positioning before a catalyst is public.
-- **Pipeline E — Social, Sentiment & Narrative:** 435+ RSS/Atom feeds, Telegram scrapers, Twitter/X API, Reddit API, SEC/STOCK Act filings, GitHub API. Measures narrative velocity — how fast a catalyst is becoming consensus — to determine how much edge remains.
+The dashboard is built for that job. It shows the portfolio value, current holdings, trading history, connected data sources, strategy universe, detected patterns, possible trade intents, and the final PaperOps decision. The whole point is that we, or anyone, should be able to look at Qadam and understand what it is thinking. This gives users more reason to trust the system, while giving us enough evidence to challenge it.
 
-## Cross-Cutting Infrastructure
+## Why This Approach
 
-- **Knowledge Graph:** ChromaDB (local) storing every detected catalyst and its eventual market resolution as vector embeddings. Feeds back into Gemini's swarm simulations and the Quantum Engine's pattern recognition. Never purged — the graph is Qadam's most irreplaceable long-term asset.
-- **Event Log:** PostgreSQL + TimescaleDB. Append-only. Every signal, fill, override, and system state change is logged and replayable from this single source of truth.
-- **Risk Agent:** Deterministic Python. Calculates fractional Kelly position sizing and enforces all hard caps before every order. Per-trade maximum: 5% of current bankroll for defined-risk options, 2% for all other instruments. Cannot be bypassed by any other component.
-- **Postmortem Agent:** Analyses every closed trade across five sub-dimensions (catalyst analysis, pricing analysis, regime analysis, execution analysis, override analysis) and updates Bayesian component weights accordingly.
+The easy version of this project would have been a signal bot: connect a few APIs, ask an LLM for trade ideas, show a polished explanation, and maybe add a shiny dashboard.
 
-## The 6-Step Signal Filter
+I wanted something harder and more useful. I wanted to see whether a complex trading system could be built like a thinking machine with receipts. Every observation, hypothesis, strategy match, risk check, paper trade, and postmortem should leave a trail.
 
-Every candidate signal passes five automated layers before it is presented to a human:
+The strategy layer also had to respect how good traders actually behave. My successful trader friends were not successful because they traded constantly. They waited. They looked for catalysts. They cared about timing. They knew that a good story is not the same thing as a trade.
 
-1. IV Suppression: implied volatility percentile below the 20th, relative to the ticker's 3-year baseline
-2. Options Distribution Gap: Black-Scholes Gap Report confirms tail mass differential of 15 percentage points or more
-3. Catalyst Identification: specific, dated catalyst with swarm dissent below 60%
-4. Technical Setup: identifiable structural entry zone, risk-reward ratio of at least 1:3, supportive or neutral market regime
-5. OBV / Volume Intelligence: on-balance volume verdict is confirmatory or neutral — never contradictory
-6. Human Gut Check: Ramin reviews and approves the proposed signal. Every override is logged with a structured reason code and tracked for outcome attribution.
+Qadam tries to encode and democratise that discipline. It looks for patterns across previously uncompared data sources, checks whether those patterns match real trading strategies, and then tests them with paper money before making any stronger claim.
 
----
+The quantum layer fits because markets are not always linear. Sometimes the useful pattern is not "source A moves, asset B follows." Sometimes it is "this kind of source only matters when another source confirms it, during this kind of regime, with this kind of price structure." That is the kind of nonlinear search space that made quantum computing feel worth exploring.
 
-# 3. Why This Approach
+## Tradeoffs
 
-**Local inference for triage, cloud for reasoning, quantum for pattern recognition.** The most obvious alternative was a fully cloud-based architecture — cheap to prototype, easy to scale. The decision against it was deliberate: latency in the triage layer compounds across 450 concurrent streams. Gemma 4 running locally on the M5 Neural Engine sustains throughput that a cloud-API approach cannot, at a cost envelope that stays within a solo operator's budget. Heavy reasoning (Gemini) and mathematical optimisation (Quantum) are the only workloads that justify cloud spend, because their per-call latency is irrelevant at the timescales they operate on.
+Qadam gives up speed for evidence. It could place a higher frequency of paper trades if it treated every interesting signal as actionable, but that would defeat the point. A quiet day is fine if the setup is weak.
 
-**Quantum for weekly batch, not real-time.** The conventional instinct would be to make every component operate in real-time. The Quantum Engine runs once a week by design. Current NISQ hardware has coherence constraints that make real-time quantum computation unreliable for this workload. A weekly batch cadence matches the resolution window of the catalyst types Qadam targets (days to weeks, not seconds) and eliminates the failure modes associated with real-time quantum calls. This is the kind of architectural honesty that separates a production system from a demo.
+I intended for Qadam to give up simplicity for separation of roles. One AI could generate a trade, explain it, and score the risk in one response. Qadam separates research, strategy, quant review, risk, execution, and learning into different modules, run by different hardware, because each stage needs to be challenged on its own and performed by systems that are more optimised for that role.
 
-**Markdown-first agent design.** Each agent in the system is a folder containing one Markdown file (its reasoning instructions, routing logic, and decision rules) and the Python scripts that execute those decisions. The Markdown is the architecture; the Python is the plumbing. Swapping an agent's behaviour means editing a Markdown file — not refactoring a class hierarchy. This makes the system auditable, version-controllable, and replaceable at the component level without touching the orchestration layer.
+Qadam also gives up full autonomy for safety. The models can reason and recommend, but Python enforces the rules. The broker route stays guarded. Live capital stays off for now.
 
-**Demo before live, always.** Deploying to a live account before statistical proof is established is not a bold move — it is a measurement failure. The system is designed to prove its edge on a £1,000 paper account (90 consecutive days, minimum 100 closed trades, Expectancy > 0 at p < 0.05) before any live capital is considered. The paper environment uses the same code path, the same broker API, and the same risk guardrails as the live environment. The only difference is an environment flag.
+It also gives up easy marketing claims. A beautiful backtest is not proof of an edge. A clever quantum review is not proof either. A paper trade that was entered for a clear reason, managed through a real route, and reviewed afterward is much closer to proof.
 
----
+So far, the paper version of Qadam has returned around 20 percent over its first few months. That is promising, but I would still frame it carefully. For me, the most interesting part is whether Qadam can show why the return happened, which decisions helped, which signals were noise, and what should change next.
 
-# 4. Tradeoffs
+## Demo
 
-**Human gate on strategy, not on individual trades.** The operator approves strategy-level decisions and reviews proposed signals at the final filter layer. After approval, the system executes autonomously — no individual trade modifications, no real-time stop adjustments. This removes emotional interference at the trade level while preserving genuine judgment at the strategy level. The tradeoff is that a bad approved signal runs to its defined exit without intervention; the benefit is that the 90-day proof run remains statistically clean and the system is forced to demonstrate edge through process, not discretion.
+Live dashboard: https://qadam.trade/dashboard
 
-**Quantum is a weekly Oracle, not a real-time participant.** All real-time decisions (triage, research, execution) are made by classical components. The tradeoff is that intra-week signals do not benefit from quantum pattern recognition until the next Sunday batch. The benefit is architectural reliability: the system never fails open because a quantum API call timed out.
+The dashboard is public-safe and read-only. It shows Qadam as a real operating system. It starts with the fund and moves chronologically along its train of thought: portfolio value, holdings, exposure, paper trade history, and account state. Then it shows the intelligence layer: sources, categories, freshness, trust, and blockers. Then the strategy layer: which trading strategies exist, which ones are active, which ones are held, and which patterns are being reviewed.
 
-**35 data sources, dynamic Trust Scores, no hard exclusions.** Every source has a Trust Score that degrades when its signals are contradicted by higher-trust sources and recovers when its signals are validated by outcomes. Sources below a threshold of 0.3 are quarantined but retained. The tradeoff is system complexity — 35 heartbeat monitors, 35 failover hierarchies. The benefit is that the data environment improves over time rather than decaying: the Knowledge Graph becomes more accurate, the Trust Score distribution tightens, and the system progressively relies more heavily on sources that have demonstrated predictive value.
+The final sections show what Qadam is thinking about now, and why PaperOps did or did not allow a trade.
 
-**Paper proof phase limits observable alpha.** Running on a £1,000 paper account for 90 days means the system's demonstrated edge accumulates in a simulated environment. Any pattern the market sees is invisible to Qadam's counterparties during this phase — but so is any capital compounding. The tradeoff is accepted deliberately: a system that cannot prove its edge on paper should not be trusted with real capital, regardless of how sophisticated its architecture is.
+## What I Would Improve
 
-**No production governance layer in the current version.** The system has risk guardrails (hard caps, kill-switches, circuit breakers) but does not yet have a comprehensive AI governance layer equivalent to what a regulated fund would require: formal model cards, output classifiers, third-party audit trails. This is acceptable at the paper proof stage and is the primary architectural gap to close before any capital promotion.
+The honest limitation is that Qadam is still proving its edge. The system is already more complex than I originally imagined I could build, so it is already a success in my eyes. It connects a wide data universe, runs trader-inspired strategy filters, performs linear and nonlinear pattern review, submits guarded paper trades, and records what happened afterward. But the next version needs deeper proof.
 
----
+I would expand the historical replay system so Qadam can test its full data universe against its full trading universe. Not source by source. All together. I want to know whether patterns appear across combinations of geopolitical signals, macro data, narrative pressure, prediction markets, filings, technical structure, and price.
 
-# 5. Demo
+I would also improve the evaluation layer around false positives. Qadam needs to get better at knowing when a pattern is real, when it is overfit, when the story is too convenient, and when the quantum or nonlinear layer is really adding value rather than just using quantum for the sake of quantum.
 
-[qadam.trade](http://qadam.trade)
-
-Full specifications, architecture documentation, and the World Monitor Integration Reference are maintained in the project's Notion workspace. The quantum circuit technical specifications (QAOA for pattern recognition, VQE for strategy collapse) are version-controlled alongside the codebase.
-
----
-
-# 6. What I Would Improve
-
-**The evaluation suite is insufficient for a production governance claim.** The current system has risk guardrails and circuit breakers, but no formal eval set for the Intelligence Engine's outputs — no structured set of historical catalyst cases with known outcomes that runs automatically on every model update or Quantum circuit version change. A rigorous eval suite covering at least 50 historical catalyst instances per pipeline category, with documented false-positive rates per source, is the most important addition before the system can be described as production-governed rather than merely guardrailed.
-
-**The Social pipeline Trust Scores are structurally noisy at initialisation.** Telegram OSINT channels and Twitter/X feeds start with low Trust Scores by design, but the backtesting window required to calibrate them accurately is long relative to the demo proof duration. In the first 90 days, the system will make Trust Score decisions on the Social pipeline with less statistical confidence than on the Physical and Market Microstructure pipelines. A synthetic pre-seeding approach — using historical catalyst events to pre-calibrate Social source Trust Scores before the live run begins — would materially improve signal quality in the early demo phase.
-
-**The Quantum Ambiguity Score threshold is hardware-generation-dependent.** The Q_threshold value is calibrated against the current IBM Quantum or Q-CTRL hardware allocation's gate fidelity and qubit coherence time. As quantum hardware improves, the threshold will need recalibration. The current circuit versioning policy handles this, but it introduces a dependency on periodic manual review that a more automated calibration loop would eliminate.
-
-**The web cockpit is the weakest link in the human-in-the-loop design.** The signal review interface (Layer 6 approval) is functional but not optimised for the decision the operator is actually making: does this signal make sense given what I know about the world right now? The ideal cockpit presents the proposed signal alongside a live map of the physical catalysts that generated it, the Knowledge Graph precedents most similar to this cluster, and a one-sentence plain-English synthesis. That level of contextual scaffolding is partially implemented and would significantly improve the quality of the human gate decisions.
+Overall, the best version of Qadam is the one that can look back at a decision and say, in plain English, "Here is what I saw, here is why I acted, here is what proved me right or wrong, and here is what I changed because of it."

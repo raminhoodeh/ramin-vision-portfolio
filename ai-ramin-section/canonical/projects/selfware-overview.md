@@ -19,7 +19,7 @@ Ramin's personal projects are positioned as "selfware": tools that turn personal
 
 - nsso: professional identity operating system with Deity AI profile coach.
 - Dreamsea: AI dream journal and interpretation app.
-- Qadam: catalyst-driven macro intelligence platform.
+- Qadam: macro-intelligence control room with paper-mode fund governance.
 - 24Seven Concierge: catalog-grounded AI travel concierge.
 - Mass Social Wisdom Agent: multimodal social knowledge extraction workflow.
 - RazinFlix: personal film canon and recommendation system.

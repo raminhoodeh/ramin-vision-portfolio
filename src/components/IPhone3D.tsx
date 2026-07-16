@@ -5,6 +5,8 @@ import { iphoneAssetPipeline } from '../three/iphoneAssets';
 export type IPhone3DProps = {
   /** Image URL mapped onto the phone's "Screen" material (portrait app screenshot works best). */
   screenSrc: string;
+  /** Optional video URL mapped onto the phone screen. Uses screenSrc/poster as the fallback still. */
+  screenVideoSrc?: string;
   /** Static fallback shown until the scene is ready or if WebGL/model load fails. */
   poster?: string;
   className?: string;
@@ -19,7 +21,14 @@ export type IPhone3DProps = {
  * and full disposal on unmount. One canvas per instance — keep instances to one at a time
  * to respect the portfolio's visible-canvas-pixel budget.
  */
-export function IPhone3D({ screenSrc, poster, className, ariaLabel, autoRotate = true }: IPhone3DProps) {
+export function IPhone3D({
+  screenSrc,
+  screenVideoSrc,
+  poster,
+  className,
+  ariaLabel,
+  autoRotate = true,
+}: IPhone3DProps) {
   const mountRef = useRef<HTMLDivElement | null>(null);
   const [ready, setReady] = useState(false);
   const [failed, setFailed] = useState(false);
@@ -30,6 +39,8 @@ export function IPhone3D({ screenSrc, poster, className, ariaLabel, autoRotate =
 
     let disposed = false;
     let cleanup: (() => void) | null = null;
+    setReady(false);
+    setFailed(false);
 
     void (async () => {
       try {
@@ -90,15 +101,69 @@ export function IPhone3D({ screenSrc, poster, className, ariaLabel, autoRotate =
         scene.add(group);
 
         let screenTexture: THREE.Texture | null = null;
+        let screenVideo: HTMLVideoElement | null = null;
+        let videoScreenActive = false;
+        const loadImageTexture = async () => {
+          const texture = await new T.TextureLoader().loadAsync(screenSrc);
+          texture.colorSpace = T.SRGBColorSpace;
+          texture.flipY = true;
+          texture.anisotropy = targetAnisotropy;
+          return texture;
+        };
+
         try {
-          screenTexture = await new T.TextureLoader().loadAsync(screenSrc);
-          screenTexture.colorSpace = T.SRGBColorSpace;
-          screenTexture.flipY = true;
-          screenTexture.anisotropy = targetAnisotropy;
+	          if (screenVideoSrc) {
+	            screenVideo = document.createElement('video');
+	            screenVideo.crossOrigin = 'anonymous';
+	            screenVideo.src = screenVideoSrc;
+            screenVideo.muted = true;
+            screenVideo.loop = true;
+            screenVideo.playsInline = true;
+            screenVideo.autoplay = true;
+            screenVideo.preload = 'auto';
+            screenVideo.setAttribute('muted', '');
+            screenVideo.setAttribute('playsinline', '');
+            screenVideo.setAttribute('webkit-playsinline', '');
+            await new Promise<void>((resolve) => {
+              let settled = false;
+              const finish = () => {
+                if (settled) return;
+                settled = true;
+                window.clearTimeout(timeout);
+                screenVideo?.removeEventListener('loadeddata', finish);
+                screenVideo?.removeEventListener('canplay', finish);
+                screenVideo?.removeEventListener('error', finish);
+                resolve();
+              };
+              const timeout = window.setTimeout(finish, 1800);
+              screenVideo?.addEventListener('loadeddata', finish, { once: true });
+              screenVideo?.addEventListener('canplay', finish, { once: true });
+              screenVideo?.addEventListener('error', finish, { once: true });
+              screenVideo?.load();
+            });
+
+            screenTexture = new T.VideoTexture(screenVideo);
+            screenTexture.colorSpace = T.SRGBColorSpace;
+            screenTexture.flipY = true;
+            screenTexture.minFilter = T.LinearFilter;
+            screenTexture.magFilter = T.LinearFilter;
+            screenTexture.generateMipmaps = false;
+            videoScreenActive = true;
+          } else {
+            screenTexture = await loadImageTexture();
+          }
         } catch {
-          screenTexture = null;
+          screenVideo?.pause();
+          screenVideo = null;
+          try {
+            screenTexture = await loadImageTexture();
+            videoScreenActive = false;
+          } catch {
+            screenTexture = null;
+          }
         }
         if (disposed) {
+          screenVideo?.pause();
           screenTexture?.dispose();
           pmrem.dispose();
           envRT.dispose();
@@ -113,6 +178,7 @@ export function IPhone3D({ screenSrc, poster, className, ariaLabel, autoRotate =
 
         const gltf = await gltfLoader.loadAsync(iphoneAssetPipeline.modelUrl);
         if (disposed) {
+          screenVideo?.pause();
           screenTexture?.dispose();
           pmrem.dispose();
           envRT.dispose();
@@ -134,16 +200,27 @@ export function IPhone3D({ screenSrc, poster, className, ariaLabel, autoRotate =
         camera.position.set(0, 0, distance);
         camera.lookAt(0, 0, 0);
 
-        model.traverse((object: THREE.Object3D) => {
-          const mesh = object as THREE.Mesh;
-          if (!mesh.isMesh) return;
-          mesh.castShadow = false;
-          mesh.receiveShadow = false;
-          const material = mesh.material as (THREE.Material & { name?: string }) | undefined;
-          const materialName = (material?.name ?? '').toLowerCase();
-          const meshName = (mesh.name ?? '').toLowerCase();
-          const isScreen = materialName === iphoneAssetPipeline.screenMaterialName || meshName === 'screen';
-          if (isScreen && screenTexture) {
+	        const DYNAMIC_ISLAND_WIDTH_SCALE = 1.34;
+	        const DYNAMIC_ISLAND_LEFT_EXTENSION_FACTOR = 0.14;
+	        let islandMesh: THREE.Mesh | null = null;
+	        let frontCameraMesh: THREE.Mesh | null = null;
+
+	        model.traverse((object: THREE.Object3D) => {
+	          const mesh = object as THREE.Mesh;
+	          if (!mesh.isMesh) return;
+	          mesh.castShadow = false;
+	          mesh.receiveShadow = false;
+	          const material = mesh.material as (THREE.Material & { name?: string }) | undefined;
+	          const materialName = (material?.name ?? '').toLowerCase();
+	          const meshName = (mesh.name ?? '').toLowerCase();
+	          if (meshName === 'island') {
+	            islandMesh = mesh;
+	          }
+	          if (meshName === 'front_camera') {
+	            frontCameraMesh = mesh;
+	          }
+	          const isScreen = materialName === iphoneAssetPipeline.screenMaterialName || meshName === 'screen';
+	          if (isScreen && screenTexture) {
             // The scraped "Screen" mesh ships without UVs (the original screen was untextured),
             // so project planar UVs from its local XY bounds before mapping the app screenshot.
             const geometry = mesh.geometry;
@@ -179,17 +256,150 @@ export function IPhone3D({ screenSrc, poster, className, ariaLabel, autoRotate =
                 texture.anisotropy = targetAnisotropy;
                 texture.needsUpdate = true;
               }
-            });
-          });
-        });
+	            });
+	          });
+	        });
 
-        group.rotation.set(0.04, -0.5, 0);
+        if (islandMesh?.parent) {
+	          const islandGeometry = islandMesh.geometry;
+	          islandGeometry.computeBoundingBox();
+	          const islandBounds = islandGeometry.boundingBox;
+	          if (islandBounds) {
+	            const islandSize = islandBounds.getSize(new T.Vector3());
+	            const islandCenter = islandBounds.getCenter(new T.Vector3());
+	            const height = islandSize.y;
+	            const leftExtension = height * DYNAMIC_ISLAND_LEFT_EXTENSION_FACTOR;
+	            const width = islandSize.x * DYNAMIC_ISLAND_WIDTH_SCALE + leftExtension;
+	            const radius = height / 2;
+	            const x = islandCenter.x - (width - leftExtension) / 2 - leftExtension;
+	            const y = islandCenter.y - height / 2;
+	            const shape = new T.Shape();
+
+	            shape.moveTo(x + radius, y);
+	            shape.lineTo(x + width - radius, y);
+	            shape.quadraticCurveTo(x + width, y, x + width, y + radius);
+	            shape.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+	            shape.lineTo(x + radius, y + height);
+	            shape.quadraticCurveTo(x, y + height, x, y + height - radius);
+	            shape.lineTo(x, y + radius);
+	            shape.quadraticCurveTo(x, y, x + radius, y);
+
+	            const overlayGeometry = new T.ShapeGeometry(shape, 48);
+	            overlayGeometry.translate(0, 0, islandBounds.max.z + 0.0015);
+	            const overlayMaterial = new T.MeshStandardMaterial({
+	              color: new T.Color(0x050505),
+	              emissive: new T.Color(0x010101),
+	              emissiveIntensity: 0.24,
+	              roughness: 0.26,
+	              metalness: 0,
+	              side: T.DoubleSide,
+	            });
+	            const islandOverlay = new T.Mesh(overlayGeometry, overlayMaterial);
+	            islandOverlay.name = 'DynamicIslandOverlay';
+	            islandOverlay.position.copy(islandMesh.position);
+	            islandOverlay.quaternion.copy(islandMesh.quaternion);
+	            islandOverlay.scale.copy(islandMesh.scale);
+	            islandOverlay.renderOrder = 2;
+	            islandMesh.visible = false;
+	            islandMesh.parent.add(islandOverlay);
+	            if (frontCameraMesh?.parent) {
+	              const cameraGeometry = frontCameraMesh.geometry;
+	              cameraGeometry.computeBoundingBox();
+	              const cameraBounds = cameraGeometry.boundingBox;
+	              if (cameraBounds) {
+	                const socketRadius = height * 0.255;
+	                const coverRadius = socketRadius * 0.72;
+	                const lensRadius = socketRadius * 0.4;
+	                const cameraX = x + socketRadius + height * 0.052;
+	                const cameraY = islandCenter.y;
+	                const cameraZ = Math.max(islandBounds.max.z, cameraBounds.max.z) + 0.014;
+	                const cameraOverlay = new T.Group();
+	                cameraOverlay.name = 'DynamicIslandCameraOverlay';
+	                cameraOverlay.position.copy(islandMesh.position);
+	                cameraOverlay.quaternion.copy(islandMesh.quaternion);
+	                cameraOverlay.scale.copy(islandMesh.scale);
+
+	                const createCameraCylinder = (discRadius: number, depth: number, z: number) => {
+	                  const geometry = new T.CylinderGeometry(discRadius, discRadius, depth, 48, 1, false);
+	                  geometry.rotateX(Math.PI / 2);
+	                  geometry.translate(cameraX, cameraY, z);
+	                  return geometry;
+	                };
+
+	                const socketGeometry = createCameraCylinder(socketRadius, 0.018, cameraZ);
+	                const socket = new T.Mesh(
+	                  socketGeometry,
+	                  new T.MeshStandardMaterial({
+	                    color: new T.Color(0x090a0c),
+	                    emissive: new T.Color(0x010101),
+	                    emissiveIntensity: 0.08,
+	                    roughness: 0.48,
+	                    metalness: 0.1,
+	                  }),
+	                );
+	                socket.renderOrder = 3;
+
+	                const coverGeometry = createCameraCylinder(coverRadius, 0.01, cameraZ + 0.012);
+	                const cover = new T.Mesh(
+	                  coverGeometry,
+	                  new T.MeshStandardMaterial({
+	                    color: new T.Color(0x15181d),
+	                    emissive: new T.Color(0x020202),
+	                    emissiveIntensity: 0.08,
+	                    roughness: 0.24,
+	                    metalness: 0.18,
+	                  }),
+	                );
+	                cover.renderOrder = 4;
+
+	                const lensGeometry = new T.SphereGeometry(lensRadius, 32, 16);
+	                lensGeometry.scale(1, 1, 0.28);
+	                lensGeometry.translate(cameraX, cameraY, cameraZ + 0.019);
+	                const lens = new T.Mesh(
+	                  lensGeometry,
+	                  new T.MeshStandardMaterial({
+	                    color: new T.Color(0x050913),
+	                    emissive: new T.Color(0x07183f),
+	                    emissiveIntensity: 0.14,
+	                    roughness: 0.12,
+	                    metalness: 0.2,
+	                  }),
+	                );
+	                lens.renderOrder = 5;
+
+	                const glintGeometry = new T.CircleGeometry(lensRadius * 0.22, 20);
+	                glintGeometry.translate(
+	                  cameraX + lensRadius * 0.26,
+	                  cameraY + lensRadius * 0.2,
+	                  cameraZ + 0.032,
+	                );
+	                const glint = new T.Mesh(
+	                  glintGeometry,
+	                  new T.MeshBasicMaterial({
+	                    color: new T.Color(0xdce8ff),
+	                    transparent: true,
+	                    opacity: 0.42,
+	                    depthWrite: false,
+	                  }),
+	                );
+	                glint.renderOrder = 6;
+
+	                cameraOverlay.add(socket, cover, lens, glint);
+	                frontCameraMesh.visible = false;
+	                frontCameraMesh.parent.add(cameraOverlay);
+	              }
+	            }
+	          }
+	        }
+
+        const AUTO_YAW_DEGREES = 23;
+	        group.rotation.set(0.04, (-AUTO_YAW_DEGREES * Math.PI) / 180, 0);
         setReady(true);
 
         const prefersReduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false;
         // Never let the phone's back face the viewer — the screen is the only thing worth seeing.
         const DRAG_YAW_LIMIT = Math.PI / 2; // drag stops at 90° (front + side edges, no back)
-        const AUTO_YAW_LIMIT = (33 * Math.PI) / 180; // auto-sway reverses at 33° each side
+        const AUTO_YAW_LIMIT = (AUTO_YAW_DEGREES * Math.PI) / 180;
         const AUTO_YAW_SPEED = 0.4; // radians/sec of the sine phase (gentle)
         let spinning = autoRotate && !prefersReduced;
         let targetY = group.rotation.y;
@@ -226,18 +436,42 @@ export function IPhone3D({ screenSrc, poster, className, ariaLabel, autoRotate =
         window.addEventListener('pointermove', onPointerMove);
         window.addEventListener('pointerup', onPointerUp);
 
+        const playScreenVideo = () => {
+          if (!screenVideo || !videoScreenActive) return;
+          void screenVideo.play().catch(() => undefined);
+        };
+        const pauseScreenVideo = () => {
+          if (!screenVideo || !videoScreenActive) return;
+          screenVideo.pause();
+        };
+        const onVideoFrame = () => schedule();
+        screenVideo?.addEventListener('play', onVideoFrame);
+        screenVideo?.addEventListener('playing', onVideoFrame);
+        screenVideo?.addEventListener('timeupdate', onVideoFrame);
+        screenVideo?.addEventListener('seeked', onVideoFrame);
+
         let visible = true;
         const visibilityObserver = new IntersectionObserver(
           (entries) => {
             visible = entries[0]?.isIntersecting ?? false;
-            if (visible) schedule();
+            if (visible) {
+              playScreenVideo();
+              schedule();
+            } else {
+              pauseScreenVideo();
+            }
           },
           { threshold: 0.05 },
         );
         visibilityObserver.observe(mount);
 
         const onDocumentVisibility = () => {
-          if (!document.hidden && visible) schedule();
+          if (!document.hidden && visible) {
+            playScreenVideo();
+            schedule();
+          } else {
+            pauseScreenVideo();
+          }
         };
         document.addEventListener('visibilitychange', onDocumentVisibility);
 
@@ -258,12 +492,19 @@ export function IPhone3D({ screenSrc, poster, className, ariaLabel, autoRotate =
             !dragging &&
             Math.abs(targetY - group.rotation.y) < 0.0004 &&
             Math.abs(targetX - group.rotation.x) < 0.0004;
-          if (!settled && visible && !document.hidden) schedule();
+          const videoNeedsRender =
+            Boolean(screenVideo) &&
+	            videoScreenActive &&
+	            !screenVideo.paused &&
+	            !screenVideo.ended &&
+	            screenVideo.readyState >= 2;
+          if ((!settled || videoNeedsRender) && visible && !document.hidden) schedule();
         };
         const schedule = () => {
           if (frameId || disposed || !visible || document.hidden) return;
           frameId = window.requestAnimationFrame(renderFrame);
         };
+        playScreenVideo();
         schedule();
 
         const resizeObserver = new ResizeObserver(() => {
@@ -284,6 +525,15 @@ export function IPhone3D({ screenSrc, poster, className, ariaLabel, autoRotate =
           canvas.removeEventListener('pointerdown', onPointerDown);
           window.removeEventListener('pointermove', onPointerMove);
           window.removeEventListener('pointerup', onPointerUp);
+          screenVideo?.removeEventListener('play', onVideoFrame);
+          screenVideo?.removeEventListener('playing', onVideoFrame);
+          screenVideo?.removeEventListener('timeupdate', onVideoFrame);
+          screenVideo?.removeEventListener('seeked', onVideoFrame);
+          screenVideo?.pause();
+          if (screenVideo) {
+            screenVideo.removeAttribute('src');
+            screenVideo.load();
+          }
           if (frameId) cancelAnimationFrame(frameId);
           envRT.dispose();
           pmrem.dispose();
@@ -310,7 +560,7 @@ export function IPhone3D({ screenSrc, poster, className, ariaLabel, autoRotate =
       disposed = true;
       cleanup?.();
     };
-  }, [screenSrc, autoRotate]);
+  }, [screenSrc, screenVideoSrc, autoRotate]);
 
   return (
     <div

@@ -389,7 +389,7 @@ export const aiRaminPrototype = {
     'Relevant proof: Bayut for AI product leadership, Side.inc for AI-enabled internal transformation, nsso/Dreamsea/24Seven for shipped AI product architecture, and the AI-Native Product OS for operating model.',
     'Approach: map the problem across Model, Context, Orchestration, Governance, and Human layers before choosing the prototype path.',
     'Guardrail: I would not name confidential features, invent metrics, or imply live model integration where only a prototype exists.',
-    'Next question: what market, user segment, and decision horizon should the answer optimize for?',
+    'Next question: what market, user segment, and decision horizon should the answer optimise for?',
   ],
   phaseOneAcceptanceCriteria: [
     'The upgraded six-experience contract is documented.',

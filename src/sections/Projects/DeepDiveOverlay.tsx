@@ -313,8 +313,8 @@ function ThesisDeepDiveReader({
 }) {
   return (
     <>
-      <div className="liquid-glass-strong flex min-h-[78vh] flex-col rounded-[2rem] p-6 md:p-8 lg:h-full lg:min-h-0 lg:overflow-hidden lg:p-10">
-        <div className="flex shrink-0 items-center justify-between gap-5">
+      <div className="portfolio-deep-dive-reader-panel liquid-glass-strong flex min-h-[78vh] flex-col rounded-[2rem] p-6 md:p-8 lg:h-full lg:min-h-0 lg:overflow-hidden lg:p-10">
+        <div className="portfolio-deep-dive-header flex shrink-0 items-center justify-between gap-5">
           <div>
             <p className="text-xs uppercase tracking-[0.3em] text-muted">{item.eyebrow}</p>
             <p className="mt-2 text-xs uppercase tracking-[0.22em] text-muted">
@@ -324,7 +324,7 @@ function ThesisDeepDiveReader({
           <button
             type="button"
             onClick={onClose}
-            className="liquid-glass-control rounded-full px-5 py-3 text-sm text-text-primary transition-transform duration-300 hover:scale-105"
+            className="portfolio-deep-dive-inline-close liquid-glass-control rounded-full px-5 py-3 text-sm text-text-primary transition-transform duration-300 hover:scale-105"
           >
             Close
           </button>
@@ -516,7 +516,7 @@ export function DeepDiveOverlay({ item, onClose }: { item: DeepDiveItem; onClose
 
   return (
     <motion.div
-      className="fixed inset-0 z-[100] overflow-y-auto px-3 py-3 text-text-primary sm:px-5 sm:py-5"
+      className="portfolio-deep-dive-overlay fixed inset-0 z-[100] overflow-y-auto px-3 py-3 text-text-primary sm:px-5 sm:py-5"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -525,13 +525,13 @@ export function DeepDiveOverlay({ item, onClose }: { item: DeepDiveItem; onClose
       <button
         type="button"
         aria-label="Close deep dive"
-        className="absolute inset-0 bg-bg/20 backdrop-blur-[3px]"
+        className="portfolio-deep-dive-backdrop absolute inset-0 bg-bg/20 backdrop-blur-[3px]"
         onClick={onClose}
       />
 
       <motion.article
         layoutId={`deep-dive-${item.slug}`}
-        className={`relative mx-auto min-h-[calc(100svh-1.5rem)] max-w-[1320px] gap-4 lg:h-[calc(100svh-2.5rem)] lg:min-h-0 lg:overflow-hidden ${
+        className={`portfolio-deep-dive-shell relative mx-auto min-h-[calc(100svh-1.5rem)] max-w-[1320px] gap-4 lg:h-[calc(100svh-2.5rem)] lg:min-h-0 lg:overflow-hidden ${
           isThesis ? 'grid lg:grid-cols-[52fr_48fr]' : 'flex flex-col lg:flex-row'
         }`}
       >
@@ -539,8 +539,8 @@ export function DeepDiveOverlay({ item, onClose }: { item: DeepDiveItem; onClose
           <ThesisDeepDiveReader item={item} onClose={onClose} sectionRefs={sectionRefs} onJump={handleJump} />
         ) : (
           <>
-            <div className="liquid-glass-strong flex min-h-[70vh] flex-col rounded-[2rem] p-6 md:p-8 lg:h-full lg:min-h-0 lg:w-[58%] lg:overflow-hidden lg:p-10">
-              <div className="flex shrink-0 items-center justify-between gap-5">
+            <div className="portfolio-deep-dive-reader-panel liquid-glass-strong flex min-h-[70vh] flex-col rounded-[2rem] p-6 md:p-8 lg:h-full lg:min-h-0 lg:w-[58%] lg:overflow-hidden lg:p-10">
+              <div className="portfolio-deep-dive-header flex shrink-0 items-center justify-between gap-5">
                 <div>
                   <p className="text-xs uppercase tracking-[0.3em] text-muted">{item.eyebrow}</p>
                   <p className="mt-2 text-xs uppercase tracking-[0.22em] text-muted">
@@ -550,7 +550,7 @@ export function DeepDiveOverlay({ item, onClose }: { item: DeepDiveItem; onClose
                 <button
                   type="button"
                   onClick={onClose}
-                  className="liquid-glass-control rounded-full px-5 py-3 text-sm text-text-primary transition-transform duration-300 hover:scale-105"
+                  className="portfolio-deep-dive-inline-close liquid-glass-control rounded-full px-5 py-3 text-sm text-text-primary transition-transform duration-300 hover:scale-105"
                 >
                   Close
                 </button>

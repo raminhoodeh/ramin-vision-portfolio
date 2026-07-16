@@ -1,0 +1,131 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AI Ramin Live Review Report",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "generated_at",
+    "source_path",
+    "filters",
+    "summary",
+    "review_queue",
+    "deterministic_followups",
+    "next_actions"
+  ],
+  "additionalProperties": true,
+  "properties": {
+    "schemaVersion": {
+      "type": "integer",
+      "const": 1
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "source_path": {
+      "type": "string"
+    },
+    "filters": {
+      "type": "object"
+    },
+    "summary": {
+      "type": "object",
+      "required": [
+        "status",
+        "total_case_count",
+        "selected_case_count",
+        "case_count",
+        "captured_count",
+        "failed_count",
+        "pending_count",
+        "scored_count",
+        "unscored_captured_count",
+        "weak_or_failing_count",
+        "acceptable_count",
+        "strong_count",
+        "average_score",
+        "by_capture_status",
+        "by_family",
+        "by_question_type",
+        "by_score",
+        "by_issue_label",
+        "by_family_detail"
+      ],
+      "properties": {
+        "status": {
+          "type": "string"
+        },
+        "total_case_count": {
+          "type": "integer"
+        },
+        "selected_case_count": {
+          "type": "integer"
+        },
+        "average_score": {
+          "type": ["number", "null"]
+        },
+        "by_issue_label": {
+          "type": "object"
+        }
+      }
+    },
+    "review_queue": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "family",
+          "prompt",
+          "expected_question_type",
+          "capture",
+          "priority",
+          "labels",
+          "recommended_actions"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "priority": {
+            "type": "string"
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "recommended_actions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "deterministic_followups": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "live_review_case_id",
+          "family",
+          "expected_question_type",
+          "labels",
+          "recommended_artifact",
+          "prompt",
+          "reason"
+        ]
+      }
+    },
+    "next_actions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

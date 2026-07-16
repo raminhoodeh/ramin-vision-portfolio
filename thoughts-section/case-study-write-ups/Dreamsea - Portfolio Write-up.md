@@ -1,92 +1,89 @@
 # Dreamsea - Portfolio Write-up
 
----
+## Problem
 
-## 1. Problem — *What you were solving*
+Dreamsea started in my partner's therapy room. She is a psychotherapist, and clients would often come to sessions wanting her help with dreams. There was real demand for the way she interpreted them. But the dream itself was usually half gone by the time they arrived. They could remember the feeling. Maybe one image. A room, a person, a threat, a colour. But the order, the texture, and the small strange details that make a dream worth reading were often lost.
 
-Every morning I'd wake from a vivid dream and immediately lose it — not because I didn't try to remember, but because the tools I reached for were wrong for the moment. Notes apps demanded full cognition; typing in the dark destroyed the fragile hypnopompic state I was trying to preserve. And even when I did capture something, I had no framework to do anything with it. The symbolic language of dreams — Jungian archetypes, Egyptian oneiromancy, Persian tradition — lived in books I'd read, not in any tool that could meet me at 3am and do the translation work.
+That was the product problem. The broken version was a client waking up with something vivid, reaching for a notes app, writing two stiff lines in the dark, then trying to reconstruct the rest days later in therapy. The moment had already passed. Dreamsea was my attempt to catch the dream closer to the source, then democratise my partner's interpretation to a wider audience of those who can benefit from it.
 
----
+## Architecture
 
-## 🏗️ 2. Architecture — *How you built it*
+### Model
 
-### Product Scope
+Dreamsea uses Gemini Flash 3.5 for audio understanding and text generation. The first model task is transcription. The user records a dream as audio, and that audio is sent into Gemini as audio input. In addition to speech to text, there is a text to speech flow later in the app, when the iOS app can read an interpretation aloud with Apple's built-in speech tools.
 
-Dreamsea is a full iOS app — live on the App Store — built across 5 functional epics:
+I chose Gemini Flash 3.5 because the product lives in a fragile moment. Someone has just woken up. They might be groggy. They might only remember the dream for another minute. The model needed to handle spoken audio, produce a transcript, and move into interpretation without making the app feel heavy. After transcription, the same model family supports title generation, subtitle generation, symbolic readings, symbol extraction, monthly themes, and affirmations.
 
-| Epic | Features |
-| --- | --- |
-| **Capture (The Threshold)** | Lock screen widget (WidgetKit) deep-links directly into recording mode; voice-first `AVFoundation` audio recording with a 5-min hard cap; offline queue with automatic retry on reconnection |
-| **AI Generation (The Triad Engine)** | Gemini multimodal audio-to-text transcription (tuned for groggy, whispered speech); parallel generation of: dream title, poetic subtitle, 4 philosophy-specific interpretations (Jungian, Persian, Egyptian, Japanese), archetypal symbol extraction (3–7 per dream), and a **Gemini Imagen watercolor painting** per entry |
-| **Dream Management (The Archive)** | Chronological dream library with watercolor thumbnails; inline audio playback with scrubber; editable transcript with one-tap **Regenerate** (re-runs the full AI pipeline on the corrected text); atomic **Merge** (combine 2+ recordings into one analysis); **Split** (divide one transcript at a cut-point into two separate dreams); native Share Sheet for image or full interpretation export |
-| **Personalization & Analysis** | Custom waking-life context toggle (injects user's current situation into the interpretation prompt); preferred philosophy setting (persists as default tab); **Monthly Dream Theme** — server-side Gemini aggregation across all dreams in the month generating a 4-sentence psychological summary + a personalized first-person affirmation |
-| **Education (Dream School)** | Dream Wiki with 20 expandable philosophy sections (4 traditions × 5 sections each: purpose of the human, how dreams serve, where dreams come from, how to interpret, how to integrate); all wiki content is also injected live into the AI interpretation context — the same text the user reads is what the model reasons from |
+For imagery, Dreamsea uses Nano Banana, Gemini 2.5 Flash Image in the current codebase. That model turns the dream transcript into a watercolour-style image using a custom master prompt. I chose watercolour because dreams rarely feel photographic. They blur and carry mood more than clean scene data.
 
-### 5-Layer Stack
+Apple AVFoundation is also part of the model input layer. Gemini itself does not record the dream. The app uses AVFoundation to request microphone access, capture the dream as a local .m4a file, and enforce the recording limit. Then that saved audio file is handed to Gemini for transcription. The handoff is simple: Apple captures the raw dream reliably on device; Gemini turns it into text, meaning, symbols, and image.
 
-Built in SwiftUI (iOS 26), with Gemini API as the intelligence layer and Supabase as the backend:
+### Context
 
-**Stack Layer Breakdown:**
+Dreamsea's context layer has two main sources. The first is the user's recorded dream. The user speaks the dream into the app as soon as they wake up. That recording becomes the source material. The app turns it into a transcript, then uses that transcript as the base for every title, interpretation, symbol, image, theme, and later regeneration.
 
-| Layer | What's Here |
-| --- | --- |
-| **Model** | Google Gemini — multimodal (audio-to-text) + text generation + image generation (`Imagen`) |
-| **Context** | Two-tier context injection: (1) the user's dream transcript `{TRANSCRIPT}`, (2) the full Dream Philosophy Wiki content `{WIKI}` — 5 curated sections per tradition — fetched from Supabase and injected per-philosophy at runtime |
-| **Orchestration** | `GenerationOrchestrator.swift` — a sequential-then-parallel pipeline: audio → Gemini STT → transcription, then 8 parallel async calls (title, subtitle, 4 interpretations × philosophy, symbol extraction, watercolor image). Each result is persisted to Core Data + Supabase the moment it resolves, not when all complete. Retries up to 10× with exponential back-off |
-| **Governance** | Dream quota (5 free / 33 paid per month via StoreKit 2), cost limiter on the Gemini account, audio deleted from cloud immediately post-transcription (never stored server-side), Row-Level Security on all Supabase tables |
-| **Human** | Non-technical co-founder (Azin, licensed psychotherapist) edits AI prompts and wiki content live via a CMS (`nsso.me/dreamsea/prompts`) — no code deployment needed. Hardcoded fallback content compiled into the binary ensures the AI always has philosophy context even offline |
+The second is the Dream Wiki. This is the part that makes the system much more interesting. I built a CMS so my partner could update the interpretive material herself, without editing Swift code or asking me to ship a new build. She can update the Dream Wiki and the prompts that guide the model.
 
-**Key Tools / APIs / Frameworks:**
+That means the app is not frozen around a prompt I wrote once. It can keep absorbing her method. The Dream Wiki is used in two places. Users can read it in a dedicated Learn section, where it explains each dream tradition. The model also receives it as context when it writes an interpretation. If the app is generating a Jungian interpretation, it injects the Jungian wiki material. If it is generating a Persian interpretation, it injects the Persian material. The same pattern applies to Egyptian and Japanese.
 
-- **Gemini API** (Google AI Swift SDK via SPM) — audio transcription, text generation, Imagen image generation
-- **Supabase** — PostgreSQL backend with RLS, Supabase Storage for dream images, Edge Functions for server-side aggregation
-- **WidgetKit + App Intents** — "Threshold Widget" on iOS lock screen; fires `RecordIntent` to deep-link directly into recording mode while half-asleep
-- **AVFoundation** — microphone capture with 5-minute hard timeout
-- **Core Data** — local persistence (chosen over SwiftData specifically for atomic transaction support in the Merge feature)
-- **StoreKit 2** — auto-renewable subscription
-- **CMS** (custom HTML/JS page on Vercel) — prompt and wiki management for the domain expert co-founder
+This keeps the user-facing education and the AI context in sync. The thing the user reads is the same body of knowledge shaping the model response. There is less drift between product, content, and AI behaviour.
 
-**Data Flow:**
+### Orchestration
 
-```
-Lock screen widget tap
-  → RecordIntent → App launches → AVFoundation records audio (local)
-  → Audio uploaded to Supabase Storage
-  → Gemini STT → transcription saved
-  → Audio deleted from cloud
-  → 8 parallel Gemini calls (title, subtitle, 4 interpretations, symbols, watercolor image)
-  → Results persisted field-by-field as they arrive
-  → Dream image stored in Supabase Storage, public URL saved
-  → Monthly Aggregation: server-side Edge Function → Gemini → theme + affirmation
-```
+The orchestration layer is what turns Dreamsea from a prompt into a product. When someone records a dream, the app saves the audio locally, creates a dream record, queues the work, transcribes the audio, generates a title, writes a subtitle, creates each interpretation, saves each result, then adds symbols and imagery.
 
-🔗 **Live App Store link:** [Dreamsea on the App Store](https://apps.apple.com/us/app/dreamsea/id6761101193)
+The user does not manage any of that. They press record, speak, and leave. The app does the slow work behind the scenes. This was a real product challenge because AI fails in boring ways. A model call can time out. The phone can lock. The app can close. Image generation can fail even when the interpretation worked. Early versions could leave a dream stuck in an endless loading state, which felt especially bad because the user had given the app something personal.
 
----
+So I built the flow around states. A dream can be pending, partly complete, failed, or complete. Each step is saved as it finishes. If the app reopens and finds unfinished dreams, it resumes them. The Library shows progress instead of vague waiting. The dream detail page lets users regenerate after editing the transcript. The merge flow can combine multiple recordings from the same night into one longer dream and run the interpretation again from the merged transcript. That is the difference between an AI demo and an app someone can rely on in the middle of the night.
 
-## 🤔 3. Why This Approach — *Your reasoning*
+### Governance
 
-The most obvious alternative was a RAG pipeline over a static dream symbol database — you'd embed symbols, retrieve similar entries, and pass them to the LLM. I rejected that because the use case isn't retrieval; it's *philosophical translation*. The quality of a Jungian interpretation depends not on finding matching symbols, but on the model reasoning through the dream within a coherent framework of depth psychology. The better choice was curated, philosophy-specific knowledge injected as structured context — the same prose the user reads in the Dream Wiki, fed to Gemini as the interpretive lens, so the AI and the app teach from exactly the same source. The single `{WIKI}` placeholder design also means a non-technical psychotherapist can update the AI's interpretive framework through a web CMS with no code deployment — which was the real unlock for maintaining quality without a full-time AI engineer.
+Dreams are not normal user content.
 
----
+They can include very personal things the person does not fully understand yet. So Dreamsea treats the dream record as sensitive from the start. This is why the app is local-first. Audio recordings and dream records are stored on the device. The privacy policy is written around no account data collection, local device storage, third-party AI processing for the immediate interpretation, and user control over deletion. The product avoids social sharing in the first version because sharing changes what people are willing to say.
 
-## ⚖️ 4. Tradeoffs — *What you gave up*
+There is also a clinical boundary. Dreamsea can help someone capture and reflect on dream material. It can make my partner's interpretive style more available. But it should not pretend to be a psychotherapist. It should not diagnose, and it should not take over the role of a therapy session.
 
-- **Speed vs. depth:** The sequential-then-parallel orchestration means the user waits for transcription before any analysis starts. A faster path would stream analysis from the raw audio, but at the cost of interpretive accuracy — the transcription is the correctable source of truth every downstream call depends on, and that editing capability is architecturally essential.
-- **Privacy vs. convenience:** Audio is permanently local-only; it uploads to Supabase Storage for transcription only, then is deleted immediately. This is a genuine privacy decision (voice recordings are biometric), but it means no server-side audio search, cross-device syncing of recordings, or future audio-based aggregation analysis.
-- **Social deferred for trust:** Dream sharing (the "Dream with Friends" feed) is explicitly out of Phase 1 scope. The tradeoff is lower virality in exchange for building interpretive depth first — sharing a dream publicly changes what you record. Phase 1 earns private trust before asking for public exposure.
-- **Governance gap:** The eval suite for prompt quality is informal — TestFlight with real recordings, no automated evals across the 8 prompt types. At 10× users the cost and quality variance in interpretation output becomes the primary risk. The next meaningful governance investment is a structured eval set (minimum ~30 dream transcripts with ground-truth interpretations per tradition) and observability on Gemini call failure rates per field.
+The next serious governance layer is evaluation. I would want a test set of real-style dream examples covering short dreams, fragmented dreams, traumatic dreams, religious dreams, mundane dreams, and dreams where the safest output is restraint. The app would be scored for specificity, emotional safety, invention, tone, and whether each tradition adds something supportive and healthy for the user.
 
----
+### Human
 
-## 🔗 5. Demo — *A live, clickable URL*
+The human layer is me and my partner, who collaborated on the app's design. My job was to take a real pattern from my partner's work and turn it into an app that could provide thoughtful and balanced support outside the therapy room. That meant asking product questions that are easy to skip if you only think in models:
 
-📱 [**Dreamsea — App Store**](https://apps.apple.com/us/app/dreamsea/id6761101193)
+What happens in the first minute after waking? What should be captured as audio? What should be stored? What context should the model receive? How can my partner keep changing the knowledge base herself? When should the app feel poetic? When should it be quiet? What happens when the model fails, and what should never be automated?
 
-Available on iPhone. No password, no TestFlight — live production release.
+What Dreamsea had to solve was a memory problem and a trust problem. Dreams are among the most private experiences a person has, and they disappear fast. Most are half gone before your feet hit the floor. The people who bring their dreams into therapy are already working against that clock. By the time they arrive for their session, the emotional texture has usually faded, leaving only fragments. What a product in that space needs to do first is respect that fragility. The model is the easy part. The hard part is understanding the person and the moment well enough to know what the product should never do.
 
----
+## Why This Approach
 
-## 🔧 6. What I Would Improve — *Honest self-assessment*
+The obvious first conception of this app was a text box that says "interpret my dream." However, I chose voice-first because the problem was not really about dream interpretation, but about the way dream data was captured. People lose dreams fast, and typing while half awake forces them to clean up the dream too early. A voice note keeps more of the original material: the weird phrasing, the gaps, the emotional residue, and the sentence that does not make sense yet but might matter later.
 
-The biggest limitation right now is that the Gemini interpretation prompts are evaluated informally — I know they produce compelling output on *my* dreams, but I haven't stress-tested them against edge cases: very short recordings (< 20 seconds), non-English speech, or dreams with no clear symbolic content. The prompt fallback strategy (hardcoded defaults if Supabase is unreachable) protects against availability failure, but there's no quality floor — a poorly-transcribed whisper in the dark produces an interpretation with equal confidence to a clear, detailed recording. The next sprint would be adding a transcription quality gate: if the STT output is below a word-count threshold or Gemini flags it as unintelligible, surface a gentle re-record prompt rather than silently generating a low-quality analysis the user will read the next morning and not trust.
+I chose a Dream Library / archive approach because one dream is useful, but patterns across dreams are more useful. Dreamsea is built to become a private record that compounds over time, making it more useful than a one-time answer.
+
+I chose a CMS because my partner's method had to stay alive inside the product. If she learns that a prompt is too vague, or wants to add a better explanation to a tradition, she can change the Dream Wiki herself. That is a product choice. The domain expert should be able to shape the AI without waiting for an engineer.
+
+## Tradeoffs
+
+I kept social features out of the first version. That probably makes Dreamsea less viral, but virality would have damaged the core behaviour. If people think a dream might be shared, they start editing themselves. The honest dream matters more.
+
+I chose local-first storage, which makes backup and sync harder. But trust is the product here. If a user believes the app is casual with their dream material, the whole experience breaks.
+
+I chose a richer generation pipeline over a single model call. That gives the dream more depth, but it creates more failure points. So the work became less glamorous and more useful. Save each step. Show progress. Retry. Resume. Fail clearly.
+
+I built the CMS because it gives my partner control, but it also creates a new governance surface. Bad prompt edits could affect output quality. The next version should include preview testing inside the CMS before changes go live.
+
+## Demo
+
+Check out Dreamsea on the Apple App Store here: https://apps.apple.com/us/app/dreamsea/id6761101193
+
+## What I Would Improve
+
+The architecture holds up well, but there are four things I would build out next.
+
+First, an eval layer around roughly fifty anonymised examples scored for specificity, emotional restraint, and whether each tradition adds something distinct. Without it, prompt and wiki changes are hard to validate.
+
+The CMS is already one of the better architectural decisions. My partner can update the Dream Wiki and prompts without a new build. The natural next step is a test panel so she can preview how a change affects a real interpretation before pushing it live.
+
+On transcription, I would look at replacing Gemini speech-to-text with WisprFlow, which is built for groggy, fragmented speech - exactly what someone produces at 3am still half inside a dream. Gemini handles general audio well, but dream capture is a specific context.
+
+Finally, encrypted sync - treated as a trust decision first. Dreamsea is local-first for a reason, and encrypted sync would extend that trust to multi-device use without changing the privacy stance.

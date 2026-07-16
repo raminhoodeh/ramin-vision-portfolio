@@ -22,7 +22,7 @@ export const teachingWritingItems = [
       'Planned for release June 2026; based on the 5-layer stack and AI-native loop from the core thesis.',
     whyItMatters:
       'Turns the thesis into a repeatable training product: six lessons, a running build, and a working operating system by the end.',
-    href: '#thesis',
+    href: '/product-thesis',
     assetSlot: 'Needs launch link, title lockup, and syllabus proof.',
     sourceStatus: 'manual-needed',
     chips: ['AI PM', '5-layer stack', 'AI-native loop', 'Maven link needed'],
@@ -35,7 +35,7 @@ export const teachingWritingItems = [
       'TED proof: public TEDxImperialCollege talk from June 2018 with 42,969 plays at scrape time.',
     whyItMatters:
       'Carries the broader worldview behind the work: cosmic perspective, mindfulness, meaning, and making large abstract ideas feel human.',
-    href: 'https://www.ted.com/talks/ramin_hoodeh_existentially_viewing_your_existential_crisis/transcript',
+    href: 'https://www.ted.com/talks/ramin_hoodeh_existentially_viewing_your_existential_crisis',
     assetSlot: 'Needs preferred TEDx thumbnail or speaker frame.',
     sourceStatus: 'public-proof',
     chips: ['Speaking', 'Worldview', 'TEDx', '42,969 plays'],
@@ -61,7 +61,7 @@ export const teachingWritingItems = [
       'Local write-up defines a hierarchy for thinking and presenting information: Experience, Who, Why, How, What.',
     whyItMatters:
       'Bridges Manager, Engineer, Teacher, and Author by turning messy experience into values, vision, strategy, and tactics.',
-    href: '#teaching-speaking-writing',
+    href: '/thoughts',
     assetSlot: 'Needs final essay copy.',
     sourceStatus: 'manual-needed',
     chips: ['Framework', 'Experience', 'Values', 'Strategy'],

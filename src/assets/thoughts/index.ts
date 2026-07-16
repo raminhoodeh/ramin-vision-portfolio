@@ -24,13 +24,21 @@ import propositionWarriorCharacter from './books/proposition/warrior-character.w
 import aiProductManagerCourse from './courses/ai-product-manager-course.webp';
 import productInnovationCourse from './courses/product-innovation-course.webp';
 import productInnovationLaptop from './courses/product-innovation-laptop.webp';
+import metacognitionTree from './metacognition-tree.svg';
 import tedxTalk from './talks/tedx-talk.webp';
+import tedxScreenshot from './talks/tedx-screenshot.jpg';
 import universityTalk from './talks/university-talk.webp';
+import universityTalkPicture from './talks/university-talk-picture.jpg';
+import universityTalkPhoto from '../../../thoughts-section/talks/university-talk.jpg';
 
 export const thoughtsAssets = {
+  metacognitionTree,
   talks: {
     tedxTalk,
+    tedxScreenshot,
     universityTalk,
+    universityTalkPicture,
+    universityTalkPhoto,
   },
   courses: {
     aiProductManagerCourse,

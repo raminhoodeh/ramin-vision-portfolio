@@ -3,15 +3,15 @@ import { contentValue } from '../../lib/placeholder';
 
 const projectDescriptions: Record<string, string> = {
   nsso:
-    'nsso is an owned professional identity platform: profile, CV, projects, storefront, payments, and an AI profile coach in one public home. It turns scattered proof into a living identity surface that can be updated, monetised, and understood at a glance.',
+    'Shopify, but the product is you: one owned identity surface where profile, proof, projects, products, links, and Deity AI turn self-presentation into self-clarification.',
   Dreamsea:
-    'Dreamsea is a voice-first iOS dream journal for the half-awake moment when memory is still fragile. It captures a dream by voice, then turns it into a transcript, symbolic interpretations, archetypal motifs, and watercolor imagery for private reflection.',
+    'Dreamsea is a voice-first iOS dream journal for the half-awake moment when memory is still fragile. It captures a dream by voice, then turns it into a transcript, symbolic interpretations, archetypal motifs, and watercolour imagery for private reflection.',
   Qadam:
-    'Qadam is a catalyst-driven market intelligence system built around the gap between physical events and market consensus. It watches logistics, conflict, macro, order-flow, and narrative signals so price-moving context is visible before it becomes a headline.',
+    'A protected macro-intelligence control room that shows the path from world events to evidence, reasoning, paper-only trade lifecycle, proof ledger, operations, and learning.',
   '24Seven Concierge':
-    '24Seven Concierge is a luxury travel app that turns loose trip intent into a catalog-grounded itinerary and WhatsApp handoff. Shopify inventory, AI planning, and human concierge fulfilment work together so clients move from browsing to a real booking conversation without starting over.',
+    '24Seven Concierge is a luxury travel app that turns loose trip intent into a catalogue-grounded itinerary and WhatsApp handoff. Shopify inventory, AI planning, and human concierge fulfilment work together so clients move from browsing to a real booking conversation without starting over.',
   RazinFlix:
-    'RazinFlix is a personal streaming-style film library shaped around taste rather than generic genre shelves. It enriches a flat title list with metadata, trailers, posters, atmospheric descriptions, curated categories, and recommendations so a stale spreadsheet becomes a browsable personal canon.',
+    'A personal streaming-style film library. Simply enter a film name and year to trigger an automatic scrape of all of the film\'s metadata; poster, IMDB rating, description and YouTube trailer - as the film is elegantly added to the visual catalogue.',
   'Mass Social Wisdom Agent':
     'Mass Social Wisdom Agent is a Flask and Gemini workflow for turning messy social inputs into structured knowledge. Links, transcripts, screenshots, captions, and carousel posts become a clean .docx export, replacing the usual backlog of saved content with something ready to read, search, and import into Notion.',
   'AI-Native Product Manager OS':

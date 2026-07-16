@@ -1,13 +1,9 @@
 import { motion } from 'framer-motion';
-import { portfolioContent, architectureLayers } from '../../data/portfolio';
+import { portfolioContent } from '../../data/portfolio';
 import {
   type WritingCaseStudyEntry,
   type CaseStudyEntry,
   type CaseWriteupLineageItem,
-  type StackLayerName,
-  type ThoughtStackComparisonRow,
-  type WorkItem,
-  toolLayerColumns,
 } from '../types';
 import { isPlaceholderValue, contentValue, type PlaceholderLike } from '../../lib/placeholder';
 import { slugifyTitle } from '../../lib/text';
@@ -20,9 +16,7 @@ import {
   getProjectReader,
   toolSystemBySlug,
   thoughtArchitectureByProject,
-  layerValueKeys,
   caseStudyByDeepDiveSlug,
-  workCaseStudyByTitle,
 } from '../Projects/types';
 
 function caseWriteupReaderSection(reader: CaseStudyEntry | undefined, label: string) {
@@ -110,19 +104,68 @@ export function caseWriteupLineage(projectName: string) {
   return thoughtArchitectureByProject.get(projectName);
 }
 
+const THESIS_CASE_STUDY_PROJECT_NAME = 'AI Native Product OS';
+
+function thesisCaseStudyEntry(): WritingCaseStudyEntry {
+  const os = portfolioContent.teachingSpeakingWriting.writing.aiNativeProductOs;
+
+  return {
+    projectName: THESIS_CASE_STUDY_PROJECT_NAME,
+    problem: os.problem,
+    architecture: os.architecture,
+    whyThisApproach: os.whyThisApproach,
+    tradeoffs: os.tradeoffs,
+    whatIWouldImprove: os.whatIWouldImprove,
+    liveLink: os.liveLink,
+    githubLink: os.githubLink,
+    fullWriteupLink: os.fullWriteupLink,
+  } as WritingCaseStudyEntry;
+}
+
+function caseStudiesWithThesis(caseStudies: readonly WritingCaseStudyEntry[]) {
+  return [
+    thesisCaseStudyEntry(),
+    ...caseStudies.filter((entry) => entry.projectName !== THESIS_CASE_STUDY_PROJECT_NAME),
+  ];
+}
+
+function caseWriteupDisplayTitle(projectName: string) {
+  return projectName === THESIS_CASE_STUDY_PROJECT_NAME ? 'My Product Thesis' : projectName;
+}
+
 function CaseWriteupVisual({
   title,
   label,
   image,
   index,
   tone = 'product',
+  compact = false,
 }: {
   title: string;
   label: string;
   image?: string;
   index: number;
   tone?: 'product' | 'tool' | 'thesis';
+  compact?: boolean;
 }) {
+  if (compact) {
+    return (
+      <div className="case-writeup-visual-compact" data-tone={tone}>
+        {image ? (
+          <img
+            src={image}
+            alt=""
+            loading={index <= 1 ? 'eager' : 'lazy'}
+            decoding="async"
+            onError={(event) => {
+              event.currentTarget.style.display = 'none';
+            }}
+          />
+        ) : null}
+      </div>
+    );
+  }
+
   return (
     <div className="case-writeup-visual" data-tone={tone}>
       {image ? (
@@ -296,18 +339,28 @@ function CaseStudyWriteupRow({
   entry,
   index,
   onOpen,
+  compact = false,
 }: {
   entry: WritingCaseStudyEntry;
   index: number;
   onOpen: (item: CaseStudyEntry) => void;
+  compact?: boolean;
 }) {
   const reader = getProjectReader(entry.projectName);
-  const rowLabel = reader?.tag ?? reader?.typeLabel ?? 'Case study';
+  const isThesis = entry.projectName === THESIS_CASE_STUDY_PROJECT_NAME;
+  const displayTitle = caseWriteupDisplayTitle(entry.projectName);
+  const rowLabel = isThesis ? 'Product Thesis' : reader?.tag ?? reader?.typeLabel ?? 'Case study';
   const image = caseWriteupArtwork(entry.projectName, reader);
-  const tone = caseWriteupTone(entry.projectName);
+  const tone = isThesis ? 'thesis' : caseWriteupTone(entry.projectName);
   const lineage = caseWriteupLineage(entry.projectName);
   const insightCards = caseWriteupStructureCards(entry, reader);
-  const lineageItems: CaseWriteupLineageItem[] = lineage
+  const lineageItems: CaseWriteupLineageItem[] = isThesis
+    ? [
+        { label: 'Kind', value: 'Product thesis' },
+        { label: 'Foundation', value: 'AI-Native Product OS' },
+        { label: 'Result', value: 'A governed loop for turning AI work into product judgment.' },
+      ]
+    : lineage
     ? [
         { label: 'Kind', value: tone === 'tool' ? 'Tool system' : 'Product' },
         { label: 'Foundation', value: lineage.foundation },
@@ -319,6 +372,82 @@ function CaseStudyWriteupRow({
         { label: 'Reader', value: reader ? 'Full six-part write-up available.' : 'Condensed system brief from source registry.' },
       ];
 
+  const rowContent = (
+    <>
+      <span className="case-writeup-index-number">{String(index + 1).padStart(2, '0')}</span>
+
+      <CaseWriteupVisual
+        title={displayTitle}
+        label={rowLabel}
+        image={image}
+        index={index + 1}
+        tone={tone}
+        compact={compact}
+      />
+
+      <div className="case-writeup-main">
+        <div className="flex flex-wrap gap-2">
+          <span className="case-writeup-chip">{rowLabel}</span>
+          {isThesis ? <span className="case-writeup-chip">AI-Native Product OS</span> : null}
+          {!isThesis && lineage ? <span className="case-writeup-chip">{lineage.foundation}</span> : null}
+          {reader?.readTime ? <span className="case-writeup-chip">{reader.readTime}</span> : null}
+        </div>
+        <h4 className="mt-4 text-3xl font-semibold tracking-[-0.055em] text-white md:text-5xl">
+          {displayTitle}
+        </h4>
+        <p className="mt-4 max-w-3xl text-sm leading-7 text-white/62">{reader?.summary ?? contentValue(entry.problem)}</p>
+        {compact ? null : <CaseWriteupLineageStrip items={lineageItems} />}
+      </div>
+
+      {compact ? null : <CaseWriteupInsightDeck cards={insightCards} />}
+
+      <div className="case-writeup-actions">
+        {reader ? (
+          <button
+            type="button"
+            onClick={() => onOpen(reader)}
+            className={compact ? 'card-glass-attachment card-glass-attachment--deep-dive case-writeup-read-button' : undefined}
+          >
+            {compact ? (
+              <>
+                <span className="card-glass-attachment__label">Read</span>
+                <span className="card-glass-attachment__glyph" aria-hidden="true">
+                  <span className="card-glass-attachment__line card-glass-attachment__line-horizontal" />
+                  <span className="card-glass-attachment__line card-glass-attachment__line-vertical" />
+                </span>
+              </>
+            ) : (
+              'Open reader'
+            )}
+          </button>
+        ) : compact ? (
+          <button
+            type="button"
+            disabled
+            className="card-glass-attachment card-glass-attachment--deep-dive case-writeup-read-button"
+          >
+            <span className="card-glass-attachment__label">Reader needed</span>
+            <span className="card-glass-attachment__glyph" aria-hidden="true">
+              <span className="card-glass-attachment__line card-glass-attachment__line-horizontal" />
+              <span className="card-glass-attachment__line card-glass-attachment__line-vertical" />
+            </span>
+          </button>
+        ) : (
+          <span className="case-writeup-action-status">System brief</span>
+        )}
+        {compact ? null : <CaseWriteupActionLinks entry={entry} reader={reader} />}
+      </div>
+    </>
+  );
+
+  if (compact) {
+    return (
+      <article className="case-writeup-row" data-tone={tone} data-compact="true">
+        {rowContent}
+      </article>
+    );
+  }
+
   return (
     <motion.article
       className="case-writeup-row"
@@ -328,35 +457,7 @@ function CaseStudyWriteupRow({
       transition={{ duration: 0.58, delay: index * 0.035 }}
       viewport={{ once: true, margin: '-80px' }}
     >
-      <span className="case-writeup-index-number">{String(index + 1).padStart(2, '0')}</span>
-
-      <CaseWriteupVisual title={entry.projectName} label={rowLabel} image={image} index={index + 1} tone={tone} />
-
-      <div className="case-writeup-main">
-        <div className="flex flex-wrap gap-2">
-          <span className="case-writeup-chip">{rowLabel}</span>
-          {lineage ? <span className="case-writeup-chip">{lineage.foundation}</span> : null}
-          {reader?.readTime ? <span className="case-writeup-chip">{reader.readTime}</span> : null}
-        </div>
-        <h4 className="mt-4 text-3xl font-semibold tracking-[-0.055em] text-white md:text-5xl">
-          {entry.projectName}
-        </h4>
-        <p className="mt-4 max-w-3xl text-sm leading-7 text-white/62">{reader?.summary ?? contentValue(entry.problem)}</p>
-      <CaseWriteupLineageStrip items={lineageItems} />
-      </div>
-
-      <CaseWriteupInsightDeck cards={insightCards} />
-
-      <div className="case-writeup-actions">
-        {reader ? (
-          <button type="button" onClick={() => onOpen(reader)}>
-            Open reader
-          </button>
-        ) : (
-          <span className="case-writeup-action-status">System brief</span>
-        )}
-        <CaseWriteupActionLinks entry={entry} reader={reader} />
-      </div>
+      {rowContent}
     </motion.article>
   );
 }
@@ -395,145 +496,16 @@ function CaseStudyFruitCoda({ mappedLineageCount }: { mappedLineageCount: number
   );
 }
 
-function layerValueFromWork(work: WorkItem | undefined, label: StackLayerName) {
-  return work?.architectureChips.find((chip) => chip.label === label)?.value;
-}
-
-function createThoughtStackRow(entry: WritingCaseStudyEntry): ThoughtStackComparisonRow {
-  const work = workCaseStudyByTitle.get(entry.projectName);
-  const system = caseWriteupToolSystem(entry.projectName);
-  const lineage = caseWriteupLineage(entry.projectName);
-  const kind = caseWriteupTone(entry.projectName) === 'tool' ? 'Tool' : 'Product';
-  const source = work ? 'Full write-up' : system ? 'System registry' : 'Case-study brief';
-
-  return {
-    projectName: entry.projectName,
-    descriptor: work?.tag ?? system?.systemType ?? kind,
-    kind,
-    foundation: lineage?.foundation ?? (system ? 'AI-Native Product OS' : 'Framework of Metacognition'),
-    outcome: lineage?.outcome ?? system?.proof ?? work?.summary ?? contentValue(entry.problem),
-    source,
-    layers: {
-      Model: layerValueFromWork(work, 'Model') ?? system?.modelLayer ?? caseWriteupSnippet(entry.projectName, undefined, 'Problem', entry.problem),
-      Context: layerValueFromWork(work, 'Context') ?? system?.contextLayer ?? caseWriteupSnippet(entry.projectName, undefined, 'Architecture', entry.architecture),
-      Orchestration:
-        layerValueFromWork(work, 'Orchestration') ??
-        system?.orchestrationLayer ??
-        caseWriteupSnippet(entry.projectName, undefined, 'Why this approach', entry.whyThisApproach),
-      Governance:
-        layerValueFromWork(work, 'Governance') ??
-        system?.governanceLayer ??
-        caseWriteupSnippet(entry.projectName, undefined, 'Tradeoffs', entry.tradeoffs),
-      Human:
-        layerValueFromWork(work, 'Human') ??
-        system?.humanLayer ??
-        caseWriteupSnippet(entry.projectName, undefined, 'What I would improve', entry.whatIWouldImprove),
-    },
-  };
-}
-
-function StackLayerCompass() {
-  return (
-    <div className="stack-comparison-compass" aria-label="Five layer stack">
-      {architectureLayers.map((layer, index) => (
-        <div key={layer.label}>
-          <span>{String(index + 1).padStart(2, '0')}</span>
-          <strong>{layer.label}</strong>
-          <p>{layer.purpose}</p>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-export function StackComparisonFinale({ caseStudies }: { caseStudies: readonly WritingCaseStudyEntry[] }) {
-  const rows = caseStudies
-    .filter((entry) => entry.projectName !== 'AI Native Product OS')
-    .map(createThoughtStackRow);
-  const productCount = rows.filter((row) => row.kind === 'Product').length;
-  const toolCount = rows.filter((row) => row.kind === 'Tool').length;
-
-  return (
-    <section id="thoughts-stack-comparison" className="thought-format-section stack-comparison-finale">
-      <div className="stack-comparison-heading">
-        <div>
-          <p>08 / Stack recap</p>
-          <h3>The same five layers, eight outcomes.</h3>
-          <span>
-            The products look different on the surface, but I keep solving through the same Model, Context, Orchestration, Governance, and Human stack.
-          </span>
-        </div>
-        <div className="stack-comparison-summary">
-          <strong>{rows.length}</strong>
-          <span>Outcomes mapped</span>
-          <p>{productCount} products / {toolCount} tool systems</p>
-        </div>
-      </div>
-
-      <div className="stack-comparison-thesis">
-        <div>
-          <span>Underlying question</span>
-          <blockquote>What does the whole stack look like across the products and tools?</blockquote>
-        </div>
-        <p>
-          The stack is how I compress the work into one view. Dreamsea, nsso, Qadam, 24Seven, RazinFlix, Mass Social Wisdom Agent, AI Costs Dashboard, and the RAG Pipeline are different expressions of one product judgment system.
-        </p>
-      </div>
-
-      <StackLayerCompass />
-
-      <div className="stack-comparison-table-shell" aria-label="Products and tools mapped to the five layer AI-native stack">
-        <table className="stack-comparison-table">
-          <thead>
-            <tr>
-              <th scope="col">Outcome</th>
-              {toolLayerColumns.map((layer) => (
-                <th key={layer} scope="col">{layer}</th>
-              ))}
-              <th scope="col">Lineage</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((row, rowIndex) => (
-              <tr key={row.projectName}>
-                <th scope="row">
-                  <span>{String(rowIndex + 1).padStart(2, '0')}</span>
-                  <strong>{row.projectName}</strong>
-                  <em>{row.descriptor}</em>
-                </th>
-                {toolLayerColumns.map((layer) => (
-                  <td key={`${row.projectName}-${layer}`}>
-                    <span>{layer}</span>
-                    <p>{row.layers[layer]}</p>
-                  </td>
-                ))}
-                <td>
-                  <span>{row.foundation}</span>
-                  <p>{row.outcome}</p>
-                  <em>{row.source}</em>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      <div className="stack-comparison-coda">
-        <p>How I think. How I express it. What it builds.</p>
-        <h4>One argument keeps taking product form.</h4>
-      </div>
-    </section>
-  );
-}
-
 export function CaseStudyWriteupIndex({
   caseStudies,
   onOpen,
+  compact = false,
 }: {
   caseStudies: readonly WritingCaseStudyEntry[];
   onOpen: (item: CaseStudyEntry) => void;
+  compact?: boolean;
 }) {
-  const displayCaseStudies = caseStudies.filter((entry) => entry.projectName !== 'AI Native Product OS');
+  const displayCaseStudies = caseStudiesWithThesis(caseStudies);
   const writeupCount = displayCaseStudies.length;
   const productCount = displayCaseStudies.filter((entry) => !toolGeneratedArtwork[entry.projectName]).length;
   const toolCount = displayCaseStudies.filter((entry) => toolGeneratedArtwork[entry.projectName]).length;
@@ -544,19 +516,23 @@ export function CaseStudyWriteupIndex({
     (total, entry) => total + (caseWriteupLineage(entry.projectName) ? 1 : 0),
     0,
   );
-  const formationQuoteSerif = 'You are shaped by what you create.';
+  const formationQuoteSerif = 'you are shaped by what you create';
   const formationQuoteLead = writingFrame.formationQuote.replace(formationQuoteSerif, '').trim();
 
   return (
     <section id="thoughts-case-studies" className="thought-format-section case-writeup-index">
       <div className="case-writeup-heading">
         <div>
-          <p className="text-xs uppercase tracking-[0.28em] text-white/46">07 / Built products and tools</p>
+          <p className="text-xs uppercase tracking-[0.28em] text-white/46">
+            {compact ? '06 / What it builds' : '07 / Built products and tools'}
+          </p>
           <h3 className="mt-4 text-5xl font-semibold tracking-[-0.065em] text-white md:text-7xl">
-            What the thinking builds.
+            {compact ? 'The argument made physical.' : 'What the thinking builds.'}
           </h3>
           <p className="mt-4 max-w-2xl text-sm leading-7 text-white/58">
-            Clarity, expression, the middle way, and operating systems eventually have to become shipped surfaces, agents, pipelines, and product architecture.
+            {compact
+              ? `${writeupCount} products and tools - each one a direct consequence of the thinking above. Click any to open the full write-up.`
+              : 'Clarity, expression, the middle way, and operating systems eventually have to become shipped surfaces, agents, pipelines, and product architecture.'}
           </p>
         </div>
         <span className="rounded-full border border-white/12 bg-white/[0.06] px-3 py-1.5 text-xs uppercase tracking-[0.16em] text-white/58">
@@ -564,7 +540,7 @@ export function CaseStudyWriteupIndex({
         </span>
       </div>
 
-      <div className="case-writeup-primer">
+      {compact ? null : <div className="case-writeup-primer">
         <div>
           <p className="text-xs uppercase tracking-[0.26em] text-white/42">The question</p>
           <blockquote className="case-writeup-stage-question">
@@ -609,15 +585,21 @@ export function CaseStudyWriteupIndex({
             <p>Lineages</p>
           </div>
         </div>
-      </div>
+      </div>}
 
       <div className="case-writeup-rows">
         {displayCaseStudies.map((entry, index) => (
-          <CaseStudyWriteupRow key={entry.projectName} entry={entry} index={index} onOpen={onOpen} />
+          <CaseStudyWriteupRow
+            key={entry.projectName}
+            entry={entry}
+            index={index}
+            onOpen={onOpen}
+            compact={compact}
+          />
         ))}
       </div>
 
-      <CaseStudyFruitCoda mappedLineageCount={mappedLineageCount} />
+      {compact ? null : <CaseStudyFruitCoda mappedLineageCount={mappedLineageCount} />}
     </section>
   );
 }

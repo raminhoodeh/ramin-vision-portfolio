@@ -87,7 +87,14 @@ export function Hero({ ready, onOpenThesis }: { ready: boolean; onOpenThesis: ()
         <defs>
           <mask id="hero-name-cutout-mask-mobile" maskUnits="userSpaceOnUse" x="0" y="0" width="600" height="760">
             <rect x="0" y="0" width="600" height="760" fill="white" />
-            <text className="hero-name-cutout-mask-text hero-name-cutout-mask-text-mobile" x="300" y="306" fill="black">
+            <text
+              className="hero-name-cutout-mask-text hero-name-cutout-mask-text-mobile"
+              x="300"
+              y="306"
+              fill="black"
+              stroke="black"
+              transform="translate(300 306) scale(1.45 1) translate(-300 -306)"
+            >
               {hero.name}
             </text>
           </mask>

@@ -7,6 +7,7 @@ import {
   buildRoutingObservability,
   buildVisitorPrompt,
   classifyQuery,
+  resolveAiRaminQueryIntent,
 } from '../server/aiRaminHandler.mjs';
 
 const ROOT_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -56,6 +57,18 @@ for (const fixture of fixtures.cases ?? []) {
   assert(context.isFollowUp === fixture.expectedFollowUp, `${fixture.id}: expected follow-up ${fixture.expectedFollowUp}; got ${context.isFollowUp}`);
   assert(context.inheritedIntent === fixture.expectedInheritedIntent, `${fixture.id}: expected inherited intent ${fixture.expectedInheritedIntent}; got ${context.inheritedIntent}`);
   assert(context.inheritedQuestionType === fixture.expectedInheritedQuestionType, `${fixture.id}: expected inherited question type ${fixture.expectedInheritedQuestionType}; got ${context.inheritedQuestionType}`);
+  if (Object.hasOwn(fixture, 'expectedAcceptedSuggestedNextAction')) {
+    assert(
+      context.acceptedSuggestedNextAction === fixture.expectedAcceptedSuggestedNextAction,
+      `${fixture.id}: expected accepted suggested action ${fixture.expectedAcceptedSuggestedNextAction}; got ${context.acceptedSuggestedNextAction}`,
+    );
+  }
+  if (fixture.expectedSuggestedActionQuestionType) {
+    assert(
+      context.suggestedActionQuestionType === fixture.expectedSuggestedActionQuestionType,
+      `${fixture.id}: expected suggested action question type ${fixture.expectedSuggestedActionQuestionType}; got ${context.suggestedActionQuestionType}`,
+    );
+  }
 
   if (fixture.expectedFollowUp) {
     assert(context.contextualQuery.includes(fixture.prompt), `${fixture.id}: contextual query should include current prompt`);
@@ -70,14 +83,36 @@ for (const fixture of fixtures.cases ?? []) {
   }
 
   if (fixture.expectedPromptIncludes?.length) {
+    const { queryIntent } = await resolveAiRaminQueryIntent({
+      visitorMessage: fixture.prompt,
+      history: fixture.history,
+      hiringMode: 'hiring-manager',
+      requestType: fixture.requestType,
+      geminiApiKey: '',
+    });
+    if (fixture.expectedResolvedQuestionType) {
+      assert(
+        queryIntent.primaryQuestionType === fixture.expectedResolvedQuestionType,
+        `${fixture.id}: expected resolved question type ${fixture.expectedResolvedQuestionType}; got ${queryIntent.primaryQuestionType}`,
+      );
+    }
+    if (fixture.expectedResolvedRequestType) {
+      assert(
+        queryIntent.resolvedRequestType === fixture.expectedResolvedRequestType,
+        `${fixture.id}: expected resolved request type ${fixture.expectedResolvedRequestType}; got ${queryIntent.resolvedRequestType}`,
+      );
+    }
+    if (fixture.expectedResolvedIntent) {
+      assert(
+        queryIntent.intentRoute?.intent === fixture.expectedResolvedIntent,
+        `${fixture.id}: expected resolved intent ${fixture.expectedResolvedIntent}; got ${queryIntent.intentRoute?.intent}`,
+      );
+    }
     const visitorPrompt = buildVisitorPrompt(
       fixture.prompt,
       'hiring-manager',
-      fixture.requestType,
-      {
-        ...deterministicQueryIntent,
-        conversationContext: context,
-      },
+      queryIntent.resolvedRequestType ?? fixture.requestType,
+      queryIntent,
     );
 
     for (const expectedText of fixture.expectedPromptIncludes) {

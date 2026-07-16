@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import { motion } from 'framer-motion';
 import { portfolioContent } from '../../data/portfolio';
 import { type TeachingEntry } from '../types';
@@ -6,13 +6,47 @@ import { isPlaceholderValue, contentValue } from '../../lib/placeholder';
 import { ContentToken } from '../../components/ContentToken';
 import { ProjectLink } from '../Projects/index';
 
+const valueHomageWords = new Map([
+  ['vision', 'Vision'],
+  ['taste', 'Taste'],
+  ['clarity', 'Clarity'],
+  ['judgment', 'Judgement'],
+  ['judgement', 'Judgement'],
+  ['empathy', 'Empathy'],
+] as const);
+
+function renderValueHomageText(text: string): ReactNode {
+  const pattern = /\b(vision|taste|clarity|judg(?:e)?ment|empathy)\b/gi;
+  const pieces: ReactNode[] = [];
+  let lastIndex = 0;
+
+  for (const match of text.matchAll(pattern)) {
+    const matchText = match[0];
+    const index = match.index ?? 0;
+
+    if (index > lastIndex) pieces.push(text.slice(lastIndex, index));
+
+    pieces.push(
+      <span key={`${index}-${matchText}`} className="courses-curriculum-value-homage">
+        {valueHomageWords.get(matchText.toLowerCase()) ?? matchText}
+      </span>,
+    );
+
+    lastIndex = index + matchText.length;
+  }
+
+  if (lastIndex < text.length) pieces.push(text.slice(lastIndex));
+
+  return pieces.length ? pieces : text;
+}
+
 function CourseModuleTrack({ course }: { course: TeachingEntry }) {
   return (
     <ol className="courses-curriculum-track">
       {course.courseModules.map((module, moduleIndex) => (
         <li key={`${course.courseTitle}-module-${moduleIndex}`}>
           <span>{String(moduleIndex + 1).padStart(2, '0')}</span>
-          <p>{contentValue(module)}</p>
+          <p>{renderValueHomageText(contentValue(module))}</p>
         </li>
       ))}
     </ol>
@@ -50,9 +84,14 @@ function CourseTrailerPanel({ course }: { course: TeachingEntry }) {
   const isPlaceholder = isPlaceholderValue(course.courseTrailer);
   const heroMedia = course.media[0];
   const supportingMedia = course.media[1];
+  const isProductInnovationCourse = course.framework.name === 'Product Innovation Process';
 
   return (
-    <div className="courses-curriculum-trailer">
+    <div
+      className={`courses-curriculum-trailer ${
+        isProductInnovationCourse ? 'courses-curriculum-trailer--product-innovation' : ''
+      }`}
+    >
       {heroMedia ? (
         <img
           className="courses-curriculum-trailer-image"
@@ -82,7 +121,7 @@ function CourseTrailerPanel({ course }: { course: TeachingEntry }) {
       <div className="courses-curriculum-trailer-content">
         <p className="text-[0.62rem] uppercase tracking-[0.22em] text-white/42">Course trailer</p>
         <h5>{getCourseTitle(course)}</h5>
-        <p>{isPlaceholder ? contentValue(course.courseTrailer) : course.framework.name}</p>
+        <p>{renderValueHomageText(isPlaceholder ? contentValue(course.courseTrailer) : course.framework.name)}</p>
         <div className="mt-4">
           <ProjectLink label="Course trailer" value={course.courseTrailer} />
         </div>
@@ -97,21 +136,21 @@ function CourseFrameworkMap({ course }: { course: TeachingEntry }) {
       <div className="courses-curriculum-framework-head">
         <span>Framework</span>
         <strong>{course.framework.name}</strong>
-        <p>{course.framework.durableClaim}</p>
+        <p>{renderValueHomageText(course.framework.durableClaim)}</p>
       </div>
 
       <div className="courses-curriculum-loop" aria-label={`${course.framework.name} loop`}>
         {course.framework.loop.map((step, index) => (
           <span key={`${course.courseTitle}-loop-${step}`}>
             <em>{String(index + 1).padStart(2, '0')}</em>
-            {step}
+            {renderValueHomageText(step)}
           </span>
         ))}
       </div>
 
       <div className="courses-curriculum-stack" aria-label={`${course.framework.name} stack`}>
         {course.framework.stack.map((layer) => (
-          <span key={`${course.courseTitle}-stack-${layer}`}>{layer}</span>
+          <span key={`${course.courseTitle}-stack-${layer}`}>{renderValueHomageText(layer)}</span>
         ))}
       </div>
     </div>
@@ -209,8 +248,8 @@ function CoursesEvolutionBridge({
               <span>{item.label}</span>
               <strong>{item.name}</strong>
               <em>{item.shape}</em>
-              <p>{item.body}</p>
-              <small>{item.humanEmphasis}</small>
+              <p>{renderValueHomageText(item.body)}</p>
+              <small>{renderValueHomageText(item.humanEmphasis)}</small>
               {course ? (
                 <div className="courses-evolution-links">
                   <ProjectLink label="Course" value={course.courseLink} />
@@ -228,15 +267,15 @@ function CoursesEvolutionBridge({
         {stage.comparison.map((row) => (
           <div key={row.axis}>
             <span>{row.axis}</span>
-            <p>{row.before}</p>
-            <p>{row.after}</p>
+            <p>{renderValueHomageText(row.before)}</p>
+            <p>{renderValueHomageText(row.after)}</p>
           </div>
         ))}
       </div>
 
       <div className="courses-evolution-synthesis">
         <span>{stage.synthesis.title}</span>
-        <p>{stage.synthesis.body}</p>
+        <p>{renderValueHomageText(stage.synthesis.body)}</p>
       </div>
     </motion.article>
   );
@@ -284,13 +323,13 @@ export function CoursesCurriculum({ courses }: { courses: readonly TeachingEntry
               {getCourseTitle(activeCourse)}
             </h4>
             <p className="mt-5 max-w-2xl text-sm leading-7 text-[color:var(--thought-muted)] md:text-base md:leading-8">
-              {contentValue(activeCourse.courseDescription)}
+              {renderValueHomageText(contentValue(activeCourse.courseDescription))}
             </p>
-            <p className="courses-curriculum-positioning">{activeCourse.positioning}</p>
+            <p className="courses-curriculum-positioning">{renderValueHomageText(activeCourse.positioning)}</p>
 
             <div className="courses-curriculum-signals" aria-label="Course structure">
               {activeCourse.framework.loop.map((signal) => (
-                <span key={signal}>{signal}</span>
+                <span key={signal}>{renderValueHomageText(signal)}</span>
               ))}
             </div>
 
@@ -305,7 +344,7 @@ export function CoursesCurriculum({ courses }: { courses: readonly TeachingEntry
                   Operating system
                 </p>
                 <p className="mt-3 text-sm leading-6 text-[color:var(--thought-muted)]">
-                  {coursesFrame.body}
+                  {renderValueHomageText(coursesFrame.body)}
                 </p>
               </div>
               <CourseStatGrid course={activeCourse} />
@@ -354,7 +393,7 @@ export function CoursesCurriculum({ courses }: { courses: readonly TeachingEntry
                 {getCourseTitle(course)}
               </h4>
               <p className="mt-3 max-w-3xl text-sm leading-7 text-[color:var(--thought-muted)]">
-                {contentValue(course.courseDescription)}
+                {renderValueHomageText(contentValue(course.courseDescription))}
               </p>
               <CourseTagStrip course={course} />
             </div>

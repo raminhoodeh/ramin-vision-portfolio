@@ -7,6 +7,8 @@ import { fileURLToPath } from 'node:url';
 const ROOT_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const DEFAULT_ANSWER_MODEL = 'gemini-3.5-flash';
 const DEFAULT_INTENT_CLASSIFIER_MODEL = 'gemini-3.5-flash';
+const DEFAULT_AI_GATEWAY_PROVIDER = 'google';
+const AI_GATEWAY_BASE_URL = 'https://ai-gateway.vercel.sh/v1';
 const DEFAULT_INTENT_CLASSIFIER_CONFIDENCE_THRESHOLD = 0.62;
 const INTENT_CLASSIFIER_MAX_OUTPUT_TOKENS = 900;
 const CORPUS_PATH = path.join(ROOT_DIR, 'ai-ramin-section/generated/ai-ramin-corpus.json');
@@ -1230,6 +1232,28 @@ function normalizeIntentRouteId(value) {
   return INTENT_ROUTE_IDS.has(intent) ? intent : '';
 }
 
+function normalizeQuestionTypeId(value) {
+  const normalized = normalizeClassifierEnum(value);
+  const aliases = {
+    product_sense: 'product_judgment',
+    product_strategy: 'product_judgment',
+    behavioral_interview: 'behavioral_example',
+    behavioural_interview: 'behavioral_example',
+    behavioral: 'behavioral_example',
+    behavioural: 'behavioral_example',
+    interview_story: 'behavioral_example',
+    coaching: 'interview_coaching',
+    proof_lookup: 'evidence_lookup',
+    source_lookup: 'evidence_lookup',
+    proof: 'evidence_lookup',
+    brief: 'hiring_brief',
+    boundary: 'guardrail_boundary',
+    clarification: 'clarification_needed',
+  };
+  const questionType = aliases[normalized] ?? normalized;
+  return QUESTION_TYPES.has(questionType) ? questionType : '';
+}
+
 function normalizeSuggestedTone(value, intent) {
   const normalized = normalizeClassifierEnum(value);
   return SUGGESTED_TONES.has(normalized) ? normalized : getSuggestedTone(intent, 'general_chat');
@@ -1253,6 +1277,9 @@ export function normalizeAiRaminIntentClassifierPayload(payload) {
 
   const defaults = getDefaultIntentRouteBooleans(intent);
   const suggestedTone = normalizeSuggestedTone(source.suggestedTone ?? source.suggested_tone, intent);
+  const sourceQuestionType = normalizeQuestionTypeId(
+    source.sourceQuestionType ?? source.source_question_type ?? source.questionType ?? source.question_type,
+  );
   const confidence = normalizeConfidence(source.confidence, 0);
   const reason = String(source.reason ?? source.rationale ?? source.explanation ?? '').replace(/\s+/g, ' ').trim();
 
@@ -1268,6 +1295,7 @@ export function normalizeAiRaminIntentClassifierPayload(payload) {
       defaults.needsStructuredModules,
     ),
     suggestedTone,
+    sourceQuestionType,
     reason: reason || `classifier selected ${intent}`,
   };
 }
@@ -1329,7 +1357,9 @@ export function buildQueryIntentFromIntentRoute(route, message, requestType = 'g
   if (!normalizedRoute) return classifyQuery(message, requestType);
 
   const resolvedRequestType = getRequestTypeForIntentRoute(normalizedRoute.intent, requestType);
-  const primaryQuestionType = getQuestionTypeForIntentRoute(normalizedRoute.intent, message, resolvedRequestType);
+  const primaryQuestionType =
+    normalizedRoute.sourceQuestionType ||
+    getQuestionTypeForIntentRoute(normalizedRoute.intent, message, resolvedRequestType);
   return buildQueryIntentForQuestionType(message, resolvedRequestType, primaryQuestionType, {
     intentRoute: normalizedRoute,
     intentClassifier: metadata,
@@ -1481,30 +1511,72 @@ function mapClarificationReplyToQuestionType(message) {
   return null;
 }
 
-function isContextDependentFollowUp(message) {
-  const normalized = String(message ?? '')
+function normalizeFollowUpCueText(message) {
+  return String(message ?? '')
     .toLowerCase()
     .replace(/[^\p{L}\p{N}\s'?]/gu, ' ')
     .replace(/\s+/g, ' ')
     .trim();
+}
+
+function isAffirmativeOrChoiceFollowUp(message) {
+  const normalized = normalizeFollowUpCueText(message);
   if (!normalized || hasGuardrailSensitiveCue(normalized) || isConversationOpenCue(normalized)) return false;
 
-  const tokenCount = normalized.split(/\s+/).filter(Boolean).length;
-  // Affirmatives / choices that accept the previous answer's offered next step
-  // ("yes", "yes please", "sure", "go on", "do that", "the first one", "option 2", "both").
-  const isAffirmativeOrChoiceFollowUp =
+  return (
     /^(?:yes|yeah|yep|yup|sure|absolutely|definitely|please|go (?:on|ahead|for it)|do (?:that|it|so)|please do|sounds good|let'?s|that one|both|either)\b/i.test(
       normalized,
     ) ||
     /\b(?:the (?:first|second|third|latter|former)(?: one)?|option (?:1|2|3|one|two|three)|number (?:1|2|3|one|two|three))\b/i.test(
       normalized,
-    );
+    )
+  );
+}
+
+function mapSuggestedNextActionToQuestionType(value) {
+  const lower = String(value ?? '').toLowerCase();
+  if (!lower.trim()) return '';
+
+  if (/\b(hiring brief|shareable brief|copy-ready|copy ready|internal note|recruiter note|brief)\b/i.test(lower)) {
+    return 'hiring_brief';
+  }
+  if (
+    /\b(interview questions?|follow-up questions?|interview focus|interview guide|question set|validate (?:ramin'?s )?(?:claims?|fit)|coach|coaching|practice)\b/i.test(
+      lower,
+    )
+  ) {
+    return 'interview_coaching';
+  }
+  if (/\b(first 90|90 days|thirty sixty ninety|30\/60\/90|first three months|first quarter)\b/i.test(lower)) {
+    return 'first_90_days';
+  }
+  if (/\b(role[ -]?fit|fit analysis|fit pass|role context|job description|jd\b|hiring scorecard|specific role)\b/i.test(lower)) {
+    return 'role_fit';
+  }
+  if (/\b(product judgment|product judgement|product scenario|product sense|mvp|guardrails?|evals?|governance|trade-?off|approach)\b/i.test(lower)) {
+    return 'product_judgment';
+  }
+  if (/\b(proof|evidence|public proof|source|sources|compare (?:projects?|work|companies)|project comparison|strongest|ranking)\b/i.test(lower)) {
+    return 'evidence_lookup';
+  }
+  if (/\b(overview|bio|profile|who is ramin|what ramin does)\b/i.test(lower)) {
+    return 'portfolio_overview';
+  }
+
+  return '';
+}
+
+function isContextDependentFollowUp(message) {
+  const normalized = normalizeFollowUpCueText(message);
+  if (!normalized || hasGuardrailSensitiveCue(normalized) || isConversationOpenCue(normalized)) return false;
+
+  const tokenCount = normalized.split(/\s+/).filter(Boolean).length;
   // A genuine context-dependent follow-up is short. Long, self-contained questions that
   // merely begin with "why", "and", or "what about" are NOT follow-ups — e.g. "why should i
   // hire ramin for a product role at anthropic" must not be treated as a bare "why?".
   const isShort = tokenCount <= 8;
   return (
-    (isShort && isAffirmativeOrChoiceFollowUp) ||
+    (isShort && isAffirmativeOrChoiceFollowUp(normalized)) ||
     (isShort &&
       /^(tell me more|go deeper|expand|expand on that|explain more|why|why not|how so|same for|same question|continue|and|also|what about|how about|what if|for .+|and for .+|compare that|show risks|what risks|draft that|turn that into|can you expand|can you compare|can you explain|do that for)\b/i.test(
         normalized,
@@ -1527,15 +1599,35 @@ export function buildAiRaminConversationRouteContext({
 }) {
   const anchor = getLastProfessionalConversationAnchor(history);
   const isFollowUp = Boolean(anchor && isContextDependentFollowUp(visitorMessage));
-  const inheritedIntent = isFollowUp ? anchor.intent : '';
-  const inheritedQuestionType = isFollowUp ? anchor.sourceQuestionType : '';
-  const inheritedRequestType = isFollowUp ? anchor.requestType : '';
+  const acceptedSuggestedNextAction = Boolean(
+    isFollowUp &&
+    anchor.suggestedNextAction &&
+    isAffirmativeOrChoiceFollowUp(visitorMessage),
+  );
+  const suggestedActionQuestionType = acceptedSuggestedNextAction
+    ? mapSuggestedNextActionToQuestionType(anchor.suggestedNextAction)
+    : '';
+  const inheritedQuestionType = isFollowUp
+    ? suggestedActionQuestionType || anchor.sourceQuestionType
+    : '';
+  const inheritedIntent = isFollowUp
+    ? suggestedActionQuestionType
+      ? getIntentRouteId(suggestedActionQuestionType)
+      : anchor.intent
+    : '';
+  const inheritedRequestType = isFollowUp
+    ? suggestedActionQuestionType
+      ? getRequestTypeForIntentRoute(inheritedIntent, requestType)
+      : anchor.requestType
+    : '';
   const contextualQuery = isFollowUp
     ? [
         `Current follow-up: ${visitorMessage}`,
         anchor.userMessagePreview ? `Previous visitor question: ${anchor.userMessagePreview}` : '',
         anchor.assistantAnswerPreview ? `Previous AI Ramin answer focus: ${anchor.assistantAnswerPreview}` : '',
         anchor.suggestedNextAction ? `Previously offered next step: ${anchor.suggestedNextAction}` : '',
+        acceptedSuggestedNextAction ? `Accepted suggested next action: ${anchor.suggestedNextAction}` : '',
+        suggestedActionQuestionType ? `Suggested action question type: ${suggestedActionQuestionType}` : '',
         inheritedIntent ? `Inherited intent: ${inheritedIntent}` : '',
         inheritedQuestionType ? `Inherited question type: ${inheritedQuestionType}` : '',
         anchor.selectedStoryTitle ? `Previous lead story: ${anchor.selectedStoryTitle}` : '',
@@ -1555,6 +1647,8 @@ export function buildAiRaminConversationRouteContext({
     inheritedRequestType,
     currentRequestType: requestType,
     deterministicQuestionType: deterministicQueryIntent?.primaryQuestionType ?? '',
+    acceptedSuggestedNextAction,
+    suggestedActionQuestionType,
     contextualQuery: summarizeHistoryContent(contextualQuery, MAX_CONVERSATION_CONTEXT_CHARS),
     previousUserMessagePreview: isFollowUp ? anchor.userMessagePreview : '',
     previousAnswerPreview: isFollowUp ? anchor.assistantAnswerPreview : '',
@@ -1567,6 +1661,7 @@ export function buildAiRaminConversationRouteContext({
 function buildConversationInheritedRoute(conversationContext) {
   const intent = conversationContext?.inheritedIntent;
   if (!INTENT_ROUTE_IDS.has(intent) || !isProfessionalIntent(intent)) return null;
+  const sourceQuestionType = normalizeQuestionTypeId(conversationContext?.inheritedQuestionType);
 
   return {
     ...getDefaultIntentRouteBooleans(intent),
@@ -1574,7 +1669,10 @@ function buildConversationInheritedRoute(conversationContext) {
     intent,
     confidence: 0.76,
     suggestedTone: getSuggestedTone(intent, conversationContext.inheritedRequestType || 'general_chat'),
-    reason: `inherited from previous ${conversationContext.inheritedIntent} answer because the visitor sent a contextual follow-up`,
+    sourceQuestionType,
+    reason: conversationContext.acceptedSuggestedNextAction && sourceQuestionType
+      ? `accepted previous suggested next action and routed to ${sourceQuestionType}`
+      : `inherited from previous ${conversationContext.inheritedIntent} answer because the visitor sent a contextual follow-up`,
   };
 }
 
@@ -3744,6 +3842,12 @@ const INTERNAL_METADATA_TERM_PATTERN =
   /\b(?:source_role|source_path|file_path|can_answer_from|answer_permission|trust_level|verification_status|metric_verification_status|retrieval_priority|chunk_index|chunk_id|public_safe|contains_metric|canonical_candidate)\b/gi;
 const STRUCTURED_ANSWER_KEY_PATTERN =
   /"?(?:short_answer|verified_proof|inferred_fit|confidential_boundary|open_questions|suggested_next_action)"?\s*:/i;
+const SUGGESTED_NEXT_ACTION_LABEL_PATTERN =
+  /(?:\*\*)?\s*suggested\s+next\s+action\s*:?\s*(?:\*\*)?/i;
+const SUGGESTED_NEXT_ACTION_LABEL_PREFIX_PATTERN =
+  new RegExp(`^\\s*${SUGGESTED_NEXT_ACTION_LABEL_PATTERN.source}\\s*`, 'i');
+const SUGGESTED_NEXT_ACTION_LABEL_IN_TEXT_PATTERN =
+  /(^|[\s([{>"'“‘.,;:!?-])(?:\*\*)?\s*suggested\s+next\s+action\s*:?\s*(?:\*\*)?/i;
 
 function isRawStructuredAnswerText(value) {
   const text = String(value ?? '').trim();
@@ -3780,23 +3884,60 @@ function hasInternalMetadataLeak(value) {
 }
 
 function hasDuplicatedSuggestedNextActionLabel(value) {
-  return /^\s*(?:\*\*)?\s*suggested\s+next\s+action\s*:?\s*(?:\*\*)?/i.test(String(value ?? ''));
+  return SUGGESTED_NEXT_ACTION_LABEL_PREFIX_PATTERN.test(String(value ?? ''));
+}
+
+function hasSuggestedNextActionLabelInShortAnswer(value) {
+  return SUGGESTED_NEXT_ACTION_LABEL_IN_TEXT_PATTERN.test(String(value ?? ''));
 }
 
 function stripSuggestedNextActionLabel(value) {
   return String(value ?? '')
-    .replace(/^\s*(?:\*\*)?\s*suggested\s+next\s+action\s*:?\s*(?:\*\*)?\s*/i, '')
+    .replace(SUGGESTED_NEXT_ACTION_LABEL_PREFIX_PATTERN, '')
     .trim();
 }
 
-function cleanupQualityGateText(value) {
-  return String(value ?? '')
+function splitSuggestedNextActionFromShortAnswer(value) {
+  const text = String(value ?? '');
+  const match = SUGGESTED_NEXT_ACTION_LABEL_IN_TEXT_PATTERN.exec(text);
+  if (!match) return { shortAnswer: text, suggestedNextAction: '' };
+
+  const labelIndex = match.index + (match[1]?.length ?? 0);
+  return {
+    shortAnswer: text.slice(0, labelIndex).trimEnd(),
+    suggestedNextAction: stripSuggestedNextActionLabel(text.slice(labelIndex)),
+  };
+}
+
+function cleanupQualityGateText(value, { preserveLineBreaks = false } = {}) {
+  const text = String(value ?? '')
+    .replace(/\r\n?/g, '\n')
     .replace(LOCAL_SOURCE_PATH_PATTERN, 'portfolio evidence')
     .replace(INTERNAL_METADATA_ASSIGNMENT_PATTERN, '')
-    .replace(INTERNAL_METADATA_TERM_PATTERN, '')
+    .replace(INTERNAL_METADATA_TERM_PATTERN, '');
+
+  if (!preserveLineBreaks) {
+    return text
+      .replace(/\s+([,.;:])/g, '$1')
+      .replace(/\(\s*\)/g, '')
+      .replace(/\s{2,}/g, ' ')
+      .replace(/\s+([)\]])/g, '$1')
+      .trim();
+  }
+
+  return text
+    .split('\n')
+    .map((line) =>
+      line
+        .replace(/[ \t]+([,.;:])/g, '$1')
+        .replace(/\([ \t]*\)/g, '')
+        .replace(/[ \t]{2,}/g, ' ')
+        .replace(/[ \t]+([)\]])/g, '$1')
+        .trim(),
+    )
+    .join('\n')
+    .replace(/\n{3,}/g, '\n\n')
     .replace(/\s+([,.;:])/g, '$1')
-    .replace(/\(\s*\)/g, '')
-    .replace(/\s{2,}/g, ' ')
     .replace(/\s+([)\]])/g, '$1')
     .trim();
 }
@@ -3841,10 +3982,13 @@ function sanitizeQualityGateSections(sections) {
   const before = JSON.stringify(normalized);
   const coerced = coerceRawStructuredAnswer(normalized);
   const source = coerced.sections;
-  const suggestedNextAction = cleanupQualityGateText(stripSuggestedNextActionLabel(source.suggested_next_action));
+  const splitShortAnswer = splitSuggestedNextActionFromShortAnswer(source.short_answer);
+  const explicitSuggestedNextAction = cleanupQualityGateText(stripSuggestedNextActionLabel(source.suggested_next_action));
+  const extractedSuggestedNextAction = cleanupQualityGateText(splitShortAnswer.suggestedNextAction);
+  const suggestedNextAction = explicitSuggestedNextAction || extractedSuggestedNextAction;
 
   const sanitized = {
-    short_answer: cleanupQualityGateText(source.short_answer),
+    short_answer: cleanupQualityGateText(splitShortAnswer.shortAnswer, { preserveLineBreaks: true }),
     verified_proof: dedupeQualityGateList(source.verified_proof, 6),
     inferred_fit: dedupeQualityGateList(source.inferred_fit, 5),
     confidential_boundary: dedupeQualityGateList(source.confidential_boundary, 4),
@@ -3869,7 +4013,10 @@ function detectAnswerQualityIssues(sections, portfolioContext) {
   if (isPlaceholderAnswer(sections)) issues.add('placeholder_answer');
   if (hasLocalSourcePathLeak(answerText)) issues.add('local_source_path_leak');
   if (hasInternalMetadataLeak(answerText)) issues.add('internal_metadata_leak');
-  if (hasDuplicatedSuggestedNextActionLabel(sections?.suggested_next_action)) {
+  if (
+    hasDuplicatedSuggestedNextActionLabel(sections?.suggested_next_action) ||
+    hasSuggestedNextActionLabelInShortAnswer(sections?.short_answer)
+  ) {
     issues.add('duplicated_next_action_label');
   }
   if (portfolioContext.queryIntent.primaryQuestionType === 'behavioral_example') {
@@ -4229,6 +4376,115 @@ function getGeminiApiKey() {
   return process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY || '';
 }
 
+function getAiGatewayApiKey() {
+  return process.env.AI_GATEWAY_API_KEY || '';
+}
+
+function getAiRaminPreferredModelProvider() {
+  return String(process.env.AI_RAMIN_MODEL_PROVIDER || process.env.AI_MODEL_PROVIDER || '').trim().toLowerCase();
+}
+
+function normalizeAiGatewayModel(model, fallbackModel = DEFAULT_ANSWER_MODEL) {
+  const rawModel = String(model || fallbackModel).trim().replace(/^models\//, '');
+  if (!rawModel) return `${DEFAULT_AI_GATEWAY_PROVIDER}/${fallbackModel}`;
+  if (rawModel.includes('/')) return rawModel;
+  return rawModel.startsWith('gemini-') ? `${DEFAULT_AI_GATEWAY_PROVIDER}/${rawModel}` : rawModel;
+}
+
+function buildGeminiRuntime({ intentClassifier = false } = {}) {
+  const geminiApiKey = getGeminiApiKey();
+  const modelPath = intentClassifier ? getGeminiIntentClassifierModelPath() : getGeminiModelPath();
+  return {
+    provider: geminiApiKey ? 'gemini' : 'none',
+    apiKey: geminiApiKey,
+    model: modelPath.replace(/^models\//, ''),
+    modelPath,
+  };
+}
+
+function getAiRaminModelRuntime({ intentClassifier = false } = {}) {
+  loadLocalEnv();
+  const geminiRuntime = buildGeminiRuntime({ intentClassifier });
+  const aiGatewayApiKey = getAiGatewayApiKey();
+  const preferredProvider = getAiRaminPreferredModelProvider();
+  const shouldUseAiGateway =
+    aiGatewayApiKey &&
+    (preferredProvider === 'ai_gateway' || preferredProvider === 'ai-gateway');
+
+  if (shouldUseAiGateway) {
+    const model = intentClassifier
+      ? normalizeAiGatewayModel(process.env.AI_GATEWAY_INTENT_MODEL || process.env.GEMINI_INTENT_MODEL, DEFAULT_INTENT_CLASSIFIER_MODEL)
+      : normalizeAiGatewayModel(process.env.AI_GATEWAY_MODEL || process.env.GEMINI_MODEL, DEFAULT_ANSWER_MODEL);
+    return {
+      provider: 'ai_gateway',
+      apiKey: aiGatewayApiKey,
+      model,
+      modelPath: model,
+      fallbackRuntime: geminiRuntime.apiKey ? geminiRuntime : null,
+    };
+  }
+
+  return geminiRuntime;
+}
+
+function getPublicModelProviderErrorMessage(errorText) {
+  const text = String(errorText ?? '').trim();
+  if (/AI Gateway requires a valid credit card|add-credit-card|unlock your free credits/i.test(text)) {
+    return 'AI Ramin is temporarily unavailable because the deployed Vercel AI Gateway account needs billing enabled. Add Vercel billing or configure GEMINI_API_KEY/GOOGLE_API_KEY for direct Gemini.';
+  }
+  if (/quota|billing|credit card|permission|unauthorized|forbidden|api key|API_KEY/i.test(text)) {
+    return 'AI Ramin is temporarily unavailable because the deployed AI provider rejected the request. Check the production API key, billing, and quota settings.';
+  }
+  return text || 'AI Ramin could not reach the model provider.';
+}
+
+async function requestAiGatewayText({
+  apiKey,
+  model,
+  messages,
+  temperature,
+  topP,
+  maxTokens,
+}) {
+  const response = await fetch(`${AI_GATEWAY_BASE_URL}/chat/completions`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      model,
+      messages,
+      temperature,
+      top_p: topP,
+      max_tokens: maxTokens,
+    }),
+  });
+  const payload = await response.json().catch(() => null);
+
+  if (!response.ok) {
+    const message = payload?.error?.message || payload?.message || `AI Gateway request failed with status ${response.status}`;
+    const error = new Error(message);
+    error.status = response.status;
+    throw error;
+  }
+
+  return String(payload?.choices?.[0]?.message?.content ?? '').trim();
+}
+
+function toAiGatewayHistory(messages) {
+  if (!Array.isArray(messages)) return [];
+
+  return messages
+    .filter((message) => message && (message.role === 'user' || message.role === 'assistant'))
+    .slice(-MAX_HISTORY_MESSAGES)
+    .map((message) => ({
+      role: message.role === 'assistant' ? 'assistant' : 'user',
+      content: String(message.content ?? '').slice(0, MAX_HISTORY_MESSAGE_CHARS),
+    }))
+    .filter((message) => message.content.trim());
+}
+
 function getIntentClassifierConfidenceThreshold() {
   return normalizeConfidence(
     process.env.AI_RAMIN_INTENT_CLASSIFIER_CONFIDENCE_THRESHOLD,
@@ -4351,6 +4607,12 @@ export function buildAiRaminIntentClassifierPrompt({
           `isFollowUp=true`,
           `inheritedIntent=${conversationContext.inheritedIntent}`,
           `inheritedQuestionType=${conversationContext.inheritedQuestionType}`,
+          conversationContext.acceptedSuggestedNextAction
+            ? `acceptedSuggestedNextAction=true`
+            : '',
+          conversationContext.suggestedActionQuestionType
+            ? `suggestedActionQuestionType=${conversationContext.suggestedActionQuestionType}`
+            : '',
           conversationContext.previousUserMessagePreview
             ? `previousUser=${conversationContext.previousUserMessagePreview}`
             : '',
@@ -4378,11 +4640,13 @@ async function classifyIntentWithModel({
   deterministicQueryIntent,
   conversationContext,
   geminiApiKey,
+  modelRuntime,
 }) {
-  const modelPath = getGeminiIntentClassifierModelPath();
+  const runtime = modelRuntime ?? getAiRaminModelRuntime({ intentClassifier: true });
+  const modelPath = runtime.modelPath ?? getGeminiIntentClassifierModelPath();
   const classifier = {
-    provider: 'gemini',
-    model: modelPath.replace(/^models\//, ''),
+    provider: runtime.provider === 'ai_gateway' ? 'ai_gateway' : 'gemini',
+    model: runtime.model ?? modelPath.replace(/^models\//, ''),
     attempted: false,
     used: false,
     intent: null,
@@ -4392,7 +4656,8 @@ async function classifyIntentWithModel({
     error: '',
   };
 
-  if (!geminiApiKey) {
+  const apiKey = runtime.apiKey || geminiApiKey;
+  if (!apiKey) {
     return {
       classifier: {
         ...classifier,
@@ -4407,13 +4672,56 @@ async function classifyIntentWithModel({
   classifier.attempted = true;
 
   try {
+    const prompt = buildAiRaminIntentClassifierPrompt({
+      visitorMessage,
+      history,
+      hiringMode,
+      requestType,
+      deterministicQueryIntent,
+      conversationContext,
+    });
+
+    if (runtime.provider === 'ai_gateway') {
+      const text = await requestAiGatewayText({
+        apiKey,
+        model: runtime.model,
+        messages: [{ role: 'user', content: prompt }],
+        temperature: 0.05,
+        topP: 0.2,
+        maxTokens: INTENT_CLASSIFIER_MAX_OUTPUT_TOKENS,
+      });
+      const parsed = parseJsonObjectFromText(text);
+      const route = normalizeAiRaminIntentClassifierPayload(parsed);
+      if (!route) {
+        return {
+          classifier: {
+            ...classifier,
+            error: 'invalid_classifier_payload',
+            fallbackReason: 'invalid_classifier_payload',
+            rawPreview: truncateForDebug(text, 500),
+          },
+          route: null,
+        };
+      }
+
+      return {
+        classifier: {
+          ...classifier,
+          intent: route.intent,
+          confidence: route.confidence,
+          reason: route.reason,
+        },
+        route,
+      };
+    }
+
     const response = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/${modelPath}:generateContent`,
       {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-goog-api-key': geminiApiKey,
+          'x-goog-api-key': apiKey,
         },
         body: JSON.stringify({
           contents: [
@@ -4421,14 +4729,7 @@ async function classifyIntentWithModel({
               role: 'user',
               parts: [
                 {
-                  text: buildAiRaminIntentClassifierPrompt({
-                    visitorMessage,
-                    history,
-                    hiringMode,
-                    requestType,
-                    deterministicQueryIntent,
-                    conversationContext,
-                  }),
+                  text: prompt,
                 },
               ],
             },
@@ -4499,6 +4800,7 @@ export async function resolveAiRaminQueryIntent({
   hiringMode,
   requestType,
   geminiApiKey,
+  modelRuntime,
 }) {
   const deterministicQueryIntent = classifyQuery(visitorMessage, requestType);
   const deterministicIntent = getIntentRouteId(deterministicQueryIntent.primaryQuestionType);
@@ -4580,6 +4882,7 @@ export async function resolveAiRaminQueryIntent({
     deterministicQueryIntent,
     conversationContext,
     geminiApiKey,
+    modelRuntime,
   });
   const threshold = getIntentClassifierConfidenceThreshold();
   const route = classification.route;
@@ -4910,6 +5213,9 @@ export function buildVisitorPrompt(visitorMessage, hiringMode, requestType, quer
         queryIntent.conversationContext.previousSuggestedNextAction
           ? `You offered this next step in your previous answer: "${queryIntent.conversationContext.previousSuggestedNextAction}". If the latest message accepts it (e.g. "yes", "yes please", "sure", "the first one"), carry out that step now instead of repeating the previous answer.`
           : '',
+        queryIntent.conversationContext.acceptedSuggestedNextAction && queryIntent.conversationContext.suggestedActionQuestionType
+          ? `The latest message accepts that next step. Carry it out as ${queryIntent.conversationContext.suggestedActionQuestionType}.`
+          : '',
         queryIntent.conversationContext.previousLeadStoryTitle
           ? `Previous lead story: ${queryIntent.conversationContext.previousLeadStoryTitle}`
           : '',
@@ -5098,6 +5404,7 @@ function buildAnswerContextTurnText(
 async function generateStructuredAnswer({
   geminiApiKey,
   modelPath,
+  modelRuntime,
   hiringMode,
   requestType,
   portfolioContext,
@@ -5122,6 +5429,60 @@ async function generateStructuredAnswer({
   ];
   if (retryDirective) {
     contents.push({ role: 'user', parts: [{ text: retryDirective }] });
+  }
+
+  if (modelRuntime?.provider === 'ai_gateway') {
+    try {
+      const answerText = await requestAiGatewayText({
+        apiKey: modelRuntime.apiKey,
+        model: modelRuntime.model,
+        messages: [
+          {
+            role: 'system',
+            content: buildSystemInstruction(hiringMode, requestType, portfolioContext.queryIntent),
+          },
+          { role: 'user', content: contextTurnText },
+          {
+            role: 'assistant',
+            content: 'Understood. I will answer using this portfolio context and avoid unsupported claims.',
+          },
+          ...toAiGatewayHistory(history),
+          {
+            role: 'user',
+            content: buildVisitorPrompt(visitorMessage, hiringMode, requestType, portfolioContext.queryIntent),
+          },
+          ...(retryDirective ? [{ role: 'user', content: retryDirective }] : []),
+        ],
+        temperature,
+        topP: 0.92,
+        maxTokens: needsDetailedOutput ? 2_600 : 2_000,
+      });
+      return { ok: true, status: 200, errorText: '', answerText };
+    } catch (error) {
+      if (modelRuntime.fallbackRuntime?.apiKey) {
+        return generateStructuredAnswer({
+          geminiApiKey: modelRuntime.fallbackRuntime.apiKey,
+          modelPath: modelRuntime.fallbackRuntime.modelPath,
+          modelRuntime: modelRuntime.fallbackRuntime,
+          hiringMode,
+          requestType,
+          portfolioContext,
+          history,
+          visitorMessage,
+          contextTurnText,
+          needsDetailedOutput,
+          temperature,
+          retryDirective,
+        });
+      }
+
+      return {
+        ok: false,
+        status: error?.status || 502,
+        errorText: getPublicModelProviderErrorMessage(error instanceof Error ? error.message : 'AI Gateway request failed.'),
+        answerText: '',
+      };
+    }
   }
 
   const response = await fetch(
@@ -5153,7 +5514,7 @@ async function generateStructuredAnswer({
     return {
       ok: false,
       status: response.status,
-      errorText: responsePayload?.error?.message || 'Gemini request failed.',
+      errorText: getPublicModelProviderErrorMessage(responsePayload?.error?.message || 'Gemini request failed.'),
       answerText: '',
     };
   }
@@ -5239,13 +5600,15 @@ export async function handleAiRaminRequest(req, res) {
   const traceId = randomUUID();
   const hiringMode = normalizeHiringMode(payload.hiringMode ?? payload.mode);
   const inferredRequestType = inferRequestType(visitorMessage, payload.requestType);
-  const geminiApiKey = getGeminiApiKey();
+  const modelRuntime = getAiRaminModelRuntime();
+  const geminiApiKey = modelRuntime.apiKey;
   const { queryIntent } = await resolveAiRaminQueryIntent({
     visitorMessage,
     history: payload.history,
     hiringMode,
     requestType: inferredRequestType,
     geminiApiKey,
+    modelRuntime: getAiRaminModelRuntime({ intentClassifier: true }),
   });
   const requestType = normalizeRequestType(queryIntent.resolvedRequestType) ?? inferredRequestType;
   const includeDebugTrace = shouldIncludeDebugTrace(payload);
@@ -5264,9 +5627,9 @@ export async function handleAiRaminRequest(req, res) {
     return;
   }
 
-  if (!geminiApiKey) {
+  if (!modelRuntime.apiKey) {
     sendJson(res, 500, {
-      error: 'Gemini API key is not configured. Add GEMINI_API_KEY or GOOGLE_API_KEY to .env.local and restart the dev server.',
+      error: 'AI model API key is not configured. Add AI_GATEWAY_API_KEY, GEMINI_API_KEY, or GOOGLE_API_KEY.',
     });
     return;
   }
@@ -5293,7 +5656,7 @@ export async function handleAiRaminRequest(req, res) {
     evidenceCardCount: evidenceCards.length,
   });
   logAiRaminRoutingObservation(routing);
-  const modelPath = getGeminiModelPath();
+  const modelPath = modelRuntime.modelPath;
   const minimumAnswerableEvidence = portfolioContext.queryIntent.retrievalProfile.minimumAnswerableEvidence;
   const hasSufficientAnswerableEvidence = portfolioContext.answerableEvidenceCount >= minimumAnswerableEvidence;
   const selectedStoryPrompt = formatSelectedStoryForPrompt(portfolioContext.selectedStory);
@@ -5309,6 +5672,7 @@ export async function handleAiRaminRequest(req, res) {
   const generateOptions = {
     geminiApiKey,
     modelPath,
+    modelRuntime,
     hiringMode,
     requestType,
     portfolioContext,
@@ -5320,7 +5684,7 @@ export async function handleAiRaminRequest(req, res) {
 
   const firstAttempt = await generateStructuredAnswer({ ...generateOptions, temperature: ANSWER_BASE_TEMPERATURE });
   if (!firstAttempt.ok) {
-    sendJson(res, firstAttempt.status, { error: firstAttempt.errorText });
+    sendJson(res, firstAttempt.status, { error: getPublicModelProviderErrorMessage(firstAttempt.errorText) });
     return;
   }
   if (!firstAttempt.answerText) {
@@ -5456,7 +5820,7 @@ export async function handleAiRaminRequest(req, res) {
     evidenceLookupAnalysis,
     briefSeed,
     answerFrame,
-    model: modelPath.replace(/^models\//, ''),
+    model: modelRuntime.model ?? modelPath.replace(/^models\//, ''),
     sourceMetadata: {
       contextSources: portfolioContext.sources,
       contextChunkCount: portfolioContext.chunkCount,

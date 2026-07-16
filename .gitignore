@@ -2,16 +2,22 @@
 node_modules/
 dist/
 .vite/
+.local/
+.vercel/
+artifacts/
 
 # Local/generated scrape and reference output
 .firecrawl/
 scrape-output/
 extracted/
 _nuxt/
+ai-native-product-os-context/
+anthropic-animation-inspiration/
 
 # Local large media captures
 *.mov
 *.mp4
+!projects-section/Project Images/24seven-concierge-images/24-seven-concierge-screen-recording-3d-shifted-17.mp4
 
 # Environment and secret-bearing local notes
 .env
@@ -21,6 +27,8 @@ ai-ramin-section/evaluation/latest-evaluation-report.json
 ai-ramin-section/evaluation/failure-log.jsonl
 ai-ramin-section/evaluation/live-feedback.jsonl
 ai-ramin-section/evaluation/latest-feedback-review.json
+ai-ramin-section/evaluation/latest-eval-case-promotion-plan.json
+ai-ramin-section/evaluation/latest-live-review-report.json
 
 # macOS/editor noise
 .DS_Store
@@ -36,3 +44,4 @@ shadergradient-main/
 
 # Reference codebases are separate (embedded) git repos, not portfolio source
 codebases/
+.vercel

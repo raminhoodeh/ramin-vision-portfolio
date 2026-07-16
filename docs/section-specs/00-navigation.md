@@ -27,14 +27,14 @@ AI Ramin
   { label: 'Intro', target: 'hero', icon: 'intro' },
   { label: 'Work', target: 'experience-education', icon: 'work' },
   { label: 'Projects', target: 'projects', icon: 'projects' },
-  { label: 'Thoughts', target: 'teaching-speaking-writing', icon: 'thoughts' },
+  { label: 'Thoughts', target: 'thoughts', icon: 'thoughts' },
   { label: 'Contact', target: 'contact', icon: 'contact' },
   { label: 'Bonus', target: 'bonus', icon: 'bonus' },
   { label: 'AI Ramin', target: 'ai-ramin', icon: 'ai' },
 ]
 ```
 
-`AI Ramin` opens a modal. It is not a normal page section and must stay out of structural `navLinks`.
+`AI Ramin` navigates to the dedicated AI Ramin section.
 
 ## Structural Source Data
 
@@ -45,9 +45,10 @@ AI Ramin
   { label: 'Hero', target: 'hero' },
   { label: 'Experience & Education', target: 'experience-education' },
   { label: 'Projects', target: 'projects' },
-  { label: 'Teaching, Speaking & Writing', target: 'teaching-speaking-writing' },
+  { label: 'Teaching, Speaking & Writing', target: 'thoughts' },
   { label: 'Contact', target: 'contact' },
   { label: 'Bonus', target: 'bonus' },
+  { label: 'AI Ramin', target: 'ai-ramin' },
 ]
 ```
 
@@ -64,11 +65,10 @@ The bottom nav intentionally uses shorter display labels so the control can stay
 
 - The site uses a fixed viewport portfolio stage, not a long-page scrollspy.
 - Only the selected public section is mounted in the main stage.
-- Clicking a normal section item sets `activeSection`, replaces the URL hash, closes AI Ramin if it is open, and resets the stage scroll to the top.
+- Clicking a section item sets `activeSection`, replaces the URL hash, and resets the stage scroll to the top.
 - `hashchange` updates `activeSection` when a supported hash is entered manually.
 - `AnimatePresence` transitions between mounted sections.
-- Clicking `AI Ramin` opens the chatbot modal and visually activates the `AI Ramin` nav item while the modal remains open.
-- Closing AI Ramin returns the bottom nav active state to the currently mounted page section.
+- Clicking `AI Ramin` mounts the dedicated AI Ramin section and visually activates the `AI Ramin` nav item.
 
 ## Current Bottom Bar Behavior
 
@@ -121,8 +121,7 @@ The bar is intentionally slightly low, with a small visible gap under it, so it 
 - Inactive items show the icon and, when expanded, the label without a highlighted inner surface.
 - Inactive tabs keep their nested button canvas hidden, with no `::before` or `::after` highlight.
 - The active tab shows its nested WebGL canvas, border, subtle rim, and controlled fill.
-- `AI Ramin` becomes the selected item only while the modal is open.
-- Selecting any normal section closes the AI Ramin modal and returns the selected state to that section.
+- `AI Ramin` becomes the selected item while the dedicated AI Ramin section is active.
 
 ## Liquid Glass Engine
 
@@ -181,10 +180,9 @@ The refresh loop runs faster during hover, interaction, resize, scroll, or recen
 - Keep one shared bottom nav element across every page.
 - Do not reintroduce the old top navbar as the primary public nav.
 - Do not reintroduce a left rail as the primary public nav.
-- Keep AI Ramin inside the bottom nav as a modal trigger.
-- Do not mount AI Ramin as a normal section.
+- Keep AI Ramin inside the bottom nav as a dedicated section target.
 - Do not split `Experience & Education` into separate top-level Work and Qualifications sections.
-- Use `Thoughts` only as the short bottom-nav display label for `teaching-speaking-writing`.
+- Use `Thoughts` only as the short bottom-nav display label for the `thoughts` section.
 - If nav sizing, glass controls, or active-state behavior changes, update this file and the per-section navigation specs.
 
 ## Implementation Checklist
@@ -199,5 +197,5 @@ The refresh loop runs faster during hover, interaction, resize, scroll, or recen
 - [ ] The bar sits low with a small visible gap below it.
 - [ ] Bottom nav uses `LiquidGlassJsNavShell` with `orientation="bottom"`.
 - [ ] Bottom nav uses source from `react libraries/liquid-glass-js-main`.
-- [ ] AI Ramin opens the chatbot modal and is absent from structural `navLinks`.
+- [ ] AI Ramin opens the dedicated chatbot section from the bottom nav.
 - [ ] Normal navigation changes `activeSection`, updates the URL hash, and mounts only the selected section.

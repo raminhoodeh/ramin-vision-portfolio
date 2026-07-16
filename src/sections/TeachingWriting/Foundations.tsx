@@ -1,8 +1,6 @@
 import { motion } from 'framer-motion';
 import { portfolioContent } from '../../data/portfolio';
 import { type ThoughtFoundationEntry } from '../types';
-import { thoughtFormatNavGroups } from '../Projects/types';
-import { scrollToId } from '../../lib/scroll';
 
 function FoundationSequence({ foundation }: { foundation: ThoughtFoundationEntry }) {
   return (
@@ -240,6 +238,9 @@ export function ThoughtFoundationsSection() {
           <p className="thought-foundations-synthesis-route">
             Framework of Metacognition is the method. Framework of Reality is the life application. Stratetree is the route from values into products.
           </p>
+          <p className="thought-foundations-synthesis-route">
+            The same three moves work at every scale. A person overwhelmed by choices, a company lost in its market, a product team buried in requirements. Reduce over-information - know where you are and what you are - find the vision that follows. The Stratetree is the map that runs that sequence.
+          </p>
         </div>
       </div>
 
@@ -256,7 +257,7 @@ export function ThoughtFoundationsSection() {
 
 export function ThoughtQuoteThread() {
   const quoteThread = portfolioContent.teachingSpeakingWriting.frame.quoteThread;
-  const formationQuoteSerif = 'You are shaped by what you create.';
+  const formationQuoteSerif = 'you are shaped by what you create';
 
   return (
     <section className="thought-format-section thought-quote-thread" aria-label="Thought quote thread">
@@ -312,26 +313,28 @@ export function ThoughtQuoteThread() {
 
 export function ThoughtEditorialHero() {
   const frame = portfolioContent.teachingSpeakingWriting.frame;
-  const formationQuoteSerif = 'You are shaped by what you create.';
-  const formationQuoteLead = frame.formationQuote.replace(formationQuoteSerif, '').trim();
+  const headlineLines = ['You are not defined by what you do,', 'you are shaped by what you create'];
+  const outputTypes = ['Books', 'Courses', 'Talks'];
 
   return (
-    <div className="thoughts-hero relative isolate overflow-hidden px-5 pb-12 pt-24 sm:px-8 md:px-12 lg:px-16">
+    <div className="thoughts-hero relative isolate overflow-hidden px-5 pb-10 pt-10 sm:px-8 sm:pt-12 md:px-12 lg:px-16">
       <div className="thoughts-hero-scan absolute inset-0 opacity-70" aria-hidden="true" />
-      <div className="relative z-10 mx-auto grid min-h-[calc(100svh-8rem)] max-w-[1440px] content-between gap-12">
+      <div className="relative z-10 mx-auto grid min-h-[min(610px,calc(100svh-10rem))] max-w-[1440px] content-end gap-10">
         <div>
           {/* Section label rendered globally via <SectionMarker> */}
         </div>
 
-        <div className="grid gap-8 xl:grid-cols-[minmax(0,0.64fr)_minmax(22rem,0.36fr)] xl:items-end">
+        <div className="grid gap-8 xl:grid-cols-[minmax(0,1fr)_minmax(12.6rem,14.7rem)] xl:items-end">
           <div>
-            <p className="max-w-xl text-sm uppercase leading-6 tracking-[0.24em] text-white/54">
-              {frame.kicker}
-            </p>
-            <h2 className="thoughts-hero-title mt-6 font-semibold text-white">
+            <h2 className="thoughts-hero-title mt-0 font-semibold text-white">
               Thoughts
               <span className="thoughts-hero-title-serif">
-                {frame.headline}
+                {headlineLines.map((line, index) => (
+                  <span key={line}>
+                    {line}
+                    {index < headlineLines.length - 1 ? <br /> : null}
+                  </span>
+                ))}
               </span>
             </h2>
             {frame.body ? (
@@ -339,37 +342,19 @@ export function ThoughtEditorialHero() {
                 {frame.body}
               </p>
             ) : null}
-            <p className="thoughts-hero-bridge mt-8 max-w-2xl text-lg leading-8 text-white md:text-xl">
-              {frame.heroBridge}
-            </p>
           </div>
 
-          <div className="thoughts-hero-panel rounded-[2rem] border border-white/12 bg-white/[0.055] p-5 shadow-[0_30px_90px_rgba(0,0,0,0.24)] backdrop-blur-2xl md:p-6">
-            <span className="thoughts-hero-belief-chip">My core belief</span>
-            <blockquote className="thoughts-hero-quote text-2xl font-semibold leading-tight tracking-[-0.045em] text-white md:text-3xl">
-            "{formationQuoteLead}{' '}
-              <span className="thoughts-hero-quote-serif">{formationQuoteSerif}"</span>
-            </blockquote>
+          <div className="thoughts-hero-panel thoughts-hero-count-card rounded-[2rem] border border-white/12 p-5 md:p-6">
+            <div className="thoughts-hero-output-summary" aria-label="Two books, courses, and talks">
+              <strong>2</strong>
+              <ul>
+                {outputTypes.map((label) => (
+                  <li key={label}>{label}</li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
-
-        <nav className="thought-format-rail" aria-label="Thought journey">
-          {thoughtFormatNavGroups.map((group) => (
-            <div key={group.label} className="thought-format-rail-group">
-              <div className="thought-format-rail-meta">
-                <span>{group.index}</span>
-                <strong>{group.label}</strong>
-              </div>
-              <div className="thought-format-rail-items">
-                {group.items.map((item) => (
-                  <button key={item.id} type="button" title={item.detail} onClick={() => scrollToId(item.id)}>
-                    {item.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-          ))}
-        </nav>
       </div>
     </div>
   );

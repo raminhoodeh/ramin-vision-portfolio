@@ -1,36 +1,69 @@
 import { useEffect, useMemo, useState } from 'react';
+import type { CSSProperties } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import {
   type CaseStudyEntry,
 } from '../types';
 import { portfolioContent } from '../../data/portfolio';
 import { getProjectCardDescriptionByName } from './projectCopy';
+import { GlassImprintCta } from '../../components/GlassImprintCta';
 import { IPhone3D } from '../../components/IPhone3D';
+import { MassSocialWisdomDemo } from './MassSocialWisdomDemo';
 import aiCostsDashboardVisualUrl from '../../assets/projects/ai-costs-mock.webp';
 import aiNativeProductOsVisualUrl from '../../assets/projects/ai-native-os-hero.webp';
-import massSocialWisdomAgentVisualUrl from '../../assets/projects/mass-social.gif';
-import nssoBillboardStageUrl from '../../assets/projects/nsso-billboard-stage4.jpg';
+import massSocialWisdomAgentAppScreenshotUrl from '../../assets/projects/mass-social-app-screenshot.webp';
 import nssoVisualUrl from '../../assets/projects/nsso-mock.webp';
 import qadamVisualUrl from '../../assets/projects/qadam-mock.webp';
 import ragPipelineVisualUrl from '../../assets/projects/rag-mock.webp';
-import razinflixBackdropUrl from '../../assets/projects/razinflix-backdrop.svg';
 import razinflixVisualUrl from '../../assets/projects/razinflix-mock.webp';
-import aiCostsDashboardProjectImageUrl from '../../../projects-section/Project Images/AI Costs Dashboard.webp';
-import aiNativeProductOsProjectImageUrl from '../../../projects-section/Project Images/AI Native Product OS.webp';
-import massSocialWisdomAgentProjectImageUrl from '../../../projects-section/Project Images/Mass Social Wisdom Agent.webp';
-import nssoProjectImageUrl from '../../../projects-section/Project Images/nsso.webp';
-import qadamProjectImageUrl from '../../../projects-section/Project Images/Qadam.webp';
-import ragPipelineProjectImageUrl from '../../../projects-section/Project Images/RAG Pipeline.webp';
-import razinflixProjectImageUrl from '../../../projects-section/Project Images/RazinFlix.webp';
+import nssoProjectAnimationVideoUrl from '../../../projects-section/Project Images/nsso-recording-fixed.webm';
+import nssoProfileDemoPosterUrl from '../../../projects-section/nsso-project-images/nsso-demo-poster.jpg';
+import nssoProfileDemoVideoUrl from '../../../projects-section/nsso-project-images/nsso-demo.webm';
+import nssoAgentDatabaseScreenUrl from '../../assets/projects/nsso-deep-dive/nsso-agent-database.webp';
+import nssoExperienceBuilderScreenUrl from '../../assets/projects/nsso-deep-dive/nsso-experience-builder.webp';
+import nssoLinksContactScreenUrl from '../../assets/projects/nsso-deep-dive/nsso-links-contact.webp';
+import nssoLoginScreenUrl from '../../assets/projects/nsso-deep-dive/nsso-login.webp';
+import nssoMobileEditScreenUrl from '../../assets/projects/nsso-deep-dive/nsso-mobile-edit.webp';
+import nssoNetworkScreenUrl from '../../assets/projects/nsso-deep-dive/nsso-network-timeline.webp';
+import nssoProfileEditorScreenUrl from '../../assets/projects/nsso-deep-dive/nsso-profile-editor.webp';
+import nssoProductEditorScreenUrl from '../../assets/projects/nsso-deep-dive/nsso-product-editor.webp';
+import nssoSalesPageBuilderScreenUrl from '../../assets/projects/nsso-deep-dive/nsso-sales-page-builder.webp';
+import qadamProjectAnimationVideoUrl from '../../../projects-section/Project Images/qadam-recording-fixed.webm';
+import qadamCodexAutomationPassScreenUrl from '../../assets/projects/qadam-deep-dive/qadam-codex-automation-pass.webp';
+import qadamCodexNoTradeDetailScreenUrl from '../../assets/projects/qadam-deep-dive/qadam-codex-no-trade-detail.webp';
+import qadamGithubInstallScreenUrl from '../../assets/projects/qadam-deep-dive/qadam-github-install.webp';
+import qadamMissionControlScreenUrl from '../../../projects-section/qadam-project-pics/qadam-mission-control.png';
+import qadamNodeStatusScreenUrl from '../../../projects-section/qadam-project-pics/qadam-node-status.png';
+import qadamTelegramDailyUpdateScreenUrl from '../../assets/projects/qadam-deep-dive/qadam-telegram-daily-update.webp';
+import qadamTelegramDeployUpdateScreenUrl from '../../assets/projects/qadam-deep-dive/qadam-telegram-deploy-update.webp';
+import qadamTelegramPaperTradeScreenUrl from '../../assets/projects/qadam-deep-dive/qadam-telegram-paper-trade.webp';
+import qadamTradingStrategiesScreenUrl from '../../../projects-section/qadam-project-pics/qadam-trading-strategies.png';
+import qadamUserGuideScreenUrl from '../../assets/projects/qadam-deep-dive/qadam-user-guide.webp';
+import qadamWhitepaperScreenUrl from '../../assets/projects/qadam-deep-dive/qadam-whitepaper.webp';
+import razinflixProjectAnimationVideoUrl from '../../../projects-section/Project Images/razinflix-project-recording.webm';
+import razinflixAddFilmScreenUrl from '../../assets/projects/razinflix-deep-dive/razinflix-add-film.webp';
+import razinflixAdminEditorScreenUrl from '../../assets/projects/razinflix-deep-dive/razinflix-admin-editor.webp';
+import razinflixAfterCatalogueScreenUrl from '../../assets/projects/razinflix-deep-dive/razinflix-after-catalogue.webp';
+import razinflixBeforeWatchlistScreenUrl from '../../assets/projects/razinflix-deep-dive/razinflix-before-watchlist.webp';
+import razinflixCategoryRailsScreenUrl from '../../assets/projects/razinflix-deep-dive/razinflix-category-rails.webp';
+import razinflixFilmDetailScreenUrl from '../../assets/projects/razinflix-deep-dive/razinflix-film-detail.webp';
+import razinflixIntelligenceRunScreenUrl from '../../assets/projects/razinflix-deep-dive/razinflix-intelligence-run.webp';
 import dreamseaHomepageScreenUrl from '../../../projects-section/Project Images/dreamsea-images/dreamsea-homepage.PNG';
+import dreamseaIphoneRecordingUrl from '../../../projects-section/Project Images/dreamsea-fixed-recording-3d-island.webm';
 import conciergeHomepageScreenUrl from '../../../projects-section/Project Images/24seven-concierge-images/24-seven-homepage.PNG';
+import conciergeScreenRecordingUrl from '../../../projects-section/Project Images/24seven-concierge-images/24-seven-concierge-screen-recording-3d-shifted-17.mp4';
 
-const mobileDeepDivePresentation: Record<string, { screen: string }> = {
+const mobileDeepDivePresentation: Record<
+  string,
+  { screen: string; screenVideo?: string }
+> = {
   Dreamsea: {
     screen: dreamseaHomepageScreenUrl,
+    screenVideo: dreamseaIphoneRecordingUrl,
   },
   '24Seven Concierge': {
     screen: conciergeHomepageScreenUrl,
+    screenVideo: conciergeScreenRecordingUrl,
   },
 };
 
@@ -40,7 +73,10 @@ type NonMobileVisualSlide = {
   label: string;
   detail: string;
   image: string;
+  mobileImages?: readonly string[];
+  video?: string;
   fit?: 'cover' | 'contain';
+  frame?: 'web' | 'mobile';
   position?: string;
 };
 
@@ -63,7 +99,7 @@ type ProofCta = {
 
 const proofCtaDescriptions: Record<string, string> = {
   nsso:
-    'Open the live nsso product surface in a new tab. Use it to inspect the public profile system, profile storefront, Deity profile-coach access, and the working Ramin profile example.',
+    'Open the live nsso product surface in a new tab. Use it to inspect the identity system, profile storefront, Deity profile-coach access, and working Ramin profile example.',
   Dreamsea:
     'Open the public App Store listing. Download it on iPhone to inspect the live voice-capture dream journal, interpretation flow, and symbolic generation experience.',
   Qadam:
@@ -101,19 +137,63 @@ const nonMobileDeepDiveVisuals: Record<string, NonMobileVisualConfig> = {
     surface: 'rgba(12, 21, 33, 0.58)',
     slides: [
       {
-        label: 'Public identity surface',
-        detail: 'Profile, storefront, proof, payments, and Deity context in one owned professional home.',
+        label: 'Landing page',
+        detail: 'The landing page frames nsso as Shopify, but the product is you: a username-claim identity surface where profile, proof, products, links, and Deity AI come together.',
         image: nssoVisualUrl,
+        video: nssoProjectAnimationVideoUrl,
       },
       {
-        label: 'Billboard proof',
-        detail: 'The product behaves like a public identity billboard rather than a static portfolio page.',
-        image: nssoBillboardStageUrl,
+        label: 'Profile demo',
+        detail: 'The mobile profile demo shows the public identity surface end to end: bio, links, experiences, qualifications, projects, products, and services arranged as one shareable profile.',
+        image: nssoProfileDemoPosterUrl,
+        video: nssoProfileDemoVideoUrl,
       },
       {
-        label: 'Product system view',
-        detail: 'A compact view of the same profile, shop, and AI-coach architecture used in the build.',
-        image: nssoProjectImageUrl,
+        label: 'Sign-in routes',
+        detail: 'The authentication screen gives users multiple entry points: Google, GitHub, email, and crypto wallet options for the future commerce layer.',
+        image: nssoLoginScreenUrl,
+      },
+      {
+        label: 'Profile editor',
+        detail: 'The signed-in profile editor captures the raw material of identity: photo, name, headline, bio, custom profile domain, links, and the fields Deity later reads as live context.',
+        image: nssoProfileEditorScreenUrl,
+      },
+      {
+        label: 'Links and contact',
+        detail: 'The links layer consolidates the scattered digital footprint: social accounts, content, external platforms, and contact routes in one coherent public surface.',
+        image: nssoLinksContactScreenUrl,
+      },
+      {
+        label: 'Experience builder',
+        detail: 'The experience section turns job titles, qualifications, projects, and proof into structured identity data rather than a flat CV, giving Deity context it can reason over.',
+        image: nssoExperienceBuilderScreenUrl,
+      },
+      {
+        label: 'Products and services',
+        detail: 'The products area lets a user add a paid offer, upload product imagery, describe the item, and attach purchase links or payment code.',
+        image: nssoProductEditorScreenUrl,
+      },
+      {
+        label: 'Sales-page builder',
+        detail: 'The sales-page creator uses conversion-oriented fields - hooks, pain-benefit framing, value proposition, benefits, testimonials, and payment embeds - so products and services can sit beside the proof that makes them credible.',
+        image: nssoSalesPageBuilderScreenUrl,
+      },
+      {
+        label: 'Network timeline',
+        detail: 'My nsso becomes a personal CRM: saved people, meeting context, dates, notes, and a visual journey of relationships over time.',
+        image: nssoNetworkScreenUrl,
+      },
+      {
+        label: 'Deity agent layer',
+        detail: 'The Deity view shows the agentic layer: live profile context, curated knowledge retrieval, profile-aware reranking, and reviewable profile mutations instead of generic chatbot advice.',
+        image: nssoAgentDatabaseScreenUrl,
+      },
+      {
+        label: 'Mobile edit mode',
+        detail: 'The mobile experience preserves the same profile-building workflow, including preview mode, Deity assistance, headline editing, and bio capture.',
+        image: nssoMobileEditScreenUrl,
+        fit: 'contain',
+        frame: 'mobile',
       },
     ],
   },
@@ -123,14 +203,69 @@ const nonMobileDeepDiveVisuals: Record<string, NonMobileVisualConfig> = {
     surface: 'rgba(4, 12, 22, 0.68)',
     slides: [
       {
-        label: 'Market cockpit',
-        detail: 'Catalyst, source, signal, and paper-proof posture arranged as an intelligence surface.',
+        label: 'Access gate',
+        detail: 'The landing page is the public entrance to Qadam: visitors can understand the system, while allowlisted Fund Managers sign in to reach the protected cockpit.',
         image: qadamVisualUrl,
+        video: qadamProjectAnimationVideoUrl,
       },
       {
-        label: 'Command layer',
-        detail: 'The visual language is closer to a decision room than a generic finance dashboard.',
-        image: qadamProjectImageUrl,
+        label: 'Mission Control',
+        detail: 'Mission Control gives the first operating read: paper mode, live capital off, source state, strategy posture, agent/team state, hypotheses, paper account, proof status, and learning-loop maturity.',
+        image: qadamMissionControlScreenUrl,
+        fit: 'contain',
+      },
+      {
+        label: 'Control Plane',
+        detail: 'The control plane exposes why Qadam is allowed, blocked, degraded, or waiting: Python COO, local LLM, frontier LLM, Head of Quant, Risk Agent, Execution Policy, source plumbing, Telegram, governance, logs, and diagnostics.',
+        image: qadamNodeStatusScreenUrl,
+        fit: 'contain',
+      },
+      {
+        label: 'Strategy + Reasoning',
+        detail: 'The strategy view is where Qadam’s thinking lives: worldview priors, evidence packets, research goals, hypotheses, Strategy Lead challenges, and quant review can explain or challenge, but cannot execute.',
+        image: qadamTradingStrategiesScreenUrl,
+        fit: 'contain',
+      },
+      {
+        label: 'Whitepaper',
+        detail: 'The whitepaper explains the complete loop: world happens, Qadam observes, filters sources, forms hypotheses, challenges them, checks risk and authority, paper-trades only if gates pass, logs outcomes, and learns.',
+        image: qadamWhitepaperScreenUrl,
+        fit: 'contain',
+      },
+      {
+        label: 'User guide',
+        detail: 'The user guide explains how members read the cockpit, what paper trading means, what members can do, and which safety boundaries must never be crossed.',
+        image: qadamUserGuideScreenUrl,
+        fit: 'contain',
+      },
+      {
+        label: 'Install surface',
+        detail: 'The GitHub repository gives people the source, README, deployment history, and public project link needed to inspect or install the local trading-intelligence stack on their machine.',
+        image: qadamGithubInstallScreenUrl,
+        fit: 'contain',
+      },
+      {
+        label: 'Automation pass',
+        detail: 'A Codex automation run triggers one Qadam pass, reads the PaperOps summary, and reports the trade lifecycle state: allowed, blocked by evidence or risk, duplicate-protected, or waiting on current paper-order state.',
+        image: qadamCodexAutomationPassScreenUrl,
+        fit: 'contain',
+      },
+      {
+        label: 'No-trade decision',
+        detail: 'When Qadam does not trade, the run still explains the decision: pending paper fills, duplicate-submit protection, zero fresh eligible submits, no active blockers, or missing authority.',
+        image: qadamCodexNoTradeDetailScreenUrl,
+        fit: 'contain',
+      },
+      {
+        label: 'Telegram updates',
+        detail: 'Qadam pushes short summaries into Telegram: paper-trade confirmations, daily portfolio reports, and deployment notices become readable outbound updates, not hidden approvals or command authority.',
+        image: qadamTelegramPaperTradeScreenUrl,
+        mobileImages: [
+          qadamTelegramPaperTradeScreenUrl,
+          qadamTelegramDailyUpdateScreenUrl,
+          qadamTelegramDeployUpdateScreenUrl,
+        ],
+        frame: 'mobile',
       },
     ],
   },
@@ -140,20 +275,46 @@ const nonMobileDeepDiveVisuals: Record<string, NonMobileVisualConfig> = {
     surface: 'rgba(17, 12, 14, 0.66)',
     slides: [
       {
-        label: 'Streaming-style library',
-        detail: 'A personal film spreadsheet becomes a browsable canon with posters, shelves, and atmosphere.',
+        label: 'Visual catalogue',
+        detail: 'The RazinFlix homepage is the visual film catalogue: poster-led shelves, a streaming-style browsing surface, and an Add Film button where users can add films to their library.',
         image: razinflixVisualUrl,
+        video: razinflixProjectAnimationVideoUrl,
       },
       {
-        label: 'Cinematic proof',
-        detail: 'The surface is intentionally poster-led: taste is visible before metadata has to explain it.',
-        image: razinflixProjectImageUrl,
-      },
-      {
-        label: 'Backdrop system',
-        detail: 'The enrichment layer supports the theatre-like browsing treatment rather than a table view.',
-        image: razinflixBackdropUrl,
+        label: 'Before: watchlist',
+        detail: 'Before RazinFlix, the library lived as a text-heavy spreadsheet of IMDb IDs, film names, descriptions, release dates, directors, and ratings.',
+        image: razinflixBeforeWatchlistScreenUrl,
         fit: 'contain',
+      },
+      {
+        label: 'After: catalogue',
+        detail: 'After RazinFlix, the same watchlist becomes a cinematic front-end with a hero feature, trailer CTA, More Info action, and poster-led rails.',
+        image: razinflixAfterCatalogueScreenUrl,
+      },
+      {
+        label: 'Film detail page',
+        detail: 'Selecting a film opens a theatre-like detail page with the trailer, rating, year, description, director, categories, and similar-film recommendations.',
+        image: razinflixFilmDetailScreenUrl,
+      },
+      {
+        label: 'Metadata editor',
+        detail: 'The admin editor lets the user refine a film record: poster/backdrop, rating, year, description, YouTube trailer URL, director, categories, and save state.',
+        image: razinflixAdminEditorScreenUrl,
+      },
+      {
+        label: 'Add-film input',
+        detail: 'The Add Film modal accepts plain film names and years, including multiple titles separated by commas or line breaks, so the user does not need structured metadata upfront.',
+        image: razinflixAddFilmScreenUrl,
+      },
+      {
+        label: 'Intelligence run',
+        detail: 'The processing terminal exposes the enrichment workflow: TMDB search, genre cleanup, Gemini plot synthesis, IMDb rating checks, YouTube trailer lookup, and poster validation.',
+        image: razinflixIntelligenceRunScreenUrl,
+      },
+      {
+        label: 'Black Bag added',
+        detail: 'After Black Bag is added in the previous step, RazinFlix places it into the visual catalogue with poster artwork, title treatment, and the surrounding streaming-style rows.',
+        image: razinflixCategoryRailsScreenUrl,
       },
     ],
   },
@@ -163,14 +324,9 @@ const nonMobileDeepDiveVisuals: Record<string, NonMobileVisualConfig> = {
     surface: 'rgba(7, 16, 27, 0.68)',
     slides: [
       {
-        label: 'Live extraction run',
-        detail: 'Messy URLs and screenshots become a visible processing run with logs and extracted items.',
-        image: massSocialWisdomAgentVisualUrl,
-      },
-      {
-        label: 'Knowledge output',
-        detail: 'The workflow resolves into structured material ready for a document or Notion import.',
-        image: massSocialWisdomAgentProjectImageUrl,
+        label: 'Portfolio web app',
+        detail: 'The embedded portfolio demo shows the real app shell: prepared source URLs, processing stages, guardrails, output space, and status terminal in one surface.',
+        image: massSocialWisdomAgentAppScreenshotUrl,
       },
     ],
   },
@@ -184,11 +340,6 @@ const nonMobileDeepDiveVisuals: Record<string, NonMobileVisualConfig> = {
         detail: 'Provider, model, spend, latency, and failure data become an operating surface.',
         image: aiCostsDashboardVisualUrl,
       },
-      {
-        label: 'Usage intelligence',
-        detail: 'The dashboard turns AI product cost from an invoice surprise into a managed signal.',
-        image: aiCostsDashboardProjectImageUrl,
-      },
     ],
   },
   'RAG Pipeline': {
@@ -200,11 +351,6 @@ const nonMobileDeepDiveVisuals: Record<string, NonMobileVisualConfig> = {
         label: 'Retrieval infrastructure',
         detail: 'Ingestion, chunking, embeddings, retrieval, reranking, and context injection as one reusable product layer.',
         image: ragPipelineVisualUrl,
-      },
-      {
-        label: 'Grounded answers',
-        detail: 'The useful product is not chat; it is a reliable context path into the model.',
-        image: ragPipelineProjectImageUrl,
       },
     ],
   },
@@ -218,11 +364,6 @@ const nonMobileDeepDiveVisuals: Record<string, NonMobileVisualConfig> = {
         detail: 'The five-layer stack and product loop expressed as a reusable AI-native working model.',
         image: aiNativeProductOsVisualUrl,
       },
-      {
-        label: 'Thesis surface',
-        detail: 'The essay is treated as a product artifact: model, context, orchestration, governance, and human judgment.',
-        image: aiNativeProductOsProjectImageUrl,
-      },
     ],
   },
   'AI-Native Product Manager OS': {
@@ -235,11 +376,6 @@ const nonMobileDeepDiveVisuals: Record<string, NonMobileVisualConfig> = {
         detail: 'A local folder a PM can open in Codex, Claude Code, Cursor, or Antigravity to run AI-native product work from durable context.',
         image: aiNativeProductOsVisualUrl,
       },
-      {
-        label: 'Course companion',
-        detail: 'The product turns the course thesis into files: context library, workflows, templates, review panels, governance, outputs, and adapters.',
-        image: aiNativeProductOsProjectImageUrl,
-      },
     ],
   },
   'AI-Native Product OS': {
@@ -251,11 +387,6 @@ const nonMobileDeepDiveVisuals: Record<string, NonMobileVisualConfig> = {
         label: 'Operating system',
         detail: 'The five-layer stack and product loop expressed as a reusable AI-native working model.',
         image: aiNativeProductOsVisualUrl,
-      },
-      {
-        label: 'Thesis surface',
-        detail: 'The essay is treated as a product artifact: model, context, orchestration, governance, and human judgment.',
-        image: aiNativeProductOsProjectImageUrl,
       },
     ],
   },
@@ -308,7 +439,7 @@ function getProofCta(item: CaseStudyEntry): ProofCta | null {
     },
     github: {
       eyebrow: 'Repository proof',
-      label: 'View GitHub →',
+      label: 'View on GitHub →',
       description: 'Open the public GitHub repository to inspect the source, architecture, and implementation details behind the tool.',
     },
     live: {
@@ -325,6 +456,63 @@ function getProofCta(item: CaseStudyEntry): ProofCta | null {
     label: fallback.label,
     eyebrow: fallback.eyebrow,
     description: proofCtaDescriptions[item.title] ?? fallback.description,
+  };
+}
+
+function createProofCta(item: CaseStudyEntry, link: CaseStudyEntry['links'][number]): ProofCta {
+  const kind = classifyProofLink(link);
+  const defaults: Record<ProofCtaKind, Pick<ProofCta, 'eyebrow' | 'label' | 'description'>> = {
+    'app-store': {
+      eyebrow: 'App Store proof',
+      label: 'View App Store →',
+      description: 'Open the public App Store listing to download the live mobile product and inspect the user-facing release.',
+    },
+    github: {
+      eyebrow: 'Repository proof',
+      label: 'View on GitHub →',
+      description: 'Open the public GitHub repository to inspect the source, architecture, and implementation details behind the tool.',
+    },
+    live: {
+      eyebrow: 'Live product proof',
+      label: link.label.toLowerCase().includes('demo') ? 'Try live demo →' : 'Open live →',
+      description: 'Open the live product in a new tab to inspect the public surface rather than only the portfolio write-up.',
+    },
+  };
+  const fallback = defaults[kind];
+
+  return {
+    kind,
+    href: link.href,
+    label: fallback.label,
+    eyebrow: fallback.eyebrow,
+    description: proofCtaDescriptions[item.title] ?? fallback.description,
+  };
+}
+
+function getDemoProofCtas(item: CaseStudyEntry): ProofCta[] {
+  if (item.id === 'writeup-mass-social-wisdom-agent') {
+    const githubLink = item.links.find((link) => classifyProofLink(link) === 'github');
+    const liveDemoLink = item.links.find((link) => /live demo/i.test(link.label));
+
+    return [githubLink, liveDemoLink].filter(Boolean).map((link) => createProofCta(item, link));
+  }
+
+  const proofCta = getProofCta(item);
+  return proofCta ? [proofCta] : [];
+}
+
+function getProofPanelCopy(item: CaseStudyEntry, proofCtas: readonly ProofCta[]) {
+  if (item.id === 'writeup-mass-social-wisdom-agent') {
+    return {
+      eyebrow: 'Demo / repository proof',
+      description:
+        'Open the live portfolio demo to try the workflow, or inspect the public GitHub repository for the Flask and Gemini implementation.',
+    };
+  }
+
+  return {
+    eyebrow: proofCtas[0]?.eyebrow ?? 'Proof',
+    description: proofCtas[0]?.description ?? '',
   };
 }
 
@@ -434,24 +622,41 @@ function NonMobileCaseStudyVisualPanel({ item }: { item: CaseStudyEntry }) {
   const config = useMemo(() => getNonMobileVisualConfig(item), [item]);
   const slides = config.slides;
   const [activeIndex, setActiveIndex] = useState(0);
+  const [hasManualSlideSelection, setHasManualSlideSelection] = useState(false);
   const activeSlide = slides[activeIndex] ?? slides[0];
+  const isMobileSlide = activeSlide.frame === 'mobile';
+  const activeMobileImages = activeSlide.mobileImages ?? [activeSlide.image];
+  const hasMobileImagePass = isMobileSlide && activeMobileImages.length > 1;
+  const shouldBrightenBackdropTitle = item.title === 'nsso' || item.title === 'Qadam' || item.title === 'RazinFlix';
+  const hasSlideNavigation = slides.length > 1;
   const sourceLinks = item.links
     .filter((link) => !(item.title === 'nsso' && link.label === 'Public profile'))
     .slice(0, 2);
 
+  const selectSlide = (index: number) => {
+    setHasManualSlideSelection(true);
+    setActiveIndex(index);
+  };
+
+  const shiftSlide = (direction: -1 | 1) => {
+    setHasManualSlideSelection(true);
+    setActiveIndex((current) => (current + direction + slides.length) % slides.length);
+  };
+
   useEffect(() => {
     setActiveIndex(0);
+    setHasManualSlideSelection(false);
   }, [item.id]);
 
   useEffect(() => {
-    if (shouldReduceMotion || slides.length <= 1) return;
+    if (shouldReduceMotion || hasManualSlideSelection || slides.length <= 1) return;
 
     const timer = window.setInterval(() => {
       setActiveIndex((current) => (current + 1) % slides.length);
     }, 5200);
 
     return () => window.clearInterval(timer);
-  }, [shouldReduceMotion, slides.length]);
+  }, [hasManualSlideSelection, shouldReduceMotion, slides.length]);
 
   return (
     <aside className="deep-dive-support-rail liquid-glass-strong flex min-h-[64vh] flex-col overflow-hidden rounded-[2rem] lg:h-full lg:min-h-0">
@@ -480,100 +685,212 @@ function NonMobileCaseStudyVisualPanel({ item }: { item: CaseStudyEntry }) {
           <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(255,255,255,0.16)_1px,transparent_1px)] bg-[length:5px_5px] opacity-[0.12]" />
         </div>
 
-        <div className="pointer-events-none absolute left-5 right-5 top-6 z-10 select-none overflow-visible whitespace-nowrap pr-[0.16em] font-body text-[clamp(4.5rem,8.6vw,8.2rem)] font-black leading-none tracking-[-0.08em] text-white/[0.09] sm:left-7 sm:right-7">
+        <div
+          className={`pointer-events-none absolute left-5 right-5 top-6 z-10 select-none overflow-visible whitespace-nowrap pr-[0.16em] font-body text-[clamp(4.5rem,8.6vw,8.2rem)] font-black leading-none tracking-[-0.08em] sm:left-7 sm:right-7 ${
+            shouldBrightenBackdropTitle ? 'text-white/[0.15]' : 'text-white/[0.09]'
+          }`}
+        >
           {item.title}
         </div>
 
-        <div className="relative z-20 flex min-h-0 flex-1 flex-col p-5 pt-[7.25rem] md:p-7 md:pt-[8rem]">
-          <div className="flex min-h-[18rem] flex-1 items-center">
+        <div className="project-deep-dive-scroll relative z-20 flex min-h-0 flex-1 flex-col overflow-y-auto px-5 pb-7 pt-[7.25rem] md:px-7 md:pb-8 md:pt-[8rem]">
+          <div
+            className={`flex shrink-0 items-center pb-2 ${
+              isMobileSlide ? 'min-h-[21.5rem] justify-center' : 'min-h-[18rem]'
+            }`}
+          >
             <motion.div
-              key={`${item.id}-${activeSlide.label}`}
-              className="w-full overflow-hidden rounded-[1.45rem] border border-white/18 bg-black/26 shadow-[0_34px_110px_rgba(0,0,0,0.38)] backdrop-blur-xl"
+              key={`${item.id}-${activeSlide.label}-${activeSlide.video ?? activeSlide.image}`}
+              className={`case-study-slide-frame overflow-hidden border border-white/18 bg-black/26 shadow-[0_34px_110px_rgba(0,0,0,0.38)] backdrop-blur-xl ${
+                hasMobileImagePass
+                  ? 'case-study-mobile-pass w-full rounded-[1.45rem]'
+                  : isMobileSlide
+                  ? 'case-study-slide-frame--mobile w-[min(48%,12.2rem)] max-w-[12.2rem] rounded-[1.3rem]'
+                  : 'w-full rounded-[1.45rem]'
+              }`}
               initial={shouldReduceMotion ? false : { opacity: 0, y: 18, scale: 0.985 }}
               animate={shouldReduceMotion ? undefined : { opacity: 1, y: 0, scale: 1 }}
               transition={{ duration: 0.58, ease: [0.25, 0.1, 0.25, 1] }}
             >
-              <div className="flex h-9 items-center justify-between border-b border-white/10 bg-white/[0.075] px-4">
-                <div className="flex items-center gap-1.5">
-                  <span className="h-2.5 w-2.5 rounded-full bg-white/42" />
-                  <span className="h-2.5 w-2.5 rounded-full bg-white/28" />
-                  <span className="h-2.5 w-2.5 rounded-full bg-white/18" />
+              {isMobileSlide ? null : (
+                <div className="flex h-9 items-center justify-between border-b border-white/10 bg-white/[0.075] px-4">
+                  <div className="flex items-center gap-1.5">
+                    <span className="h-2.5 w-2.5 rounded-full bg-white/42" />
+                    <span className="h-2.5 w-2.5 rounded-full bg-white/28" />
+                    <span className="h-2.5 w-2.5 rounded-full bg-white/18" />
+                  </div>
+                  <p className="max-w-[56%] truncate text-[0.56rem] uppercase tracking-[0.14em] text-white/42">
+                    {activeSlide.label}
+                  </p>
                 </div>
-                <p className="max-w-[56%] truncate text-[0.56rem] uppercase tracking-[0.14em] text-white/42">
-                  {activeSlide.label}
-                </p>
-              </div>
-              <div className="relative aspect-[16/9] overflow-hidden bg-black/30">
-                <img
-                  src={activeSlide.image}
-                  alt={`${item.title} ${activeSlide.label}`}
-                  decoding="async"
-                  className={`h-full w-full ${activeSlide.fit === 'contain' ? 'object-contain p-5' : 'object-cover'}`}
-                  style={{ objectPosition: activeSlide.position ?? '50% 50%' }}
-                  onError={(event) => {
-                    event.currentTarget.style.display = 'none';
-                  }}
-                />
+              )}
+              <div
+                className={`relative overflow-hidden bg-black/30 ${
+                  hasMobileImagePass ? 'h-[26.5rem]' : isMobileSlide ? 'aspect-[460/996]' : 'aspect-[16/9]'
+                }`}
+              >
+                {hasMobileImagePass ? (
+                  <div
+                    className="case-study-mobile-pass-track"
+                    style={{ '--case-study-mobile-pass-duration': `${Math.max(30, activeMobileImages.length * 11)}s` } as CSSProperties}
+                  >
+                    {[0, 1].map((sequence) => (
+                      <div
+                        key={`${item.id}-${activeSlide.label}-mobile-pass-${sequence}`}
+                        className="case-study-mobile-pass-sequence"
+                        aria-hidden={sequence === 1}
+                      >
+                        {activeMobileImages.map((image, imageIndex) => (
+                          <div
+                            key={`${item.id}-${activeSlide.label}-mobile-pass-${sequence}-${imageIndex}`}
+                            className="case-study-mobile-pass-card"
+                          >
+                            <img
+                              src={image}
+                              alt={sequence === 0 ? `${item.title} ${activeSlide.label} ${imageIndex + 1}` : ''}
+                              loading={imageIndex === 0 ? 'eager' : 'lazy'}
+                              decoding="async"
+                              className="h-full w-full object-cover"
+                              draggable={false}
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    ))}
+                  </div>
+                ) : activeSlide.video && !shouldReduceMotion ? (
+                  <video
+                    aria-label={`${item.title} ${activeSlide.label}`}
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                    preload="auto"
+                    poster={activeSlide.image}
+                    onLoadedData={(event) => {
+                      void event.currentTarget.play().catch(() => undefined);
+                    }}
+                    className="h-full w-full object-cover"
+                    style={{ objectPosition: activeSlide.position ?? '50% 50%' }}
+                  >
+                    <source src={activeSlide.video} type="video/webm" />
+                  </video>
+                ) : (
+                  <img
+                    src={activeSlide.image}
+                    alt={`${item.title} ${activeSlide.label}`}
+                    decoding="async"
+                    className="h-full w-full object-cover"
+                    style={{ objectPosition: activeSlide.position ?? '50% 50%' }}
+                    onError={(event) => {
+                      event.currentTarget.style.display = 'none';
+                    }}
+                  />
+                )}
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/28 via-transparent to-white/[0.035]" />
+                {hasSlideNavigation ? (
+                  <div className="case-study-slide-nav absolute inset-y-0 left-0 right-0 flex items-center justify-between px-3 transition duration-300">
+                    <button
+                      type="button"
+                      aria-label={`Show previous ${item.title} image`}
+                      onClick={() => shiftSlide(-1)}
+                      className={`case-study-slide-nav-button flex items-center justify-center rounded-full border border-white/28 bg-black/45 leading-none text-white shadow-[0_12px_36px_rgba(0,0,0,0.34)] backdrop-blur-xl transition duration-300 hover:border-white/50 hover:bg-white hover:text-[#07101c] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 ${
+                        isMobileSlide ? 'h-9 w-9 text-2xl' : 'h-11 w-11 text-3xl'
+                      }`}
+                    >
+                      <span aria-hidden="true" className="-mt-1">
+                        ‹
+                      </span>
+                    </button>
+                    <button
+                      type="button"
+                      aria-label={`Show next ${item.title} image`}
+                      onClick={() => shiftSlide(1)}
+                      className={`case-study-slide-nav-button flex items-center justify-center rounded-full border border-white/28 bg-black/45 leading-none text-white shadow-[0_12px_36px_rgba(0,0,0,0.34)] backdrop-blur-xl transition duration-300 hover:border-white/50 hover:bg-white hover:text-[#07101c] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 ${
+                        isMobileSlide ? 'h-9 w-9 text-2xl' : 'h-11 w-11 text-3xl'
+                      }`}
+                    >
+                      <span aria-hidden="true" className="-mt-1">
+                        ›
+                      </span>
+                    </button>
+                  </div>
+                ) : null}
               </div>
             </motion.div>
           </div>
 
-          <div className="mt-5 shrink-0">
-            <div className="rounded-[1.35rem] border border-white/12 bg-black/18 p-4 backdrop-blur-xl">
+          <div className="mt-7 shrink-0">
+            <div className="rounded-[1.35rem] border border-white/12 bg-black/18 p-5 backdrop-blur-xl">
               <p className="text-[0.58rem] uppercase tracking-[0.18em] text-white/40">{activeSlide.label}</p>
-              <p className="mt-2 text-sm leading-6 text-white/72">{activeSlide.detail}</p>
+              <p className="mt-3 text-sm leading-6 text-white/72">{activeSlide.detail}</p>
             </div>
 
-            <div className="mt-3 grid gap-2 sm:grid-cols-3">
-              {slides.map((slide, index) => {
-                const isActive = index === activeIndex;
+            {hasSlideNavigation ? (
+              <div className="mt-5 grid gap-3 sm:grid-cols-3">
+                {slides.map((slide, index) => {
+                  const isActive = index === activeIndex;
+                  const isMobileThumbnail = slide.frame === 'mobile';
 
-                return (
-                  <button
-                    key={`${item.id}-${slide.label}`}
-                    type="button"
-                    aria-label={`Show ${slide.label}`}
-                    aria-pressed={isActive}
-                    onClick={() => setActiveIndex(index)}
-                    className={`group overflow-hidden rounded-[1rem] border p-1 transition duration-300 ${
-                      isActive
-                        ? 'border-white/40 bg-white/[0.16]'
-                        : 'border-white/10 bg-white/[0.055] hover:border-white/24 hover:bg-white/[0.11]'
-                    }`}
-                  >
-                    <div className="relative aspect-[16/9] overflow-hidden rounded-[0.75rem] bg-black/22">
-                      <img
-                        src={slide.image}
-                        alt=""
-                        loading="lazy"
-                        decoding="async"
-                        className={`h-full w-full transition duration-500 group-hover:scale-[1.04] ${
-                          slide.fit === 'contain' ? 'object-contain p-2' : 'object-cover'
+                  return (
+                    <button
+                      key={`${item.id}-${slide.label}`}
+                      type="button"
+                      aria-label={`Show ${slide.label}`}
+                      aria-pressed={isActive}
+                      onClick={() => selectSlide(index)}
+                      className={`group overflow-hidden rounded-[1rem] border p-1 transition duration-300 ${
+                        isActive
+                          ? 'border-white/40 bg-white/[0.16]'
+                          : 'border-white/10 bg-white/[0.055] hover:border-white/24 hover:bg-white/[0.11]'
+                      }`}
+                    >
+                      <div
+                        className={`relative aspect-[16/9] overflow-hidden rounded-[0.75rem] bg-black/22 ${
+                          isMobileThumbnail ? 'flex items-center justify-center p-1.5' : ''
                         }`}
-                        style={{ objectPosition: slide.position ?? '50% 50%' }}
-                        onError={(event) => {
-                          event.currentTarget.style.display = 'none';
-                        }}
-                      />
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
+                      >
+                        <div
+                          className={
+                            isMobileThumbnail
+                              ? 'h-full overflow-hidden rounded-[0.55rem] border border-white/12 bg-black/36 shadow-[0_10px_28px_rgba(0,0,0,0.28)] aspect-[460/996]'
+                              : 'h-full w-full'
+                          }
+                        >
+                          <img
+                            src={slide.image}
+                            alt=""
+                            loading="lazy"
+                            decoding="async"
+                            className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.04]"
+                            style={{ objectPosition: slide.position ?? '50% 50%' }}
+                            onError={(event) => {
+                              event.currentTarget.style.display = 'none';
+                            }}
+                          />
+                        </div>
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+            ) : null}
 
             {sourceLinks.length ? (
-              <div className="mt-4 flex flex-wrap gap-2">
+              <div
+                className={`case-study-source-glass-button-row mt-6 flex gap-3 ${
+                  sourceLinks.length > 1 ? 'case-study-source-glass-button-row--multiple' : 'flex-wrap'
+                }`}
+              >
                 {sourceLinks.map((link) => (
-                  <a
+                  <GlassImprintCta
                     key={`${item.id}-${link.href}`}
                     href={link.href}
                     target="_blank"
                     rel="noreferrer"
-                    className="rounded-full border border-white/12 bg-white/[0.08] px-3 py-2 text-xs text-white/70 transition duration-300 hover:bg-white hover:text-[#07101c]"
-                  >
-                    {link.label} →
-                  </a>
+                    label={createProofCta(item, link).label}
+                    className="case-study-source-glass-button"
+                  />
                 ))}
               </div>
             ) : null}
@@ -589,7 +906,10 @@ export function CaseStudyOverlay({ item, onClose }: { item: CaseStudyEntry; onCl
   const mobilePresentation = mobileDeepDivePresentation[item.title];
   const overviewBody = getProjectCardDescriptionByName(item.title, item.summary);
   const proofCta = getProofCta(item);
+  const demoProofCtas = getDemoProofCtas(item);
+  const proofPanelCopy = getProofPanelCopy(item, demoProofCtas);
   const productQuote = productDeepDiveQuotes[item.title];
+  const shouldShowMassSocialDemo = item.id === 'project-mass-social-wisdom-agent';
   const sections = [
     { label: 'Overview', body: [overviewBody] },
     ...item.sections.filter((section) => section.label.toLowerCase() !== 'overview'),
@@ -612,7 +932,7 @@ export function CaseStudyOverlay({ item, onClose }: { item: CaseStudyEntry; onCl
 
   return (
     <motion.div
-      className="fixed inset-0 z-[220] overflow-y-auto px-3 py-3 text-text-primary sm:px-5 sm:py-5"
+      className="portfolio-deep-dive-overlay fixed inset-0 z-[220] overflow-y-auto px-3 py-3 text-text-primary sm:px-5 sm:py-5"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -621,11 +941,14 @@ export function CaseStudyOverlay({ item, onClose }: { item: CaseStudyEntry; onCl
       <button
         type="button"
         aria-label="Close case study backdrop"
-        className="absolute inset-0 bg-bg/20 backdrop-blur-[3px]"
+        className="portfolio-deep-dive-backdrop absolute inset-0 bg-bg/20 backdrop-blur-[3px]"
         onClick={onClose}
       />
 
-      <motion.article className="relative mx-auto grid min-h-[calc(100svh-1.5rem)] max-w-[1320px] gap-4 lg:h-[calc(100svh-2.5rem)] lg:min-h-0 lg:grid-cols-[0.9fr_1.1fr] lg:overflow-hidden">
+      {shouldShowMassSocialDemo ? (
+        <MassSocialWisdomDemo onClose={onClose} githubHref={proofCta?.href} />
+      ) : (
+      <motion.article className="portfolio-deep-dive-shell relative mx-auto grid min-h-[calc(100svh-1.5rem)] max-w-[1320px] gap-4 lg:h-[calc(100svh-2.5rem)] lg:min-h-0 lg:grid-cols-[0.9fr_1.1fr] lg:overflow-hidden">
         {mobilePresentation ? (
           <aside className="deep-dive-support-rail liquid-glass-strong flex min-h-[64vh] flex-col overflow-hidden rounded-[2rem] lg:h-full lg:min-h-0">
             <div className="relative min-h-[38rem] flex-1 overflow-hidden rounded-[2rem] border border-white/12 bg-white/[0.07] shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] ring-1 ring-[#6e8bff]/20 backdrop-blur-2xl sm:min-h-[44rem] lg:h-full lg:min-h-0">
@@ -640,6 +963,7 @@ export function CaseStudyOverlay({ item, onClose }: { item: CaseStudyEntry; onCl
                 <div className="h-[108%] max-h-[44rem] min-h-[32rem] aspect-[0.47] translate-y-10 sm:max-h-[50rem] sm:translate-y-12 lg:max-h-[82vh] lg:translate-y-14">
                   <IPhone3D
                     screenSrc={mobilePresentation.screen}
+                    screenVideoSrc={mobilePresentation.screenVideo}
                     poster={mobilePresentation.screen}
                     ariaLabel={`${item.title} shown on a rotating 3D iPhone`}
                   />
@@ -652,8 +976,8 @@ export function CaseStudyOverlay({ item, onClose }: { item: CaseStudyEntry; onCl
           <NonMobileCaseStudyVisualPanel item={item} />
         )}
 
-        <div className="liquid-glass-strong flex flex-col rounded-[2rem] p-6 md:p-8 lg:min-h-0 lg:overflow-hidden">
-          <div className="flex shrink-0 items-start justify-between gap-5">
+        <div className="portfolio-deep-dive-reader-panel liquid-glass-strong flex flex-col rounded-[2rem] p-6 md:p-8 lg:min-h-0 lg:overflow-hidden">
+          <div className="portfolio-deep-dive-header flex shrink-0 items-start justify-between gap-5">
             <div>
               <p className="text-xs uppercase tracking-[0.3em] text-muted">{item.typeLabel}</p>
               <p className="mt-2 text-xs uppercase tracking-[0.22em] text-muted">
@@ -664,7 +988,7 @@ export function CaseStudyOverlay({ item, onClose }: { item: CaseStudyEntry; onCl
               type="button"
               aria-label="Close case study"
               onClick={onClose}
-              className="card-glass-attachment is-active"
+              className="portfolio-deep-dive-inline-close card-glass-attachment is-active"
             >
               <span className="card-glass-attachment__glyph">
                 <span className="card-glass-attachment__line card-glass-attachment__line-horizontal" />
@@ -676,7 +1000,7 @@ export function CaseStudyOverlay({ item, onClose }: { item: CaseStudyEntry; onCl
           <div className="project-deep-dive-scroll mt-8 pr-1 lg:min-h-0 lg:flex-1 lg:overflow-y-auto lg:pr-4">
             {productQuote ? (
               <figure className="mb-6 border-b border-[#89AACC]/18 pb-6">
-                <blockquote className="font-display text-[clamp(2.5rem,5vw,4.8rem)] italic leading-[0.9] tracking-[-0.045em] text-text-primary/78">
+                <blockquote className="project-case-study-quote font-display text-[clamp(2.5rem,5vw,4.8rem)] italic leading-[0.9] tracking-[-0.045em]">
                   {productQuote}
                 </blockquote>
               </figure>
@@ -715,18 +1039,22 @@ export function CaseStudyOverlay({ item, onClose }: { item: CaseStudyEntry; onCl
                         ))}
                       </div>
                     ) : null}
-                    {proofCta && isDemoProofSection(section.label) ? (
+                    {demoProofCtas.length > 0 && isDemoProofSection(section.label) ? (
                       <div className="mt-5 rounded-[1.15rem] border border-[#89AACC]/24 bg-[#89AACC]/[0.08] p-4 md:p-5">
-                        <p className="text-[0.58rem] uppercase tracking-[0.16em] text-muted">{proofCta.eyebrow}</p>
-                        <p className="mt-3 text-sm leading-6 text-text-primary/78 md:text-base">{proofCta.description}</p>
-                        <a
-                          href={proofCta.href}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="mt-4 inline-flex w-fit items-center rounded-full bg-text-primary px-5 py-3 text-sm font-medium text-bg transition duration-300 hover:scale-[1.03] hover:bg-[#dce8f2] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-text-primary/70 focus-visible:ring-offset-2 focus-visible:ring-offset-white"
-                        >
-                          {proofCta.label}
-                        </a>
+                        <p className="text-[0.58rem] uppercase tracking-[0.16em] text-muted">{proofPanelCopy.eyebrow}</p>
+                        <p className="mt-3 text-sm leading-6 text-text-primary/78 md:text-base">{proofPanelCopy.description}</p>
+                        <div className="mt-4 flex flex-wrap gap-3">
+                          {demoProofCtas.map((cta) => (
+                            <GlassImprintCta
+                              key={`${item.id}-${cta.href}`}
+                              href={cta.href}
+                              target="_blank"
+                              rel="noreferrer"
+                              label={cta.label}
+                              className="case-study-proof-glass-button"
+                            />
+                          ))}
+                        </div>
                       </div>
                     ) : null}
                   </section>
@@ -737,6 +1065,7 @@ export function CaseStudyOverlay({ item, onClose }: { item: CaseStudyEntry; onCl
           </div>
         </div>
       </motion.article>
+      )}
     </motion.div>
   );
 }

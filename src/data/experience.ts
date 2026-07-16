@@ -7,7 +7,7 @@ export const experienceEntries = [
     dates: 'Jan 2026 - Present',
     domain: 'AI property search, recommendations, and conversational AI',
     outcome:
-      'Confidential AI-native features in property search, recommendations, and conversational AI, built on model selection, eval suite design, guardrail implementation, and MCP integration.',
+      'Developed confidential AI-native features across property search, recommendations, and conversational AI, using model selection, eval suite design, guardrail implementation, and MCP integration.',
     proof:
       'Embeds the AI-Native Product OS as a standard framework across the wider Product team.',
     whatItProves:
@@ -31,7 +31,7 @@ export const experienceEntries = [
     whatItProves:
       'Can turn AI tooling into operational leverage, not just prototypes: lower cost, faster shipping, and clearer cross-functional data.',
     confidentiality:
-      'Internal ERP and client process details stay summarized at transformation and tooling level.',
+      'Internal ERP and client process details stay summarised at transformation and tooling level.',
     evidenceType: 'Resume metrics / public company link',
     sourceStatus: 'local-primary',
     links: [{ label: 'Side.inc', href: 'https://www.side.inc/', sourceStatus: 'public-proof' }],
@@ -43,7 +43,7 @@ export const experienceEntries = [
     dates: 'Jan 2023 - Nov 2024',
     domain: 'Employee benefits app UX, monetisation, and checkout guidance',
     outcome:
-      'Streamlined the gateway UX of the Vivup App, increasing Google Play Store rating by 0.6 and iPhone App Store rating by 1.2 within 3 months.',
+      'Streamlined the gateway UX of the Vivup App, increasing the Google Play Store rating by 0.6 points and the iPhone App Store rating by 1.2 points (out of 5) within 3 months.',
     proof:
       'Introduced monetisation to an existing feature, grew customer lifetime value by 19%, and decreased checkout abandonment by 1/3 after a new Order Guidance Wizard.',
     whatItProves:
@@ -125,7 +125,7 @@ export const experienceEntries = [
     whatItProves:
       'Can discover new markets for technical data platforms, validate concepts, and ship ecosystem integrations.',
     confidentiality:
-      'Public connector proof is linked; client-specific sustainability and asset-valuation work stays summarized.',
+      'Public connector proof is linked; client-specific sustainability and asset-valuation work stays summarised.',
     evidenceType: 'Public connector docs / resume metrics',
     sourceStatus: 'local-primary',
     links: [

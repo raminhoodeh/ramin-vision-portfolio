@@ -6,14 +6,18 @@ import { cn } from '@/lib/utils';
 interface AuroraBackgroundProps extends React.HTMLProps<HTMLDivElement> {
   children: ReactNode;
   showRadialGradient?: boolean;
+  backgroundMode?: 'absolute' | 'fixed';
 }
 
 export function AuroraBackground({
   className,
   children,
   showRadialGradient = true,
+  backgroundMode = 'absolute',
   ...props
 }: AuroraBackgroundProps) {
+  const isFixedBackground = backgroundMode === 'fixed';
+
   return (
     <div
       className={cn(
@@ -22,7 +26,13 @@ export function AuroraBackground({
       )}
       {...props}
     >
-      <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
+      <div
+        className={cn(
+          'pointer-events-none overflow-hidden',
+          isFixedBackground ? 'fixed inset-0 h-dvh' : 'absolute inset-0',
+        )}
+        aria-hidden="true"
+      >
         <div
           className={cn(
             `
@@ -39,8 +49,9 @@ export function AuroraBackground({
             after:[background-size:200%,_100%]
             after:animate-aurora after:[background-attachment:fixed] after:mix-blend-difference
             pointer-events-none
-            absolute -inset-[10px] opacity-50 will-change-transform
+            opacity-50
             `,
+            isFixedBackground ? 'fixed -inset-[10px] h-[calc(100dvh+20px)] will-change-[background-position]' : 'absolute -inset-[10px] will-change-transform',
             showRadialGradient &&
               '[mask-image:radial-gradient(ellipse_at_100%_0%,black_10%,var(--transparent)_70%)]',
           )}

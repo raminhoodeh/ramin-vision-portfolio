@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { portfolioContent } from '../data/portfolio';
-import { type ProductManagementWorkExperience, type WorkItem } from './types';
+import { type ProductManagementWorkExperience } from './types';
 import { resolveCompanyLogoSrc, resolveWorkVideoSrc, displayWorkCompanyName } from '../lib/assets';
 import {
   getInitials,
@@ -16,6 +16,7 @@ import {
   publicWorkValue,
   type PlaceholderLike,
 } from '../lib/placeholder';
+import { preloadWorkVideoForEntry, preloadWorkVideos } from '../performance/workVideoPreload';
 
 function CompanyLogoMark({
   logo,
@@ -106,6 +107,42 @@ function WorkListBlock({
   );
 }
 
+function WorkFactRow({ label, value }: { label: string; value: string | null | undefined }) {
+  if (!value) return null;
+
+  return (
+    <div className="work-mobile-detail-fact-row">
+      <p>{label}</p>
+      <strong>{value}</strong>
+    </div>
+  );
+}
+
+function WorkProductDetailsBlock({ entry }: { entry: ProductManagementWorkExperience }) {
+  const productDetails = entry.productDetails
+    .map((product) => ({
+      name: publicWorkValue(product.name),
+      description: publicWorkValue(product.description),
+    }))
+    .filter((product) => product.name || product.description);
+
+  if (!productDetails.length) return null;
+
+  return (
+    <div className="work-mobile-detail-block">
+      <p className="work-mobile-detail-block-label">Products</p>
+      <div className="grid gap-2">
+        {productDetails.map((product, index) => (
+          <article key={`${product.name}-${index}`} className="work-mobile-detail-product">
+            {product.name ? <strong>{product.name}</strong> : null}
+            {product.description ? <p>{product.description}</p> : null}
+          </article>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function ProductVideoPreview({
   entry,
   isActive,
@@ -122,7 +159,7 @@ function ProductVideoPreview({
 
   return (
     <div
-      className="relative flex aspect-video min-h-[12rem] w-full flex-1 overflow-hidden rounded-[1.45rem] bg-white/24 shadow-[0_18px_55px_rgba(23,45,72,0.16),inset_0_1px_0_rgba(255,255,255,0.42)]"
+      className="work-product-video-preview relative flex aspect-video min-h-[12rem] w-full flex-1 overflow-hidden rounded-[1.45rem] bg-white/24 shadow-[0_18px_55px_rgba(23,45,72,0.16),inset_0_1px_0_rgba(255,255,255,0.42)]"
       aria-label={`${displayWorkCompanyName(entry)} work video`}
     >
       {isNativeVideo && videoUrl ? (
@@ -165,11 +202,13 @@ function ProductManagementWorkCard({
   index,
   isActive,
   onActivate,
+  onPreviewIntent,
 }: {
   entry: ProductManagementWorkExperience;
   index: number;
   isActive: boolean;
   onActivate: () => void;
+  onPreviewIntent: () => void;
 }) {
   const companyName = displayWorkCompanyName(entry);
   const productText = contentItemsToText(entry.productsWorkedOn, 2);
@@ -183,6 +222,8 @@ function ProductManagementWorkCard({
       role="button"
       tabIndex={0}
       aria-expanded={isActive}
+      onPointerEnter={onPreviewIntent}
+      onFocus={onPreviewIntent}
       onClick={onActivate}
       onKeyDown={(event) => {
         if (event.key === 'Enter' || event.key === ' ') {
@@ -190,7 +231,7 @@ function ProductManagementWorkCard({
           onActivate();
         }
       }}
-      className={`group w-full max-w-full shrink-0 cursor-pointer rounded-[1.15rem] p-2.5 outline-none transition duration-300 ${
+      className={`group relative w-full max-w-full shrink-0 cursor-pointer rounded-[1.15rem] p-2.5 outline-none transition duration-300 ${
         isActive
           ? 'liquid-glass-strong shadow-[0_18px_50px_rgba(23,45,72,0.14)]'
           : 'liquid-glass hover:-translate-y-0.5 hover:bg-white/70 focus-visible:ring-2 focus-visible:ring-white/70'
@@ -204,7 +245,7 @@ function ProductManagementWorkCard({
       }}
       whileTap={{ scale: 0.996 }}
     >
-      <div className="grid gap-x-3 gap-y-2 md:grid-cols-[2.75rem_minmax(12rem,0.85fr)_minmax(18rem,1fr)_2.75rem] md:items-start">
+      <div className="grid gap-x-3 gap-y-2 md:grid-cols-[2.75rem_minmax(10rem,0.72fr)_minmax(18rem,1.28fr)_2.75rem] md:items-start">
         <CompanyLogoMark logo={entry.companyLogo} name={companyName} className="h-10 w-10" />
 
         <div className="min-w-0">
@@ -222,12 +263,12 @@ function ProductManagementWorkCard({
             <WorkMetaPill>{publicWorkValue(entry.industryTag)}</WorkMetaPill>
             <WorkMetaPill>{publicWorkValue(entry.marketType)}</WorkMetaPill>
           </div>
-          <div className="mt-2 flex max-w-full items-center gap-2 md:justify-end">
+          <div className="mt-2 flex max-w-full items-start gap-2 md:justify-end">
             <span className="shrink-0 rounded-full bg-white/34 px-2 py-1 text-[0.52rem] uppercase leading-none tracking-[0.12em] text-muted">
               Product
             </span>
             <p
-              className="min-w-0 max-w-full overflow-hidden text-ellipsis whitespace-nowrap text-xs leading-5 text-muted md:text-right"
+              className="min-w-0 max-w-full text-xs leading-5 text-muted md:text-right"
               title={productText}
             >
               {productText}
@@ -235,7 +276,7 @@ function ProductManagementWorkCard({
           </div>
         </div>
 
-        <div className="flex justify-end">
+        <div className="absolute right-2.5 top-2.5 md:static md:flex md:justify-end">
           <ExpandIndicator isActive={isActive} />
         </div>
       </div>
@@ -291,6 +332,7 @@ function ProductManagementWorkRail({
     const rail = railRef.current;
     const activeCard = rail?.querySelector<HTMLElement>(`[data-work-index="${activeIndex}"]`);
     if (!rail || !activeCard) return;
+    if (rail.getClientRects().length === 0) return;
 
     window.requestAnimationFrame(() => {
       const canScrollRail = rail.scrollHeight > rail.clientHeight + 1 && getComputedStyle(rail).overflowY !== 'visible';
@@ -307,11 +349,11 @@ function ProductManagementWorkRail({
   }, [activeIndex]);
 
   return (
-    <div className="flex min-w-0 flex-col bg-transparent p-0 lg:h-full lg:min-h-0">
+    <div className="flex min-w-0 flex-col bg-transparent p-0 md:h-full md:min-h-0">
       <div
         ref={railRef}
-        className={`work-dashboard-scroll flex flex-col gap-3 pr-1 lg:min-h-0 lg:flex-1 lg:overflow-y-auto ${
-          activeIndex === null ? 'py-4 lg:py-5' : 'pb-4 pt-0 lg:pb-5 lg:pt-0'
+        className={`work-dashboard-scroll flex flex-col gap-3 pr-1 md:min-h-0 md:flex-1 md:overflow-y-auto ${
+          activeIndex === null ? 'py-4 md:py-5' : 'pb-4 pt-0 md:pb-5 md:pt-0'
         }`}
       >
         {companies.map((entry, index) => (
@@ -321,10 +363,84 @@ function ProductManagementWorkRail({
             index={index}
             isActive={activeIndex === index}
             onActivate={() => onActiveIndexChange(activeIndex === index ? null : index)}
+            onPreviewIntent={() => preloadWorkVideoForEntry(entry, 'intent')}
           />
         ))}
       </div>
     </div>
+  );
+}
+
+function MobileWorkSummaryCard({ entry, index }: { entry: ProductManagementWorkExperience; index: number }) {
+  const companyName = displayWorkCompanyName(entry);
+  const productText = contentItemsToText(entry.productsWorkedOn, 2);
+
+  return (
+    <article className="work-mobile-detail-summary-card liquid-glass">
+      <div className="grid grid-cols-[2.85rem_minmax(0,1fr)] items-start gap-3">
+        <CompanyLogoMark logo={entry.companyLogo} name={companyName} className="h-11 w-11" />
+        <div className="min-w-0 pr-12">
+          <p className="text-[0.62rem] uppercase tracking-[0.18em] text-muted">
+            {String(index + 1).padStart(2, '0')} / {publicWorkValue(entry.monthYearRangeWorked)}
+          </p>
+          <h3 className="mt-1 text-[1.35rem] font-semibold leading-6 tracking-[-0.035em] text-text-primary">
+            {companyName}
+          </h3>
+          <p className="mt-1 text-sm leading-5 text-muted">{publicWorkValue(entry.jobTitle)}</p>
+        </div>
+      </div>
+
+      <div className="mt-3 flex flex-wrap gap-2">
+        <WorkMetaPill>{publicWorkValue(entry.industryTag)}</WorkMetaPill>
+        <WorkMetaPill>{publicWorkValue(entry.marketType)}</WorkMetaPill>
+      </div>
+
+      <div className="mt-3 rounded-[1rem] bg-white/22 px-3 py-2.5">
+        <p className="text-[0.58rem] uppercase tracking-[0.16em] text-muted">Product</p>
+        <p className="mt-1 text-sm leading-6 text-text-primary">{productText}</p>
+      </div>
+    </article>
+  );
+}
+
+function MobileWorkDetail({
+  entry,
+  index,
+  onClose,
+}: {
+  entry: ProductManagementWorkExperience;
+  index: number;
+  onClose: () => void;
+}) {
+  const location = publicWorkValue(entry.location);
+  const clients = publicWorkValue(entry.customerClientTypesAndUserNumbers);
+
+  return (
+    <motion.article
+      key={`${entry.companyName}-mobile-detail`}
+      className="work-mobile-detail"
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: 12 }}
+      transition={{ duration: 0.26, ease: [0.25, 0.1, 0.25, 1] }}
+    >
+      <button type="button" className="work-mobile-detail-close" aria-label="Close work detail" onClick={onClose}>
+        <span aria-hidden="true" />
+      </button>
+
+      <MobileWorkSummaryCard entry={entry} index={index} />
+      <ProductVideoPreview entry={entry} isActive />
+      <SelectedCompanyContextCard entry={entry} />
+
+      <div className="work-mobile-detail-facts">
+        <WorkFactRow label="Location" value={location} />
+        <WorkFactRow label="Clients" value={clients} />
+      </div>
+
+      <WorkProductDetailsBlock entry={entry} />
+      <WorkListBlock label="Main achievements" items={entry.mainAchievements} />
+      <WorkListBlock label="Process introduced / managerial" items={entry.processesIntroducedManagerial} />
+    </motion.article>
   );
 }
 
@@ -549,7 +665,7 @@ function WorkFloatingHeader({ intro, hideSubtitle }: { intro: string; hideSubtit
   if (hideSubtitle) return null;
 
   return (
-    <div className="pointer-events-none relative z-20 px-7 pt-7 lg:absolute lg:left-10 lg:top-10 lg:max-w-[29rem] lg:p-0">
+    <div className="pointer-events-none relative z-20 px-7 pt-7 md:absolute md:left-10 md:top-10 md:max-w-[29rem] md:p-0">
       {/* Section label rendered globally via <SectionMarker> */}
       <h2 className="mt-4 font-display text-[2.7rem] font-normal italic leading-[0.9] tracking-[0] text-text-primary md:text-[3.6rem] lg:text-[3.8rem]">
         Experiences & Qualifications
@@ -578,6 +694,7 @@ export function ExperienceEducationSection() {
   const [isEducationExpanded, setIsEducationExpanded] = useState(false);
   const sectionRef = useRef<HTMLElement | null>(null);
   const educationCardRef = useRef<HTMLDivElement | null>(null);
+  const mobileEducationCardRef = useRef<HTMLDivElement | null>(null);
   const previewEntry = activeWorkIndex === null ? null : companies[activeWorkIndex];
 
   const handleEducationToggle = () => {
@@ -596,11 +713,45 @@ export function ExperienceEducationSection() {
   };
 
   useEffect(() => {
+    preloadWorkVideos('visible');
+  }, []);
+
+  useEffect(() => {
+    if (previewEntry) preloadWorkVideoForEntry(previewEntry, 'activate');
+  }, [previewEntry]);
+
+  useEffect(() => {
+    if (activeWorkIndex === null || typeof window === 'undefined') return;
+    if (!window.matchMedia('(max-width: 767px)').matches) return;
+
+    requestAnimationFrame(() => {
+      const section = sectionRef.current;
+      const stage = section?.closest<HTMLElement>('.portfolio-stage');
+      if (!section || !stage) return;
+
+      stage.scrollTo({ top: section.offsetTop, left: 0, behavior: 'smooth' });
+    });
+  }, [activeWorkIndex]);
+
+  useEffect(() => {
+    document.body.classList.toggle('work-certifications-expanded', isEducationExpanded);
+
+    return () => {
+      document.body.classList.remove('work-certifications-expanded');
+    };
+  }, [isEducationExpanded]);
+
+  useEffect(() => {
     if (!isEducationExpanded) return;
 
     const handlePointerDown = (event: PointerEvent) => {
-      const card = educationCardRef.current;
-      if (!card || !(event.target instanceof Node) || card.contains(event.target)) return;
+      if (!(event.target instanceof Node)) return;
+
+      const cards = [educationCardRef.current, mobileEducationCardRef.current].filter(
+        (card): card is HTMLDivElement => Boolean(card),
+      );
+      if (!cards.length || cards.some((card) => card.contains(event.target as Node))) return;
+
       setIsEducationExpanded(false);
     };
 
@@ -621,16 +772,18 @@ export function ExperienceEducationSection() {
     <section
       ref={sectionRef}
       id="experience-education"
-      className="relative isolate min-h-full overflow-visible rounded-[24px] bg-transparent p-4 sm:rounded-[34px] lg:h-full lg:min-h-0 lg:overflow-hidden lg:p-5"
+      className={`relative isolate min-h-full ${isEducationExpanded ? 'overflow-hidden' : 'overflow-visible'} rounded-[24px] bg-transparent p-4 sm:rounded-[34px] md:h-full md:min-h-0 md:overflow-hidden md:p-5`}
     >
       <div className="work-section-opacity-layer absolute inset-0 z-0" aria-hidden="true" />
-      <WorkFloatingHeader intro={intro} hideSubtitle={isEducationExpanded || activeWorkIndex !== null} />
+      <div className={activeWorkIndex !== null ? 'hidden md:block' : ''}>
+        <WorkFloatingHeader intro={intro} hideSubtitle={isEducationExpanded || activeWorkIndex !== null} />
+      </div>
       <AnimatePresence initial={false}>
         {isEducationExpanded ? (
           <motion.button
             type="button"
             aria-label="Collapse qualifications"
-            className="work-education-dim"
+            className="work-education-dim hidden md:block"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -639,12 +792,69 @@ export function ExperienceEducationSection() {
           />
         ) : null}
       </AnimatePresence>
-      <div className="relative min-h-full w-full max-w-none lg:h-full lg:min-h-0">
+      <div className="work-mobile-content md:hidden" data-showing-detail={activeWorkIndex !== null || undefined}>
+        <AnimatePresence mode="wait" initial={false}>
+          {activeWorkIndex !== null && previewEntry ? (
+            <MobileWorkDetail
+              key="mobile-work-detail"
+              entry={previewEntry}
+              index={activeWorkIndex}
+              onClose={() => setActiveWorkIndex(null)}
+            />
+          ) : isEducationExpanded ? (
+            <motion.div
+              key="mobile-education-expanded"
+              ref={mobileEducationCardRef}
+              className="work-mobile-education-expanded"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.22, ease: [0.25, 0.1, 0.25, 1] }}
+            >
+              <EducationCard isActive={true} onToggle={handleEducationToggle} />
+            </motion.div>
+          ) : (
+            <motion.div
+              key="mobile-work-list"
+              className="grid gap-4"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.22, ease: [0.25, 0.1, 0.25, 1] }}
+            >
+              <div ref={isEducationExpanded ? undefined : mobileEducationCardRef}>
+                <EducationCard
+                  isActive={false}
+                  onToggle={handleEducationToggle}
+                />
+              </div>
+
+              <div className="work-mobile-card-list">
+                {companies.map((entry, index) => (
+                  <ProductManagementWorkCard
+                    key={`${entry.companyName}-mobile-${index}`}
+                    entry={entry}
+                    index={index}
+                    isActive={false}
+                    onActivate={() => {
+                      setIsEducationExpanded(false);
+                      setActiveWorkIndex(index);
+                    }}
+                    onPreviewIntent={() => preloadWorkVideoForEntry(entry, 'intent')}
+                  />
+                ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      <div className="work-desktop-shell relative hidden min-h-full w-full max-w-none md:block md:h-full md:min-h-0">
         <div
-          className="relative grid min-h-full gap-5 lg:h-full lg:min-h-0 lg:grid-cols-[minmax(0,0.382fr)_minmax(0,0.618fr)]"
+          className="work-desktop-grid relative grid min-h-full gap-5 md:h-full md:min-h-0 md:grid-cols-[minmax(0,0.382fr)_minmax(0,0.618fr)]"
         >
           <motion.aside
-            className={`work-dashboard-scroll relative flex min-h-[42rem] flex-col p-0 lg:h-full lg:min-h-0 lg:overflow-y-auto ${
+            className={`work-desktop-aside work-dashboard-scroll relative flex min-h-[42rem] flex-col p-0 md:h-full md:min-h-0 md:overflow-y-auto ${
               isEducationExpanded ? 'z-30' : ''
             }`}
             initial={{ opacity: 0, x: -18 }}
@@ -663,7 +873,7 @@ export function ExperienceEducationSection() {
               className={`transition-[bottom,top,height] duration-300 ${
                 isEducationExpanded
                   ? 'absolute inset-0 z-50 h-full'
-                  : 'mt-auto lg:absolute lg:bottom-0 lg:left-0 lg:right-0 lg:z-20'
+                  : 'mt-auto md:absolute md:bottom-0 md:left-0 md:right-0 md:z-20'
               }`}
             >
               <EducationCard
@@ -674,7 +884,7 @@ export function ExperienceEducationSection() {
           </motion.aside>
 
           <motion.div
-            className="relative z-0 min-w-0 lg:h-full lg:min-h-0"
+            className="work-desktop-rail relative z-0 min-w-0 md:h-full md:min-h-0"
             initial={{ opacity: 0, x: 18 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.06 }}

@@ -10,6 +10,7 @@ import {
   classifyQuery,
   getIntentClassifierAcceptanceThreshold,
   normalizeAiRaminIntentClassifierPayload,
+  resolveAiRaminQueryIntent,
   shouldAcceptIntentClassifierRoute,
 } from '../server/aiRaminHandler.mjs';
 
@@ -134,7 +135,7 @@ function checkIntentRouteFixture(fixture) {
   }
 }
 
-function checkConversationFollowUpFixture(fixture) {
+async function checkConversationFollowUpFixture(fixture) {
   const deterministicQueryIntent = classifyQuery(fixture.prompt, fixture.requestType);
   const context = buildAiRaminConversationRouteContext({
     visitorMessage: fixture.prompt,
@@ -142,11 +143,6 @@ function checkConversationFollowUpFixture(fixture) {
     requestType: fixture.requestType,
     deterministicQueryIntent,
   });
-  const queryIntent = {
-    ...deterministicQueryIntent,
-    conversationContext: context,
-  };
-  const visitorPrompt = buildVisitorPrompt(fixture.prompt, 'hiring-manager', fixture.requestType, queryIntent);
 
   assert(context.isFollowUp === fixture.expectedFollowUp, `${fixture.id}: expected follow-up ${fixture.expectedFollowUp}; got ${context.isFollowUp}`);
   assert(context.inheritedIntent === fixture.expectedInheritedIntent, `${fixture.id}: expected inherited intent ${fixture.expectedInheritedIntent}; got ${context.inheritedIntent}`);
@@ -154,10 +150,55 @@ function checkConversationFollowUpFixture(fixture) {
     context.inheritedQuestionType === fixture.expectedInheritedQuestionType,
     `${fixture.id}: expected inherited question type ${fixture.expectedInheritedQuestionType}; got ${context.inheritedQuestionType}`,
   );
+  if (Object.hasOwn(fixture, 'expectedAcceptedSuggestedNextAction')) {
+    assert(
+      context.acceptedSuggestedNextAction === fixture.expectedAcceptedSuggestedNextAction,
+      `${fixture.id}: expected accepted suggested action ${fixture.expectedAcceptedSuggestedNextAction}; got ${context.acceptedSuggestedNextAction}`,
+    );
+  }
+  if (fixture.expectedSuggestedActionQuestionType) {
+    assert(
+      context.suggestedActionQuestionType === fixture.expectedSuggestedActionQuestionType,
+      `${fixture.id}: expected suggested action question type ${fixture.expectedSuggestedActionQuestionType}; got ${context.suggestedActionQuestionType}`,
+    );
+  }
 
   for (const expectedText of fixture.expectedContextualQueryIncludes ?? []) {
     assert(context.contextualQuery.includes(expectedText), `${fixture.id}: contextual query missing "${expectedText}"`);
   }
+
+  const { queryIntent } = await resolveAiRaminQueryIntent({
+    visitorMessage: fixture.prompt,
+    history: fixture.history,
+    hiringMode: 'hiring-manager',
+    requestType: fixture.requestType,
+    geminiApiKey: '',
+  });
+  if (fixture.expectedResolvedQuestionType) {
+    assert(
+      queryIntent.primaryQuestionType === fixture.expectedResolvedQuestionType,
+      `${fixture.id}: expected resolved question type ${fixture.expectedResolvedQuestionType}; got ${queryIntent.primaryQuestionType}`,
+    );
+  }
+  if (fixture.expectedResolvedRequestType) {
+    assert(
+      queryIntent.resolvedRequestType === fixture.expectedResolvedRequestType,
+      `${fixture.id}: expected resolved request type ${fixture.expectedResolvedRequestType}; got ${queryIntent.resolvedRequestType}`,
+    );
+  }
+  if (fixture.expectedResolvedIntent) {
+    assert(
+      queryIntent.intentRoute?.intent === fixture.expectedResolvedIntent,
+      `${fixture.id}: expected resolved intent ${fixture.expectedResolvedIntent}; got ${queryIntent.intentRoute?.intent}`,
+    );
+  }
+
+  const visitorPrompt = buildVisitorPrompt(
+    fixture.prompt,
+    'hiring-manager',
+    queryIntent.resolvedRequestType ?? fixture.requestType,
+    queryIntent,
+  );
   for (const expectedText of fixture.expectedPromptIncludes ?? []) {
     assert(visitorPrompt.includes(expectedText), `${fixture.id}: visitor prompt missing "${expectedText}"`);
   }
@@ -196,6 +237,30 @@ function checkQualityGateFixture(fixture) {
   for (const absentKeyword of fixture.expectedAbsentKeywords ?? []) {
     assert(!answerText.includes(normalizeText(absentKeyword)), `${fixture.id}: recovered answer still includes "${absentKeyword}"`);
   }
+  for (const expectedShortAnswerText of fixture.expectedShortAnswerIncludes ?? []) {
+    assert(
+      qualityGate.sections.short_answer.includes(expectedShortAnswerText),
+      `${fixture.id}: short_answer missing exact text ${JSON.stringify(expectedShortAnswerText)}`,
+    );
+  }
+  for (const absentShortAnswerText of fixture.expectedShortAnswerExcludes ?? []) {
+    assert(
+      !qualityGate.sections.short_answer.includes(absentShortAnswerText),
+      `${fixture.id}: short_answer should not include exact text ${JSON.stringify(absentShortAnswerText)}`,
+    );
+  }
+  for (const expectedSuggestedActionText of fixture.expectedSuggestedNextActionIncludes ?? []) {
+    assert(
+      qualityGate.sections.suggested_next_action.includes(expectedSuggestedActionText),
+      `${fixture.id}: suggested_next_action missing exact text ${JSON.stringify(expectedSuggestedActionText)}`,
+    );
+  }
+  for (const absentSuggestedActionText of fixture.expectedSuggestedNextActionExcludes ?? []) {
+    assert(
+      !qualityGate.sections.suggested_next_action.includes(absentSuggestedActionText),
+      `${fixture.id}: suggested_next_action should not include exact text ${JSON.stringify(absentSuggestedActionText)}`,
+    );
+  }
 }
 
 assertIncludes(packageSource, 'check:ai-ramin-regression', 'package regression script');
@@ -214,7 +279,7 @@ for (const fixture of fixtures.cases ?? []) {
   if (fixture.kind === 'intent_route') {
     checkIntentRouteFixture(fixture);
   } else if (fixture.kind === 'conversation_followup') {
-    checkConversationFollowUpFixture(fixture);
+    await checkConversationFollowUpFixture(fixture);
   } else if (fixture.kind === 'quality_gate') {
     checkQualityGateFixture(fixture);
   } else {

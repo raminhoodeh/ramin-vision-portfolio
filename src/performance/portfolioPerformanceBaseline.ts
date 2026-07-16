@@ -68,6 +68,13 @@ export type PortfolioPerformanceBaselineSnapshot = {
   canvases: PortfolioCanvasBaseline[];
 };
 
+function getActiveRouteMarker() {
+  if (window.location.hash) return window.location.hash;
+
+  const [firstSegment] = window.location.pathname.split('/').filter(Boolean);
+  return firstSegment ? `#${firstSegment}` : '#hero';
+}
+
 type PortfolioPerformanceBaselineApi = {
   installedAt: number;
   snapshot: () => PortfolioPerformanceBaselineSnapshot;
@@ -294,7 +301,7 @@ export function getPortfolioPerformanceBaselineSnapshot(): PortfolioPerformanceB
     ?.getAttribute('data-bonus-rock-preload-status');
 
   return {
-    activeHash: window.location.hash || '#hero',
+    activeHash: getActiveRouteMarker(),
     canvasCount: canvases.length,
     visibleCanvasCount: visibleCanvases.length,
     totalCanvasPixels: canvases.reduce((total, canvas) => total + canvas.bufferPixels, 0),

@@ -4,6 +4,7 @@ import http from 'node:http';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { handleAiRaminFeedbackRequest, handleAiRaminRequest } from './server/aiRaminHandler.mjs';
+import { handleMassSocialWisdomRequest } from './server/massSocialWisdomHandler.mjs';
 
 const ROOT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const DIST_DIR = path.join(ROOT_DIR, 'dist');
@@ -81,6 +82,14 @@ const server = http.createServer((req, res) => {
     void handleAiRaminFeedbackRequest(req, res).catch((error) => {
       console.error(error);
       sendText(res, 500, 'AI Ramin feedback failed.');
+    });
+    return;
+  }
+
+  if (requestUrl.pathname.startsWith('/api/mass-social-wisdom')) {
+    void handleMassSocialWisdomRequest(req, res).catch((error) => {
+      console.error(error);
+      sendText(res, 500, 'Mass Social Wisdom request failed.');
     });
     return;
   }

@@ -124,19 +124,19 @@ export function Contact() {
 
       <svg
         className="contact-headline-cutout-layer contact-headline-cutout-layer-mobile"
-        viewBox="0 0 600 760"
+        viewBox="0 0 420 760"
         preserveAspectRatio="none"
         aria-hidden="true"
       >
         <defs>
-          <mask id="contact-headline-cutout-mask-mobile" maskUnits="userSpaceOnUse" x="0" y="0" width="600" height="760">
-            <rect x="0" y="0" width="600" height="760" fill="white" />
+          <mask id="contact-headline-cutout-mask-mobile" maskUnits="userSpaceOnUse" x="0" y="0" width="420" height="760">
+            <rect x="0" y="0" width="420" height="760" fill="white" />
             {headlineLines.map((line, index) => (
               <text
                 key={line}
                 className="hero-name-cutout-mask-text contact-headline-cutout-mask-text-mobile"
-                x="300"
-                y={254 + index * 72}
+                x="210"
+                y={264 + index * 58}
                 fill="black"
               >
                 {line}
@@ -148,14 +148,14 @@ export function Contact() {
           className="contact-headline-cutout-surface"
           x="0"
           y="0"
-          width="600"
+          width="420"
           height="760"
           fill="white"
           mask="url(#contact-headline-cutout-mask-mobile)"
         />
       </svg>
 
-      <div className="pointer-events-none absolute inset-x-0 top-8 z-[3] overflow-hidden py-4 md:top-10">
+      <div className="contact-values-marquee pointer-events-none absolute inset-x-0 top-8 z-[3] overflow-hidden py-4 md:top-10">
         <div
           ref={marqueeRef}
           className="flex w-max whitespace-nowrap font-display text-5xl italic text-text-primary/10 md:text-8xl"
@@ -171,7 +171,7 @@ export function Contact() {
         <h2 className="sr-only">{contactCta.headline}</h2>
         <div className="contact-headline-cutout-spacer" aria-hidden="true" />
 
-        <div className="mt-24 flex w-full flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
+        <div className="contact-cta-row mt-24 flex w-full flex-col items-center justify-center gap-3 sm:flex-row sm:gap-4">
           {contactCta.ctaButtons.map((button, index) => {
             const isPlaceholder = isPlaceholderValue(button.href);
             const href = isPlaceholder ? undefined : button.href;
@@ -185,11 +185,11 @@ export function Contact() {
                   type="button"
                   onClick={handleCopyEmail}
                   aria-label={`Copy ${emailAddress} to clipboard`}
-                  className="group relative inline-flex max-w-full rounded-full p-[2px] text-sm transition duration-300 hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
+                  className="contact-email-copy-button group relative inline-flex max-w-full rounded-full p-[2px] text-sm transition duration-300 hover:scale-105 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40"
                 >
                   <span className="accent-gradient animated-gradient absolute inset-0 rounded-full opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-                  <span className="relative inline-flex items-center gap-3 rounded-full bg-[#597ca0] py-3 pl-6 pr-3.5 text-center text-bg transition duration-300 group-hover:bg-bg group-hover:text-text-primary">
-                    <span className="max-w-[14.75rem] truncate sm:max-w-none">{emailAddress}</span>
+                  <span className="contact-email-copy-button-inner relative inline-flex items-center gap-3 rounded-full bg-[#597ca0] py-3 pl-6 pr-3.5 text-center text-bg transition duration-300 group-hover:bg-bg group-hover:text-text-primary">
+                    <span className="contact-email-address max-w-[14.75rem] truncate sm:max-w-none">{emailAddress}</span>
                     <span className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-white/15 bg-white/10 text-bg/80 transition duration-300 group-hover:border-stroke group-hover:bg-white/85 group-hover:text-text-primary">
                       {emailCopied ? (
                         <svg
@@ -255,7 +255,7 @@ export function Contact() {
                 href={href}
                 target={href.startsWith('http') ? '_blank' : undefined}
                 rel={href.startsWith('http') ? 'noreferrer' : undefined}
-                className="contact-whatsapp-glass-button"
+                className="contact-page-whatsapp-glass-button"
               />
             );
           })}

@@ -1,0 +1,36 @@
+# Local dependencies and build output
+node_modules/
+dist/
+.vite/
+.local/
+.vercel/
+
+# Local-only references, notes, and generated artifacts
+.claude/
+artifacts/
+docs/
+anthropic-animation-inspiration/
+ai-native-product-os-context/
+Ramin Hoodeh - CV.docx
+product-thesis-draft.md
+product-thesis-flowchart.svg
+ai-native-product-os-thesis-corrected.md
+
+# Secret-bearing local env files
+.env
+.env.*
+
+# macOS/editor noise
+.DS_Store
+**/.DS_Store
+
+# Raw project recordings retained locally after compression.
+# Keep the selected 24Seven recording used by the 3D phone mockup.
+projects-section/Project Images/*.mov
+projects-section/Project Images/*.mp4
+projects-section/Project Images/24seven-concierge-images/*.mp4
+!projects-section/Project Images/24seven-concierge-images/24-seven-concierge-screen-recording-3d-shifted-17.mp4
+
+# Raw Work videos retained locally after WebM conversion.
+work-section/company-videos/*.mov
+work-section/company-videos/*.mp4

@@ -166,6 +166,65 @@
       ]
     },
     {
+      "id": "accepted-suggested-action-routes-to-hiring-brief",
+      "family": "conversation_followup",
+      "kind": "conversation_followup",
+      "prompt": "yes please",
+      "requestType": "general_chat",
+      "history": [
+        {
+          "role": "user",
+          "content": "What is Ramin's strongest product proof for a PM role?"
+        },
+        {
+          "role": "assistant",
+          "content": "Ramin's strongest product proof is the GroupM Carbon Calculator and Urgentem Element6 because both show complex data translated into decision-ready product surfaces.\n\n**Suggested next action:** Draft a copy-ready hiring brief from this evidence.",
+          "metadata": {
+            "requestType": "evidence_lookup",
+            "intentRoute": {
+              "intent": "evidence_lookup",
+              "confidence": 0.93,
+              "isSubstantive": true,
+              "needsEvidence": true,
+              "needsRetrieval": true,
+              "needsStructuredModules": true,
+              "suggestedTone": "hiring",
+              "sourceQuestionType": "strongest_product_proof",
+              "reason": "previous strongest proof answer"
+            },
+            "answerShape": {
+              "primaryQuestionType": "strongest_product_proof",
+              "answerFrameId": "rank_prove_translate"
+            },
+            "evidenceCardTitles": [
+              "GroupM Media Carbon Calculator",
+              "Urgentem Element6"
+            ]
+          }
+        }
+      ],
+      "expectedFollowUp": true,
+      "expectedInheritedIntent": "hiring_brief",
+      "expectedInheritedQuestionType": "hiring_brief",
+      "expectedAcceptedSuggestedNextAction": true,
+      "expectedSuggestedActionQuestionType": "hiring_brief",
+      "expectedResolvedIntent": "hiring_brief",
+      "expectedResolvedQuestionType": "hiring_brief",
+      "expectedResolvedRequestType": "hiring_brief",
+      "expectedContextualQueryIncludes": [
+        "Accepted suggested next action: Draft a copy-ready hiring brief from this evidence.",
+        "Suggested action question type: hiring_brief",
+        "Inherited intent: hiring_brief",
+        "Inherited question type: hiring_brief"
+      ],
+      "expectedPromptIncludes": [
+        "Internal question type: hiring_brief",
+        "Inherited intent: hiring_brief",
+        "Inherited question type: hiring_brief",
+        "The latest message accepts that next step. Carry it out as hiring_brief."
+      ]
+    },
+    {
       "id": "enterprise-variant-after-product-judgment",
       "family": "conversation_followup",
       "kind": "conversation_followup",
@@ -296,6 +355,90 @@
       ],
       "expectedAbsentKeywords": [
         "not have enough verified portfolio context"
+      ]
+    },
+    {
+      "id": "quality-gate-preserves-short-answer-paragraphs",
+      "family": "quality_recovery",
+      "kind": "quality_gate",
+      "prompt": "Who is Ramin Hoodeh and what kind of Product Manager is he?",
+      "requestType": "general_chat",
+      "answerableEvidenceCount": 1,
+      "fixtureSections": {
+        "short_answer": "Ramin is strongest when complex product systems need to become clear for users.\n\nThat pattern shows up in canonical/profile.md source_role=canonical, where AI and product context has to be made usable.\n\nThe practical signal is product judgment, not just tool usage.",
+        "verified_proof": [
+          "Profile proof source_path=canonical/profile.md supports the AI Product Manager positioning."
+        ],
+        "inferred_fit": [],
+        "confidential_boundary": [],
+        "open_questions": [],
+        "suggested_next_action": "Suggested next action: Ask for a role-fit analysis."
+      },
+      "expectedQualityGateIssues": [
+        "duplicated_next_action_label",
+        "internal_metadata_leak",
+        "local_source_path_leak"
+      ],
+      "expectedQualityGateStrategy": "quality_gate_sanitization",
+      "expectedRecoveredKeywords": [
+        "portfolio evidence",
+        "product judgment"
+      ],
+      "expectedAbsentKeywords": [
+        "canonical/profile.md",
+        "source_role",
+        "source_path",
+        "Suggested next action:"
+      ],
+      "expectedShortAnswerIncludes": [
+        "users.\n\nThat pattern",
+        "usable.\n\nThe practical signal"
+      ],
+      "expectedShortAnswerExcludes": [
+        "users. That pattern",
+        "usable. The practical signal",
+        "canonical/profile.md",
+        "source_role"
+      ]
+    },
+    {
+      "id": "quality-gate-removes-short-answer-suggested-action",
+      "family": "quality_recovery",
+      "kind": "quality_gate",
+      "prompt": "What is Ramin best at in product?",
+      "requestType": "general_chat",
+      "answerableEvidenceCount": 2,
+      "fixtureSections": {
+        "short_answer": "Ramin is strongest at turning complex systems into usable product surfaces.\n\n**Suggested next action:** Ask for a role-fit analysis.",
+        "verified_proof": [],
+        "inferred_fit": [],
+        "confidential_boundary": [],
+        "open_questions": [],
+        "suggested_next_action": ""
+      },
+      "expectedQualityGateIssues": [
+        "duplicated_next_action_label"
+      ],
+      "expectedQualityGateStrategy": "quality_gate_sanitization",
+      "expectedRecoveredKeywords": [
+        "turning complex systems",
+        "Ask for a role-fit analysis"
+      ],
+      "expectedAbsentKeywords": [
+        "Suggested next action:"
+      ],
+      "expectedShortAnswerIncludes": [
+        "Ramin is strongest at turning complex systems into usable product surfaces."
+      ],
+      "expectedShortAnswerExcludes": [
+        "Suggested next action",
+        "Ask for a role-fit analysis"
+      ],
+      "expectedSuggestedNextActionIncludes": [
+        "Ask for a role-fit analysis."
+      ],
+      "expectedSuggestedNextActionExcludes": [
+        "Suggested next action"
       ]
     }
   ]

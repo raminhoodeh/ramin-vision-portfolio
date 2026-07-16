@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1800 1260" font-family="Inter, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 8" refX="8.5" refY="4" markerWidth="9" markerHeight="7.2" orient="auto-start-reverse">
+      <path d="M0,0 L10,4 L0,8 Z" fill="#1a1a1a"/>
+    </marker>
+  </defs>
+  <rect width="1800" height="1260" fill="#ffffff"/>
+
+  <text x="900" y="80" text-anchor="middle" font-size="30" font-weight="700" letter-spacing="1.5" fill="#111111">MY AI PRODUCT THESIS</text>
+
+  <!-- root cause -->
+  <rect x="775" y="130" width="210" height="62" fill="#ffffff" stroke="#1a1a1a" stroke-width="1.8"/>
+  <text x="880" y="156" text-anchor="middle" font-size="17" font-weight="700" fill="#111111">Advancement in</text>
+  <text x="880" y="178" text-anchor="middle" font-size="17" font-weight="700" fill="#111111">AI Technology</text>
+
+  <path d="M 815 192 C 745 235, 695 265, 648 302" fill="none" stroke="#1a1a1a" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="700" y="243" text-anchor="middle" font-size="15" letter-spacing="0.5" fill="#111111">WHICH CAUSES...</text>
+  <path d="M 945 192 C 1030 230, 1105 255, 1165 292" fill="none" stroke="#1a1a1a" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="1045" y="240" text-anchor="middle" font-size="15" letter-spacing="0.5" fill="#111111">WHICH CAUSES...</text>
+
+  <!-- two conditions -->
+  <rect x="540" y="305" width="180" height="54" fill="#ffffff" stroke="#1a1a1a" stroke-width="1.8"/>
+  <text x="630" y="338" text-anchor="middle" font-size="17" font-weight="700" fill="#111111">Overinformation</text>
+
+  <rect x="1095" y="295" width="175" height="64" fill="#ffffff" stroke="#1a1a1a" stroke-width="1.8"/>
+  <text x="1182" y="322" text-anchor="middle" font-size="17" font-weight="700" fill="#111111">Evolution in</text>
+  <text x="1182" y="344" text-anchor="middle" font-size="17" font-weight="700" fill="#111111">execution</text>
+
+  <path d="M 1150 359 C 1112 386, 1075 407, 1048 426" fill="none" stroke="#1a1a1a" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="1036" y="398" text-anchor="middle" font-size="15" letter-spacing="0.5" fill="#111111">MAKING IT...</text>
+  <path d="M 1218 359 C 1258 386, 1300 407, 1332 426" fill="none" stroke="#1a1a1a" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="1318" y="398" text-anchor="middle" font-size="15" letter-spacing="0.5" fill="#111111">MAKING IT...</text>
+
+  <rect x="950" y="430" width="160" height="50" fill="#ffffff" stroke="#1a1a1a" stroke-width="1.8"/>
+  <text x="1030" y="461" text-anchor="middle" font-size="17" font-weight="700" fill="#111111">Probabilistic</text>
+  <rect x="1270" y="430" width="160" height="50" fill="#ffffff" stroke="#1a1a1a" stroke-width="1.8"/>
+  <text x="1350" y="461" text-anchor="middle" font-size="17" font-weight="700" fill="#111111">Cheap &amp; Fast</text>
+
+  <!-- overinformation -> the stack -->
+  <path d="M 628 359 C 660 520, 430 560, 272 686" fill="none" stroke="#1a1a1a" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="390" y="470" text-anchor="middle" font-size="15" letter-spacing="0.5" fill="#111111">THEREFORE YOU NEED A</text>
+  <text x="390" y="492" text-anchor="middle" font-size="15" letter-spacing="0.5" fill="#111111">STACK / FRAMEWORK OF</text>
+  <text x="390" y="514" text-anchor="middle" font-size="15" letter-spacing="0.5" fill="#111111">INFORMATION</text>
+
+  <!-- the 5-layer stack -->
+  <polygon points="255,700 45,1040 465,1040" fill="#ffffff" stroke="#1a1a1a" stroke-width="1.8"/>
+  <line x1="213" y1="768" x2="297" y2="768" stroke="#1a1a1a" stroke-width="1.2"/>
+  <line x1="171" y1="836" x2="339" y2="836" stroke="#1a1a1a" stroke-width="1.2"/>
+  <line x1="129" y1="904" x2="381" y2="904" stroke="#1a1a1a" stroke-width="1.2"/>
+  <line x1="87" y1="972" x2="423" y2="972" stroke="#1a1a1a" stroke-width="1.2"/>
+  <text x="255" y="756" text-anchor="middle" font-size="18" fill="#111111">Human</text>
+  <text x="255" y="812" text-anchor="middle" font-size="20" fill="#111111">Governance</text>
+  <text x="255" y="880" text-anchor="middle" font-size="20" fill="#111111">Orchestration</text>
+  <text x="255" y="948" text-anchor="middle" font-size="20" fill="#111111">Context</text>
+  <text x="255" y="1016" text-anchor="middle" font-size="20" fill="#111111">Model</text>
+  <text x="120" y="872" text-anchor="middle" font-size="24" font-weight="700" font-style="italic" fill="#111111" transform="rotate(-58 120 872)">5 Layer Stack</text>
+
+  <!-- the four consequences -->
+  <text x="480" y="762" font-size="13.5" fill="#111111"><tspan font-weight="700">Consequence 4 → Human: </tspan><tspan>Probabilistic systems </tspan><tspan font-style="italic">change what being a professional means.</tspan></text>
+  <text x="480" y="830" font-size="13.5" fill="#111111"><tspan font-weight="700">Consequence 3 → Governance: </tspan><tspan>Probabilistic systems need </tspan><tspan font-style="italic">guardrails and evals, not hope.</tspan></text>
+  <text x="480" y="888" font-size="13.5" fill="#111111"><tspan font-weight="700">Consequence 2 → Orchestration: </tspan><tspan>Probabilistic systems need </tspan><tspan font-style="italic">loops, not straight</tspan></text>
+  <text x="480" y="906" font-size="13.5" fill="#111111"><tspan font-style="italic">lines</tspan><tspan> - the consequence that forces the process itself to bend into a cycle.</tspan></text>
+  <text x="480" y="950" font-size="13.5" fill="#111111"><tspan font-weight="700">Consequence 1 → Model &amp; Context: </tspan><tspan>You can't just</tspan></text>
+  <text x="480" y="968" font-size="13.5" fill="#111111">prompt and hope - you have to understand the Model you</text>
+  <text x="480" y="986" font-size="13.5" fill="#111111">are querying and load the Context it answers from.</text>
+
+  <!-- probabilistic -> the consequences (closes the convergence: probabilism specifies the layers) -->
+  <path d="M 955 482 C 855 540, 838 640, 842 728" fill="none" stroke="#1a1a1a" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="725" y="590" text-anchor="middle" font-size="15" letter-spacing="0.5" fill="#111111">WHICH ALSO FORCES THE</text>
+  <text x="725" y="610" text-anchor="middle" font-size="15" letter-spacing="0.5" fill="#111111">FOUR CONSEQUENCES...</text>
+
+  <!-- probabilistic -> the loop -->
+  <path d="M 1010 482 C 990 565, 990 660, 1020 748" fill="none" stroke="#1a1a1a" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="920" y="638" text-anchor="middle" font-size="13" letter-spacing="0.5" fill="#111111">A PROCESS THAT RUNS</text>
+  <text x="920" y="658" text-anchor="middle" font-size="13" letter-spacing="0.5" fill="#111111">AS A LOOP</text>
+
+  <text x="1190" y="560" text-anchor="middle" font-size="15" letter-spacing="0.5" fill="#111111">WHICH NECESSITATES</text>
+  <text x="1190" y="580" text-anchor="middle" font-size="15" letter-spacing="0.5" fill="#111111">A NEW PROCESS...</text>
+
+  <!-- cheap -> the loop -->
+  <path d="M 1352 482 C 1392 560, 1418 650, 1404 754" fill="none" stroke="#1a1a1a" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="1550" y="545" text-anchor="middle" font-size="15" letter-spacing="0.5" fill="#111111">A PROCESS WHERE</text>
+  <text x="1550" y="565" text-anchor="middle" font-size="15" letter-spacing="0.5" fill="#111111">DECIDING AND</text>
+  <text x="1550" y="585" text-anchor="middle" font-size="15" letter-spacing="0.5" fill="#111111">BUILDING COMES</text>
+  <text x="1550" y="605" text-anchor="middle" font-size="15" letter-spacing="0.5" fill="#111111">SOONER</text>
+
+  <!-- the AI-Native Loop -->
+  <circle cx="1190" cy="940" r="70" fill="none" stroke="#d6d6d6" stroke-width="1.2"/>
+  <circle cx="1190" cy="940" r="130" fill="none" stroke="#d6d6d6" stroke-width="1.2"/>
+  <circle cx="1190" cy="940" r="190" fill="none" stroke="#9b9b9b" stroke-width="1.6"/>
+  <circle cx="1190" cy="940" r="250" fill="none" stroke="#d6d6d6" stroke-width="1.2"/>
+
+  <!-- direction of travel: clockwise, 1 -> 5 and back to 1 -->
+  <path d="M 1025.5 845 A 190 190 0 0 1 1048.8 812.9" fill="none" stroke="#1a1a1a" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <path d="M 1229.5 754.2 A 190 190 0 0 1 1267.3 766.4" fill="none" stroke="#1a1a1a" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <path d="M 1379 920.1 A 190 190 0 0 1 1379 959.9" fill="none" stroke="#1a1a1a" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <path d="M 1267.3 1113.6 A 190 190 0 0 1 1229.5 1125.8" fill="none" stroke="#1a1a1a" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <path d="M 1048.8 1067.1 A 190 190 0 0 1 1025.5 1035" fill="none" stroke="#1a1a1a" stroke-width="1.6" marker-end="url(#arrow)"/>
+
+  <!-- the five stages: dots on the track, labels at a consistent radial offset -->
+  <circle cx="1000" cy="940" r="7" fill="#1a1a1a"/>
+  <text x="1000" y="912" text-anchor="middle" font-size="17" font-weight="600" fill="#111111">1. TALK</text>
+  <circle cx="1131" cy="759" r="7" fill="#1a1a1a"/>
+  <text x="1120" y="723" text-anchor="middle" font-size="17" font-weight="600" fill="#111111">2. DECIDE</text>
+  <circle cx="1344" cy="828" r="7" fill="#1a1a1a"/>
+  <text x="1374" y="810" text-anchor="start" font-size="17" font-weight="600" fill="#111111">3. BUILD</text>
+  <circle cx="1344" cy="1052" r="7" fill="#1a1a1a"/>
+  <text x="1374" y="1078" text-anchor="start" font-size="17" font-weight="600" fill="#111111">4. OBSERVE</text>
+  <circle cx="1131" cy="1121" r="7" fill="#1a1a1a"/>
+  <text x="1120" y="1162" text-anchor="middle" font-size="17" font-weight="600" fill="#111111">5. ITERATE</text>
+
+  <text x="1190" y="934" text-anchor="middle" font-size="19" font-weight="700" fill="#111111">AI-Native</text>
+  <text x="1190" y="958" text-anchor="middle" font-size="19" font-weight="700" fill="#111111">Loop</text>
+
+  <!-- consequence 2 is the hinge: orchestration feeds the loop -->
+  <path d="M 770 922 C 860 942, 902 941, 930 939" fill="none" stroke="#1a1a1a" stroke-width="1.6" marker-end="url(#arrow)"/>
+</svg>

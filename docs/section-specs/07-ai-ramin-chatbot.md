@@ -523,11 +523,22 @@ Phase 8 adds an offline evaluation loop so AI Ramin can be hardened before live 
 
 Implemented evaluation behavior:
 
+- `npm run status:ai-ramin` prints a read-only local snapshot of corpus, eval, live-review, key, endpoint, and generated-file state.
+- `npm run verify:ai-ramin` runs the focused deterministic AI Ramin verification suite without building the whole portfolio.
 - `npm run check:ai-ramin-eval` runs the deterministic AI Ramin evaluation suite.
 - `npm run check:ai-ramin-routing` verifies interview routing and CTA contract consistency between server logic, evaluator logic, and eval cases.
 - `npm run check:ai-ramin-feedback` verifies answer-feedback wiring and local review-log contract.
 - `npm run check:ai-ramin-review` verifies the local feedback-review workflow, report shape, and eval-case candidate contract.
+- `npm run check:ai-ramin-eval-promotion` verifies the local eval-case promotion workflow, write guard, candidate normalization, duplicate handling, and provenance retention.
+- `npm run check:ai-ramin-live-capture` verifies the live-answer review-set shape and capture harness in deterministic dry-run mode.
+- `npm run check:ai-ramin-live-review` validates captured live-answer manual scores, issue notes, and score/issue consistency.
+- `npm run check:ai-ramin-live-review -- --strict` requires a complete live-answer review pass with every case captured, scored, non-failed, and above the quality threshold.
+- `npm run review:ai-ramin-live` writes a local live-review report with score distribution, review queue, deterministic follow-ups, and next actions.
+- `npm run check:ai-ramin-live-review-report` verifies the live-review report workflow and report shape against fixture data.
+- `npm run preflight:ai-ramin-live` verifies live-capture readiness by checking local key detection and deterministic endpoint reachability.
+- `npm run capture:ai-ramin-live` captures Gemini-backed answer excerpts into the live-answer review set when `GEMINI_API_KEY` or `GOOGLE_API_KEY` is configured.
 - `npm run review:ai-ramin-feedback` turns local feedback records into a triage report.
+- `npm run promote:ai-ramin-eval-candidates` previews or approves generated eval-case candidates for promotion into `eval-cases.json`.
 - `npm run evaluate:ai-ramin` writes a local report and appends failures to the local failure log when failures exist.
 - Evaluation cases live in `ai-ramin-section/evaluation/eval-cases.json`.
 - The evaluator checks:
@@ -546,21 +557,37 @@ Implemented evaluation behavior:
 - The routing checker does not call Gemini. It prevents the server and offline evaluator from silently drifting after changes to question types, answer techniques, answer frames, or soft CTAs.
 - The feedback contract checker does not call Gemini. It verifies the feedback affordance, API route, JSONL schema, and local log ignore rule.
 - The feedback review contract checker does not call Gemini. It verifies the local triage workflow, generated report schema, recurring-issue grouping, and eval-case candidate output.
+- The eval promotion contract checker does not call Gemini. It verifies that generated candidates can be reviewed, normalized, approved, and promoted without bypassing human selection.
+- The live-capture checker does not call Gemini in dry-run mode. It verifies that subjective review cases can be selected, filtered, and captured by the harness before a model-backed review pass.
+- The live-review checker does not call Gemini. It fails captured answers that are unscored, failed, weak without actionable issue notes, strong with unresolved issues, or acceptable/strong despite severe leaks or empty-answer issues.
+- The live-review report workflow does not call Gemini. It turns the manually scored live-review set into a local report so weak captures can become targeted prompt, routing, retrieval, quality-gate, markdown, or regression follow-ups.
+- The live-capture preflight uses the deterministic greeting path to check endpoint reachability without spending model tokens.
+- The status reporter is read-only and reports local operational state; it is not part of the release gate.
 
 Implemented hardening workflow:
 
 - `ai-ramin-section/evaluation/README.md` documents the runbook, quality gate, failure triage, and corpus-improvement loop.
 - `ai-ramin-section/evaluation/failure-log.schema.json` defines the failure-log record shape.
+- `ai-ramin-section/evaluation/live-answer-review-set.json` defines the manual live-answer review prompts, expected answer-quality notes, and capture slots for model-backed review.
 - `ai-ramin-section/evaluation/live-feedback.schema.json` defines the visitor-feedback record shape.
 - `ai-ramin-section/evaluation/latest-feedback-review.schema.json` defines the generated feedback-review report shape.
 - `ai-ramin-section/evaluation/latest-evaluation-report.json` is generated locally and ignored by git.
 - `ai-ramin-section/evaluation/failure-log.jsonl` is generated locally and ignored by git.
 - `ai-ramin-section/evaluation/live-feedback.jsonl` is generated locally and ignored by git.
 - `ai-ramin-section/evaluation/latest-feedback-review.json` is generated locally and ignored by git.
+- `ai-ramin-section/evaluation/latest-eval-case-promotion-plan.json` is generated locally and ignored by git.
+- `ai-ramin-section/evaluation/latest-live-review-report.json` is generated locally and ignored by git.
+- `npm run status:ai-ramin` now provides a read-only operational snapshot for AI Ramin.
+- `npm run verify:ai-ramin` now provides a focused AI Ramin-only verification command for chatbot changes.
+- `npm run preflight:ai-ramin-live` now provides a readiness check before model-backed live capture.
 - `npm run verify` now includes the AI Ramin eval gate after corpus validation and before the production build.
 - `npm run verify` now includes the AI Ramin routing gate after the eval gate and before the production build.
 - `npm run verify` now includes the AI Ramin feedback contract gate after the routing gate and before the production build.
 - `npm run verify` now includes the AI Ramin feedback-review contract gate after the feedback gate and before the production build.
+- `npm run verify` now includes the AI Ramin eval-promotion contract gate after the feedback-review gate and before the production build.
+- `npm run verify` now includes the AI Ramin live-capture dry-run gate after the eval-promotion gate and before the production build.
+- `npm run verify` now includes the AI Ramin live-review checker and its fixture contract after the live-capture dry-run gate and before the production build.
+- `npm run verify` now includes the AI Ramin live-review report fixture contract after the live-review checker and before the production build.
 
 ## Phase 8 Acceptance Checklist
 
@@ -572,10 +599,25 @@ Implemented hardening workflow:
 - [x] AI Ramin interview-routing drift gate is available as an npm script.
 - [x] AI Ramin answer-feedback contract gate is available as an npm script.
 - [x] AI Ramin feedback-review contract gate is available as an npm script.
+- [x] AI Ramin eval-case promotion contract gate is available as an npm script.
+- [x] AI Ramin live-answer capture dry-run gate is available as an npm script.
+- [x] AI Ramin live-review checker is available as an npm script.
+- [x] AI Ramin live-review checker fixture contract is available as an npm script.
+- [x] AI Ramin live-review report workflow is available as an npm script.
+- [x] AI Ramin live-review report contract gate is available as an npm script.
+- [x] AI Ramin operational status is available as `npm run status:ai-ramin`.
+- [x] Focused AI Ramin verification is available as `npm run verify:ai-ramin`.
+- [x] Live-answer capture readiness is available as `npm run preflight:ai-ramin-live`.
+- [x] Eval-case candidate promotion is available as a dry-run-first npm script.
+- [x] Gemini-backed answer capture is available as an npm script for manual review passes.
 - [x] Main verification pipeline includes the AI Ramin eval gate.
 - [x] Main verification pipeline includes the interview-routing gate.
 - [x] Main verification pipeline includes the feedback contract gate.
 - [x] Main verification pipeline includes the feedback-review contract gate.
+- [x] Main verification pipeline includes the eval-promotion contract gate.
+- [x] Main verification pipeline includes the live-capture dry-run gate.
+- [x] Main verification pipeline includes the live-review checker and validator contract gate.
+- [x] Main verification pipeline includes the live-review report contract gate.
 
 ## Interview Answering Integration Stage 7
 
@@ -701,6 +743,31 @@ Implemented behavior:
 - [x] The regression suite is available through `npm run check:ai-ramin-regression`.
 - [x] Main verify includes the regression suite.
 
-## Next Phase
+## Stage 10: Eval Candidate Promotion
 
-Phase 10 should add a small local review surface or promotion workflow that helps move approved eval-case candidates into `eval-cases.json` with human confirmation.
+Stage 10 adds a guarded local promotion workflow for turning approved feedback-review candidates into deterministic eval cases.
+
+Implemented behavior:
+
+- `npm run promote:ai-ramin-eval-candidates` reads `ai-ramin-section/evaluation/latest-feedback-review.json`.
+- Dry-run mode is the default and writes `ai-ramin-section/evaluation/latest-eval-case-promotion-plan.json`.
+- Approved writes require `--approve` plus either `--candidate=<id>` or `--all`.
+- Promoted cases are appended to `ai-ramin-section/evaluation/eval-cases.json`.
+- Candidate answer technique, answer frame, and soft CTA expectations are normalized to the current live routing contract before promotion.
+- Duplicate case ids and duplicate prompt/request/question/hiring fingerprints are skipped.
+- Promoted cases retain `feedbackReview` and `promotionReview` provenance.
+- `scripts/check-ai-ramin-eval-promotion-contract.mjs` verifies dry-run behavior, approval guardrails, duplicate handling, normalization, and provenance retention.
+- Generated promotion plans are ignored by git.
+- `npm run check:ai-ramin-eval-promotion` is included in the main `npm run verify` pipeline.
+
+## Stage 10 Acceptance Checklist
+
+- [x] Eval-case candidates can be previewed without editing `eval-cases.json`.
+- [x] Approved promotion requires explicit human selection.
+- [x] Candidate routing expectations are normalized to current live contract ids.
+- [x] Duplicate candidate promotion is skipped.
+- [x] Promoted cases retain feedback provenance.
+- [x] Promotion plan output is ignored by git.
+- [x] The promotion workflow is available through `npm run promote:ai-ramin-eval-candidates`.
+- [x] The promotion contract check is available through `npm run check:ai-ramin-eval-promotion`.
+- [x] Main verify includes the promotion contract check.

@@ -20,8 +20,15 @@ type TahoeGlassTabNavProps = {
   navLabel?: string;
 };
 
-type GlassFilterStyle = CSSProperties & {
+export type TahoeGlassFilterStyle = CSSProperties & {
   '--tahoe-glass-filter': string;
+};
+
+type RgbaColor = {
+  r: number;
+  g: number;
+  b: number;
+  a: number;
 };
 
 const navIconPaths: Record<NavIconName, readonly string[]> = {
@@ -46,7 +53,7 @@ function NavIcon({ icon }: { icon?: NavIconName }) {
   );
 }
 
-function TahoeGlassFilter({ id }: { id: string }) {
+export function TahoeGlassFilter({ id }: { id: string }) {
   return (
     <svg className="tahoe-glass-filter-defs" aria-hidden="true" focusable="false">
       <filter id={id} primitiveUnits="objectBoundingBox">
@@ -68,6 +75,157 @@ function TahoeGlassFilter({ id }: { id: string }) {
   );
 }
 
+function parseCssColor(value: string): RgbaColor | null {
+  const oklMatch = value.match(/okl(?:ab|ch)\(([^)]+)\)/i);
+  if (oklMatch) {
+    const rawParts = oklMatch[1]
+      .replace(/\//g, ' ')
+      .split(/[,\s]+/)
+      .map((part) => part.trim())
+      .filter(Boolean);
+
+    const rawLightness = Number.parseFloat(rawParts[0] ?? '');
+    if (Number.isNaN(rawLightness)) return null;
+
+    const lightness = rawParts[0]?.endsWith('%')
+      ? rawLightness / 100
+      : rawLightness > 1
+        ? rawLightness / 100
+        : rawLightness;
+    const rawAlpha = rawParts[3] === undefined ? 1 : Number.parseFloat(rawParts[3]);
+    const channel = Math.max(0, Math.min(255, lightness * 255));
+
+    return {
+      r: channel,
+      g: channel,
+      b: channel,
+      a: Number.isNaN(rawAlpha) ? 1 : Math.max(0, Math.min(1, rawAlpha)),
+    };
+  }
+
+  const match = value.match(/rgba?\(([^)]+)\)/i);
+  if (!match) return null;
+
+  const rawParts = match[1]
+    .replace(/\//g, ' ')
+    .split(/[,\s]+/)
+    .map((part) => part.trim())
+    .filter(Boolean);
+
+  if (rawParts.length < 3) return null;
+
+  const channel = (part: string) => {
+    const parsed = Number.parseFloat(part);
+    if (Number.isNaN(parsed)) return 0;
+    return part.endsWith('%') ? (parsed / 100) * 255 : parsed;
+  };
+
+  const alpha = rawParts[3] === undefined ? 1 : Number.parseFloat(rawParts[3]);
+
+  return {
+    r: channel(rawParts[0]),
+    g: channel(rawParts[1]),
+    b: channel(rawParts[2]),
+    a: Number.isNaN(alpha) ? 1 : Math.max(0, Math.min(1, alpha)),
+  };
+}
+
+function extractCssColors(value: string): RgbaColor[] {
+  return Array.from(value.matchAll(/(?:rgba?|okl(?:ab|ch))\([^)]+\)/gi))
+    .map((match) => parseCssColor(match[0]))
+    .filter((color): color is RgbaColor => Boolean(color));
+}
+
+function getLuminance({ r, g, b }: RgbaColor) {
+  return (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255;
+}
+
+function getElementSurfaceLuminance(element: Element | null): number | null {
+  let current: Element | null = element;
+
+  while (current && current instanceof HTMLElement) {
+    if (
+      current.matches(
+        [
+          '.thoughts-beat-card--artwork',
+          '.project-case-study-shell',
+          '.projects-cinematic',
+          '.bonus-page',
+          '[data-tone="dark"]',
+        ].join(', '),
+      )
+    ) {
+      return 0.12;
+    }
+
+    const style = window.getComputedStyle(current);
+    const samples: Array<{ luminance: number; alpha: number }> = [];
+    const backgroundColor = parseCssColor(style.backgroundColor);
+
+    if (backgroundColor && backgroundColor.a > 0.12) {
+      samples.push({ luminance: getLuminance(backgroundColor), alpha: backgroundColor.a });
+    }
+
+    for (const color of extractCssColors(style.backgroundImage)) {
+      if (color.a > 0.12) {
+        samples.push({ luminance: getLuminance(color), alpha: Math.min(color.a, 0.7) });
+      }
+    }
+
+    if (samples.length > 0) {
+      const totalAlpha = samples.reduce((sum, sample) => sum + sample.alpha, 0);
+      return samples.reduce((sum, sample) => sum + sample.luminance * sample.alpha, 0) / totalAlpha;
+    }
+
+    current = current.parentElement;
+  }
+
+  return null;
+}
+
+export function detectSurfaceToneUnderNav(root: HTMLElement): 'dark' | 'light' | null {
+  const parentNav = root.closest('.portfolio-bottom-navigation, .portfolio-mobile-bottom-navigation');
+  const rect = root.getBoundingClientRect();
+
+  if (rect.width <= 0 || rect.height <= 0) return null;
+
+  const xFractions = [0.14, 0.28, 0.42, 0.58, 0.72, 0.86];
+  const yFractions = [0.36, 0.68];
+  const luminanceSamples: number[] = [];
+
+  for (const yFraction of yFractions) {
+    for (const xFraction of xFractions) {
+      const x = rect.left + rect.width * xFraction;
+      const y = rect.top + rect.height * yFraction;
+      const stack = document.elementsFromPoint(x, y);
+
+      for (const element of stack) {
+        if (root.contains(element) || parentNav?.contains(element)) continue;
+
+        const luminance = getElementSurfaceLuminance(element);
+        if (luminance !== null) {
+          luminanceSamples.push(luminance);
+          break;
+        }
+      }
+    }
+  }
+
+  if (luminanceSamples.length === 0) return null;
+
+  const darkSamples = luminanceSamples.filter((luminance) => luminance < 0.46).length;
+  const averageLuminance =
+    luminanceSamples.reduce((sum, luminance) => sum + luminance, 0) / luminanceSamples.length;
+
+  return darkSamples >= Math.ceil(luminanceSamples.length * 0.35) || averageLuminance < 0.5
+    ? 'dark'
+    : 'light';
+}
+
+function detectDarkSurfaceUnderNav(root: HTMLElement) {
+  return detectSurfaceToneUnderNav(root) === 'dark';
+}
+
 export function TahoeGlassTabNav({
   active,
   navLinks,
@@ -80,8 +238,9 @@ export function TahoeGlassTabNav({
   const rootRef = useRef<HTMLDivElement | null>(null);
   const collapseTimerRef = useRef<number | null>(null);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [isOnDarkSurface, setIsOnDarkSurface] = useState(isDarkPage);
   const filterId = `portfolio-tahoe-glass-nav-${useId().replace(/:/g, '')}`;
-  const filterStyle: GlassFilterStyle = { '--tahoe-glass-filter': `url(#${filterId})` };
+  const filterStyle: TahoeGlassFilterStyle = { '--tahoe-glass-filter': `url(#${filterId})` };
 
   useEffect(() => {
     const parentNav = rootRef.current?.closest('.portfolio-bottom-navigation');
@@ -98,6 +257,43 @@ export function TahoeGlassTabNav({
     },
     [],
   );
+
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root || isDarkPage) {
+      setIsOnDarkSurface(isDarkPage);
+      return undefined;
+    }
+
+    let frame = 0;
+
+    const sampleSurface = () => {
+      frame = 0;
+      setIsOnDarkSurface(detectDarkSurfaceUnderNav(root));
+    };
+
+    const scheduleSample = () => {
+      if (frame) return;
+      frame = window.requestAnimationFrame(sampleSurface);
+    };
+
+    sampleSurface();
+
+    window.addEventListener('scroll', scheduleSample, { passive: true, capture: true });
+    window.addEventListener('resize', scheduleSample, { passive: true });
+    window.addEventListener('pointermove', scheduleSample, { passive: true });
+
+    const resizeObserver = new ResizeObserver(scheduleSample);
+    resizeObserver.observe(root);
+
+    return () => {
+      if (frame) window.cancelAnimationFrame(frame);
+      window.removeEventListener('scroll', scheduleSample, true);
+      window.removeEventListener('resize', scheduleSample);
+      window.removeEventListener('pointermove', scheduleSample);
+      resizeObserver.disconnect();
+    };
+  }, [isDarkPage, active]);
 
   const clearCollapseTimer = () => {
     if (collapseTimerRef.current === null) return;
@@ -131,7 +327,7 @@ export function TahoeGlassTabNav({
   return (
     <div
       ref={rootRef}
-      className={`tahoe-glass-tab-nav ${isExpanded ? 'is-expanded' : ''} ${isDarkPage ? 'is-dark-page' : ''} ${className}`}
+      className={`tahoe-glass-tab-nav ${isExpanded ? 'is-expanded' : ''} ${isDarkPage ? 'is-dark-page' : ''} ${isOnDarkSurface ? 'is-on-dark-surface' : ''} ${className}`}
       style={filterStyle}
       role="tablist"
       aria-label={navLabel}

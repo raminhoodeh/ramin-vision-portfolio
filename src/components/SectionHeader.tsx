@@ -24,7 +24,7 @@ export const sectionMarkerMeta: Record<string, { number: string; label: string; 
   hero: { number: '01', label: 'Intro', tone: 'default' },
   'experience-education': { number: '02', label: 'Work', tone: 'default' },
   projects: { number: '03', label: 'Projects', tone: 'dark' },
-  'teaching-speaking-writing': { number: '04', label: 'Thoughts', tone: 'default' },
+  thoughts: { number: '04', label: 'Thoughts', tone: 'default' },
   contact: { number: '05', label: 'Contact', tone: 'default' },
   bonus: { number: '06', label: 'Bonus', tone: 'dark' },
   'ai-ramin': { number: '07', label: 'AI Ramin', tone: 'default' },
@@ -81,7 +81,7 @@ export function SectionHeader({
 
       {cta ? (
         <a
-          href="#contact"
+          href="/contact"
           className="group relative hidden rounded-full p-[2px] text-sm transition duration-300 hover:scale-105 md:inline-flex"
         >
           <span className="accent-gradient animated-gradient absolute inset-0 rounded-full opacity-0 transition-opacity duration-300 group-hover:opacity-100" />

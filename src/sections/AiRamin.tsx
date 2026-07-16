@@ -362,7 +362,7 @@ const aiRaminBuildConsiderations = [
     body:
       'The chatbot retrieves from canonical portfolio files, work/project evidence, story-bank examples, frameworks, and policy documents. Raw exports and messy notes are kept out of the answer path.',
     proof: [
-      { label: 'Corpus', value: 'Generated from 50 curated files into 64 answerable chunks' },
+      { label: 'Corpus', value: 'Generated from 76 curated files into 99 retrievable chunks' },
       { label: 'Boundary', value: 'Each chunk carries source role, public-safety, and answer-permission metadata' },
     ],
   },
@@ -391,11 +391,11 @@ const aiRaminBuildConsiderations = [
   {
     label: '04',
     title: 'Temperature',
-    chips: ['0.45', 'Natural tone', 'Evidence first'],
+    chips: ['0.6 / 0.72', 'Natural tone', 'Evidence first'],
     body:
       'Generation is tuned for conversational answers while keeping the portfolio evidence boundary intact. The goal is a useful chat, not a rigid source report.',
     proof: [
-      { label: 'Config', value: 'temperature 0.45, topP 0.92, max output 1,300 to 1,800 tokens' },
+      { label: 'Config', value: 'temperature 0.6, retry 0.72, topP 0.92, max output 2,000 to 2,600 tokens' },
       { label: 'Tradeoff', value: 'More natural phrasing, with factual discipline preserved by retrieval, JSON contracts, and quality gates' },
     ],
   },
@@ -946,7 +946,14 @@ function normalizeAiRaminMarkdownContent(content: string) {
     // line so each renders as an ordered-list item instead of one dense wall of text.
     // Requires a preceding sentence-ender/colon, a "1." / "2)" marker, then a bold or
     // capitalized lead, so prices, decimals, and "Section 2" prose are left untouched.
-    .replace(/([.!?:](?:["'”’)\]])?)[ \t]+(\d{1,2}[.)])[ \t]+(?=\*\*|[A-Z])/g, '$1\n$2 ');
+    .replace(/([.!?:](?:["'”’)\]])?)[ \t]+(\d{1,2}[.)])[ \t]+(?=\*\*|[A-Z])/g, '$1\n$2 ')
+    // Break important bold lead-ins the model sometimes glues onto the previous sentence
+    // ("...usable. **Why this matters:** ..."). These should read as separate mini
+    // paragraphs, not disappear inside the previous paragraph.
+    .replace(
+      /([.!?:](?:["'”’)\]])?)[ \t]+(\*\*(?:Why this matters[^*\n]{0,80}|Suggested next action):\*\*)/gi,
+      '$1\n\n$2',
+    );
 }
 
 function normalizeAiRaminMarkdownLine(line: string) {
@@ -1954,10 +1961,12 @@ function AiRaminContextPanel({
   );
 }
 
-export function AiRaminSection() {
+export function AiRaminSection({ onOpenMenu }: { onOpenMenu?: () => void }) {
   const chatbot = portfolioContent.aiRaminChatbot;
   const [prompt, setPrompt] = useState('');
-  const [isSuggestionsOpen, setIsSuggestionsOpen] = useState(true);
+  const [isSuggestionsOpen, setIsSuggestionsOpen] = useState(
+    () => typeof window === 'undefined' || window.innerWidth > 767,
+  );
   const [selectedMode, setSelectedMode] = useState<AiRaminHiringModeId>('hiring-manager');
   const [selectedRequestType, setSelectedRequestType] = useState<AiRaminRequestType>('general_chat');
   const [messages, setMessages] = useState<AiRaminMessage[]>(() => [
@@ -2327,6 +2336,54 @@ export function AiRaminSection() {
       <div className="ai-ramin-frost" aria-hidden="true" />
       <div className="ai-ramin-page-shell relative z-10 mx-auto flex h-full min-h-0 w-full flex-col px-5 pt-8 pb-8 sm:px-8 md:px-12 lg:px-16">
         <SectionKicker {...sectionMarkerMeta['ai-ramin']} className="ai-ramin-section-eyebrow self-start" />
+        {/* Mobile top bar — hidden on desktop via CSS */}
+        <div className="ai-ramin-mobile-topbar">
+          <button
+            type="button"
+            className="ai-ramin-mobile-icon-btn"
+            aria-label="Open navigation menu"
+            onClick={onOpenMenu}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+              <path d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
+          <div className="ai-ramin-mobile-topbar-identity">
+            <span className="ai-ramin-avatar ai-ramin-mobile-topbar-avatar">
+              <img src={profileImageUrl} alt="" decoding="async" />
+            </span>
+            <span className="ai-ramin-mobile-topbar-name">{chatbot.modalTitle}</span>
+          </div>
+          <div className="ai-ramin-mobile-topbar-actions">
+            <button
+              type="button"
+              className={`ai-ramin-mobile-icon-btn ${isConsiderationsOpen ? 'is-active' : ''}`}
+              aria-label="How it works"
+              aria-expanded={isConsiderationsOpen}
+              aria-controls="ai-ramin-considerations"
+              onClick={() => setIsConsiderationsOpen((current) => !current)}
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M12 16v-4M12 8h.01" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              className={`ai-ramin-mobile-icon-btn ${isContextPanelOpen ? 'is-active' : ''}`}
+              aria-label="Settings"
+              aria-expanded={isContextPanelOpen}
+              onClick={() => setIsContextPanelOpen((current) => !current)}
+            >
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+                <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        {/* Desktop header — hidden on mobile via CSS */}
         <header className="ai-ramin-header">
           <div className="ai-ramin-title-lockup">
             <div className="ai-ramin-header-avatar">

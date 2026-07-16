@@ -137,7 +137,7 @@ export const contentReadiness = {
     {
       sectionNumber: '04',
       section: 'Teaching, Speaking & Writing',
-      target: 'teaching-speaking-writing',
+      target: 'thoughts',
       priority: 'High',
       sourceNote: 'All required sub-categories exist; media, article content, diagrams, and write-up links need completion.',
       requests: [
@@ -225,16 +225,16 @@ const companyLogoPath = {
   urgentem: 'work-section/company-logos/urgentem logo.jpg',
 } as const;
 const companyVideoPath = {
-  bayut: 'work-section/company-videos/bayut-work-video.mov',
-  coxAutomotive: 'work-section/company-videos/cox-auto-work-video.mov',
-  deityAi: 'work-section/company-videos/deity-work-video.mov',
-  erm: 'work-section/company-videos/erm-work-video.mov',
-  groupm: 'work-section/company-videos/groupm-work-video.mp4',
-  ordnanceSurvey: 'work-section/company-videos/ordnance-survey-video.mov',
-  perkbox: 'work-section/company-videos/perkbox-work-video.mov',
-  side: 'work-section/company-videos/side-work-video.mov',
-  tesla: 'work-section/company-videos/tesla-work-video.mov',
-  urgentem: 'work-section/company-videos/urgentem-work-video.mov',
+  bayut: 'work-section/company-videos/bayut-work-video.webm',
+  coxAutomotive: 'work-section/company-videos/cox-auto-work-video.webm',
+  deityAi: 'work-section/company-videos/deity-work-video.webm',
+  erm: 'work-section/company-videos/erm-work-video.webm',
+  groupm: 'work-section/company-videos/groupm-work-video.webm',
+  ordnanceSurvey: 'work-section/company-videos/ordnance-survey-video.webm',
+  perkbox: 'work-section/company-videos/perkbox-work-video.webm',
+  side: 'work-section/company-videos/side-work-video.webm',
+  tesla: 'work-section/company-videos/tesla-work-video.webm',
+  urgentem: 'work-section/company-videos/urgentem-work-video.webm',
 } as const;
 
 const firstSentence = (items?: readonly string[]) => items?.[0] ?? detailNeeded();
@@ -344,31 +344,30 @@ const createSpeakingEntry = (talkTitle: string, sourceTitle: string, invitedBy: 
 };
 
 const thoughtQuoteLines = {
-  formation: 'You are not defined by what you do. You are shaped by what you create.',
+  formation: 'You are not defined by what you do, you are shaped by what you create',
   orientation: 'And to direct ourselves to where we want to be, we have to first know where we are.',
   talkPrinciple: 'What they need to hear is more important than what you want to say.',
   noisyWorld: 'The devil makes the world noisy so that men can no longer hear themselves.',
 } as const;
 
 const thoughtPageFrame = {
-  headline: 'My theories, talks, books and courses',
-  kicker: 'How thought becomes formation, expression, and built systems',
+  kicker: 'Thoughts',
+  headline: 'You are not defined by what you do,\nyou are shaped by what you create',
   formationQuote: thoughtQuoteLines.formation,
   body: '',
-  heroBridge:
-    'I build products by first clarifying the human situation, then designing the system that helps people act with better judgment.',
+  heroBridge: '',
   thesisSpine: [
     {
-      label: 'How I think.',
-      body: 'Reduce overinformation, know where we are, and find the values that make judgment possible.',
+      label: 'Method & Values.',
+      body: 'First principles produce the Stratetree. The Stratetree reveals values. Values become the lens through which everything else is chosen.',
     },
     {
-      label: 'How I express it.',
-      body: 'Speak what people need to hear, write symbolic stories, and turn inner clarity into memorable form.',
+      label: 'Formation.',
+      body: 'Passions are not decoration - they are the materials. Storytelling, teaching, and building products show up in everything I make. The university talk is where I learned to say why.',
     },
     {
-      label: 'What it builds.',
-      body: 'Design operating systems, AI workflows, and products that make clearer action easier.',
+      label: 'Integration & Proof.',
+      body: 'The thinking becomes courses. The courses become products. The products become the argument. Case studies close the loop.',
     },
   ],
   quoteThread: {
@@ -387,7 +386,7 @@ const thoughtPageFrame = {
         label: 'Orientation',
         quote: thoughtQuoteLines.orientation,
         source: 'General thoughts / metaphysics and product management',
-        role: 'Decision quality depends on knowing where you are before deciding where to go.',
+        role: 'The work starts with knowing where you are, then building the route toward where you want to be.',
       },
       {
         label: 'Speaking',
@@ -404,7 +403,7 @@ const thoughtPageFrame = {
     ],
   },
   formationBody:
-    'Creation is not output alone. Every talk, book, system, and product has changed the way I think while becoming useful to other people.',
+    'Creation extends beyond output. Every talk, book, system, and product has shaped the way I think while becoming useful to other people.',
   formatIntros: {
     talks: {
       title: 'What do I value? Zoom out first.',
@@ -484,9 +483,9 @@ const thoughtPageFrame = {
           eyebrow: 'Product bridge / nsso',
           title: 'All of you, all in one place.',
           body:
-            'nsso is where the same storytelling instinct becomes product architecture: a dynamic profile, storefront, project surface, public identity system, and AI-assisted profile coach for expressing your whole professional story from one URL.',
+            'nsso is where the same storytelling instinct becomes product architecture: Shopify, but the product is you - a dynamic profile, storefront, project surface, public identity system, and AI-assisted profile coach for expressing your whole professional story from one URL.',
           productThesis:
-            'Professional identity online is a fragmentation problem masquerading as a presentation problem.',
+            'Self-presentation becomes self-clarification when profile, proof, projects, products, links, and AI assistance live in one owned surface.',
           designThesis:
             'The product uses glassmorphic surfaces, cloud-like typography, and the "Clarify / Organise / Future-Proof Yourself / Present / Discover" language to make identity feel spatial, calm, and high-value.',
           links: [
@@ -564,7 +563,7 @@ const thoughtPageFrame = {
         eyebrow: 'Systems 05 / Operational method',
         title: 'The frameworks made teachable.',
         body:
-          'Courses are where the thinking becomes transferable. Product Innovation Process turns ambiguity into a shared source of truth for teams. AI Product Manager OS updates that method for probabilistic AI work, where context, governance, orchestration, and human judgment become the product manager\'s real operating system.',
+          'Courses are how the thinking becomes transferable. Product Innovation Process turns ambiguity into a shared source of truth for teams. AI Product Manager OS updates that method for probabilistic AI work, where context, governance, orchestration, and human judgment become the product manager\'s real operating system.',
         links: [
           {
             label: 'Metacognition',
@@ -808,7 +807,7 @@ const thoughtTalks = [
     ],
   },
   {
-    ...createSpeakingEntry('My Story', 'My Life Story', 'University talk'),
+    ...createSpeakingEntry('University talk', 'My Life Story', 'University talk'),
     venue: 'University audience',
     formatRole: 'Origin story talk',
     media: thoughtAssetSources.talks.university,
@@ -822,51 +821,62 @@ const thoughtTalks = [
     liveMoment:
       'The talk connects practical career advice with the deeper argument that reducing noise helps people hear the inner voice that knows what they value.',
     integrationStage: {
-      eyebrow: 'Integration',
-      question: 'How do personal passions and professional skills reinforce each other?',
-      title: 'Make the real-life job and the fantasy dream compound.',
+      eyebrow: 'The middle way',
+      title: 'How passion and career mutually reinforce each other.',
       thesis:
-        'The University talk is the practical bridge between values, expression, and systems: do work that funds, sharpens, and proves the thing you actually want to create.',
-      quote:
-        'The best way to turn a potentially boring existence into something beautiful is to see how your mundane tasks are getting you closer to a more magical vision or goal.',
+        'You need a vision for your 9-5 job and a personal vision you are actually passionate about - so the earnings from one can fuel the other. The world is now designed for this.',
+      question: 'How do you turn a potentially boring existence into something beautiful?',
       bridge:
-        'Career, family, creative ambition, and product judgment are not separate identities to me. They become stronger when I arrange them around one clear end result.',
+        'The answer runs through a fruit shop in London, a rejection from the European Space Agency, and a 100-page document nobody asked me to write.',
       principles: [
         {
-          label: '9-5 vision',
-          body: 'The job needs a direction beyond status or survival: what skill, credibility, and leverage is it giving you?',
+          label: 'The middle way',
+          body:
+            'Personal projects and professional career mutually reinforce each other. They are not in competition - they are the same argument at different scales. Helping my dad\'s car business got me into Tesla. Working at start-ups for free got me into tech product. My book shows hiring managers I am a good storyteller.',
         },
         {
-          label: 'Personal vision',
-          body: 'The passion project gives mundane work a larger horizon, whether the dream is publishing, building, or simply providing for people you love.',
+          label: 'Vision for the mundane',
+          body:
+            'Just knowing what to do is not enough to make it enjoyable. Real work is hard, boring, and complex - that is why you get paid for it. The thing that sustains it is seeing how the boring task gets you closer to a more meaningful goal. My dad said: just think about the end result.',
         },
         {
-          label: 'Middle way',
-          body: 'Professional work and personal projects should compound: each one gives the other proof, story, skill, money, and authority.',
+          label: 'Clarity before strategy',
+          body:
+            'Cut through the noise to three essentials: your core nature and values, where that places you in the world, and the vision that follows from both. Without this sequence, strategy is just motion.',
         },
       ],
       arc: [
         {
-          label: 'Merdad Collection',
-          body: 'Family business taught product, process, people, brand character, and the discipline of thinking about the end result.',
+          label: 'Iran -> Manchester',
+          body:
+            'Life felt quieter before the internet. People seemed more present, more content. Growing up between Iran and Manchester is where the obsession with over-information started - I saw what life looked like with less of it.',
         },
         {
-          label: 'Tesla + TEDx',
-          body: 'Sustainability, space, and the wider view turned career choices into questions of objective place, purpose, and values.',
+          label: 'Dad\'s conviction',
+          body:
+            'His one-man automotive business looked like a corporation from the outside. The secret was one single-minded vision: make the most beautiful Porsche SUV on the market. Everything else was secondary. I wanted that kind of certainty for myself.',
         },
         {
-          label: 'Startups to PM',
-          body: 'Working for free, rejection, and the OS role translated creative instincts into product management.',
+          label: 'Tesla -> TEDx',
+          body:
+            'An email response from Elon Musk led to a TEDx invitation at Imperial. I spoke about how businesses like Tesla seek objective truth about their place in a market, but we do not apply that same clarity to our personal lives - even though we are, objectively, a magical consciousness on a floating blue ball.',
         },
         {
-          label: 'Book + nsso',
-          body: 'The book proved storytelling, the career gave authority, and nsso became the place where fragmented sides could be presented together.',
+          label: 'Fruit shop epiphany',
+          body:
+            'Stacking shelves while helping start-ups for free, I realised the work I had been doing for years had a name: Product Management. I started interviewing. I came second at the European Space Agency. I mopped the floor the next morning.',
+        },
+        {
+          label: 'The imposter fix',
+          body:
+            'At every new company, I felt like an imposter - there was no formal process for this job. So I wrote one. The Product Innovation Process has since been adopted by start-ups, SMEs, and large corporates to build products without me in the room.',
         },
       ],
+      quote: 'Son... just think about the end result.',
       synthesis: {
-        title: 'The middle way',
+        title: 'The gold.',
         body:
-          'Loving my work is less about constant enjoyment and more about seeing how each task moves me toward a clearer personal and professional vision. Once I understand the pattern, I can teach it, repeat it, and build it into products.',
+          'If someone had given me the Product Innovation Process and a two-page summary of all metaphysics when I was graduating, I would have saved years. That is exactly what I gave the students in the room.',
       },
     },
     tags: ['Storytelling', 'Career clarity', 'Middle way', 'Personal operating system'],
@@ -885,7 +895,7 @@ const thoughtCourses = [
     ...createTeachingEntry(
       'Transitioning to AI Product Management',
       'Transition from Product Manager to AI Product Manager',
-      'New',
+      'Highest-Rated',
     ),
     displayTitle: 'Transition from Product Manager to AI Product Manager',
     courseDescription:
@@ -1119,15 +1129,11 @@ const workExperienceData = [
           'Bespoke property listing management platform for UAE real estate agents registered on Bayut, alongside AI-native property search features.',
       },
     ],
-    mainAchievements: [
-      '[Confidential] Built AI-native property search features with model selection, eval suite design, guardrails, and MCP integration - supporting property search, recommendations, and insights from conversational AI.',
-    ],
+    mainAchievements: ['[Confidential]'],
     impact: [
       '[Confidential] Built AI-native property search features with model selection, eval suite design, guardrails, and MCP integration - supporting property search, recommendations, and insights from conversational AI.',
     ],
-    processesIntroducedManagerial: [
-      'Introduced the AI-Native Product OS to the wider product team, creating a shared context layer that helped PMs integrate more design and engineering into their work, move from idea to workable prototypes faster, synthesize user insights more effectively, and spot dependencies with greater speed and clarity.',
-    ],
+    processesIntroducedManagerial: ['[Confidential]'],
     businessModel: ['B2B', 'B2C'],
     marketType: 'B2B / B2C',
     customersClientTypes: ['Property seekers', 'Property owners', 'Real estate brokers'],
@@ -1235,13 +1241,13 @@ const workExperienceData = [
     ],
     mainAchievements: [
       'Improved the App gateway experience through qualitative user research and UX iteration.',
-      'Increased Google Play Store rating by 0.6 and iPhone App Store rating by 1.2 within 3 months.',
+      'Increased the Google Play Store rating by 0.6 points and the iPhone App Store rating by 1.2 points (out of 5) within 3 months.',
       'Grew product customer lifetime value by 19% over 5 months.',
       'Decreased order form and checkout abandonment rate by 1/3 within the first month of delivery.',
     ],
     impact: [
       'Improved the App gateway experience through qualitative user research and UX iteration.',
-      'Increased Google Play Store rating by 0.6 and iPhone App Store rating by 1.2 within 3 months.',
+      'Increased the Google Play Store rating by 0.6 points and the iPhone App Store rating by 1.2 points (out of 5) within 3 months.',
       'Grew product customer lifetime value by 19% over 5 months.',
       'Decreased order form and checkout abandonment rate by 1/3 within the first month of delivery.',
     ],
@@ -1502,7 +1508,7 @@ const workExperienceData = [
       'Increased ratio of story point development to feature usage by 25% over 8 months.',
     ],
     processesIntroducedManagerial: [
-      'Sprint planning and SCRUM setup: introduced sprint planning to the early founding team to prioritize and implement agile and prioritization best practices.',
+      'Sprint planning and SCRUM setup: introduced sprint planning to the early founding team to prioritise and implement agile and prioritisation best practices.',
     ],
     businessModel: ['B2B'],
     marketType: 'B2B',
@@ -1902,7 +1908,7 @@ const thoughtFoundationalThinking = {
   title: 'How I approach life',
   stageQuestion: 'How can I feel clear, overcome over-information, and stay focused in a noisy world?',
   intro:
-    'The first move is orientation: reduce over-information, understand where I am, understand what I can become, then choose from values rather than noise.',
+    'The quality of a decision can be measured by the degree to which it achieved the goal it set out to do. To get where you want to go, you must first know where you are. To fulfil your potential, you must set a vision representing the maximum possible achievement out of your current and future capabilities. This requires knowledge of yourself, your capabilities, and your place in the world - which is exactly what metaphysics is. The Stratetree is that inquiry made operational for product.',
   metaphysicsBridge: {
     eyebrow: 'Metaphysics and product judgment',
     title: 'Clarity starts by knowing where you are.',
@@ -2133,14 +2139,14 @@ const thoughtArchitectureBridge = {
     },
     {
       projectName: 'nsso',
-      type: 'Identity and personal homepage',
-      ambiguity: 'Modern professional identity is fragmented across CVs, social links, work, projects, offers, and personal story.',
+      type: 'Identity operating system',
+      ambiguity: 'Modern professional identity is fragmented across titles, CVs, social links, portfolios, products, services, and personal story.',
       foundation: 'Framework of Metacognition',
       lens:
-        'Identity becomes clearer when experience, values, work, story, and offerings are organized into one coherent profile.',
+        'Identity becomes clearer when the full picture of a person is gathered into one coherent surface, so self-presentation becomes self-clarification.',
       architecture:
-        'The product gathers scattered professional signals into a unified homepage, with AI assistance around profile clarity and controlled profile mutation.',
-      outcome: 'A public identity surface that helps someone understand and present where they fit in the professional world.',
+        'Profile, proof, projects, products, links, live profile context, profile-aware retrieval, Deity tool calls, Review Mode, and governed monetisation become one owned identity surface.',
+      outcome: 'A public identity system that helps someone understand, present, and commercialise the full shape of who they are.',
     },
     {
       projectName: '24Seven Concierge',
@@ -2190,14 +2196,14 @@ const thoughtArchitectureBridge = {
     },
     {
       projectName: 'Qadam',
-      type: 'Physical-world market intelligence',
-      ambiguity: 'Markets react to consensus narratives, but the physical world often moves before the narrative catches up.',
+      type: 'Macro-intelligence control room',
+      ambiguity: 'Trading systems often hide behind indicators, copied trades, or black-box automation instead of showing evidence, invalidation, risk, and learning.',
       foundation: 'AI-Native Product OS',
       lens:
-        'Know where you are before deciding what to do: ingest the world state, triage signal quality, then make strategy legible before action.',
+        'Evidence comes before excitement: the dashboard must show what Qadam saw, why it may matter, what challenged it, what would falsify it, and why action is blocked or allowed.',
       architecture:
-        'Physical, social, macro, logistics, and market feeds become a unified catalyst intelligence system with paper-trading governance.',
-      outcome: 'A decision engine for turning external-world signals into market judgment.',
+        'Login, Safety Status, Mission Control, Source Intelligence, Strategy + Reasoning, Trade Lifecycle, Paper Account, Operations, and Replay form one readable cockpit.',
+      outcome: 'A paper-mode control room that makes the path from world event to evidence, reasoning, guarded paper action, postmortem, and learning reviewable.',
     },
     {
       projectName: 'RazinFlix',
@@ -2209,6 +2215,85 @@ const thoughtArchitectureBridge = {
       architecture:
         'TMDB data, Gemini enrichment, YouTube trailers, and saved user context create a richer discovery surface around film preference.',
       outcome: 'A media experience that makes personal taste easier to understand and act on.',
+    },
+  ],
+} as const;
+
+const thoughtPassionManifest = {
+  eyebrow: 'What I value',
+  title: 'Three passions. One career.',
+  body: 'They look separate from the outside. From the inside, they compound.',
+  passions: [
+    {
+      name: 'Storytelling',
+      claim: 'I build story worlds to understand the real one.',
+      body:
+        'The Proposition began as a feature film script, then became a novel because the story demanded interior space that film could not give it. nsso is where music, visual identity, and product logic live in the same surface.',
+      artifacts: ['The Proposition', 'nsso'],
+      projectName: 'nsso',
+    },
+    {
+      name: 'Teaching',
+      claim: 'The best teaching is a question the audience did not know they had.',
+      body:
+        'I gave my first talk at Imperial College London before I had a formal framework to teach. What I found is that explaining something forces it to become simpler and truer. TEDx followed from that discipline.',
+      artifacts: ['TEDx Imperial', 'University talks'],
+      projectName: null,
+    },
+    {
+      name: 'Building products',
+      claim: 'I build tools I would actually use - then turn them into products.',
+      body:
+        'Selfware began as a personal problem: the tools that existed did not match how I actually thought. Building them gave me an AI-native coding fluency that now lives in every product on this page.',
+      artifacts: ['Selfware', 'Product Innovation Process'],
+      projectName: 'Selfware',
+    },
+  ],
+  bridge:
+    'The university talk below is the first time I put all three together - in front of an audience of students who had the same question I once had.',
+} as const;
+
+const thoughtWorkIntegration = {
+  eyebrow: 'The practice',
+  title: 'How the thinking enters the work.',
+  thesis:
+    'Frameworks are only useful if they change what you do in a room. Here is specifically what changed at real product orgs - at OS, GroupM, and Vivup - because of the thinking, the passions, and the courses on this page.',
+  threads: [
+    {
+      index: '01',
+      label: 'Product Innovation Process - giving teams a single source of truth',
+      eyebrow: 'Process',
+      summary: 'Used by start-ups, SMEs, and large corporates - without me in the room.',
+      body: [
+        'The PIP started as a 100-page document I wrote for myself because there was no formal process for product management. I felt like an imposter at every new company, and realised everyone else was also improvising. So I distilled best practices from OS, GroupM, and Vivup into one step-by-step guide.',
+        'At GroupM, the process shaped how the global innovation team built what became the most widely used carbon calculator in the media sector. At OS, it ran alongside geospatial product work with UK and European Space Agency ambassadors. It has since been adopted independently by start-ups, SMEs, and large corporates - to build products without me being there.',
+      ],
+      stat: 'Most widely used carbon calculator in the UK media sector - built at GroupM',
+      link: productManagementCourseSource?.href ?? linkNeeded(),
+    },
+    {
+      index: '02',
+      label: 'AI-native development - from Selfware to production specs',
+      eyebrow: 'AI development',
+      summary: 'Turned AI property-search ideas into product specs with evals, guardrails, model choices, and tool boundaries.',
+      body: [
+        'Building Selfware introduced me to the discipline I now call AI-native development: treating the model as a collaborator with a known failure profile, not a magic box. I learned to read diffs, write evaluation criteria, and own the technical specification at the level where product decisions and engineering decisions converge.',
+        'At Bayut, that translated into public-safe AI property-search work: shaping conversational search, recommendations, and insight features around model selection, evaluation criteria, guardrails, MCP-style tool integration, and context boundaries. The product decision was not simply "add chat"; it was to define where the model could reason, where retrieval and tools had to ground the answer, where the user needed confirmation, and how PMs could move from idea to workable prototype without losing engineering discipline.',
+      ],
+      stat: 'AI-Native Product OS introduced to the wider Bayut product team',
+      link: 'https://www.bayut.com/',
+    },
+    {
+      index: '03',
+      label: 'Storytelling - why every strategy document starts with a scene',
+      eyebrow: 'Communication',
+      summary: 'Writing fiction taught me to open with a person in a moment, not a requirement.',
+      body: [
+        'Writing The Proposition taught me that a story which does not open with a specific person in a specific situation loses the reader in the first paragraph. I apply the same rule to product briefs. The TEDx talk is structured identically: it opens with Iran, a smell of trees, and a feeling of belonging - before it says a single word about decision quality or metaphysics.',
+        'At GroupM and OS, I used the same technique in internal strategy documents: begin with the user\'s moment, not the requirements list. Teams align faster when the brief is a story, not a spec. The Product Innovation Process formalises this in its Discover phase - a brief that forces the team to articulate who the user is before deciding what to build.',
+      ],
+      stat: null,
+      link: null,
     },
   ],
 } as const;
@@ -2275,6 +2360,8 @@ export const portfolioContent = {
     frame: thoughtPageFrame,
     foundations: thoughtFoundationalThinking,
     architectureBridge: thoughtArchitectureBridge,
+    passionManifest: thoughtPassionManifest,
+    workIntegration: thoughtWorkIntegration,
     teaching: thoughtCourses,
     speaking: thoughtTalks,
     writing: {
@@ -2355,11 +2442,11 @@ export const portfolioContent = {
     gifts: [
       {
         title: '100% coupon code for new AI PM Course',
-        detail: 'Use the code FUTUREPM',
-        link: 'https://www.udemy.com/course/from-product-manager-to-ai-product-manager/?couponCode=FUTUREPM',
+        detail: 'Use the code FREEPM',
+        link: 'https://www.udemy.com/course/from-product-manager-to-ai-product-manager/?couponCode=FREEPM',
       },
       {
-        title: '30 minute AI Product consultation',
+        title: '30-minute AI Product consultation',
         detail: 'Google Meet link',
         link: 'https://calendar.app.google/ritTa9aSxXNpz5Df8',
       },

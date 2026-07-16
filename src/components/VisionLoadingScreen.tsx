@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 import { AuroraBackground } from './ui/aurora-background';
 
-const loadingWords = ['Vision', 'Taste', 'Judgement', 'Clarity'] as const;
+const loadingWords = ['Vision', 'Taste', 'Clarity', 'Judgement', 'Empathy'] as const;
 const loadingDurationMs = 2200;
 const completionDelayMs = 220;
 

@@ -6,7 +6,7 @@ export const companyLogoAssets = import.meta.glob<string>('../../work-section/**
   eager: true,
   import: 'default',
 });
-export const companyVideoAssets = import.meta.glob<string>('../../work-section/**/*.{mp4,webm,mov}', {
+export const companyVideoAssets = import.meta.glob<string>('../../work-section/**/*.webm', {
   eager: true,
   import: 'default',
 });

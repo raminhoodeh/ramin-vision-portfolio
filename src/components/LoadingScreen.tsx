@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
 
-const loadingWords = ['Judgement', 'Vision', 'Taste', 'Clarity'] as const;
+const loadingWords = ['Vision', 'Taste', 'Clarity', 'Judgement', 'Empathy'] as const;
 const loadingDurationMs = 3600;
 
 type LoadingScreenProps = {

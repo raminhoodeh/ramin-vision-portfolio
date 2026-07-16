@@ -13,7 +13,7 @@ export const navLinks = [
   { label: 'Hero', target: 'hero' },
   { label: 'Experience & Education', target: 'experience-education' },
   { label: 'Projects', target: 'projects' },
-  { label: 'Teaching, Speaking & Writing', target: 'teaching-speaking-writing' },
+  { label: 'Teaching, Speaking & Writing', target: 'thoughts' },
   { label: 'Contact', target: 'contact' },
   { label: 'Bonus', target: 'bonus' },
   { label: 'AI Ramin', target: 'ai-ramin' },

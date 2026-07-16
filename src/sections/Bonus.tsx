@@ -12,6 +12,7 @@ import {
   preloadBonusRockAssets,
   type BonusRockPreloadStatus,
 } from '../three/bonusRockPreload';
+import { TahoeGlassChip } from '../components/TahoeGlassChip';
 import {
   BONUS_ROCK_FINAL_CLICK_COUNT,
   getBonusRockAnimationTargets,
@@ -895,9 +896,7 @@ function MagicalRockScene({
         />
       ) : null}
       <div className="bonus-rock-status absolute bottom-5 left-5 right-5 flex flex-wrap items-center justify-end gap-3">
-        <span className="rounded-full bg-white/40 px-4 py-2 text-xs uppercase tracking-[0.18em] text-muted transition duration-300 group-hover:bg-white/65 group-hover:text-text-primary">
-          {actionLabel}
-        </span>
+        <TahoeGlassChip className="project-action-button bonus-rock-action-chip">{actionLabel}</TahoeGlassChip>
       </div>
     </div>
   );
@@ -935,7 +934,7 @@ export function BonusSection({
         preloadStatus={preloadStatus}
         onRockClick={onRockClick}
       />
-      <div className="bonus-content-shell relative z-30 mx-auto flex min-h-[calc(100dvh-10rem)] max-w-[1200px] items-start px-6 md:min-h-[calc(100dvh-11rem)] md:px-10 lg:items-center lg:px-16">
+      <div className="bonus-content-shell relative z-30 mx-auto flex max-w-[1200px] items-start px-6 md:min-h-[calc(100dvh-11rem)] md:px-10 lg:items-center lg:px-16">
         <div className="bonus-copy-layout w-full">
           <div className="bonus-copy-card min-w-0 rounded-[2rem] p-7 md:p-10">
             {/* Section label rendered globally via <SectionMarker> */}

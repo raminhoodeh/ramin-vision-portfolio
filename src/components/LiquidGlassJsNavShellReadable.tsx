@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import type { ReactNode } from 'react';
 import profileImageUrl from '../assets/ramin-profile-nav.webp';
 import containerSource from '../../react libraries/liquid-glass-js-main/container.js?raw';
 import buttonSource from '../../react libraries/liquid-glass-js-main/button.js?raw';
@@ -30,6 +31,16 @@ type LiquidGlassJsFloatingButtonProps = {
   ariaLabel?: string;
   className?: string;
   onClick: () => void;
+};
+
+type LiquidGlassJsSurfaceProps = {
+  children: ReactNode;
+  className?: string;
+  surfaceClassName?: string;
+  type?: 'rounded' | 'circle' | 'pill';
+  borderRadius?: number;
+  tintOpacity?: number;
+  refreshMs?: number;
 };
 
 type GlassRefs = {
@@ -189,6 +200,9 @@ const SNAPSHOT_IGNORED_SELECTOR = [
   '.glass-button',
   '.glass-button-text',
   '.liquid-glass-js-nav-host',
+  '.liquid-glass-js-surface',
+  '.liquid-glass-js-surface-content',
+  '[data-glass-ignore]',
   'canvas',
   'script',
   'style',
@@ -1765,4 +1779,117 @@ export function LiquidGlassJsFloatingButton({
   }, [ariaLabel, label]);
 
   return <div ref={rootRef} className={`liquid-glass-js-floating-ai-host ${className}`} />;
+}
+
+export function LiquidGlassJsSurface({
+  children,
+  className = '',
+  surfaceClassName = '',
+  type = 'pill',
+  borderRadius = 36,
+  tintOpacity = 0.34,
+  refreshMs = GLASS_IDLE_REFRESH_MS,
+}: LiquidGlassJsSurfaceProps) {
+  const rootRef = useRef<HTMLSpanElement | null>(null);
+  const visualRootRef = useRef<HTMLSpanElement | null>(null);
+
+  useEffect(() => {
+    const root = visualRootRef.current;
+    if (!root) return undefined;
+
+    try {
+      root.innerHTML = '';
+      setGlassControls();
+
+      const { Container } = loadLiquidGlassLibrary();
+      prepareSharedSnapshotState(Container);
+
+      const surface = new Container({
+        type,
+        borderRadius,
+        tintOpacity,
+      });
+
+      surface.element.classList.add('portfolio-liquid-js-surface');
+      surface.element.setAttribute('aria-hidden', 'true');
+      surfaceClassName
+        .split(/\s+/)
+        .filter(Boolean)
+        .forEach((classNamePart) => surface.element.classList.add(classNamePart));
+
+      root.appendChild(surface.element);
+
+      const all = [surface];
+
+      const refreshTextures = () => {
+        try {
+          if (document.visibilityState === 'hidden' || surface.__portfolioDestroyed) return;
+          if (isNavVisible(surface)) updateStandaloneTextures(Container, all);
+        } catch (error) {
+          reportGlassError('surface texture refresh failed', error);
+        }
+      };
+
+      let textureFrame = 0;
+      const requestTextureRefresh = () => {
+        if (textureFrame) return;
+        textureFrame = window.requestAnimationFrame(() => {
+          textureFrame = 0;
+          refreshTextures();
+        });
+      };
+
+      let layoutFrame = window.requestAnimationFrame(() => {
+        try {
+          surface.updateSizeFromDOM();
+          surface.capturePageSnapshot?.();
+          refreshTextures();
+        } catch (error) {
+          reportGlassError('surface layout refresh failed', error);
+        }
+      });
+
+      const refreshTimer = window.setInterval(refreshTextures, Math.max(refreshMs, 240));
+
+      const handleResize = () => {
+        window.cancelAnimationFrame(layoutFrame);
+        layoutFrame = window.requestAnimationFrame(() => {
+          try {
+            surface.updateSizeFromDOM();
+            refreshTextures();
+          } catch (error) {
+            reportGlassError('surface resize refresh failed', error);
+          }
+        });
+      };
+
+      const handleVisibilityChange = () => {
+        if (document.visibilityState === 'visible') requestTextureRefresh();
+      };
+
+      window.addEventListener('resize', handleResize);
+      window.addEventListener('scroll', requestTextureRefresh, { passive: true });
+      document.addEventListener('visibilitychange', handleVisibilityChange);
+
+      return () => {
+        window.removeEventListener('resize', handleResize);
+        window.removeEventListener('scroll', requestTextureRefresh);
+        document.removeEventListener('visibilitychange', handleVisibilityChange);
+        window.cancelAnimationFrame(layoutFrame);
+        window.cancelAnimationFrame(textureFrame);
+        window.clearInterval(refreshTimer);
+        destroyInstance(Container, surface);
+      };
+    } catch (error) {
+      reportGlassError('surface mount failed', error);
+      return undefined;
+    }
+  }, [borderRadius, refreshMs, surfaceClassName, tintOpacity, type]);
+
+  return (
+    <span ref={rootRef} className={`liquid-glass-js-surface ${className}`} data-glass-ignore>
+      <span ref={visualRootRef} className="liquid-glass-js-surface-visual" aria-hidden="true" />
+      <span className="liquid-glass-js-surface-content">{children}</span>
+    </span>
+  );
 }

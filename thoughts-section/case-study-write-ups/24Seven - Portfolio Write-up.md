@@ -2,104 +2,70 @@
 
 ---
 
-## 1. Problem — What You Were Solving
+## 1. Problem - What You Were Solving
 
-Luxury travel operators had built their service inventory in Shopify — the operational backbone was already there — but the discovery layer was entirely broken. A client wanting to book a superyacht for a week in Ibiza followed by a villa in Marbella had to manually scroll through independent collection screens, cross-reference pricing, and then initiate a completely separate conversation with a concierge agent who had no record of the discovery session. The gap was not in the inventory; it was in the bridge between intent and transaction. High-net-worth users with high opportunity costs were being forced to do the work of a travel agent themselves before they could speak to an actual one.
+I was approached by a small boutique concierge business that had already digitised its offering. Bookings for yachts, villas, and experiences across Ibiza and Marbella lived in a proper Shopify-based catalogue, browsable through their own iOS and Android apps. The infrastructure was there. But their actual clients, high-net-worth people used to being served rather than searching, were not engaging with it that way. They wanted to text. A WhatsApp message along the lines of "something in Marbella next week, sleeps ten, a yacht if you can" was how they naturally reached out, the same way they would speak to a real concierge.
 
----
+The trouble was that a text thread alone could not do the job either. You cannot send someone ten property links over WhatsApp and call that a menu. Clients still needed to see what was actually available: photos, pricing, capacity, and the detail that turns "something in Marbella" into an actual decision. The business was stuck between two half-solutions: an app with a browsable catalogue nobody wanted to browse, and a chat channel clients loved that had no way of showing them anything.
 
-## 2. Architecture — How You Built It
-
-The application is a native iOS app built on **Expo SDK 54 (React Native 0.81.5)** with **Expo Router v6** for file-based navigation. The AI concierge is powered by **Google Gemini 2.5 Flash**, with the entire product catalog injected at inference time as structured context.
-
-### 5-Layer Stack
-
-| Layer | Implementation |
-| --- | --- |
-| **Model** | Google Gemini 2.5 Flash (`gemini-2.5-flash`), selected for JSON-native output mode (`responseMimeType: application/json`) and low latency on mobile |
-| **Context** | The full Shopify Storefront catalog (up to 250 products) is fetched via a dedicated `ALL_PRODUCTS_AI_QUERY` GraphQL call and compressed to essential fields (handle, title, tags, description truncated to 150 chars, price, collections) before injection into the system prompt. Chat history is serialised as plain text and prepended on every turn. |
-| **Orchestration** | Two Gemini call paths: (1) `generateConciergeResponse` — conversational planning with catalog-grounded product linking and structured itinerary generation; (2) `generateWhatsAppSummary` — a second, separate Gemini call that distills the full conversation into a clean, human-readable booking brief formatted for WhatsApp handoff. A third path, `generateBookingMessage`, powers per-product `Book Now` flows with Gemini 2.0 Flash via the REST endpoint, generating a contextual enquiry message from product metadata and selected dates. |
-| **Governance** | Prompt-level constraints: the model is explicitly instructed not to hallucinate products outside the provided catalog JSON, to suppress all emoji output (the custom app font does not support them), to return strictly valid JSON with no markdown wrappers, and to maintain conversational state via the serialised history block rather than any server-side session. |
-| **Human Layer** | The model's output is never treated as a booking confirmation. Every conversation concludes with a "Confirm Booking on WhatsApp" CTA that invokes the summary generation step and deep-links directly to the human concierge agent's WhatsApp number (`+447575383355`). The AI surfaces intent; the human closes the transaction. |
-
-### Data Flow (End-to-End)
-
-```
-Shopify Storefront GraphQL API (2025-07)
-  └── shopifyClient.ts        (raw POST fetch wrapper)
-  └── shopify.ts              (named async functions per query type)
-  └── useShopifyQueries.js    (TanStack React Query v5 hooks)
-        ├── useAllProductsAI()        → catalog context for Gemini (24h stale time)
-        ├── useAllCollections()       → home screen grid (30min stale time)
-        ├── useProductByHandle()      → product detail screen
-        └── useCollectionProductsInfinite() → paginated listing (10 per page)
-
-Gemini API (Google Generative AI SDK v0.24.1)
-  └── services/ai/geminiService.js
-        ├── generateConciergeResponse(userQuery, compressedCatalog, chatHistory)
-        │     → JSON { message: string, recommendedProductHandles: string[] }
-        ├── generateWhatsAppSummary(chatHistory)
-        │     → plain text WhatsApp brief
-        └── generateBookingMessage(productTitle, dates, description)
-              → plain text per-product enquiry (REST endpoint, Gemini 2.0 Flash)
-
-Zustand Store (useAICierge.js)
-  └── Persisted to device filesystem via expo-file-system (JSON)
-  └── Drives AICiergeOverlay (glassmorphic full-screen chat modal)
-  └── Drives AICiergeBar (persistent floating input trigger, mounted at root layout)
-
-WhatsApp Deep Link
-  └── whatsapp://send?phone=447575383355&text={encoded_summary}
-  └── Fallback: <https://wa.me/447575383355?text={encoded_summary}>
-```
-
-### Key Tools and APIs
-
-- **Shopify Storefront API** — product catalog, collection config metafields (filter definitions stored as per-collection JSON), highlighted product handle via shop-level metafield
-- **Google Gemini** (2.5 Flash for chat/planning, 2.0 Flash for per-product booking messages)
-- **@google/generative-ai** SDK v0.24.1
-- **TanStack React Query v5** — server state management with differentiated stale times per data type
-- **Zustand v5** with filesystem persistence — AI chat state, cross-session history
-- **Expo Router v6** — file-based routing with literal route overrides for bespoke venue pages
-- **Lodgify** — embedded booking calendar widget (WebView), with native interception of Lodgify checkout navigation to keep users in-app
-- **expo-blur** — glassmorphic chat overlay
-- **react-native-markdown-display** — renders Gemini's structured Markdown itinerary output including hyperlinked product handles
-- **react-native-pager-view** — horizontal image gallery on product pages
-- **NativeWind v4** — Tailwind utility classes layered over React Native StyleSheet
-
-### Dubai Expansion — Hybrid Data Layer
-
-The codebase contains a deliberate hybrid: Ibiza and Marbella inventory is fully live via Shopify; the Dubai expansion uses a **client-side mock data layer** (`mockDubaiData.ts`) that injects mock collections and products directly into the same `fetchAllCollections` and `fetchProductsByCollectionHandle` functions. Dubai universal-category collections (Yachts, Cars, etc.) dynamically clone their Ibiza counterparts at the data layer, rewriting collection handles and titles before the UI consumes them. This allowed the Dubai market to ship as a visible destination in the app before full Shopify catalog onboarding was complete.
+What they wanted, and what I was brought in to build, was both at once: the ease of ordering by conversation, with a visual menu and cart sitting behind it. I took their existing app and codebase and put a Gemini Flash concierge engine inside it.
 
 ---
 
-## 3. Why This Approach — Your Reasoning
+## 2. Architecture - How You Built It
 
-The obvious alternative was a standard semantic search or vector RAG pipeline over product embeddings — retrieve top-k products by cosine similarity, inject only those into the prompt. That approach was ruled out deliberately: the catalog is small enough (250 products maximum) that full injection costs less than the latency and infrastructure overhead of a vector database, while guaranteeing the model sees every product that might legitimately match a multi-criteria query. A user asking for "something in Ibiza with capacity for 12, a yacht and a villa in the same week" requires cross-collection reasoning across sparse constraints — retrieval systems optimized for single-query similarity would systematically underperform here.
+### Model
 
-The decision to use Gemini's native JSON output mode (`responseMimeType: application/json`) rather than parsing freeform text was a deliberate governance choice: structured output makes the `recommendedProductHandles` array machine-reliable, which is what drives the product card carousel in the UI. Freeform parsing introduces a class of silent failures that are difficult to test and degrade user experience without error states.
+The concierge is powered by Google Gemini 2.5 Flash, called in its native JSON output mode. I chose Flash because the app it was going into was already live and fast, and a booking chat that hesitates for a few seconds before replying breaks the feeling of speaking to a real concierge. JSON-native output mattered just as much as speed. Rather than parsing freeform text and hoping the model happened to mention the right product names, Gemini returns a structured object containing a message and a list of recommended product handles, which the app renders directly as a carousel of real catalogue items. A second, lighter call to Gemini 2.0 Flash handles smaller per-product booking messages, generating a contextual enquiry from a product's details and whatever dates the client picked.
+
+### Context
+
+The client's existing Shopify catalogue is the model's whole world. On every conversation, the full Storefront catalogue, up to 250 products across Ibiza, Marbella, and a growing Dubai selection, is pulled via a GraphQL query and compressed down to the essentials: handle, title, tags, shortened description, price, and collection. That compressed catalogue, plus the running chat history serialised as plain text, is sent to Gemini on every turn. I deliberately fed the model the entire catalogue rather than retrieving a filtered subset, because a client's request rarely fits one clean category. Someone asking for a yacht in Ibiza and a villa in Marbella the same week needs the model reasoning across the whole inventory at once, not a narrowed slice of it.
+
+### Orchestration
+
+Underneath the chat, the app still runs on the client's existing Expo and React Native codebase, so the orchestration work was about wiring a new AI layer into an app that already worked, not starting over. A conversation runs through Gemini for planning and product linking, and once a client is ready, a second Gemini call condenses the whole conversation into a clean, readable booking brief. That brief becomes the payload for a WhatsApp deep link straight to the human concierge's number. Chat state lives in a small local store persisted on the device, so a client can close the app mid-planning and pick the conversation back up later without losing anything. For the Dubai expansion, which needed to launch ahead of full Shopify onboarding, I built a mock data layer that clones the existing Ibiza collections and relabels them, so Dubai could exist as a real, browsable destination in the app immediately, even though the AI concierge itself cannot yet see or recommend Dubai inventory until it is properly onboarded into Shopify.
+
+### Governance
+
+Because the model is speaking on behalf of a real concierge business to real paying clients, the prompt carries hard constraints rather than suggestions. It is told explicitly never to reference a product that is not in the catalogue it was given, and to always return valid JSON with nothing else wrapped around it. There is also strict prompting to keep a reserved and professional tone and avoid emojis entirely. There is no server-side session either; the entire conversational memory is just the serialised history block sent with each call. That keeps the app simple, but it also means the model's discipline in following those prompt constraints is the only thing standing between a client and a hallucinated product.
+
+### Human
+
+The AI never gets to close a sale. Every planning conversation ends the same way: a confirm booking on WhatsApp button that hands the finished brief to a real concierge agent's WhatsApp number. That was a deliberate line I drew early on, given who the client is. A high-net-worth guest booking a yacht in Ibiza is not looking for a chatbot to confirm their trip; they are looking for the same white-glove service they would get from a phone call, just reached through a faster front door. The AI's job is to make that front door effortless. Closing the booking stays human.
 
 ---
 
-## 4. Tradeoffs — What You Gave Up
+## 3. Why This Approach - Your Reasoning
 
-- **Catalog injection vs. privacy and token cost.** Injecting the full compressed catalog on every inference turn means that as inventory grows beyond approximately 500 products, prompt length becomes a cost and latency problem. The current compression strategy (150-char description truncation, field stripping) is a mitigation, not a solution. At scale, the correct answer is either a retrieval pre-filter step or moving to a model with a larger context window at lower cost. The tradeoff in v1 was simplicity and reliability over marginal cost.
-- **No server-side session management.** Chat history is serialised client-side and re-injected on every API call. This means there is no server audit trail of AI interactions, no ability to retrospectively improve the model via conversation logs, and no fallback if the device storage is cleared. The tradeoff was zero backend infrastructure cost and instant stateful chat across app sessions, at the expense of observability and data flywheel potential.
-- **Governance gap: no evaluation suite.** The production AI system has no automated eval coverage — no regression tests for hallucination, no coverage of edge cases (e.g., requests for services outside the catalog, date conflicts, multi-location itineraries with contradictory constraints). The prompt instructs the model not to hallucinate products, but this is enforced only at the instruction level with no mechanical verification. This is the most significant known governance debt.
-- **Dubai market launched as mock data.** The client-side mock layer was the correct call to unblock a market launch, but it means Dubai inventory exists outside the Shopify CMS — a content editing workflow is missing, and the Dubai mock products are not accessible to the AI concierge context (the `ALL_PRODUCTS_AI_QUERY` fetches from Shopify only). Dubai products are invisible to the AI planner until full Shopify catalog migration is completed.
+The client did not need a new app, and they definitely did not need me to convince their clients to start browsing a catalogue they had already shown no interest in browsing. The obvious move given the problem, high-net-worth guests who wanted to text rather than search, was to meet them inside the chat channel they were already using, and let the model do the work of turning a loose WhatsApp-style request into a visual, bookable answer. That is why the concierge is a layer inside their existing app rather than a separate product: the catalogue, the booking flow, and the brand were already right. What was missing was a way to talk to it.
+
+The next real decision was how the model should see the catalogue. The obvious alternative was a standard RAG setup: embed the products, retrieve the top few matches by similarity, and only show those to the model. I ruled this out on purpose. At 250 products, the catalogue is small enough that injecting the whole thing costs far less than standing up a vector database, and it avoids a specific failure mode that matters a lot for this client's guests: someone asking for "a yacht in Ibiza and a villa in Marbella the same week" needs the model reasoning across the entire inventory at once, not just whatever narrow slice a similarity search happened to retrieve. Full injection was the boring choice, but it was the one that could not quietly miss half of a compound request.
+
+The last decision was to make Gemini return structured JSON rather than a normal chat reply. A concierge chat that is just freeform text still leaves someone squinting at a wall of prose trying to picture a yacht. Forcing the model to return a message plus a list of exact product handles meant the app could always render real, clickable product cards from the response, not a hopeful guess at parsing them out of a paragraph. It also made failure visible: if the JSON does not parse, that is a loud, catchable error instead of a silent mismatch between what the model said and what got shown to a paying client.
 
 ---
 
-## 5. Demo — A Live, Clickable URL
+## 4. Tradeoffs - What You Gave Up
+
+The first tradeoff was catalog injection over a leaner retrieval step, and it is the right call for where the product is today. Sending Gemini the entire compressed catalogue on every message means the AI Concierge can reason across every restaurant, villa, car, and private jet in the inventory at once, rather than guessing which slice of the catalogue a request falls into. At a few hundred products, that is a real advantage: a compound request like a villa and a yacht in the same week gets answered properly instead of half-missed. It is a choice that will need revisiting once the catalogue grows past roughly 500 products, but for a catalogue this size, full injection is simpler to reason about and more reliable than a retrieval layer built before it is actually needed.
+
+Second, I chose not to give the concierge any server-side memory, which is the right shape for a single-session planning tool bolted onto an existing app. Chat history is serialised on the client and replayed with every call, so a member can close the app mid-plan and reopen it exactly where they left off, with no backend to build or maintain. That is the right trade for getting this feature live fast and keeping it cheap to run. The absence of a stored history only becomes a real cost once the business wants to study what members are asking for over time, and that is a problem worth solving once there is a track record to learn from, not before.
+
+Third, I shipped without a formal evaluation suite behind the AI Concierge, and that was the right call for getting a first version of this feature in front of real clients quickly. The prompt instructs Gemini never to reference a product outside the real catalogue, and enforcing that through instruction alone was fast to build and good enough to prove clients actually wanted a chat-based ordering experience before investing in test infrastructure. Building an eval suite before knowing whether the feature would be used would have been effort spent in the wrong place. It is the right next investment now that itineraries are being generated for real, paying clients, not a gap that should have been closed on day one.
+
+---
+
+## 5. Demo - A Live, Clickable URL
 
 **App Store:** [24Seven Concierge on the App Store](https://apps.apple.com/us/app/24seven-concierge/id6663954162)
 
-Live on the App Store as of version 1.2.4. Download on any iPhone, navigate to any location, and use the AI Concierge bar at the bottom of every screen to initiate a planning session.
+Live on the App Store. Browse the catalogue, and use the AI Concierge bar at the bottom of every screen to create your itinerary.
 
 ---
 
-## 6. What I Would Improve — Honest Self-Assessment
+## 6. What I Would Improve - Honest Self-Assessment
 
-The most significant limitation is the absence of any structured evaluation framework for the AI concierge. In production today, the only signal that the model is performing correctly is human observation — there is no automated coverage of the failure modes that matter most: hallucinated products (model references an item not in the catalog), itinerary date conflicts (model fails to flag overlapping availability windows), or degraded output when the catalog JSON exceeds token limits. The next meaningful engineering investment is building a lightweight eval suite of approximately 30–50 test cases covering at least three systematic failure types: out-of-catalog references, multi-destination constraint satisfaction, and graceful degradation when Gemini returns malformed JSON despite the structured output mode instruction.
+The most concrete next investment is the evaluation suite the tradeoffs above deferred, now that there is real usage to justify building it. Today the only signal that Gemini is performing well is human observation, with no automated coverage of the failure modes that actually matter: a hallucinated product that is not in the catalogue, an itinerary that quietly misses a date conflict, or a malformed response when the catalogue JSON runs long. The plan is a suite of roughly 30 to 50 test cases split across three failure types: out-of-catalog references, multi-destination constraint satisfaction, and graceful handling when Gemini returns invalid JSON despite the structured-output instruction.
 
-The second honest limitation is the WhatsApp handoff as the only conversion path. Every AI-generated itinerary terminates in a message to a human agent — there is no async slot reservation, no price lock, and no structured booking intake beyond free-text. A user who completes a planning session at 2am gets no acknowledgment until a human agent reads their WhatsApp in the morning. The architectural fix is a Shopify checkout integration that can at minimum capture a structured hold or enquiry form against specific product variants, converting the AI output into a structured booking record rather than a prose message.
+The second improvement is closing the gap at the end of the WhatsApp handoff. Every AI-generated itinerary currently ends the same way: a message to a human agent, with no async slot reservation, no price lock, and no structured booking intake beyond free text. A member who finishes planning at 2am gets no acknowledgment until a human reads WhatsApp the next morning. A Shopify checkout integration that can at minimum capture a structured hold or enquiry against specific product variants would turn that final step into an actual booking record instead of a prose message.
