@@ -9,6 +9,8 @@ import { handleMassSocialWisdomRequest } from './server/massSocialWisdomHandler.
 const ROOT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const DIST_DIR = path.join(ROOT_DIR, 'dist');
 const PORT = Number(process.env.PORT || 4182);
+const CV_REDIRECT_URL =
+  'https://drive.google.com/file/d/1t6y6uCX5D0CxaQCbM4iGrNv8FJUctah3/view?usp=sharing';
 
 const MIME_TYPES = new Map([
   ['.css', 'text/css; charset=utf-8'],
@@ -31,6 +33,13 @@ function sendText(res, statusCode, text) {
   res.statusCode = statusCode;
   res.setHeader('Content-Type', 'text/plain; charset=utf-8');
   res.end(text);
+}
+
+function redirect(res, destination) {
+  res.statusCode = 307;
+  res.setHeader('Location', destination);
+  res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+  res.end(`Redirecting to ${destination}`);
 }
 
 function getSafeDistPath(urlPathname) {
@@ -69,6 +78,11 @@ async function serveStatic(req, res) {
 
 const server = http.createServer((req, res) => {
   const requestUrl = new URL(req.url || '/', `http://${req.headers.host || 'localhost'}`);
+
+  if (requestUrl.pathname === '/cv' || requestUrl.pathname === '/cv/') {
+    redirect(res, CV_REDIRECT_URL);
+    return;
+  }
 
   if (requestUrl.pathname === '/api/ai-ramin') {
     void handleAiRaminRequest(req, res).catch((error) => {

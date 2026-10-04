@@ -7,6 +7,18 @@
       "maxDuration": 300
     }
   },
+  "redirects": [
+    {
+      "source": "/cv",
+      "destination": "https://drive.google.com/file/d/1t6y6uCX5D0CxaQCbM4iGrNv8FJUctah3/view?usp=sharing",
+      "permanent": false
+    },
+    {
+      "source": "/cv/",
+      "destination": "https://drive.google.com/file/d/1t6y6uCX5D0CxaQCbM4iGrNv8FJUctah3/view?usp=sharing",
+      "permanent": false
+    }
+  ],
   "rewrites": [
     {
       "source": "/((?!api/.*).*)",
