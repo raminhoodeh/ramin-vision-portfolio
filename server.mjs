@@ -11,6 +11,8 @@ const DIST_DIR = path.join(ROOT_DIR, 'dist');
 const PORT = Number(process.env.PORT || 4182);
 const CV_REDIRECT_URL =
   'https://drive.google.com/file/d/1t6y6uCX5D0CxaQCbM4iGrNv8FJUctah3/view?usp=sharing';
+const PRESENTATION_REDIRECT_URL =
+  'https://docs.google.com/presentation/d/1wCDf9rzm3g7lAoDkFw7UWSeDc9PHgUW-/edit?usp=sharing&ouid=110264933146795409149&rtpof=true&sd=true';
 
 const MIME_TYPES = new Map([
   ['.css', 'text/css; charset=utf-8'],
@@ -78,6 +80,11 @@ async function serveStatic(req, res) {
 
 const server = http.createServer((req, res) => {
   const requestUrl = new URL(req.url || '/', `http://${req.headers.host || 'localhost'}`);
+
+  if (requestUrl.pathname === '/presentation' || requestUrl.pathname === '/presentation/') {
+    redirect(res, PRESENTATION_REDIRECT_URL);
+    return;
+  }
 
   if (requestUrl.pathname === '/cv' || requestUrl.pathname === '/cv/') {
     redirect(res, CV_REDIRECT_URL);
