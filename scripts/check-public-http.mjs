@@ -113,6 +113,6 @@ try {
     assert.ok((await response.text()).includes(`href="${CANONICAL_ORIGIN}${target}"`));
     assert.ok(config.rewrites.some((rule) => rule.source === alias && rule.destination === target));
   }
-  assert.equal(config.cleanUrls, true); assert.equal(config.trailingSlash, false); assert.ok(config.rewrites.every((rule) => rule.source in sectionPathAliases));
+  assert.equal(config.cleanUrls, true); assert.ok(!Object.hasOwn(config, 'trailingSlash'), 'Global slash redirects must not override the explicit CV/presentation 307s'); assert.ok(config.rewrites.every((rule) => rule.source in sectionPathAliases));
   console.log(`Public HTTP checks passed: ${publicPages.length} readable routes, previews, canonical metadata, discovery, aliases, preserved 307s, apex 308 and real 404s.`);
 } finally { child.kill('SIGTERM'); }

@@ -83,6 +83,9 @@
   line-height: 1.85 !important;
 }
 [data-reading-view] .thesis-opening-hero {
+  display: block;
+  min-height: 0;
+  height: auto;
   padding: .75rem 0;
   background: transparent;
   box-shadow: none;
@@ -149,6 +152,7 @@
     text-shadow: none !important;
   }
   [data-reader-modal] .project-entry-brief--desktop { display: block !important; }
+  [data-reader-modal] .thesis-opening-hero { min-height: 0 !important; height: auto !important; padding: 0 !important; }
   [data-reader-modal] :is(p, li) { font-size: 10pt !important; line-height: 1.5 !important; }
   [data-reader-modal] h2, [data-reader-modal] h3 { break-after: avoid; }
   [data-reader-modal] a { text-decoration: underline !important; }

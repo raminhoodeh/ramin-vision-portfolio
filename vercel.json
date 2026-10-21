@@ -638,6 +638,5 @@
       "destination": "/thoughts"
     }
   ],
-  "cleanUrls": true,
-  "trailingSlash": false
+  "cleanUrls": true
 }
