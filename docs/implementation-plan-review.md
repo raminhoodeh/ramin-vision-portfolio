@@ -1,6 +1,6 @@
 # Review of the 21-point portfolio implementation plan
 
-Review date: 22 October 2026, Asia/Dubai. This is an implementation and evidence review of the current shared checkout, against the user-supplied 21-point plan in `Pasted text.txt`. It records code that was inspected and checks that were actually run. It is not a claim that every product outcome has been independently verified, that a human usability study has been completed, or that this final batch is deployed.
+Review date: 22 October 2026, Asia/Dubai. This is an implementation and evidence review of the current shared checkout, against the user-supplied 21-point plan in `Pasted text.txt`. It records code that was inspected and checks that were actually run. The final QA and deployment record at the end establishes the release; source inspection alone does not independently verify product outcomes or establish a completed human usability study.
 
 The implementation now covers the plan’s principal content, navigation, reader, AI recovery, accessibility, resource, search and maintenance changes. The remaining evidence work is kept separate below. Missing authentic testimonials, conference media and new product measurements do not prevent publishing accurately bounded existing evidence.
 
@@ -120,7 +120,7 @@ The following evidence remains an honest follow-up, rather than an implemented a
 
 ### Final QA and deployment record
 
-- Runtime commit and production deployment: recorded after the public release check below.
+- Runtime commit: **79eb01f** (main). Production deployment **dpl_96wtjnc6tsCwvP8EABukQD4GyCkq**, READY; public host https://www.ramin.vision/.
 - Full `npm run verify` passed, including the production build and 27-page local HTTP checks. Initial-HTML fragment links require matching target IDs. The final combined `check:plan-review` also passed reader-return fixtures and 20 mobile Work restoration checks. A final canonical overview correction removes the remaining OS first-in-market implication; claim guards now cover both OS canonical records. The development source preview gate passed on port 4184.
 - TypeScript comparison against 388d738: 63 existing diagnostics before, 59 after, zero introduced. This is not a clean full typecheck.
 - Browser QA: actual 1280×720 Contact dock clearance and clipboard acknowledgement; 390×760 and 320×760 Resources/Contact/menu layouts without horizontal overflow; phone AI starters populate without sending, draft survives navigation/Back, Clear resets it; mobile Work results before media, detail close focus and Escape return to the SIDE card.
@@ -128,3 +128,10 @@ The following evidence remains an honest follow-up, rather than an implemented a
 - Residual integration issues above are corrected. Broader real-device and assistive-technology review remains a distinct follow-up.
 - External evidence: dated course/preview-title observations and public Product OS/evaluation resource checks are described above. No promotion, booking availability, special entitlement, testimonial or conference recording is claimed without evidence.
 - Live Gemini quality, durable production feedback retention, human tasks and new product measurements remain deferred/unestablished as described above.
+
+#### Production release verification
+
+- **195/195 public HTTP checks passed** on 22 October 2026 (Dubai): 27 readable pages, all generated social images, canonical metadata, structured data, sitemap/robots, aliases, true 404s, apex 308s and all eight exact CV/presentation 307 checks. GET /api/ai-ramin returned its expected 405 without making a model request.
+- Seven additional checks passed: internal registry/review/source/canonical URLs return 404, and About/Resources/Products return 200 with the expected new content.
+- Final production browser QA at 390×844 confirmed direct Resources with zero local canvases and idle Bonus preloading; Qadam opens and closes to the same visible link at stage scroll 2375.5 with More products expanded. At 1440×1000 Products shows the three flagship cards with all eight real navigation destinations and no horizontal overflow. Browser sizing was restored afterward.
+- Screenshot and the full HTTP result record are saved in the workspace verification directory. The runtime deployment remains 79eb01f; subsequent documentation-only recording is excluded from Vercel build uploads and changes no site behaviour.
