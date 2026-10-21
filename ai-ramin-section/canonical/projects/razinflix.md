@@ -8,6 +8,7 @@ answer_permission: factual_answer
 source_paths:
   - "projects-section/RazinFlix - Portfolio-Write-up.md"
   - "src/data/portfolio.ts"
+  - "src/data/projects.ts"
 public_links:
   - "https://nsso.me/film/razinflix"
 verification_status: public_link_review_needed
@@ -33,6 +34,9 @@ The project uses:
 - Google Cloud Vision OCR for poster validation
 - Supabase for persistence
 - a streaming-style frontend with hero billboard, category carousels, search, detail modals, and recommendations
+- an Add Film interface for names and years, plus an admin metadata editor for correcting uncertain matches
+
+AI-assisted enrichment runs when records are added or maintained. Browsing the completed catalogue does not require an LLM response for every film. The portfolio write-up's 337 films, 319 trailer keys, and 13 shelves are a catalogue snapshot rather than a guaranteed current count.
 
 ## Product Judgement
 
@@ -43,6 +47,8 @@ The key product decision was to override generic TMDB genres with an opinionated
 - Vision OCR can fail on stylised posters.
 - Duplicate title handling needs stronger idempotency.
 - The admin layer is suitable for a single-owner personal project but not a multi-user product.
+
+Add Film and the metadata editor already exist. Shared contributor roles, recommendation notes, correction history, and better measurement of enrichment failures and manual correction time remain next steps. Current secret handling has not been independently audited by this portfolio update; do not infer either a live exposure or a completed security repair from older write-up language.
 
 ## What This Proves
 

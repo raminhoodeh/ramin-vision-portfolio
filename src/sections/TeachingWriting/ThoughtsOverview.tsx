@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { portfolioContent } from '../../data/portfolio';
+import { aiProductCourseEvidence, disxTalkEvidence, productCourseEvidence } from '../../data/teachingEvidence';
 import { contentValue } from '../../lib/placeholder';
 import { type CaseStudyEntry, type TeachingEntry, type WritingCaseStudyEntry } from '../types';
 import { selfwareGeneratedArtwork, toolGeneratedArtwork } from '../Projects/index';
@@ -62,9 +63,11 @@ const beatAnchors: Record<string, string> = {
   '03': 'thoughts-passions',
   '04': 'thoughts-integration',
   '05': 'thoughts-work-narrative',
+  DISx: 'thoughts-disx',
 };
 
 function getCourseTitle(course: TeachingEntry) {
+  if (course.framework.name === 'Product Innovation Process') return productCourseEvidence.title;
   return 'displayTitle' in course && typeof course.displayTitle === 'string' ? course.displayTitle : course.courseTitle;
 }
 
@@ -107,38 +110,29 @@ function setCreationPreviewPlayback(container: HTMLElement, shouldPlay: boolean)
 function getCourseProof(course: TeachingEntry) {
   if (course.framework.name === 'AI-Native Product OS') {
     return {
-      title: 'AI-Native Product OS',
+      ...aiProductCourseEvidence.udemy,
       description:
         'A practical AI product management course that installs the model, context, orchestration, governance, and human layers needed to work with probabilistic systems.',
-      rating: '4.9',
-      ratings: '70+ ratings',
-      students: '220+ students',
+      coursera: aiProductCourseEvidence.coursera,
       links: [
-        { label: 'Maven', href: 'https://maven.com/raminhoodeh/ai-product' },
-        {
-          label: 'Udemy',
-          href: 'https://www.udemy.com/course/from-product-manager-to-ai-product-manager/?couponCode=MT260622G3#reviews',
-        },
+        { label: 'Udemy', href: aiProductCourseEvidence.udemy.href },
+        { label: 'Coursera', href: aiProductCourseEvidence.coursera.href },
       ],
     };
   }
 
-  const href = getCourseHref(course);
   return {
-    title: 'Product Innovation Process',
+    ...productCourseEvidence,
     description:
       'A start-to-finish product management course for aligning teams around one product story, one source of truth, and a clear path from idea to launch.',
-    rating: '4.8',
-    ratings: '160+ ratings',
-    students: '4.8k+ students',
-    links: href ? [{ label: 'Udemy', href }] : [],
+    coursera: undefined,
+    links: [{ label: 'Udemy', href: productCourseEvidence.href }],
   };
 }
 
 function CourseProofMiniCard({ course }: { course: TeachingEntry }) {
   const proof = getCourseProof(course);
   const heroMedia = course.media[0];
-  const isAiNativeCourse = course.framework.name === 'AI-Native Product OS';
   const isProductInnovationCourse = course.framework.name === 'Product Innovation Process';
   const content = (
     <>
@@ -151,23 +145,35 @@ function CourseProofMiniCard({ course }: { course: TeachingEntry }) {
         {heroMedia ? <img src={heroMedia.path} alt="" loading="lazy" decoding="async" /> : null}
       </div>
       <div className="thoughts-course-proof-mini-copy">
-        <div className="thoughts-course-proof-mini-top">
-          {isAiNativeCourse ? <span className="thoughts-course-proof-mini-badge">Bestseller</span> : null}
-          <span className="thoughts-course-proof-mini-badge">Highest-rated</span>
-        </div>
+        {proof.badges.length > 0 ? (
+          <div className="thoughts-course-proof-mini-top">
+            {proof.badges.map((badge) => (
+              <span key={badge} className="thoughts-course-proof-mini-badge">{badge}</span>
+            ))}
+          </div>
+        ) : null}
         <h4>{proof.title}</h4>
         <p>{proof.description}</p>
         <div className="thoughts-course-proof-mini-stats">
           <span>
-            <strong>{proof.rating} Stars</strong>
+            <strong>{proof.rating}/5</strong>
           </span>
           <span>
-            <strong>{proof.ratings}</strong>
+            <strong>{proof.ratings} ratings</strong>
           </span>
           <span>
-            <strong>{proof.students}</strong>
+            <strong>{proof.students} students</strong>
           </span>
         </div>
+        <p>
+          {proof.platform} · <time dateTime={proof.checkedOn}>{proof.checkedLabel}</time>
+        </p>
+        {proof.coursera ? (
+          <p>
+            On Coursera: <em>{proof.coursera.title}</em>, offered by {proof.coursera.provider} · {proof.coursera.modules} modules.
+            {' '}<time dateTime={proof.coursera.checkedOn}>{proof.coursera.checkedLabel}</time>.
+          </p>
+        ) : null}
         {proof.links.length > 0 ? (
           <div className="thoughts-course-proof-mini-links">
             <span className="thoughts-course-proof-mini-links-label">Learn on</span>
@@ -229,7 +235,9 @@ function CourseProofPanel({ courses }: { courses: readonly TeachingEntry[] }) {
               </div>
               <div className="thoughts-course-card-copy">
                 <div className="thoughts-course-card-top">
-                  <span className="thoughts-course-badge">Highest-rated</span>
+                  {getCourseProof(course).badges.map((badge) => (
+                    <span key={badge} className="thoughts-course-badge">{badge}</span>
+                  ))}
                   <span>{course.framework.name}</span>
                 </div>
                 <h4>{getCourseTitle(course)}</h4>
@@ -396,6 +404,17 @@ export function ThoughtsOverview({
       ],
       sideImage: thoughtsAssets.talks.universityTalkPhoto,
       sideImageAlt: 'University talk',
+    },
+    {
+      index: 'DISx',
+      label: 'How I teach AI product thinking',
+      title: 'DISx Dubai · AI-Native Product OS',
+      proof: `${disxTalkEvidence.event} · ${disxTalkEvidence.dateLabel} · ${disxTalkEvidence.location} · ${disxTalkEvidence.stage}. ${disxTalkEvidence.title}`,
+      body: disxTalkEvidence.summary,
+      artwork: aiNativeProductOsLightModeUrl,
+      ctas: disxTalkEvidence.sources.map((source) => ({ kind: 'link' as const, ...source })),
+      wide: true,
+      sectionHead: 'On the agentic AI stage',
     },
     {
       index: '05',
@@ -716,7 +735,7 @@ export function ThoughtsOverview({
                     <div className="thoughts-beat-creation-card-info">
                       <span className="thoughts-beat-creation-card-title">The Proposition</span>
                       <span className="thoughts-beat-cta thoughts-beat-cta--watch card-glass-attachment card-glass-attachment--deep-dive">
-                        <span className="card-glass-attachment__label">Buy on Amazon</span>
+                        <span className="card-glass-attachment__label">Visit author site</span>
                       </span>
                     </div>
                   </a>
@@ -783,7 +802,9 @@ export function ThoughtsOverview({
                         ) : null}
                         <div>
                           <strong>{getCourseTitle(course)}</strong>
-                          <span className="thoughts-beat-course-badge">Highest-rated</span>
+                          {getCourseProof(course).badges.map((badge) => (
+                            <span key={badge} className="thoughts-beat-course-badge">{badge}</span>
+                          ))}
                           {course.stats[0] ? (
                             <span>
                               {course.stats[0].value} {course.stats[0].label}
@@ -837,9 +858,13 @@ export function ThoughtsOverview({
         {[beats[2], beats[3]].map((beat) => buildSectionHead(beat))}
         {[beats[2], beats[3]].map((beat, j) => buildCard(beat, j + 2))}
 
-        {/* Group 3 - full-width */}
-        {buildSectionHead(beats[4])}
-        {buildCard(beats[4], 4)}
+        {/* Recent speaking and the frameworks remain in the existing expandable-card layout. */}
+        {beats.slice(4).map((beat, j) => (
+          <div key={beat.index} className="contents">
+            {buildSectionHead(beat)}
+            {buildCard(beat, j + 4)}
+          </div>
+        ))}
       </div>
 
       <div className="thoughts-beat-wide thoughts-proof-wall">

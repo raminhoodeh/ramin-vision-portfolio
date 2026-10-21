@@ -2339,8 +2339,9 @@ function scoreChunk(chunk, queryTokens, queryIntent) {
     ) {
       intentScore += 0.22;
     }
-    if (chunk.file_path?.includes('profile.md')) {
-      intentScore += 0.2;
+    if (chunk.file_path?.endsWith('canonical/profile.md')) {
+      // Broad product comparisons need the curated overview as an evidence anchor.
+      intentScore += 0.45;
     }
   }
 
@@ -3627,13 +3628,13 @@ function buildPortfolioOverviewRecovery(evidenceCards) {
       ? 'AI-Native Product OS provides the operating model: Model, Context, Orchestration, Governance, and Human judgement.'
       : null,
     hasOverview
-      ? 'The overview links his career highlights across media carbon measurement, climate analytics, geospatial APIs, employee benefits, teaching, and independent app builds.'
+      ? 'The overview links commercial delivery across payments, embedded finance, marketplaces, financial data, teaching, and independent AI builds.'
       : null,
   ].filter(Boolean);
 
   return {
     short_answer:
-      'Ramin Hoodeh is an AI Product Manager, TEDx speaker, and author who created the AI-Native Product OS. He started in classic product management and now works mostly on AI-native products — building across media, climate analytics, geospatial data, carbon measurement, employee benefits, and his own apps — with a focus on getting model behaviour, context, and governance right.',
+      'Ramin Hoodeh is an AI Product Manager, hands-on builder, educator, and author who created the AI-Native Product OS. He combines commercial product delivery across payments, embedded finance, marketplaces, and financial data with direct AI development. He teaches on Udemy and Coursera through LearnKartS and has spoken at TEDx and DISx Dubai, with a focus on model behaviour, context, and governance.',
     verified_proof: verifiedProof,
     inferred_fit: [
       'His useful angle for AI PMs is systems thinking: turning AI theory, tools, and workflows into one usable operating map.',

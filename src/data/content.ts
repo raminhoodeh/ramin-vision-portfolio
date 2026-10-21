@@ -6,6 +6,8 @@ import { pmOsThesisUrl } from './nav';
 import { deepDives, projectCaseStudies, architectureLayers, toolsAndSystems } from './projects';
 import { experienceEntries } from './experience';
 import { teachingWritingItems } from './teaching';
+import { aiProductCourseEvidence, disxTalkEvidence, productCourseEvidence } from './teachingEvidence';
+import aiNativeProductOsSlideUrl from '../../thoughts-section/courses/ai-native-product-os-light-mode.jpg';
 
 export const assetRequests = [
   {
@@ -319,7 +321,7 @@ const createProjectEntry = (
   };
 };
 
-const createTeachingEntry = (courseTitle: string, sourceTitle: string, tag: 'Highest-Rated' | 'New') => {
+const createTeachingEntry = (courseTitle: string, sourceTitle: string, tag: 'Highest-Rated' | 'New' | 'Course') => {
   const source = findTeachingWriting(sourceTitle);
 
   return {
@@ -888,6 +890,30 @@ const thoughtTalks = [
       },
     ],
   },
+  {
+    ...createSpeakingEntry(disxTalkEvidence.title, disxTalkEvidence.title, disxTalkEvidence.event),
+    displayTitle: disxTalkEvidence.title,
+    venue: `${disxTalkEvidence.event} · ${disxTalkEvidence.location}`,
+    formatRole: 'AI product management talk',
+    youtubeEmbeddedLink: videoNeeded(),
+    date: disxTalkEvidence.date,
+    stage: disxTalkEvidence.stage,
+    media: {
+      path: aiNativeProductOsSlideUrl,
+      sourcePath: 'thoughts-section/courses/ai-native-product-os-light-mode.jpg',
+      alt: 'AI-Native Product OS diagram: the five-layer Stack and the product development Loop.',
+      orientation: 'wide',
+    },
+    coreIdea: 'The Stack helps us understand an AI system. The Loop helps us develop it, with humans steering the process.',
+    audienceTakeaway: disxTalkEvidence.summary,
+    whyItShapedMe: 'A public application of the framework to a hypothetical high-stakes decision, making the governance boundary visible.',
+    liveMoment: 'The hypothetical sanctions-match example distinguishes a confident recommendation from an authorised payment.',
+    tags: ['DISx Dubai', 'AI-Native Product OS', 'Agentic AI', 'Hypothetical payment scenario'],
+    sourceLinks: disxTalkEvidence.sources.map((source) => ({
+      ...source,
+      sourceStatus: 'public-proof' as SourceStatus,
+    })),
+  },
 ] as const;
 
 const thoughtCourses = [
@@ -897,7 +923,7 @@ const thoughtCourses = [
       'Transition from Product Manager to AI Product Manager',
       'Highest-Rated',
     ),
-    displayTitle: 'Transition from Product Manager to AI Product Manager',
+    displayTitle: aiProductCourseEvidence.udemy.title,
     courseDescription:
       'A practical AI-native product course that uses systems thinking, real-life demos, and example stories to install a durable operating system for probabilistic software.',
     courseModules: [
@@ -908,8 +934,8 @@ const thoughtCourses = [
       'Governance layer: evals, guardrails, observability, fallbacks, and audit trails',
       'Human layer: vision, empathy, taste, communication, judgment, and the professional posture when execution is cheap',
     ],
-    courseTrailer: pmOsThesisUrl,
-    courseLink: pmOsThesisUrl,
+    courseTrailer: aiProductCourseEvidence.udemy.href,
+    courseLink: aiProductCourseEvidence.udemy.href,
     media: [thoughtAssetSources.courses.aiProductManager],
     positioning:
       'The successor to the deterministic Product Innovation Process: old stage-gates become a loop because AI systems are probabilistic.',
@@ -931,18 +957,19 @@ const thoughtCourses = [
       'Original Product Innovation Process course included as foundation',
     ],
     stats: [
-      { label: 'Lessons', value: '6' },
-      { label: 'Core loop', value: '5 verbs' },
-      { label: 'Stack', value: '5 layers' },
+      { label: 'Udemy rating', value: aiProductCourseEvidence.udemy.rating },
+      { label: 'Udemy students', value: aiProductCourseEvidence.udemy.students },
+      { label: 'Udemy ratings', value: aiProductCourseEvidence.udemy.ratings },
     ],
     sourceLinks: [
-      { label: 'AI PM course structure', href: pmOsThesisUrl, sourceStatus: 'local-primary' as SourceStatus },
-      { label: 'GitHub OS assets', href: 'https://github.com/raminhoodeh?tab=repositories', sourceStatus: 'public-proof' as SourceStatus },
+      { label: 'Udemy course', href: aiProductCourseEvidence.udemy.href, sourceStatus: 'public-proof' as SourceStatus },
+      { label: 'Coursera course · LearnKartS', href: aiProductCourseEvidence.coursera.href, sourceStatus: 'public-proof' as SourceStatus },
+      { label: 'GitHub OS assets', href: 'https://github.com/raminhoodeh/AI-Native-Product-OS', sourceStatus: 'public-proof' as SourceStatus },
     ],
     tags: ['AI PM', 'Probabilistic systems', '5-layer stack', 'Product judgment'],
   },
   {
-    ...createTeachingEntry('Full Product Development Process', 'The Fastest Path to Product Management', 'Highest-Rated'),
+    ...createTeachingEntry('Full Product Development Process', 'The Fastest Path to Product Management', 'Course'),
     courseDescription:
       'A start-to-finish product management walkthrough built around the Product Innovation Process: a shared source of truth for stakeholder alignment from idea to launch.',
     courseModules: [
@@ -975,9 +1002,9 @@ const thoughtCourses = [
       'Roadmap and release workflow guidance',
     ],
     stats: [
-      { label: 'Rating', value: '4.8' },
-      { label: 'Students', value: '4,871' },
-      { label: 'Reviews', value: '162' },
+      { label: 'Udemy rating', value: productCourseEvidence.rating },
+      { label: 'Udemy students', value: productCourseEvidence.students },
+      { label: 'Udemy ratings', value: productCourseEvidence.ratings },
     ],
     sourceLinks: [
       {
@@ -2179,8 +2206,8 @@ const thoughtArchitectureBridge = {
       lens:
         'Governance is part of the product architecture, not a report added after launch. Cost, quality, and value need to be comparable before scaling.',
       architecture:
-        'Provider, model, feature, endpoint, environment, latency, and failure events become a review surface for cost caps, anomaly alerts, and tuning decisions.',
-      outcome: 'A governance layer for making AI product spend visible enough to manage responsibly.',
+        'A standalone library records product, feature, provider, model, token, cost, latency, and status events, then exposes spend reports, budget alerts, and eval-informed routing. Demo events are illustrative.',
+      outcome: 'A reusable metering core for inspecting AI spend; deployment into the private apps is outside this public proof.',
     },
     {
       projectName: 'RAG Pipeline',
@@ -2191,8 +2218,8 @@ const thoughtArchitectureBridge = {
       lens:
         'Context is architecture. The product must decide what knowledge is trusted, how it is retrieved, how it is ranked, and when it should be ignored.',
       architecture:
-        'Ingestion, chunking, embeddings, retrieval, re-ranking, verification, context injection, and logging become a reusable pattern across products.',
-      outcome: 'A context layer that lets AI systems reason from grounded material instead of generic memory.',
+        'A standalone package combines chunking, embeddings, namespace-scoped vector retrieval, and cited context packing. Reranking, hybrid search, and retrieval-quality evals remain planned.',
+      outcome: 'Reusable context infrastructure with an offline demo; private-product integrations require separate evidence.',
     },
     {
       projectName: 'Qadam',
@@ -2321,7 +2348,7 @@ export const portfolioContent = {
     selfware: selfwareProjects,
     tools: toolProjects,
     architectureAcrossTools: {
-      title: 'Each project uses its own implementation stack while sharing the same AI product pattern.',
+      title: 'The projects use different implementation stacks; the five-layer framework helps compare their choices.',
       expandable: true,
       layers: [
         {

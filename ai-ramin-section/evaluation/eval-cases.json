@@ -1004,6 +1004,131 @@
       "expectedKeywords": ["eval", "guardrail", "evidence"],
       "minimumAnswerableEvidenceCards": 2,
       "requiredContractSections": ["short_answer", "verified_proof", "inferred_fit", "open_questions"]
+    },
+    {
+      "id": "evidence-course-platforms-current",
+      "category": "factual_profile",
+      "requestType": "evidence_lookup",
+      "expectedQuestionType": "evidence_lookup",
+      "expectedAnswerTechnique": "proof_ledger",
+      "expectedAnswerFrame": "proof_first_ledger",
+      "expectedSoftCtas": [
+        "use_in_hiring_brief"
+      ],
+      "hiringMode": "hiring-manager",
+      "prompt": "Show the evidence for Ramin teaching on Udemy and Coursera, including LearnKartS and platform-specific course figures.",
+      "expectedSourceRoles": [
+        "canonical"
+      ],
+      "expectedPathIncludes": [
+        "canonical/talks-writing-courses.md"
+      ],
+      "expectedKeywords": [
+        "Coursera",
+        "LearnKartS",
+        "1,920",
+        "387",
+        "22 October 2026"
+      ],
+      "minimumAnswerableEvidenceCards": 1,
+      "requiredContractSections": [
+        "short_answer",
+        "verified_proof",
+        "open_questions"
+      ]
+    },
+    {
+      "id": "evidence-disx-hypothetical-payment",
+      "category": "factual_profile",
+      "requestType": "evidence_lookup",
+      "expectedQuestionType": "evidence_lookup",
+      "expectedAnswerTechnique": "proof_ledger",
+      "expectedAnswerFrame": "proof_first_ledger",
+      "expectedSoftCtas": [
+        "use_in_hiring_brief"
+      ],
+      "hiringMode": "hiring-manager",
+      "prompt": "Show the evidence for Ramin's DISx Dubai talk and whether its $4.2 billion payment was hypothetical.",
+      "expectedSourceRoles": [
+        "canonical"
+      ],
+      "expectedPathIncludes": [
+        "canonical/talks-writing-courses.md"
+      ],
+      "expectedKeywords": [
+        "DISx",
+        "hypothetical",
+        "simulated",
+        "15 October 2026"
+      ],
+      "minimumAnswerableEvidenceCards": 1,
+      "requiredContractSections": [
+        "short_answer",
+        "verified_proof",
+        "open_questions"
+      ]
+    },
+    {
+      "id": "evidence-costs-quality-fallback",
+      "category": "project",
+      "requestType": "evidence_lookup",
+      "expectedQuestionType": "evidence_lookup",
+      "expectedAnswerTechnique": "proof_ledger",
+      "expectedAnswerFrame": "proof_first_ledger",
+      "expectedSoftCtas": [
+        "use_in_hiring_brief"
+      ],
+      "hiringMode": "hiring-manager",
+      "prompt": "What does the AI Costs Dashboard actually do when no model clears its quality threshold? Show implementation evidence and limitations.",
+      "expectedSourceRoles": [
+        "project"
+      ],
+      "expectedPathIncludes": [
+        "canonical/projects/ai-costs-dashboard.md"
+      ],
+      "expectedKeywords": [
+        "fallback",
+        "threshold",
+        "seed",
+        "standalone"
+      ],
+      "minimumAnswerableEvidenceCards": 1,
+      "requiredContractSections": [
+        "short_answer",
+        "verified_proof",
+        "open_questions"
+      ]
+    },
+    {
+      "id": "evidence-rag-implemented-planned",
+      "category": "project",
+      "requestType": "evidence_lookup",
+      "expectedQuestionType": "evidence_lookup",
+      "expectedAnswerTechnique": "proof_ledger",
+      "expectedAnswerFrame": "proof_first_ledger",
+      "expectedSoftCtas": [
+        "use_in_hiring_brief"
+      ],
+      "hiringMode": "hiring-manager",
+      "prompt": "Which parts of the standalone RAG Pipeline are implemented, and is reranking already built? Show evidence.",
+      "expectedSourceRoles": [
+        "project"
+      ],
+      "expectedPathIncludes": [
+        "canonical/projects/rag-pipeline.md"
+      ],
+      "expectedKeywords": [
+        "reranking",
+        "planned",
+        "namespace",
+        "standalone"
+      ],
+      "minimumAnswerableEvidenceCards": 1,
+      "requiredContractSections": [
+        "short_answer",
+        "verified_proof",
+        "open_questions"
+      ]
     }
   ]
 }

@@ -8,6 +8,7 @@ answer_permission: factual_answer
 source_paths:
   - "projects-section/24Seven - Portfolio Write-up.md"
   - "src/data/portfolio.ts"
+  - "src/data/projects.ts"
 public_links:
   - "https://apps.apple.com/us/app/24seven-concierge/id6663954162"
 ---
@@ -36,7 +37,7 @@ The project uses:
 - Lodgify embedded calendar
 - WhatsApp handoff
 
-The system injects a compressed Shopify catalog into the model context and asks Gemini to return structured itinerary-style output with recommended product handles.
+The system injects a compressed Shopify catalog into the model context and asks Gemini to return structured itinerary-style output with recommended product handles. Catalogue-only prompt instructions and JSON parsing are separate controls: neither establishes that every recommendation belongs to the catalogue or satisfies dates and availability. A human concierge confirms each booking.
 
 ## Product Judgement
 
@@ -44,10 +45,12 @@ Ramin chose full catalog injection instead of vector RAG because the catalog was
 
 ## Tradeoffs
 
-- Full catalog injection is simple and reliable now, but grows expensive and slow as inventory scales.
+- Full catalog injection keeps the integration simple at the described catalogue size, but its token cost, latency, and recommendation quality need measurement as inventory and conversation grow. There is no universal 500-product threshold for switching to retrieval.
 - No server-side session management means less observability and no backend conversation data flywheel.
 - No formal eval suite for hallucinated products, date conflicts, or malformed JSON.
-- Dubai expansion used a client-side mock layer to unblock visible market expansion before full Shopify onboarding.
+- The source write-up includes a client-side Dubai mock layer. Demonstration destination coverage is separate from verified Shopify inventory or completed commercial market expansion.
+
+The first AI version was bounded to planning and recommendations, with human booking confirmation. Deferring a formal suite left a known quality gap; prompt instructions alone do not prove catalogue safety. A proposed 30-50-case suite and deterministic product-handle validation remain planned. Structured reservations, price locks, and booking records beyond a WhatsApp brief also remain future work.
 
 ## What This Proves
 

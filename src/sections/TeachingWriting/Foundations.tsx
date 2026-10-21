@@ -314,7 +314,12 @@ export function ThoughtQuoteThread() {
 export function ThoughtEditorialHero() {
   const frame = portfolioContent.teachingSpeakingWriting.frame;
   const headlineLines = ['You are not defined by what you do,', 'you are shaped by what you create'];
-  const outputTypes = ['Books', 'Courses', 'Talks'];
+  const { writing, teaching, speaking } = portfolioContent.teachingSpeakingWriting;
+  const outputTypes = [
+    { label: 'Books', count: writing.books.length },
+    { label: 'Courses', count: teaching.length },
+    { label: 'Talks', count: speaking.length },
+  ];
 
   return (
     <div className="thoughts-hero relative isolate overflow-hidden px-5 pb-10 pt-10 sm:px-8 sm:pt-12 md:px-12 lg:px-16">
@@ -345,11 +350,13 @@ export function ThoughtEditorialHero() {
           </div>
 
           <div className="thoughts-hero-panel thoughts-hero-count-card rounded-[2rem] border border-white/12 p-5 md:p-6">
-            <div className="thoughts-hero-output-summary" aria-label="Two books, courses, and talks">
-              <strong>2</strong>
-              <ul>
-                {outputTypes.map((label) => (
-                  <li key={label}>{label}</li>
+            <div className="thoughts-hero-output-summary">
+              <ul className="w-full">
+                {outputTypes.map(({ label, count }) => (
+                  <li key={label} className="flex items-center gap-3">
+                    <span className="text-2xl font-medium tracking-normal">{count}</span>
+                    {label}
+                  </li>
                 ))}
               </ul>
             </div>

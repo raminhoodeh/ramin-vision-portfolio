@@ -139,19 +139,19 @@ const implementationArchitectureSummaries: Record<string, string> = {
   Qadam:
     'Next.js/React cockpit over a Python orchestration backend, PostgreSQL/TimescaleDB event store, ChromaDB knowledge graph, and local/cloud AI strategy loop.',
   Dreamsea:
-    'SwiftUI iOS app with Supabase Postgres, Storage and Edge Functions, Core Data local persistence, AVFoundation capture, and Gemini/Imagen generation.',
+    'SwiftUI iOS app with Core Data persistence, AVFoundation audio capture, cloud services, Gemini audio/text generation, and a separate image-generation step.',
   '24Seven Concierge':
     'Expo React Native app using Expo Router, Shopify Storefront GraphQL, Lodgify calendar surfaces, Gemini planning, Zustand persistence and React Query.',
   RazinFlix:
-    'Next.js 16 and Tailwind frontend with Supabase Postgres/Storage, TMDB metadata, Gemini enrichment, YouTube trailers and Google Vision poster validation.',
+    'React frontend with film-name input, a metadata editor, Supabase-backed records, TMDb lookups, Gemini-assisted enrichment, trailers, and poster checks.',
   'Mass Social Wisdom Agent':
     'Flask/Python web app with a threaded job runner, Gemini extraction and scoring, SociaVault transcript APIs, local file inputs and .docx export.',
   'AI-Native Product Manager OS':
     'Markdown-first local OS with runtime adapters for Codex, Claude Code, Cursor and Antigravity, reusable PM workflows, governance templates, Python validation and release packaging.',
   'AI Costs Dashboard':
-    'Usage-event observability dashboard for AI spend, latency, failures, provider/model attribution, anomaly alerts and product-level cost controls.',
+    'Standalone Python metering library, SQLite usage store, cached-score routing with explicit fallbacks, budget alerts, CLI and dashboard; demo usage is seeded.',
   'RAG Pipeline':
-    'Reusable context infrastructure for ingestion, chunking, embeddings, retrieval, re-ranking, source verification, prompt injection and logging.',
+    'Standalone Python package for chunking, embeddings, namespace-scoped vector retrieval and cited context packing; reranking and retrieval-quality evals remain planned.',
 };
 
 const fallbackArchitectureLabels = ['Model', 'Context', 'Orchestration', 'Governance', 'Human'] as const;
@@ -453,7 +453,7 @@ export function ProjectCinematicHero({
     {
       label: 'Thesis',
       title: 'Architecture',
-      detail: 'All selfware and tools built using the same underlying AI-Native Product OS framework.',
+      detail: 'Different implementations compared through the same five-layer AI-Native Product OS lens.',
       targetId: 'projects-architecture',
     },
   ];
@@ -498,8 +498,8 @@ export function ProjectCinematicHero({
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.18 }}
           >
-            I build products for myself, and feed the repeated patterns into tools and a self-improving AI-native product
-            framework which, in turn, improves what I build over time.
+            I build products for myself and people around me, then turn repeated patterns into reusable tools and an
+            AI-native product framework. Each case separates what runs today from what I still need to test.
           </motion.p>
         </div>
 
@@ -1348,10 +1348,10 @@ function FiveLayerTriangle({ layers }: { layers: readonly ArchitectureLayerEntry
       <div className="relative z-10">
         <p className="text-[0.62rem] uppercase tracking-[0.2em] text-white/38">Five layers</p>
         <h3 id="architecture-triangle-title" className="mt-3 text-3xl font-semibold tracking-[-0.05em] text-white">
-          The stack behind every build.
+          Five lenses for comparing the builds.
         </h3>
         <p id="architecture-triangle-description" className="mt-3 max-w-2xl text-sm leading-6 text-white/62">
-          The model is only the base. Useful AI products need context, orchestration, governance, and human judgment above it.
+          Model, context, orchestration, governance, and human judgment help explain the choices. The projects use different implementations and have different levels of validation.
         </p>
       </div>
 
@@ -1469,7 +1469,7 @@ function LayerProofMatrix({
           <div>
             <p className="text-[0.62rem] uppercase tracking-[0.2em] text-white/38">Layer proof</p>
             <h3 id="architecture-layer-proof-title" className="mt-3 text-3xl font-semibold tracking-[-0.05em] text-white md:text-4xl">
-              How the same OS shows up across the work.
+              Comparing the work through the same five-layer lens.
             </h3>
             <p id="architecture-proof-status" className="mt-3 text-sm leading-6 text-white/52" aria-live="polite" aria-atomic="true">
               {visibleSystems.length} {activeFilterCountLabel} available inside each expanded layer.

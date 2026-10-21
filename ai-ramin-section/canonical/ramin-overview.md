@@ -17,11 +17,11 @@ claim_status: user_confirmed_overview_with_review_needed_metrics
 
 # Ramin Hoodeh Overview
 
-Ramin Hoodeh is an AI Product Manager, TEDx speaker, author, and creator of the AI-Native Product OS.
+Ramin Hoodeh is an AI Product Manager, hands-on builder, educator, author, and creator of the AI-Native Product OS. His commercial product experience includes payments, embedded finance, marketplaces, financial data, and operational transformation.
 
 He has lived the shift many product managers are feeling now. He built his original Product Innovation Process through years of shipping products across media, fintech, climate analytics, geospatial data, carbon measurement, and employee benefits. He then evolved that process into the AI-Native Product OS when the material of product changed from deterministic software to probabilistic systems.
 
-Ramin has taught 5,000+ students, spoken at TEDx, and built real products where model choice, context, evals, and guardrails matter.
+Ramin teaches product management and AI product management on Udemy, and his AI course is also available on Coursera through LearnKartS. He has spoken at TEDx and DISx Dubai. Use the dated, per-course figures in talks-writing-courses.md; do not invent a combined unique-student total or count a speaking audience as course students.
 
 His view is simple: the product manager role is not dying; the operating system underneath it is changing. What is missing for many PMs is systems thinking: the mental clarity to place AI theory, tools, and workflows into one usable map.
 
@@ -29,11 +29,11 @@ The AI-Native Product OS and related course are positioned for product managers 
 
 ## Career Highlights
 
-- Built the most widely used carbon calculator in the media sector, measuring the environmental impact of GBP 1B+ of media investment.
+- Built a carbon calculator used to assess the environmental impact of GBP 1B+ of media investment in 2022.
 - Released the first geospatial API on Microsoft's Power Platform, improving energy clients' ability to forecast carbon impacts on asset valuations.
-- Product Manager for a climate risk analytics platform managing GBP 900M+ AUM, featured in the Financial Times.
+- Product Manager for a climate-risk analytics platform used across client portfolios representing GBP 900M+ AUM, featured in the Financial Times. This is client portfolio context, not assets Ramin personally managed.
 - Built the UK's first salary-sacrifice childcare benefits platform, Family Pay, a first-of-its-kind product later acquired by Vivup.
-- Created the Product Innovation Process, used by startups, corporates, and governments, and positioned as a highest-rated Udemy PM course with 5,000+ students and counting.
+- Created the Product Innovation Process and AI-Native Product OS. Current public course titles and reception belong to their individual platform listings, rather than an undated aggregate teaching figure.
 - Built and shipped full-stack web and iOS apps independently, including nsso and Dreamsea, live at nsso.me and on the App Store.
 
 ## How AI Ramin Should Use This
@@ -41,6 +41,8 @@ The AI-Native Product OS and related course are positioned for product managers 
 Use this file for broad questions about who Ramin is, why his experience is relevant to AI product management, what the AI-Native Product OS represents, and how to summarise his public positioning.
 
 Use the career highlights as public overview claims, but avoid over-expanding the metrics. Where the answer depends on exact numbers, rankings, ratings, student counts, AUM, acquisition status, or current product availability, phrase them as portfolio-supported/user-provided highlights unless a more specific canonical work-experience file supplies the evidence.
+
+Professional experience, independent building, education, and conference recognition are distinct evidence types. The DISx USD 4.2 billion payment example is explicitly hypothetical and simulated, not a production transfer or a measured employer result.
 
 When answering AI PM course questions, connect the overview to:
 

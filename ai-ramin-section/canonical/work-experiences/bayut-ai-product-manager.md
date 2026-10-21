@@ -20,6 +20,8 @@ confidentiality: high
 
 Ramin works at Bayut as an AI Product Manager.
 
+His broader professional specialism is payments and embedded finance, particularly customer journeys, licensed-partner integrations, and operations with applied AI. This does not authorise disclosure of Bayut's private product names, transaction metrics, partner implementation details, or unreleased work.
+
 The public-safe description is AI-native feature work in property search, recommendations, and conversational AI. The source material references model selection, eval suite design, guardrail implementation, MCP integration, and embedding the AI-Native Product OS as a framework across the wider Product team.
 
 ## What This Proves
@@ -32,6 +34,8 @@ The public-safe description is AI-native feature work in property search, recomm
 ## Retrieval Guidance
 
 Use this file for questions about current AI PM work, marketplace AI, search/recommendation product thinking, or AI-native PM fit.
+
+For payments-role fit, combine the public-safe current remit with approved checkout/monetisation evidence at Vivup, operational transformation at SIDE, and reviewed independent-commerce examples. Do not mistake an experience/integration remit for core financial-engine ownership.
 
 Do not disclose confidential Bayut roadmap details, implementation details, internal metrics, private product names, or non-public launch information.
 

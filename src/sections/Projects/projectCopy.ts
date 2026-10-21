@@ -11,15 +11,15 @@ const projectDescriptions: Record<string, string> = {
   '24Seven Concierge':
     '24Seven Concierge is a luxury travel app that turns loose trip intent into a catalogue-grounded itinerary and WhatsApp handoff. Shopify inventory, AI planning, and human concierge fulfilment work together so clients move from browsing to a real booking conversation without starting over.',
   RazinFlix:
-    'A personal streaming-style film library. Simply enter a film name and year to trigger an automatic scrape of all of the film\'s metadata; poster, IMDB rating, description and YouTube trailer - as the film is elegantly added to the visual catalogue.',
+    'A personal streaming-style film library. Add film names and years to run metadata lookups and AI-assisted enrichment, then use the admin editor to correct uncertain matches before browsing the catalogue.',
   'Mass Social Wisdom Agent':
-    'Mass Social Wisdom Agent is a Flask and Gemini workflow for turning messy social inputs into structured knowledge. Links, transcripts, screenshots, captions, and carousel posts become a clean .docx export, replacing the usual backlog of saved content with something ready to read, search, and import into Notion.',
+    'Mass Social Wisdom Agent is a staged Flask and Gemini pipeline that turns links, transcripts, screenshots, captions, and carousel posts into a structured .docx export. Its self-scores guide retries; human-calibrated quality evals remain planned.',
   'AI-Native Product Manager OS':
     'AI-Native Product Manager OS is an installable local workspace for PMs moving into AI product work. It gives Codex, Claude Code, Cursor, or Antigravity a durable context library, PM workflow routing, templates, review panels, governance checks, and local output folders so product work compounds beyond one-off prompts.',
   'AI Costs Dashboard':
-    'AI Costs Dashboard is an observability surface for AI product usage, spend, latency, failures, and provider/model attribution. It gives teams a way to see where money, reliability, and product value are drifting before small leaks become operating problems.',
+    'AI Costs Dashboard is a standalone metering and routing library with spend reports, budget alerts, and cached eval scores. Its demo uses seeded events; fallback routing can proceed when no model clears the quality threshold.',
   'RAG Pipeline':
-    'RAG Pipeline is reusable context infrastructure for AI products that need trusted source material, not one-off prompting. It handles ingestion, chunking, embeddings, retrieval, re-ranking, verification, and context injection so answers stay grounded in the right knowledge.',
+    'RAG Pipeline is a standalone package for chunking, embeddings, namespace-scoped vector retrieval, and cited context packing. Its offline demo exercises the structure; reranking, hybrid search, and retrieval-quality evals remain planned.',
 };
 
 export function getProjectCardDescriptionByName(projectName: string, fallback: string) {

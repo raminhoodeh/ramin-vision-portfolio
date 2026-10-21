@@ -376,7 +376,7 @@ const THESIS_SECTIONS: ThesisSection[] = [
           },
           {
             tag: 'Governance',
-            text: 'The evals, observability, and trust guardrails you adopt to ensure that the orchestration happens safely. This could mean brand safety or cost / security measures. Governance takes an AI feature - with a probabilistic output - from “it works” to “it’s safe to scale.”',
+            text: 'The evals, observability, and trust guardrails used to assess orchestration risk: quality, cost, security, and brand behaviour. Their presence supports a release decision; their effectiveness still has to be tested for the feature and its users.',
           },
           {
             tag: 'Human',
@@ -508,7 +508,7 @@ const THESIS_SECTIONS: ThesisSection[] = [
           {
             title: 'Dreamsea',
             tagline: '“A dream interpreter under your pillow.”',
-            text: 'Democratised a world-renowned psychotherapist’s method into an iOS app. Dreamsea uses multiple AI models and a custom RAG corpus that transcribes and interprets your dreams.',
+            text: 'Built with a psychotherapist partner, Dreamsea captures dreams by voice, uses Gemini for transcription and interpretation, supplies Dream Wiki context, and generates symbolic imagery. Dream records persist on device while generation uses cloud services.',
           },
           {
             title: '24Seven Concierge',
@@ -517,23 +517,23 @@ const THESIS_SECTIONS: ThesisSection[] = [
           },
           {
             title: 'Qadam',
-            tagline: '“A hedge fund team that fits inside your laptop.”',
+            tagline: '“A paper-only research team inside your laptop.”',
             text: 'Qadam is a protected macro-intelligence control room: world events become source evidence, hypotheses, reasoning challenges, guarded paper orders, proof ledger entries, postmortems, and learning updates.',
           },
           {
             title: 'RazinFlix',
             tagline: '“From watchlist to personal Netflix.”',
-            text: 'A personal streaming-style film library. Simply enter a film name and year to trigger an automatic scrape of all of the film\'s metadata; poster, IMDB rating, description and YouTube trailer - as the film is elegantly added to the visual catalogue.',
+            text: 'A personal film library with film-name input, metadata lookups, Gemini-assisted enrichment, and an admin editor for correcting uncertain matches. Trusted human recommendations shape the catalogue.',
           },
         ],
       },
-      { kind: 'h', text: 'The back-end infrastructure the apps run on' },
+      { kind: 'h', text: 'Reusable tools developed alongside the apps' },
       {
         kind: 'list',
         items: [
-          'Unified RAG Pipeline - consolidates chunking, embedding, and retrieval across every product; one source added becomes context everywhere.',
-          'Social Wisdom Agent - bulk-transcribes creator-produced social media “wisdom;” images, captions and videos from multiple sources into a shared Notion context layer.',
-          'AI Costs Dashboard - a governance layer across all apps and features that enforces cost and safety guardrails and routes each call to the best model the task and budget allow.',
+          'Unified RAG Pipeline - a standalone package for chunking, embeddings, namespace-scoped vector retrieval, and cited context packing. The public demo does not establish integration into each private app.',
+          'Social Wisdom Agent - a staged extraction pipeline that exports source-linked social content into a document for review and Notion import. Its model-generated self-scores still need human calibration.',
+          'AI Costs Dashboard - a standalone metering and routing core with seeded demo events, budget alerts, cached eval scores, and explicit fallback rules. Live private-app telemetry and hard quality gates require separate integration work.',
         ],
       },
       { kind: 'h', text: 'Professional work' },

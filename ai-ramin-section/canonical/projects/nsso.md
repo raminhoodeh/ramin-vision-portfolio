@@ -8,6 +8,7 @@ answer_permission: factual_answer
 source_paths:
   - "projects-section/nsso - Portfolio Write-Up.md"
   - "src/data/portfolio.ts"
+  - "src/data/projects.ts"
 public_links:
   - "https://nsso.me/"
   - "https://nsso.me/ramin"
@@ -63,7 +64,7 @@ nsso deals with public identity, money, and AI-generated self-presentation, so g
 
 - Guest sessions never receive mutation tool declarations.
 - Review Mode keeps the user in control before profile changes commit.
-- Deity should not invent credentials, companies, job titles, projects, or achievements absent from the live profile.
+- Deity is instructed to use the live profile for credentials and achievements; the user can reject an inaccurate proposal in Review Mode.
 - PayPal HTML embeds are parsed, sanitised, checked for unsafe scripts, and validated against a PayPal allowlist.
 - The UI shows embed security states such as scanning, secure, or unsafe before saving.
 
@@ -75,6 +76,12 @@ nsso deals with public identity, money, and AI-generated self-presentation, so g
 - The profile structure is fixed rather than fully user-defined, because Links, Experiences, Qualifications, Projects, and Products & Services reflect a product point of view on professional identity.
 - Intent arbitration is still fragile and needs a classifier.
 - The sales-page CRO schema is a reasonable prior, not yet validated by A/B testing.
+
+## Validation Scope
+
+This case documents Deity's runtime controls. The nsso Intros evaluation example used in teaching has a separate scope and does not establish production eval coverage for every Deity route.
+
+The case identifies labelled intent-router evaluation, structured turn observability, tool-call parsing regression coverage, and idempotent knowledge ingestion as remaining work. Proposed classifier thresholds need calibration rather than presentation as validated operating values. Public product availability and Review Mode do not establish measured adoption, conversion lift, or model-quality results.
 
 ## What This Proves
 

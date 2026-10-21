@@ -362,7 +362,7 @@ const aiRaminBuildConsiderations = [
     body:
       'The chatbot retrieves from canonical portfolio files, work/project evidence, story-bank examples, frameworks, and policy documents. Raw exports and messy notes are kept out of the answer path.',
     proof: [
-      { label: 'Corpus', value: 'Generated from 76 curated files into 99 retrievable chunks' },
+      { label: 'Corpus', value: 'Generated from curated portfolio sources with explicit answer permissions' },
       { label: 'Boundary', value: 'Each chunk carries source role, public-safety, and answer-permission metadata' },
     ],
   },
@@ -415,10 +415,10 @@ const aiRaminBuildConsiderations = [
     title: 'Evaluation',
     chips: ['Question set', 'Failure modes', 'Iteration loop'],
     body:
-      'The implementation plan includes evaluation prompts for profile, work, projects, behavioural examples, product judgement, and misuse attempts.',
+      'Offline checks cover retrieval, routing, source permissions, and answer contracts. Generated-answer reviews use representative portfolio and hiring questions; these are separate from retrieval checks.',
     proof: [
       { label: 'Quality bar', value: 'Useful, grounded, concise, and honest about missing context' },
-      { label: 'Next step', value: 'Log weak answers, improve source chunks, then re-run evaluation questions' },
+      { label: 'Review loop', value: 'Review weak answers, improve source chunks, then re-run evaluation questions' },
     ],
   },
 ] as const;

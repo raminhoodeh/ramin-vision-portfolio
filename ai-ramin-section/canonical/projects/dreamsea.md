@@ -8,6 +8,7 @@ answer_permission: factual_answer
 source_paths:
   - "projects-section/Dreamsea - Portfolio Write-up.md"
   - "src/data/portfolio.ts"
+  - "src/data/projects.ts"
 public_links:
   - "https://apps.apple.com/us/app/dreamsea/id6761101193"
 ---
@@ -18,7 +19,7 @@ public_links:
 
 Dreamsea is a live iOS app for voice-first dream journaling, dream interpretation, and multimodal AI generation.
 
-It uses Gemini for audio transcription, text generation, and Imagen-style dream imagery, with Supabase as the backend.
+It uses Gemini for audio transcription and text generation, with a separate image-generation step. The implementation combines on-device persistence with cloud services, including Supabase backend components.
 
 ## Problem
 
@@ -32,10 +33,11 @@ Dreamsea includes:
 - AVFoundation voice recording
 - WidgetKit lock-screen entry point
 - Gemini audio-to-text transcription
-- parallel generation of dream title, subtitle, interpretations, symbols, and image
+- staged generation of dream title, subtitle, interpretations, symbols, and image, with saved progress and resumption of unfinished work
 - curated Dream Wiki context
 - Jungian, Persian, Egyptian, and Japanese interpretive traditions
 - Supabase Postgres, Storage, and Edge Functions
+- Core Data persistence for dream records and local AVFoundation capture
 - StoreKit 2 subscription
 - prompt/wiki CMS for a non-technical domain expert co-founder
 
@@ -45,10 +47,12 @@ Ramin rejected a simple static symbol-RAG approach because the product problem i
 
 ## Tradeoffs
 
-- Sequential transcription before analysis improves accuracy but adds waiting time.
-- Audio is deleted from cloud storage after transcription, improving privacy but limiting future audio-based analysis.
+- Transcription precedes interpretation, adding waiting time before the later generation steps.
+- Local-first persistence does not mean offline processing: audio and text are sent to AI services for generation. Local deletion control is documented; a cloud-audio deletion guarantee is not established by this portfolio evidence.
 - Social sharing is deferred to preserve private trust.
 - Prompt quality currently lacks a formal automated eval suite.
+
+The proposed roughly 50-example output evaluation, CMS preview panel, transcription-provider comparison, and encrypted sync remain planned. The public App Store release establishes availability, not clinical efficacy or measured interpretation quality.
 
 ## What This Proves
 

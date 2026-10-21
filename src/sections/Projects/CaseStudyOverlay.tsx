@@ -103,7 +103,7 @@ const proofCtaDescriptions: Record<string, string> = {
   Dreamsea:
     'Open the public App Store listing. Download it on iPhone to inspect the live voice-capture dream journal, interpretation flow, and symbolic generation experience.',
   Qadam:
-    'Open the live Qadam web surface in a new tab. The link shows the catalyst-driven intelligence product and the public paper-proof framing before any live-capital claim.',
+    'Open the Qadam web surface in a new tab. Public information introduces the paper-only research system; access to the operating cockpit may require approval.',
   '24Seven Concierge':
     'Open the public App Store listing. Download the iPhone app to inspect the live travel concierge, destination browsing, catalog-led planning, and AI-to-human handoff.',
   RazinFlix:
@@ -123,7 +123,7 @@ const proofCtaDescriptions: Record<string, string> = {
 };
 
 const productDeepDiveQuotes: Record<string, string> = {
-  Qadam: '“A hedge fund team that fits inside your laptop.”',
+  Qadam: '“A paper-only research team inside your laptop.”',
   nsso: '“The CV of the future.”',
   RazinFlix: '“From watchlist to personal Netflix.”',
   Dreamsea: '“A dream interpreter under your pillow.”',
@@ -337,7 +337,7 @@ const nonMobileDeepDiveVisuals: Record<string, NonMobileVisualConfig> = {
     slides: [
       {
         label: 'Cost observability',
-        detail: 'Provider, model, spend, latency, and failure data become an operating surface.',
+        detail: 'A standalone metering and routing library with a dashboard view. Demo product names and usage are illustrative, not live telemetry from those products.',
         image: aiCostsDashboardVisualUrl,
       },
     ],
@@ -349,7 +349,7 @@ const nonMobileDeepDiveVisuals: Record<string, NonMobileVisualConfig> = {
     slides: [
       {
         label: 'Retrieval infrastructure',
-        detail: 'Ingestion, chunking, embeddings, retrieval, reranking, and context injection as one reusable product layer.',
+        detail: 'Ingestion, chunking, embeddings, namespace-scoped vector retrieval, and cited context packing. Reranking remains planned.',
         image: ragPipelineVisualUrl,
       },
     ],
@@ -944,6 +944,16 @@ export function CaseStudyOverlay({ item, onClose }: { item: CaseStudyEntry; onCl
         className="portfolio-deep-dive-backdrop absolute inset-0 bg-bg/20 backdrop-blur-[3px]"
         onClick={onClose}
       />
+
+      <button
+        type="button"
+        aria-label={`Close ${item.title} case study`}
+        onClick={onClose}
+        className="portfolio-case-reader-exit"
+      >
+        <span aria-hidden="true">←</span>
+        <span>Close case study</span>
+      </button>
 
       {shouldShowMassSocialDemo ? (
         <MassSocialWisdomDemo onClose={onClose} githubHref={proofCta?.href} />

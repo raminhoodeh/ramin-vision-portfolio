@@ -680,7 +680,7 @@ export function MassSocialWisdomDemo({
                         <div className="flex flex-wrap items-start justify-between gap-3">
                           <div>
                             <p className="text-[0.58rem] uppercase tracking-[0.18em] text-muted">
-                              {item.sourceLabel} · Depth {item.qualityScore}/5
+                              {item.sourceLabel} · Model self-score {item.qualityScore}/5
                             </p>
                             <h4 className="mt-2 text-lg font-semibold leading-tight tracking-[-0.02em] text-text-primary">
                               {item.title}

@@ -1,31 +1,43 @@
 import type { TeachingWritingItem } from './shared';
+import { aiProductCourseEvidence, disxTalkEvidence, productCourseEvidence } from './teachingEvidence';
 
 export const teachingWritingItems = [
   {
     type: 'Course',
-    title: 'The Fastest Path to Product Management',
-    subtitle: 'Best-selling product course for making PM craft teachable',
+    title: productCourseEvidence.title,
+    subtitle: 'A practical product course for making PM craft teachable',
     proof:
-      'Udemy proof: created by Ramin Hoodeh, 4.8 rating, 4,871 students, 162 ratings/reviews, and last updated 6/2025 at scrape time.',
+      `Udemy: created by Ramin Hoodeh, ${productCourseEvidence.rating}/5 from ${productCourseEvidence.ratings} ratings, ${productCourseEvidence.students} students. ${productCourseEvidence.checkedLabel}.`,
     whyItMatters:
       'Shows the Teacher side of the portfolio: product judgment is not just practiced, it can be structured, explained, and transferred to a broad audience.',
-    href: 'https://www.udemy.com/course/the-fastest-way-to-become-a-product-manager/',
+    href: productCourseEvidence.href,
     assetSlot: 'Needs preferred course thumbnail or preview image.',
     sourceStatus: 'public-proof',
-    chips: ['Teaching', 'Product craft', '4,871 students', 'AI PM update'],
+    chips: ['Teaching', 'Product craft', `${productCourseEvidence.students} students`, 'Product Innovation Process'],
   },
   {
     type: 'Course',
-    title: 'Transition from Product Manager to AI Product Manager',
+    title: aiProductCourseEvidence.udemy.title,
     subtitle: 'AI-Native Product OS packaged as a practical course',
     proof:
-      'Planned for release June 2026; based on the 5-layer stack and AI-native loop from the core thesis.',
+      `Live on Udemy and Coursera. Udemy: ${aiProductCourseEvidence.udemy.rating}/5 from ${aiProductCourseEvidence.udemy.ratings} ratings, ${aiProductCourseEvidence.udemy.students} students; Bestseller and Highest Rated. ${aiProductCourseEvidence.udemy.checkedLabel}. Coursera provider: ${aiProductCourseEvidence.coursera.provider}.`,
     whyItMatters:
-      'Turns the thesis into a repeatable training product: six lessons, a running build, and a working operating system by the end.',
-    href: '/product-thesis',
-    assetSlot: 'Needs launch link, title lockup, and syllabus proof.',
-    sourceStatus: 'manual-needed',
-    chips: ['AI PM', '5-layer stack', 'AI-native loop', 'Maven link needed'],
+      'Turns the thesis into a practical training product: model choice, context, orchestration, governance, and human judgment, with platform-specific curricula.',
+    href: aiProductCourseEvidence.udemy.href,
+    assetSlot: 'AI Product Manager course thumbnail.',
+    sourceStatus: 'public-proof',
+    chips: ['AI PM', '5-layer stack', 'Udemy', 'Coursera'],
+  },
+  {
+    type: 'Talk',
+    title: disxTalkEvidence.title,
+    subtitle: `${disxTalkEvidence.event} · ${disxTalkEvidence.stage}`,
+    proof: `Delivered in ${disxTalkEvidence.location}, ${disxTalkEvidence.dateLabel}; supported by the organiser’s session announcement and speaker introduction.`,
+    whyItMatters: disxTalkEvidence.summary,
+    href: disxTalkEvidence.sources[0].href,
+    assetSlot: 'AI-Native Product OS diagram; no conference recording represented.',
+    sourceStatus: 'public-proof',
+    chips: ['DISx Dubai', 'AI-Native Product OS', 'Speaking', 'Hypothetical payment scenario'],
   },
   {
     type: 'Talk',

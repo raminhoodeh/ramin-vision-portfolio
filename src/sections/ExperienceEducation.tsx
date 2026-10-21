@@ -73,20 +73,34 @@ function ExpandIndicator({ isActive }: { isActive: boolean }) {
   );
 }
 
+function publicWorkItems(items: readonly (string | PlaceholderLike)[]) {
+  return items
+    .map((item) => publicWorkValue(item))
+    .filter((item): item is string => typeof item === 'string' && item.trim().length > 0 && !/\[confidential\]|^confidential$/i.test(item.trim()));
+}
+
+function getWorkPublicDetails(entry: ProductManagementWorkExperience) {
+  const achievements = publicWorkItems(entry.mainAchievements);
+  const descriptions = publicWorkItems(entry.productDetails.map((product) => product.description));
+
+  return {
+    achievements,
+    remit: achievements.length ? [] : descriptions.length ? descriptions : publicWorkItems(entry.productsWorkedOn),
+    processes: publicWorkItems(entry.processesIntroducedManagerial),
+    links: entry.links.filter((link) => link.status === 'ready' && /^https?:\/\//i.test(link.url)),
+  };
+}
+
 function WorkListBlock({
   label,
   items,
-  maxItems,
   compact = false,
 }: {
   label: string;
   items: readonly (string | PlaceholderLike)[];
-  maxItems?: number;
   compact?: boolean;
 }) {
-  const visibleItems = (maxItems ? items.slice(0, maxItems) : items)
-    .map((item) => publicWorkValue(item))
-    .filter((item): item is string => Boolean(item));
+  const visibleItems = publicWorkItems(items);
 
   if (!visibleItems.length) return null;
 
@@ -104,6 +118,41 @@ function WorkListBlock({
         ))}
       </div>
     </div>
+  );
+}
+
+function WorkPublicDetails({ entry, compact = false }: { entry: ProductManagementWorkExperience; compact?: boolean }) {
+  const details = getWorkPublicDetails(entry);
+
+  return (
+    <>
+      <WorkListBlock
+        label={details.achievements.length ? 'Main achievements' : 'Public remit'}
+        items={details.achievements.length ? details.achievements : details.remit}
+        compact={compact}
+      />
+      <WorkListBlock label="Process introduced / managerial" items={details.processes} compact={compact} />
+      {details.links.length ? (
+        <div className={`work-public-links rounded-[1rem] bg-white/24 ${compact ? 'p-3' : 'p-4'}`}>
+          <p className="text-[0.58rem] uppercase tracking-[0.16em] text-muted">Public links</p>
+          <div className="mt-2 flex flex-wrap gap-2">
+            {details.links.map((link) => (
+              <a
+                key={link.url}
+                href={link.url}
+                target="_blank"
+                rel="noreferrer"
+                onClick={(event) => event.stopPropagation()}
+                onKeyDown={(event) => event.stopPropagation()}
+                className="work-public-link"
+              >
+                {link.label} <span aria-hidden="true">↗</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      ) : null}
+    </>
   );
 }
 
@@ -226,6 +275,7 @@ function ProductManagementWorkCard({
       onFocus={onPreviewIntent}
       onClick={onActivate}
       onKeyDown={(event) => {
+        if (event.target !== event.currentTarget) return;
         if (event.key === 'Enter' || event.key === ' ') {
           event.preventDefault();
           onActivate();
@@ -306,8 +356,7 @@ function ProductManagementWorkCard({
               ) : null}
 
               <div className="grid gap-2">
-                <WorkListBlock label="Main achievements" items={entry.mainAchievements} maxItems={3} compact />
-                <WorkListBlock label="Process introduced / managerial" items={entry.processesIntroducedManagerial} maxItems={1} compact />
+                <WorkPublicDetails entry={entry} compact />
               </div>
             </div>
           </motion.div>
@@ -438,8 +487,7 @@ function MobileWorkDetail({
       </div>
 
       <WorkProductDetailsBlock entry={entry} />
-      <WorkListBlock label="Main achievements" items={entry.mainAchievements} />
-      <WorkListBlock label="Process introduced / managerial" items={entry.processesIntroducedManagerial} />
+      <WorkPublicDetails entry={entry} />
     </motion.article>
   );
 }

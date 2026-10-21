@@ -6,7 +6,7 @@ export const aiRaminPrototype = {
     'A source-grounded AI Product Manager portfolio assistant that helps visitors evaluate Ramin\'s role fit, product judgment, relevant examples, and AI-native operating style.',
   headline: "Ask AI Ramin about product judgement, role fit, projects, or interview-style examples.",
   description:
-    'AI Ramin answers from a curated portfolio corpus, separates verified evidence from inference, and makes the boundary clear when the context is not enough.',
+    'AI Ramin answers from curated portfolio sources, separates supported evidence from inference, and makes the boundary clear when the context is not enough.',
   examplePrompts: [
     {
       label: 'I am hiring an AI Product Manager. How would Ramin approach the first 90 days?',

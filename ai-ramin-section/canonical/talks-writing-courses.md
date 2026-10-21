@@ -16,7 +16,13 @@ source_paths:
   - "thoughts-section/books/The-Proposition-Book-info.md"
   - "thoughts-section/books/the-meaning-of-life-book-info.md"
   - "general-thoughts/My overall mindset on what i make and write_.md"
-verification_status: public_metrics_review_needed
+public_links:
+  - "https://www.udemy.com/course/from-product-manager-to-ai-product-manager/"
+  - "https://www.coursera.org/learn/ai-product-management/"
+  - "https://www.udemy.com/course/the-fastest-way-to-become-a-product-manager/"
+  - "https://www.linkedin.com/posts/disummitmea2030-share-7516413326176804866-Om0V/"
+verification_status: public_listings_checked_2026_10_22
+last_checked: "2026-10-22"
 ---
 
 # Teaching, Speaking, Writing, and Courses
@@ -25,16 +31,18 @@ verification_status: public_metrics_review_needed
 
 Ramin created the Product Innovation Process, a structured product development process intended to reduce noise, align teams, clarify product language, and track a product from discovery through launch.
 
-The course is public on Udemy as "The Fastest Way to Become a Product Manager."
+The foundation course is public on Udemy as "The Fastest Path to Product Management."
 
 Local sources describe it as:
 
 - a full product development lifecycle course
 - a practical PM process
 - a way to align teams around one source of truth
-- a course with a 4.8 rating and 4,871 students at scrape time
+- a course whose public Udemy listing showed 4.8 out of 5, 162 ratings, and 4,881 enrolled students when checked on 22 October 2026
 
-The student/rating numbers should be treated as public-proof metrics that need periodic review because course stats change.
+Source: https://www.udemy.com/course/the-fastest-way-to-become-a-product-manager/
+
+These are dated figures for this course only. No Highest Rated or Bestseller badge was confirmed on its listing during that check. Do not transfer a badge from the AI course to this foundation course.
 
 ## AI Product Manager Course
 
@@ -47,7 +55,30 @@ It teaches product managers to shift from traditional product delivery into AI-n
 - model/context/orchestration/governance/human framing
 - practical AI product build patterns
 
-The planned positioning in local sources is "Transition from Product Manager to AI Product Manager."
+The AI course is available now on both Udemy and Coursera; it is not a future release.
+
+On Udemy its exact title is "Transition from Product Manager to AI Product Manager." The public listing checked on 22 October 2026 showed 1,920 enrolled students, 387 ratings, and 4.6 out of 5. It displayed both Bestseller and Highest Rated badges. Source: https://www.udemy.com/course/from-product-manager-to-ai-product-manager/
+
+On Coursera its exact title is "From Product Manager to AI Product Manager." Ramin Hoodeh is listed as an instructor and LearnKartS is the course provider. The edition has 10 modules and 10 assignments. Availability, title, instructor, and provider were checked on 22 October 2026. Source: https://www.coursera.org/learn/ai-product-management/
+
+The platform editions have different structures. Keep Udemy ratings and enrolment attached to Udemy, and do not present them as Coursera figures. Coursera availability does not imply employment by Coursera, university accreditation, or independent validation of production AI quality. Course enrolments do not establish a count of unique people across courses or platforms. Speaking audiences are not course students.
+
+Current teaching material includes a 50-case nsso Intros evaluation example, failure taxonomy, and release-blocking controls. This is evidence of teaching evaluation practice, not proof that all nsso or other production paths pass that suite.
+
+Do not present older 220-student, 70-rating, 4.9-score, or undated combined 5,000-student snapshots as current course statistics. Use the per-platform figures above with their checked date, and explain that they can change.
+
+## DISx Dubai 2026 Talk
+
+Ramin delivered "AI Made Execution Cheap. High-Stakes Decisions Are Still Expensive" at Data Innovation Summit MEA 2026 in Dubai on 15 October 2026. The event ran on 14–15 October. The stage was M4 — Machine Learning, Generative & Agentic AI.
+
+The organiser identifies Ramin as an AI Product Manager and creator of the AI-Native Product OS. Organiser announcements provide public speaking recognition:
+
+- https://www.linkedin.com/posts/disummitmea2030-share-7516413326176804866-Om0V/
+- https://www.linkedin.com/feed/update/urn:li:activity:7507738452071890944/
+
+The talk applies the Stack and Loop to an explicitly hypothetical USD 4.2 billion cross-border payment decision with a simulated bank. It begins with bottleneck discovery, limits the assistant to an evidence-backed recommendation, keeps authorisation outside the model, and uses an ambiguous sanctions-match simulation to introduce a targeted evaluation case and enforced human escalation.
+
+This demonstrates product reasoning and communication. It is not a claim that Ramin executed a USD 4.2 billion transaction, deployed that treasury system, or measured a production sanctions-screening improvement. Two posts from the same organiser describe the same conference appearance; they are not two separate institutional endorsements.
 
 ## TEDx Talk
 

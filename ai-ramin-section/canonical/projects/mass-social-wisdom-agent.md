@@ -8,6 +8,8 @@ answer_permission: factual_answer
 source_paths:
   - "projects-section/Mass Social Wisdom Agent - Portfolio Write-up.md"
   - "src/data/portfolio.ts"
+  - "src/data/projects.ts"
+  - "src/sections/Projects/types.ts"
 public_links:
   - "https://github.com/raminhoodeh/mass-social-wisdom-agent"
 ---
@@ -24,7 +26,7 @@ Ramin was collecting knowledge across Instagram Reels, YouTube videos, screensho
 
 ## Architecture
 
-The system runs a seven-stage autonomous pipeline:
+The system runs a seven-stage single-model pipeline, rather than independent agents with separate authority:
 
 1. Inspect.
 2. Route.
@@ -36,7 +38,7 @@ The system runs a seven-stage autonomous pipeline:
 
 It uses:
 
-- Google Gemini 2.5 Flash for OCR, composition, quality scoring, categorisation, and similarity sorting
+- Google Gemini 2.5 Flash for OCR, composition, self-scoring, categorisation, and similarity sorting
 - SociaVault API for Instagram and YouTube transcripts and metadata
 - Flask 3.0
 - Python threading
@@ -44,6 +46,14 @@ It uses:
 - Pillow
 - live log streaming in the UI
 - structured DOCX output for Notion import
+
+The model's self-score guides retry selection. It is uncalibrated against human judgments and is not independent evidence of summary accuracy. URL normalisation, request delays, bounded retries, and failed-source records help processing; formal quality evaluation remains planned.
+
+## Live and Mock Evidence
+
+The portfolio demo sends live API requests subject to availability and visitor quotas. The repository's `mock_demo_server.py` separately replays prepared logs and results without API keys. Mock output and the README animation illustrate interaction and export; they do not establish fresh retrieval or measured quality.
+
+The extraction tool and public RAG package are separate components. An exported document can be reviewed and imported into Notion or another ingestion workflow; this does not establish a deployed integration into every private product.
 
 ## Product Judgement
 
@@ -55,10 +65,11 @@ Ramin rejected a RAG-first approach because the use case is curation, not retrie
 - Rate limiting uses hardcoded sleeps instead of a queue.
 - The self-assessment loop lacks formal eval coverage.
 - Categorisation is bounded by fixed categories and lacks multi-label classification.
+- A request queue with bounded concurrency is planned; no percentage speed improvement has been measured here.
 
 ## What This Proves
 
-- Autonomous workflow design.
+- Staged workflow design.
 - Multimodal content extraction.
 - Practical use of Gemini for multiple reasoning tasks.
 - Honest assessment of evaluation and governance gaps.

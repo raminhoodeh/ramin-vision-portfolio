@@ -9,6 +9,7 @@ source_paths:
   - "projects-section/Qadam - Portfolio Write-Up.md"
   - "overall-structure-context.md"
   - "src/data/portfolio.ts"
+  - "src/data/projects.ts"
 public_links:
   - "http://qadam.trade"
 ---
@@ -35,7 +36,7 @@ The Qadam dashboard at qadam.trade is not just a trading screen. It is a readabl
 2. Safety Status: paper mode, live capital off, and order authority behind runtime gates come first.
 3. Overview / Mission Control: fund state, source state, strategy posture, team/agent state, hypotheses, paper account status, and learning-loop maturity.
 4. Source Intelligence Network: conflict, physical/OSINT, macro, market, narrative, and supplemental technical sources, including feed health.
-5. Strategy Universe + Reasoning: worldview priors, evidence packets, research goals, hypotheses, Strategy Lead challenges, and Head of Quant / quantum-classical review.
+5. Strategy Universe + Reasoning: worldview priors, evidence packets, research goals, hypotheses, Strategy Lead challenges, and an experimental quantum/classical review path.
 6. Trade Lifecycle: observed signals, trade ideas, blocked trades, staged paper orders, submitted paper orders, open positions, closed paper trades, candidate identity, order lineage, and postmortems.
 7. Paper Account & Trade State: balance, P&L, open exposure, closed trades, drawdown, proof ledger, maturity, and postmortem completeness.
 8. Operations / Control Plane: Python COO, local LLM, frontier LLM, Head of Quant, Risk Agent, Execution Policy, source plumbing, Telegram, governance, event logs, and diagnostics.
@@ -48,7 +49,7 @@ Qadam is designed as a self-auditing fund team in software:
 - a Python COO/orchestrator
 - a local Research Analyst that compresses noisy information
 - a Strategy Lead that challenges assumptions and falsification
-- a Head of Quant / quantum-classical review layer for ambiguity and non-linear structure
+- an experimental quantum/classical review path whose usefulness still needs comparison with classical baselines
 - cross-domain source pipelines across conflict, physical/OSINT, macro, market, and narrative signals
 - local and durable stores for evidence, comments, runtime state, postmortems, and replayability
 - Signal Integrity checks for stale, weak, under-corroborated, or single-source ideas
@@ -56,7 +57,9 @@ Qadam is designed as a self-auditing fund team in software:
 - guarded Alpaca Paper routes for qualified paper orders only
 - outbound Telegram summaries and alerts, without Telegram becoming a command surface
 
-As of the cockpit snapshot on June 27, 2026, Qadam is in paper mode with 29/37 sources online, 387 research goals, 5 hypotheses, 1 candidate, 2 open positions, 78 closed paper trades, 5 candidate relationships under observation, 0 confirmed edges, and live capital disabled.
+The historical cockpit snapshot dated June 27, 2026 recorded paper mode, 29/37 sources online, 387 research goals, 5 hypotheses, 1 candidate, 2 open positions, 78 closed paper trades, 5 candidate relationships under observation, 0 confirmed edges, and live capital disabled. These are historical snapshot values, not current account or feed-health claims.
+
+The portfolio also describes a configured inventory of 50+ API sources. That configuration count is a different denominator from the 37 sources in the June snapshot. Working and fresh coverage varies by run and must be read from current source state.
 
 ## Product Judgement
 
@@ -66,7 +69,7 @@ Evidence beats excitement: a dramatic story means nothing unless source evidence
 
 Reasoning and execution are visibly separated. Strategy and quant review can explain, challenge, and recommend, but they cannot execute.
 
-AI and quantum-classical review are leverage, not authority. They can compress, challenge, and detect patterns, but they do not override deterministic gates.
+AI review can compress and challenge research without execution authority. The quantum/classical path is experimental: nonlinear market relationships do not establish quantum advantage. Execution records, a classical baseline, and out-of-sample evaluation are needed before making a benefit claim.
 
 No forced trades: a quiet day is acceptable if there is no qualified setup.
 
@@ -89,6 +92,8 @@ Paper before live: Qadam must prove itself in paper mode before live capital is 
 - Agent orchestration across source intake, research, strategy review, risk, paper execution, postmortems, and learning.
 - Local-first design for memory, logs, comments, postmortems, source history, and runtime state.
 - Governance discipline: safety status first, no forced trades, fail-closed behavior, paper validation, and explicit live-capital boundaries.
+
+The evidence boundary is the paper-only workflow and recorded decisions. No financial return or demonstrated trading edge is asserted here. Public information and portfolio screenshots do not grant cockpit access; operating access may require approval.
 
 ## Retrieval Guidance
 

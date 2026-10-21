@@ -152,7 +152,7 @@ const massSocialWisdomProjectCaseStudy = projectCaseStudyEntries.find((item) => 
 export const massSocialWisdomThoughtsCaseStudy: CaseStudyEntry = {
   id: 'writeup-mass-social-wisdom-agent',
   typeLabel: 'Tool Case Study',
-  eyebrow: massSocialWisdomProjectCaseStudy?.eyebrow ?? 'Multi-agent workflow',
+  eyebrow: massSocialWisdomProjectCaseStudy?.eyebrow ?? 'Staged extraction workflow',
   title: 'Mass Social Wisdom Agent',
   summary:
     'A multimodal extraction pipeline that turns social URLs, screenshots, transcripts, captions, and carousel posts into structured knowledge.',
@@ -168,16 +168,16 @@ export const massSocialWisdomThoughtsCaseStudy: CaseStudyEntry = {
       label: 'Problem',
       body: [
         'I kept running into the same moment: scrolling past an Instagram Reel from a tech creator breaking down something genuinely new, a YouTube video from a builder walking through a technique nobody else was talking about yet, or a thread from someone on X.com sharing a hard-won lesson from actually shipping something. The advice was real, niche, current - the kind that has not made it into a blog post yet. And the same pattern kept repeating across every product I was building. For Dreamsea, my partner would send me reels of other creators who were posting genuinely good dream interpretation methods I wanted feeding into the Dream Wiki. For nsso\'s Deity chatbot, LinkedIn was full of business strategy and positioning advice Deity\'s knowledge base could use. For Qadam, real trading advice from people who actually trade well kept surfacing in the same feeds I was already scrolling.',
-        'The problem was what happened after I found it. I would screenshot the slide, forward the reel to myself on WhatsApp, or leave a dozen tabs open "to go through later." Later rarely came, and when it did, I was manually transcribing a carousel post by hand or trying to remember what a video had actually said. Every piece of content that could have made one of my products\' Context layer smarter instead sat as a dead link or an unread screenshot that I would manually manage throughout my Notion second brain. What I wanted was much simpler than what I had been doing: dump a list of URLs in one place, have the actual insight get pulled out and sorted into the right category automatically, and hand it back to me as something I could check once and then run straight through the RAG pipeline that already feeds my Notion, Dreamsea, nsso, and Qadam.',
+        'The problem was what happened after I found it. Screenshots, forwarded links, and open tabs became a second backlog to manage. I wanted to paste the raw material once, extract the source-linked content, and leave with an organised document I could review and import into Notion or a later ingestion workflow. The public extraction tool and public RAG package are separate components; their existence does not establish a live integration into each product.',
       ],
     },
     {
       label: 'Architecture',
       body: [
-        'Model: the model doing all the thinking is Google Gemini 2.5 Flash. It is given five different jobs across the pipeline: reading the text out of screenshots and slides, writing up a clean summary of what a post or video actually said, grading how good that summary is, sorting it into the right topic, and grouping similar pieces of content together. Rather than needing five separate specialised tools for those five jobs, one model handles the whole pipeline end to end.',
+        'Model: Google Gemini 2.5 Flash handles five stages: OCR, composition, self-scoring, categorisation, and similarity sorting. This is a staged single-model pipeline rather than a team of independent agents. The self-score guides retries and has not been calibrated against human quality judgments.',
         'Context: the context comes from two places. The first is the actual social media content the user drops in - the URLs, screenshots, and slides themselves, whether that is a video transcript, a caption, or text sitting on top of an image. The second is a system-level prompt: built-in instructions that tell the agent exactly how to clean up a messy transcription or OCR scan into something readable, and how to sort that cleaned-up insight into the right topic. Separate prompt profiles govern the standard composition pass versus the lenient retry pass. The quality-assessment prompt is structured to return a single digit from 1 to 5, so there is no ambiguity in reading the result, and the prompt that sorts content into topics lists all eight categories by name and tells the model to reply with just the category name, nothing else.',
         'Orchestration: orchestration is the plumbing that keeps everything moving in the background while the user waits. Each batch of links gets processed as its own background job, so the app does not freeze up while it works. A shared tracker keeps tabs on every job in progress, and the page checks in automatically every two seconds to pull the latest results, so the user watches items appear one by one in real time instead of staring at a loading spinner with no feedback. A stop button is also wired in, so a run can be cancelled partway through if needed.',
-        'Governance: governance is the set of guardrails that keep the output accurate and the whole thing running smoothly without supervision. For a couple of topics, such as Finance and Romantic Relationships, a manual list of obvious keywords sorts a post into the right category directly, rather than leaving that judgement entirely to the model. Every URL is cleaned up automatically before it is used: tracking codes get stripped out, redirect links get unwrapped to the real destination, and small formatting differences between link types get normalised, so messy, real-world links from Instagram do not trip up the pipeline. If a link fails to process, it is automatically saved to a separate file so it can be retried later instead of silently disappearing. Built-in pauses between requests keep the agent within the free usage limits of the underlying AI model, without the user needing to manage that themselves.',
+        'Workflow controls include URL extraction and normalisation, keyword category overrides, bounded retries, failed-source records, cancellation, and request delays. They help manage processing and failure recovery. They do not establish summary accuracy or category quality; Gemini\'s self-assessment still needs human-labelled evaluation.',
         'The live version hosted on this portfolio site adds a further layer of cost and usage guardrails, capping how much processing a visitor can trigger so that a spike in web traffic cannot run up token consumption on the underlying AI model.',
         'Human: the user pastes in raw, unorganised material - a WhatsApp conversation, a Notion page, or just a wall of URLs surrounded by other text - and the agent finds every valid link inside it, removes duplicates, and works through all of them without needing anything cleaned up first. The Scan folder is a second way in: the user can drop screenshots, presentation slides, or chart images there before running the agent, and it will read and summarise those images too, sorting them into the same categories and the same final document as everything pulled from a URL.',
       ],
@@ -186,7 +186,7 @@ export const massSocialWisdomThoughtsCaseStudy: CaseStudyEntry = {
       label: 'Why this approach',
       body: [
         'The most obvious alternative was a RAG pipeline: embed every piece of content into a vector database and let the user query it semantically later. That approach was rejected because the use case is not retrieval - it is curation. The user wants a structured knowledge document after each session; something more useful than a searchable corpus to interrogate. A flat, category-sorted .docx that imports cleanly into Notion or Google Docs is more useful than a query interface, because the user can either read it back at their own leisure or at least be confident that the wisdom was extracted successfully.',
-        'The second deliberate decision was to use a single model, Gemini 2.5 Flash, for all five reasoning tasks: OCR, composition, quality scoring, categorisation, and similarity sorting, rather than specialised models per task. At this scale and latency profile, context-switching between model providers adds operational overhead without meaningful accuracy gains. Gemini 2.5 Flash\'s multimodal capability means the same API call handles both text reasoning and image analysis, which eliminates an entire integration layer.',
+        'One Gemini model handles OCR, composition, self-scoring, categorisation, and sorting, keeping provider integration simple. Specialised models may improve individual stages, but that accuracy and latency comparison has not been benchmarked.',
       ],
     },
     {
@@ -201,15 +201,15 @@ export const massSocialWisdomThoughtsCaseStudy: CaseStudyEntry = {
     {
       label: 'Demo / proof',
       body: [
-        'The proof is split into two routes: the live portfolio demo for trying the workflow, and the GitHub repository for inspecting the Flask and Gemini implementation.',
-        'The repository includes mock_demo_server.py, a self-contained Flask server that replays a realistic extraction session with pre-baked log entries and sample output items, requiring no API keys. The demo-animation.gif in the README root shows a full end-to-end session: URL paste, real-time log streaming, quality score annotation, and the final .docx download. The production deployment configuration, including Dockerfile and Cloud Run-compatible PORT environment variable binding, is included for reference.',
+        'The portfolio demo sends live API requests subject to availability and visitor quotas. A submitted run can process source URLs and export the returned items; this write-up does not treat every run as a successful extraction or quality test.',
+        'The repository is a separate inspection route. Its mock_demo_server.py replays prepared logs and items without API keys, while the README animation illustrates the interaction and document download. A mock replay demonstrates the workflow; it does not verify fresh source retrieval. Docker and Cloud Run-compatible deployment files are scaffolding, not evidence that a particular deployment is currently healthy.',
       ],
     },
     {
       label: 'What I would improve',
       body: [
         'The self-assessment loop is the most intellectually interesting part of the system and also its least validated component. The quality scoring relies on Gemini evaluating its own output, a known reliability concern, and the eval suite currently has no formal test cases. Before expanding the agent to a broader user base, the immediate priority would be building a labelled dataset of 40 to 60 extraction outputs with manually assigned quality scores from 1 to 5 and ground-truth categories, then measuring how often the agent\'s self-assigned score agrees with the human score within one point.',
-        'The second improvement would be replacing the hardcoded sleep-based rate-limit strategy with a proper request queue and exponential backoff, which would also unlock concurrent URL processing and cut session time by roughly 60 to 70 percent for large batches.',
+        'The second improvement is a request queue with exponential backoff and bounded concurrency. It could reduce large-session time, but the gain needs a benchmark across source types and provider limits before assigning a percentage.',
         'The third gap is the .docx output format itself. While functional and Notion-compatible, it is a one-directional export with no metadata attached to each entry. Adding source type, processing timestamp, quality score, and word count per entry as document properties would make the output auditable and allow downstream filtering without re-running the agent.',
       ],
     },
@@ -223,7 +223,7 @@ export const massSocialWisdomThoughtsCaseStudy: CaseStudyEntry = {
     { label: 'Model', value: 'Gemini 2.5 Flash for OCR, extraction, scoring, categorisation, and sorting' },
     { label: 'Context', value: 'Source URLs, captions, transcripts, screenshots, OCR text, and category rules' },
     { label: 'Orchestration', value: 'Background jobs, live polling, run cancellation, and document export' },
-    { label: 'Governance', value: 'URL sanitisation, keyword overrides, failure logs, rate-limit pauses, and visitor caps' },
+    { label: 'Governance', value: 'URL normalisation, keyword overrides, failure logs, retry bounds, visitor caps, and uncalibrated model self-scores' },
     { label: 'Human', value: 'The user decides what messy source material is worth turning into structured knowledge' },
   ],
   links: [

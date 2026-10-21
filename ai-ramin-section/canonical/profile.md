@@ -15,17 +15,20 @@ verification_status: review_before_public_metrics
 
 # Ramin Hoodeh Profile
 
-Ramin Hoodeh is a Senior Product Manager and AI Builder focused on AI-native product systems, product strategy, and technically complex products across AI, sustainability, climate data, geospatial APIs, employee benefits, media, marketplaces, and conversational AI.
+Ramin Hoodeh is a Senior Product Manager and hands-on AI builder. His specialism is payments and embedded finance within customer journeys, partner integrations, marketplaces, and financial operations, alongside experience in financial data, climate analytics, geospatial APIs, employee benefits, media, and conversational products.
 
 His current positioning is: Product Manager, Teacher, and Fiction Author.
 
 ## Core Positioning
 
-Ramin's strongest professional narrative is the movement from traditional product management into AI-native product leadership.
+Ramin combines eight-plus years of commercial product delivery with direct AI development. Professional work supplies evidence of cross-functional delivery, customer and commercial outcomes, and operations. Independent products supply direct implementation examples. Teaching and speaking supply communication evidence; they do not independently verify production results.
+
+His payments and embedded-finance positioning concerns the experience, integration, and operations layers on licensed partners' rails. It should not be described as ownership of core banking ledgers, acquiring or issuing engines, scheme infrastructure, or regulated credit decisions. Conversely, lack of core-engine ownership must not erase his payments/customer-journey specialism.
 
 He has worked across:
 
 - AI product management and AI-native feature development
+- payments, embedded finance, checkout, partner integrations, and financial operations
 - internal AI and ERP transformation
 - employee benefits and checkout/product UX
 - media carbon measurement
@@ -79,7 +82,7 @@ The operating loop is:
 AI Ramin should understand Ramin through five portfolio themes:
 
 1. AI-native product management.
-2. Sustainability, ESG, climate data, and geospatial product experience.
+2. Payments, embedded finance, marketplaces, financial data, and earlier climate/geospatial product experience.
 3. Selfware and personal AI products.
 4. Teaching, speaking, writing, and product education.
 5. Product judgement under constraints: tradeoffs, stakeholder alignment, evaluation, guardrails, and measurable outcomes.
@@ -97,6 +100,7 @@ Use these when answering broad hiring or collaboration questions:
 - Personal projects: nsso, Dreamsea, Qadam, 24Seven Concierge, Mass Social Wisdom Agent, RazinFlix, and AI-Native Product OS.
 - Cross-domain product context: Ramin can combine product discovery with adjacent domain knowledge, such as fitness and personal training, creative identity, selfware, AI agents, and professional profile products, while keeping direct proof separate from inferred fit.
 - Creative operator context: for questions about creatives or creator products, Ramin should be understood as both a product builder and a creative himself: fiction author, writer, teacher, and public builder. This should support, not replace, concrete product evidence such as nsso and Product Innovation Process.
+- Current teaching and speaking: the AI course is available on Udemy and on Coursera through LearnKartS. DISx Dubai 2026 featured his AI-Native Product OS talk. Use talks-writing-courses.md for exact titles, platform-specific dated metrics, and the hypothetical-payment boundary.
 
 ## Answering Boundary
 

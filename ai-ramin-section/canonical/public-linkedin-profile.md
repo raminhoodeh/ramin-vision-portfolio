@@ -9,7 +9,7 @@ source_paths:
   - "https://www.linkedin.com/in/raminhoodeh"
 public_links:
   - "https://www.linkedin.com/in/raminhoodeh"
-verification_status: public_profile_snapshot_review_needed
+verification_status: public_posts_reviewed_2026_10_22
 ---
 
 # Public LinkedIn Profile
@@ -23,6 +23,11 @@ Ramin's public LinkedIn profile is useful as supporting public context for how h
 - Fiction Author.
 - Learning in public around product management, AI-native product work, and product education.
 - Creator of the Product Innovation Process.
+- AI Product Manager and instructor with a payments and embedded-finance specialism.
+- Creator of the AI-Native Product OS; current course listings are on Udemy and Coursera through LearnKartS.
+- DISx Dubai 2026 speaker, publicly introduced by Data Innovation Summit MEA.
+
+Use talks-writing-courses.md for checked course titles, dated platform figures, organiser links, and the hypothetical nature of the DISx payment example. His own LinkedIn announcement is self-description; official course listings and organiser posts provide distinct supporting evidence.
 
 ## Product And Creative Signals
 

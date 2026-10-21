@@ -780,8 +780,9 @@ function scoreChunk(chunk, queryTokens, queryIntent) {
     ) {
       intentScore += 0.22;
     }
-    if (chunk.file_path?.includes('profile.md')) {
-      intentScore += 0.2;
+    if (chunk.file_path?.endsWith('canonical/profile.md')) {
+      // Broad product comparisons need the curated overview as an evidence anchor.
+      intentScore += 0.45;
     }
   }
 
