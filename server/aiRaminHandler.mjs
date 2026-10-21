@@ -5492,6 +5492,7 @@ async function generateStructuredAnswer({
       return {
         ok: false,
         status: error?.status || 502,
+        providerFailureCode: modelProviderFailureCode(error instanceof Error ? error.message : ''),
         errorText: getPublicModelProviderErrorMessage(error instanceof Error ? error.message : 'AI Gateway request failed.'),
         answerText: '',
       };
@@ -5527,6 +5528,7 @@ async function generateStructuredAnswer({
     return {
       ok: false,
       status: response.status,
+      providerFailureCode: modelProviderFailureCode(responsePayload?.error?.message),
       errorText: getPublicModelProviderErrorMessage(responsePayload?.error?.message || 'Gemini request failed.'),
       answerText: '',
     };
@@ -5701,7 +5703,7 @@ export async function handleAiRaminRequest(req, res) {
     console.error('[ai-ramin-provider-failure]', JSON.stringify({
       provider: modelRuntime.provider,
       status: firstAttempt.status,
-      code: modelProviderFailureCode(firstAttempt.errorText),
+      code: firstAttempt.providerFailureCode ?? 'provider_request_failed',
     }));
     sendJson(res, firstAttempt.status, { error: getPublicModelProviderErrorMessage(firstAttempt.errorText) });
     return;
