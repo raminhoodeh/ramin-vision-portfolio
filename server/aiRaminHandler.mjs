@@ -4439,6 +4439,18 @@ function getPublicModelProviderErrorMessage(errorText) {
   return text || 'AI Ramin could not reach the model provider.';
 }
 
+function modelProviderFailureCode(errorText) {
+  const text = String(errorText ?? '');
+  if (/leaked|compromised/i.test(text)) return 'credential_disabled';
+  if (/expired|invalid.*key|key.*invalid/i.test(text)) return 'credential_invalid';
+  if (/quota|resource.exhausted/i.test(text)) return 'quota_exceeded';
+  if (/billing|credit card/i.test(text)) return 'billing_required';
+  if (/referrer|referer|IP address|blocked/i.test(text)) return 'credential_restriction';
+  if (/not found|not supported|model.*unavailable/i.test(text)) return 'model_unavailable';
+  if (/permission|unauthorized|forbidden/i.test(text)) return 'permission_denied';
+  return 'provider_request_failed';
+}
+
 async function requestAiGatewayText({
   apiKey,
   model,
@@ -5685,6 +5697,12 @@ export async function handleAiRaminRequest(req, res) {
 
   const firstAttempt = await generateStructuredAnswer({ ...generateOptions, temperature: ANSWER_BASE_TEMPERATURE });
   if (!firstAttempt.ok) {
+    // Record an actionable category without logging credentials or provider response bodies.
+    console.error('[ai-ramin-provider-failure]', JSON.stringify({
+      provider: modelRuntime.provider,
+      status: firstAttempt.status,
+      code: modelProviderFailureCode(firstAttempt.errorText),
+    }));
     sendJson(res, firstAttempt.status, { error: getPublicModelProviderErrorMessage(firstAttempt.errorText) });
     return;
   }
