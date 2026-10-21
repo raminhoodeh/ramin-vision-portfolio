@@ -17,6 +17,8 @@ import {
   type PlaceholderLike,
 } from '../lib/placeholder';
 import { preloadWorkVideoForEntry, preloadWorkVideos } from '../performance/workVideoPreload';
+import { professionalStories } from '../data/professionalStories';
+import { ProfessionalStories } from './ProfessionalStories';
 
 function CompanyLogoMark({
   logo,
@@ -263,6 +265,8 @@ function ProductManagementWorkCard({
   const productText = contentItemsToText(entry.productsWorkedOn, 2);
   const location = publicWorkValue(entry.location);
   const clients = publicWorkValue(entry.customerClientTypesAndUserNumbers);
+  const decisionStory = professionalStories.find((story) => story.companyNames.some((name) => name === entry.companyName));
+  const collapsedSignal = decisionStory?.highlight ?? (entry.companyName === 'Bayut' ? getWorkPublicDetails(entry).remit[0] : undefined);
 
   return (
     <motion.article
@@ -330,6 +334,13 @@ function ProductManagementWorkCard({
           <ExpandIndicator isActive={isActive} />
         </div>
       </div>
+
+      {!isActive && collapsedSignal ? (
+        <div className="work-collapsed-signal">
+          <span>{decisionStory ? 'Reported outcome' : 'Public remit'}</span>
+          <p>{collapsedSignal}</p>
+        </div>
+      ) : null}
 
       <AnimatePresence initial={false}>
         {isActive ? (
@@ -405,6 +416,7 @@ function ProductManagementWorkRail({
           activeIndex === null ? 'py-4 md:py-5' : 'pb-4 pt-0 md:pb-5 md:pt-0'
         }`}
       >
+        <ProfessionalStories />
         {companies.map((entry, index) => (
           <ProductManagementWorkCard
             key={`${entry.companyName}-${index}`}
@@ -870,12 +882,7 @@ export function ExperienceEducationSection() {
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.22, ease: [0.25, 0.1, 0.25, 1] }}
             >
-              <div ref={isEducationExpanded ? undefined : mobileEducationCardRef}>
-                <EducationCard
-                  isActive={false}
-                  onToggle={handleEducationToggle}
-                />
-              </div>
+              <ProfessionalStories />
 
               <div className="work-mobile-card-list">
                 {companies.map((entry, index) => (
@@ -891,6 +898,13 @@ export function ExperienceEducationSection() {
                     onPreviewIntent={() => preloadWorkVideoForEntry(entry, 'intent')}
                   />
                 ))}
+              </div>
+
+              <div ref={isEducationExpanded ? undefined : mobileEducationCardRef}>
+                <EducationCard
+                  isActive={false}
+                  onToggle={handleEducationToggle}
+                />
               </div>
             </motion.div>
           )}

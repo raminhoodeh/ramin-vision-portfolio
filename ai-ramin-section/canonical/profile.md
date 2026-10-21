@@ -17,7 +17,7 @@ verification_status: review_before_public_metrics
 
 Ramin Hoodeh is a Senior Product Manager and hands-on AI builder. His specialism is payments and embedded finance within customer journeys, partner integrations, marketplaces, and financial operations, alongside experience in financial data, climate analytics, geospatial APIs, employee benefits, media, and conversational products.
 
-His current positioning is: Product Manager, Teacher, and Fiction Author.
+His primary public positioning is AI Product Manager. Teaching, hands-on building, speaking, and fiction support that professional proposition.
 
 ## Core Positioning
 

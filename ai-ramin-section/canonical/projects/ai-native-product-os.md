@@ -6,9 +6,14 @@ visibility: public_portfolio_safe
 retrieval_priority: highest
 answer_permission: factual_answer
 source_paths:
+  - "src/sections/ProductMethodSummary.tsx"
   - "src/data/portfolio.ts"
   - "projects-section/ai-native-product-os-ramins-ai-product-management-thesis.md"
   - "overall-structure-context.md"
+public_links:
+  - "https://www.ramin.vision/product-method"
+  - "https://www.ramin.vision/product-thesis"
+  - "https://www.ramin.vision/talks/disx-dubai"
 ---
 
 # AI-Native Product OS
@@ -17,7 +22,9 @@ source_paths:
 
 The AI-Native Product OS is Ramin's core thesis for how product management changes when the material is probabilistic rather than deterministic.
 
-Traditional product processes assume that teams can specify a feature, build it, QA it, and expect stable behaviour. AI products do not always behave that way. Model outputs can vary, model behaviour can change, and product quality depends on context, evals, guardrails, and human judgement.
+Outputs can vary; product quality depends on context, evaluation, guardrails, and human judgement. Conventional discovery, security, and risk-dependent release gates remain useful.
+
+The framework organises responsibilities. Courses teach it. The separate installable workspace supplies templates and adapters; structural tests do not prove runtime compatibility or product outcomes.
 
 ## The 5-Layer Stack
 
@@ -43,6 +50,12 @@ The AI-native product loop is:
 - He understands that AI product work is not just model selection.
 - He treats context, governance, and human judgement as first-class product layers.
 - He can teach and operationalise a product process.
+
+Products show applications, not universal validation. Context permissions and freshness matter. Human responsibility and governance apply throughout.
+
+## Worked Example and Limits
+
+The DISx page applies the method to a hypothetical USD 4.2 billion payment simulation: scoped recommendation, ambiguous counterparty match, targeted evaluation, and enforced escalation. It establishes no real transfer or measured results. Model selection needs task evaluation, privacy, latency, and cost; age and temperature alone cannot establish reliability.
 
 ## Retrieval Guidance
 

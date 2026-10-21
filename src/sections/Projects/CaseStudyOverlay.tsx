@@ -9,6 +9,7 @@ import { getProjectCardDescriptionByName } from './projectCopy';
 import { GlassImprintCta } from '../../components/GlassImprintCta';
 import { IPhone3D } from '../../components/IPhone3D';
 import { MassSocialWisdomDemo } from './MassSocialWisdomDemo';
+import { ProjectBrief } from './ProjectBrief';
 import aiCostsDashboardVisualUrl from '../../assets/projects/ai-costs-mock.webp';
 import aiNativeProductOsVisualUrl from '../../assets/projects/ai-native-os-hero.webp';
 import massSocialWisdomAgentAppScreenshotUrl from '../../assets/projects/mass-social-app-screenshot.webp';
@@ -956,9 +957,13 @@ export function CaseStudyOverlay({ item, onClose }: { item: CaseStudyEntry; onCl
       </button>
 
       {shouldShowMassSocialDemo ? (
-        <MassSocialWisdomDemo onClose={onClose} githubHref={proofCta?.href} />
+        <>
+          <ProjectBrief title={item.title} className="project-entry-brief--demo" />
+          <MassSocialWisdomDemo onClose={onClose} githubHref={proofCta?.href} />
+        </>
       ) : (
       <motion.article className="portfolio-deep-dive-shell relative mx-auto grid min-h-[calc(100svh-1.5rem)] max-w-[1320px] gap-4 lg:h-[calc(100svh-2.5rem)] lg:min-h-0 lg:grid-cols-[0.9fr_1.1fr] lg:overflow-hidden">
+        <ProjectBrief title={item.title} className="project-entry-brief--mobile" />
         {mobilePresentation ? (
           <aside className="deep-dive-support-rail liquid-glass-strong flex min-h-[64vh] flex-col overflow-hidden rounded-[2rem] lg:h-full lg:min-h-0">
             <div className="relative min-h-[38rem] flex-1 overflow-hidden rounded-[2rem] border border-white/12 bg-white/[0.07] shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] ring-1 ring-[#6e8bff]/20 backdrop-blur-2xl sm:min-h-[44rem] lg:h-full lg:min-h-0">
@@ -1008,6 +1013,7 @@ export function CaseStudyOverlay({ item, onClose }: { item: CaseStudyEntry; onCl
           </div>
 
           <div className="project-deep-dive-scroll mt-8 pr-1 lg:min-h-0 lg:flex-1 lg:overflow-y-auto lg:pr-4">
+            <ProjectBrief title={item.title} className="project-entry-brief--desktop" />
             {productQuote ? (
               <figure className="mb-6 border-b border-[#89AACC]/18 pb-6">
                 <blockquote className="project-case-study-quote font-display text-[clamp(2.5rem,5vw,4.8rem)] italic leading-[0.9] tracking-[-0.045em]">

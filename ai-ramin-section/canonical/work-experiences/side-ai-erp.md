@@ -11,6 +11,9 @@ date_range: "Mar 2025 - Aug 2025"
 source_paths:
   - "ramin-hoodeh-exp-context.md"
   - "src/data/portfolio.ts"
+  - "src/data/professionalStories.ts"
+public_links:
+  - "https://www.ramin.vision/work/side"
 verification_status: metric_review_needed
 ---
 
@@ -35,6 +38,12 @@ Local source claims:
 - Manual reporting overhead was reduced by 30 percent.
 
 These metrics should be reviewed before public chatbot usage.
+
+## Public Decision Story
+
+The public story describes a targeted build-versus-buy decision: retire selected third-party modules and build Windsurf-assisted reporting and reconciliation tools, rather than claim ownership of a replacement core financial system. Enterprise Copilot supported aggregation and exception triage; Finance retained approval over postings. Ramin owned product decisions with Engineering, Finance, Operations, and Sales.
+
+The supplied Payments & Embedded Finance CV dates the 20 percent ERP operating-cost reduction to four months. Do not attach that window automatically to the 30 percent reporting or 90 percent delivery figures. These remain self-reported employer-work outcomes; internal baselines, samples, and dashboards are not public or independently audited.
 
 ## What This Proves
 

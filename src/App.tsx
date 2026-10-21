@@ -20,6 +20,11 @@ import { scrollToId } from './lib/scroll';
 import { type CaseStudyEntry } from './sections/types';
 import { Contact } from './sections/Contact';
 import { Hero } from './sections/Hero';
+import { HomeHighlights, HomeRecognition } from './sections/HomeHighlights';
+import { ProfessionalStories } from './sections/ProfessionalStories';
+import { ProductMethodSummary } from './sections/ProductMethodSummary';
+import { DisxTalkPage } from './sections/DisxTalkPage';
+import './sections/portfolioDocuments.css';
 import { AiRaminSection } from './sections/AiRamin';
 import { ExperienceEducationSection } from './sections/ExperienceEducation';
 import {
@@ -137,6 +142,7 @@ type ParsedPortfolioRoute = {
   caseStudy: CaseStudyEntry | null;
   scrollTargetId: string | null;
   canonicalPath: string;
+  documentPage?: 'side' | 'vivup' | 'disx' | 'method';
 };
 
 function normalizeRouteSegment(value: string | undefined) {
@@ -183,6 +189,18 @@ function parseSegmentsToRoute(segments: string[]): ParsedPortfolioRoute {
   const second = normalizeRouteSegment(secondRaw);
 
   if (!first) return sectionRoute('hero');
+
+  if (first === 'work' && (second === 'side' || second === 'vivup')) {
+    return { ...sectionRoute('experience-education', `/work/${second}`), documentPage: second };
+  }
+
+  if ((first === 'talks' && second === 'disx-dubai') || first === 'disx') {
+    return { ...sectionRoute('thoughts', '/talks/disx-dubai'), documentPage: 'disx' };
+  }
+
+  if (first === 'product-method' || first === 'method') {
+    return { ...sectionRoute('thoughts', '/product-method'), documentPage: 'method' };
+  }
 
   const legacyDomRoute = legacyDomIdRoutes[first];
   if (legacyDomRoute) return { ...legacyDomRoute, caseStudy: null };
@@ -250,9 +268,14 @@ function parseSegmentsToRoute(segments: string[]): ParsedPortfolioRoute {
   return sectionRoute('hero');
 }
 
+function isLegacyHashRoute(hash: string) {
+  const [first] = getRouteSegments(hash);
+  return hash.startsWith('#/') || Boolean(legacyDomIdRoutes[first] || sectionAliases[first]);
+}
+
 function parsePortfolioLocation(pathname: string, hash: string): ParsedPortfolioRoute {
   const hashSegments = getRouteSegments(hash);
-  if (hashSegments.length > 0) return parseSegmentsToRoute(hashSegments);
+  if (hashSegments.length > 0 && isLegacyHashRoute(hash)) return parseSegmentsToRoute(hashSegments);
 
   return parseSegmentsToRoute(getRouteSegments(pathname));
 }
@@ -279,6 +302,7 @@ function ActivePortfolioSection({
   bonusRockClicks,
   onBonusRockClick,
   onOpenMobileMenu,
+  documentPage,
 }: {
   active: SectionTarget;
   ready: boolean;
@@ -289,7 +313,15 @@ function ActivePortfolioSection({
   bonusRockClicks: number;
   onBonusRockClick: () => void;
   onOpenMobileMenu: () => void;
+  documentPage?: ParsedPortfolioRoute['documentPage'];
 }) {
+  if (documentPage === 'side' || documentPage === 'vivup') {
+    return <ProfessionalStories activeSlug={documentPage} />;
+  }
+  if (documentPage === 'disx') return <DisxTalkPage onOpenThesis={onOpenThesis} />;
+  if (documentPage === 'method') {
+    return <section className="portfolio-document-page"><ProductMethodSummary /></section>;
+  }
   switch (active) {
     case 'experience-education':
       return <ExperienceEducationSection />;
@@ -314,13 +346,21 @@ function ActivePortfolioSection({
       return <AiRaminSection onOpenMenu={onOpenMobileMenu} />;
     case 'hero':
     default:
-      return <Hero ready={ready} onOpenThesis={onOpenThesis} />;
+      return (
+        <div className="portfolio-home">
+          <Hero ready={ready} onOpenThesis={onOpenThesis} />
+          <HomeHighlights />
+          <ProductMethodSummary compact />
+          <HomeRecognition />
+        </div>
+      );
   }
 }
 
 function PortfolioPage() {
   const location = useLocation();
   const navigate = useNavigate();
+  const documentPage = parsePortfolioLocation(location.pathname, location.hash).documentPage;
   const [isLoading, setIsLoading] = useState(
     () => !(import.meta.env.DEV && new URLSearchParams(window.location.search).has('noIntro')),
   );
@@ -353,6 +393,7 @@ function PortfolioPage() {
     return import.meta.env.DEV && searchParams.has('perf');
   }, [location.search]);
   const mobileMenuOpenRef = useRef<(() => void) | null>(null);
+  const readerReturnLocationRef = useRef<{ pathname: string; hash: string } | null>(null);
   const openMobileMenu = useCallback(() => { mobileMenuOpenRef.current?.(); }, []);
   const isProjectsSection = activeSection === 'projects';
   const isThoughtsSection = activeSection === 'thoughts';
@@ -391,6 +432,12 @@ function PortfolioPage() {
 
       const url = new URL(href, window.location.href);
       if (url.origin !== window.location.origin || url.pathname.startsWith('/api/')) return;
+      // These routes are HTTP redirects to public documents, rather than SPA sections.
+      if (/^\/(cv|presentation)\/?$/.test(url.pathname)) return;
+
+      if (parsePortfolioLocation(url.pathname, url.hash).caseStudy && !parsePortfolioLocation(window.location.pathname, window.location.hash).caseStudy) {
+        readerReturnLocationRef.current = { pathname: window.location.pathname, hash: window.location.hash };
+      }
 
       event.preventDefault();
       navigate({ pathname: url.pathname, search: url.search || location.search, hash: url.hash });
@@ -467,10 +514,11 @@ function PortfolioPage() {
 
   useEffect(() => {
     const route = parsePortfolioLocation(location.pathname, location.hash);
-    const shouldCanonicalize = Boolean(location.hash) || location.pathname !== route.canonicalPath;
+    const legacyHash = Boolean(location.hash) && isLegacyHashRoute(location.hash);
+    const shouldCanonicalize = legacyHash || location.pathname !== route.canonicalPath;
 
     if (shouldCanonicalize) {
-      navigate({ pathname: route.canonicalPath, search: location.search, hash: '' }, { replace: true });
+      navigate({ pathname: route.canonicalPath, search: location.search, hash: legacyHash ? '' : location.hash }, { replace: true });
       return;
     }
 
@@ -494,28 +542,33 @@ function PortfolioPage() {
   const handleOpenThesis = useCallback(() => {
     if (!thesisCaseStudy) return;
     setCaseStudyReturnSection(activeSection);
+    readerReturnLocationRef.current = { pathname: location.pathname, hash: location.hash };
     navigateToPath(PRODUCT_THESIS_PATH);
-  }, [activeSection, navigateToPath, thesisCaseStudy]);
+  }, [activeSection, location.hash, location.pathname, navigateToPath, thesisCaseStudy]);
 
   const handleOpenCaseStudy = useCallback(
     (item: CaseStudyEntry) => {
       setCaseStudyReturnSection(activeSection);
+      readerReturnLocationRef.current = { pathname: location.pathname, hash: location.hash };
       navigateToPath(caseStudyPath(item));
     },
-    [activeSection, navigateToPath],
+    [activeSection, location.hash, location.pathname, navigateToPath],
   );
 
   const handleCloseCaseStudy = useCallback(() => {
     setActiveCaseStudy(null);
-    navigateToPath(sectionPathByTarget[caseStudyReturnSection]);
-  }, [caseStudyReturnSection, navigateToPath]);
+    const returnLocation = readerReturnLocationRef.current;
+    readerReturnLocationRef.current = null;
+    if (returnLocation) navigate({ ...returnLocation, search: location.search });
+    else navigateToPath(sectionPathByTarget[caseStudyReturnSection]);
+  }, [caseStudyReturnSection, location.search, navigate, navigateToPath]);
 
   useEffect(() => {
     if (!isLoading) {
       resetViewportScroll('auto');
       window.setTimeout(() => ScrollTrigger.refresh(), 100);
     }
-  }, [activeSection, isLoading, resetViewportScroll]);
+  }, [activeSection, documentPage, isLoading, resetViewportScroll]);
 
   useEffect(() => {
     if (isLoading || !routeScrollTargetId || activeCaseStudy) return undefined;
@@ -531,7 +584,25 @@ function PortfolioPage() {
   }, [activeCaseStudy, activeSection, isLoading, routeScrollTargetId]);
 
   useEffect(() => {
-    if (isLoading || activeCaseStudy || routeScrollTargetId || activeSection !== 'thoughts') return undefined;
+    if (isLoading || !location.hash || isLegacyHashRoute(location.hash)) return undefined;
+    let frame = 0;
+    let attempts = 0;
+    const revealAnchor = () => {
+      const target = document.getElementById(decodeURIComponent(location.hash.slice(1)));
+      if (target) {
+        target.scrollIntoView({ block: 'start', behavior: 'auto' });
+      } else if (++attempts < 45) {
+        frame = window.requestAnimationFrame(revealAnchor);
+      }
+    };
+    frame = window.requestAnimationFrame(() => {
+      frame = window.requestAnimationFrame(revealAnchor);
+    });
+    return () => window.cancelAnimationFrame(frame);
+  }, [activeCaseStudy, documentPage, isLoading, location.hash, location.pathname]);
+
+  useEffect(() => {
+    if (isLoading || activeCaseStudy || routeScrollTargetId || location.hash || activeSection !== 'thoughts') return undefined;
     if (!window.matchMedia('(max-width: 767px)').matches) return undefined;
 
     const frame = window.requestAnimationFrame(() => {
@@ -543,7 +614,7 @@ function PortfolioPage() {
     });
 
     return () => window.cancelAnimationFrame(frame);
-  }, [activeCaseStudy, activeSection, isLoading, routeScrollTargetId]);
+  }, [activeCaseStudy, activeSection, isLoading, location.hash, routeScrollTargetId]);
 
   useEffect(
     () =>
@@ -652,7 +723,7 @@ function PortfolioPage() {
             <main className="relative z-10 h-full">
               <AnimatePresence mode="wait" initial={false}>
                 <motion.div
-                  key={activeSection}
+                  key={documentPage ?? activeSection}
                   className="h-full"
                   initial={{ opacity: 0, y: 18 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -669,6 +740,7 @@ function PortfolioPage() {
                     bonusRockClicks={bonusRockClicks}
                     onBonusRockClick={handleBonusRockClick}
                     onOpenMobileMenu={openMobileMenu}
+                    documentPage={documentPage}
                   />
                 </motion.div>
               </AnimatePresence>

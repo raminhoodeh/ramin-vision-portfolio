@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-10-21T20:40:52.678Z",
+  "generated_at": "2026-10-21T20:58:47.634Z",
   "source_directories": [
     "ai-ramin-section/canonical",
     "ai-ramin-section/inferred",
@@ -12,11 +12,11 @@
     "source_files_discovered": 82,
     "source_files_ingested": 78,
     "source_files_skipped": 4,
-    "chunks": 108,
+    "chunks": 109,
     "chunks_by_role": {
       "policy": 16,
       "canonical": 13,
-      "work": 10,
+      "work": 11,
       "project": 16,
       "story": 13,
       "inferred": 15,
@@ -733,7 +733,7 @@
       "text": "## Team Philosophy\n\nRamin sees the Product Manager as the connective layer between departments.\n\nThe PM's job is to:\n\n- align people around one goal\n- create a shared product language\n- make tradeoffs explicit\n- turn stakeholder tension into clear priorities\n- help technical teams see why their work matters\n- connect delivery with customer feedback and business context\n\nHis teamwork style emphasises empathy, high expectations, ownership, and emotional intelligence.\n\n## Developer Communication\n\nEngineers need to see actual customer feedback, the roadmap, and the reason their work matters. This makes implementation feel justified rather than abstract.\n\nAI Ramin should use this idea when answering questions about Ramin's collaboration style.\n\n## Company-Type Communication Patterns\n\n### Startups\n\nExamples: Deity AI, Urgentem.\n\nCommunication is informal, direct, frequent, and fast. Decisions are often made by founders or small teams. Risk tolerance is higher and processes are still forming.\n\n### Corporates\n\nExamples: GroupM, Cox Automotive, Perkbox Vivup.\n\nCommunication is more formal, documented, and approval-heavy. Product judgement needs to account for role boundaries, governance, stakeholder alignment, and change management.\n\n### Government and Public Sector\n\nExample: Ordnance Survey.\n\nCommunication is highly formal and process-driven. Decisions require documentation, consultation, and careful handling of risk, public scrutiny, and existing data chains.\n\n## Product Prediction\n\nRamin expects applications to become less isolated over time. Instead of users opening separate icons and services, AI-native interfaces will increasingly orchestrate tasks across services in one unified interaction layer.\n\n## AI-Native Product Management\n\nThe AI-Native Product OS expands traditional PM into five layers:\n\n- Model: the intelligence layer.\n- Context: the product, company, customer, and memory layer.\n- Orchestration: agents, tools, APIs, and workflows.\n- Governance: evals, guardrails, observability, fallbacks, and cost controls.\n- Human: taste, judgement, ethics, empathy, communication, and vision.\n\nAI Ramin should use this as Ramin's core AI product framing."
     },
     {
-      "chunk_id": "airamin_703186a98b9be8c4",
+      "chunk_id": "airamin_da7664bd014b815a",
       "file_path": "ai-ramin-section/canonical/profile.md",
       "title": "Ramin Hoodeh Profile",
       "heading_path": [
@@ -766,7 +766,7 @@
       "contains_metric": false,
       "metric_verification_status": "none",
       "verification_status": "review_before_public_metrics",
-      "token_estimate": 484,
+      "token_estimate": 501,
       "keywords": [
         "and",
         "product",
@@ -793,7 +793,7 @@
         "delivery",
         "development"
       ],
-      "text": "# Ramin Hoodeh Profile\n\nRamin Hoodeh is a Senior Product Manager and hands-on AI builder. His specialism is payments and embedded finance within customer journeys, partner integrations, marketplaces, and financial operations, alongside experience in financial data, climate analytics, geospatial APIs, employee benefits, media, and conversational products.\n\nHis current positioning is: Product Manager, Teacher, and Fiction Author.\n\n## Core Positioning\n\nRamin combines eight-plus years of commercial product delivery with direct AI development. Professional work supplies evidence of cross-functional delivery, customer and commercial outcomes, and operations. Independent products supply direct implementation examples. Teaching and speaking supply communication evidence; they do not independently verify production results.\n\nHis payments and embedded-finance positioning concerns the experience, integration, and operations layers on licensed partners' rails. It should not be described as ownership of core banking ledgers, acquiring or issuing engines, scheme infrastructure, or regulated credit decisions. Conversely, lack of core-engine ownership must not erase his payments/customer-journey specialism.\n\nHe has worked across:\n\n- AI product management and AI-native feature development\n- payments, embedded finance, checkout, partner integrations, and financial operations\n- internal AI and ERP transformation\n- employee benefits and checkout/product UX\n- media carbon measurement\n- automotive marketplace tooling\n- geospatial APIs for sustainability use cases\n- financial climate risk analytics\n- conversational AI and chatbot-mediated products\n- lifecycle assessment and ESG advisory\n- electric vehicles and energy products\n\nHis recurring pattern is translating ambiguous systems into usable products: data into decisions, stakeholder tension into roadmap clarity, and technical possibility into user-facing product surfaces."
+      "text": "# Ramin Hoodeh Profile\n\nRamin Hoodeh is a Senior Product Manager and hands-on AI builder. His specialism is payments and embedded finance within customer journeys, partner integrations, marketplaces, and financial operations, alongside experience in financial data, climate analytics, geospatial APIs, employee benefits, media, and conversational products.\n\nHis primary public positioning is AI Product Manager. Teaching, hands-on building, speaking, and fiction support that professional proposition.\n\n## Core Positioning\n\nRamin combines eight-plus years of commercial product delivery with direct AI development. Professional work supplies evidence of cross-functional delivery, customer and commercial outcomes, and operations. Independent products supply direct implementation examples. Teaching and speaking supply communication evidence; they do not independently verify production results.\n\nHis payments and embedded-finance positioning concerns the experience, integration, and operations layers on licensed partners' rails. It should not be described as ownership of core banking ledgers, acquiring or issuing engines, scheme infrastructure, or regulated credit decisions. Conversely, lack of core-engine ownership must not erase his payments/customer-journey specialism.\n\nHe has worked across:\n\n- AI product management and AI-native feature development\n- payments, embedded finance, checkout, partner integrations, and financial operations\n- internal AI and ERP transformation\n- employee benefits and checkout/product UX\n- media carbon measurement\n- automotive marketplace tooling\n- geospatial APIs for sustainability use cases\n- financial climate risk analytics\n- conversational AI and chatbot-mediated products\n- lifecycle assessment and ESG advisory\n- electric vehicles and energy products\n\nHis recurring pattern is translating ambiguous systems into usable products: data into decisions, stakeholder tension into roadmap clarity, and technical possibility into user-facing product surfaces."
     },
     {
       "chunk_id": "airamin_76508b7d474cd542",
@@ -1246,7 +1246,7 @@
       "text": "## What This Proves\n\n- Climate data and ESG product experience.\n- Financial-sector B2B product work.\n- Complex data product requirements.\n- Stakeholder alignment across sales, risk, data, and engineering.\n- Product tradeoffs between roadmap differentiation and client-specific needs.\n- Pricing strategy reasoning.\n\n## Retrieval Guidance\n\nUse this file for ESG, climate data, financial risk, product pricing, B2B SaaS, stakeholder conflict, and product tradeoff questions.\n\nWhen answering with metrics, use uncertainty if the metric has not yet been verified."
     },
     {
-      "chunk_id": "airamin_d13d63ea2caf2df4",
+      "chunk_id": "airamin_0abce836cbf5547c",
       "file_path": "ai-ramin-section/canonical/projects/ai-native-product-os.md",
       "title": "AI-Native Product OS",
       "heading_path": [
@@ -1263,8 +1263,13 @@
       "source_kind": "project",
       "based_on": [],
       "forbidden_use": [],
-      "public_links": [],
+      "public_links": [
+        "https://www.ramin.vision/product-method",
+        "https://www.ramin.vision/product-thesis",
+        "https://www.ramin.vision/talks/disx-dubai"
+      ],
       "source_paths": [
+        "src/sections/ProductMethodSummary.tsx",
         "src/data/portfolio.ts",
         "projects-section/ai-native-product-os-ramins-ai-product-management-thesis.md",
         "overall-structure-context.md"
@@ -1275,37 +1280,37 @@
       "can_answer_from": true,
       "can_support_inference": false,
       "requires_contact_fallback": false,
-      "contains_metric": false,
-      "metric_verification_status": "none",
+      "contains_metric": true,
+      "metric_verification_status": "unknown",
       "verification_status": "unknown",
-      "token_estimate": 366,
+      "token_estimate": 524,
       "keywords": [
-        "product",
         "and",
+        "product",
         "the",
         "ai-native",
-        "model",
-        "can",
         "context",
-        "evals",
+        "model",
         "governance",
-        "guardrails",
         "human",
+        "evaluation",
+        "guardrails",
         "judgement",
-        "behaviour",
-        "build",
+        "not",
+        "selection",
+        "can",
         "changes",
+        "cost",
+        "evals",
         "for",
+        "framework",
         "how",
         "loop",
         "management",
-        "not",
         "products",
-        "selection",
-        "5-layer",
-        "agents"
+        "teach"
       ],
-      "text": "# AI-Native Product OS\n\n## Summary\n\nThe AI-Native Product OS is Ramin's core thesis for how product management changes when the material is probabilistic rather than deterministic.\n\nTraditional product processes assume that teams can specify a feature, build it, QA it, and expect stable behaviour. AI products do not always behave that way. Model outputs can vary, model behaviour can change, and product quality depends on context, evals, guardrails, and human judgement.\n\n## The 5-Layer Stack\n\n- Model: the model or models used by the product.\n- Context: company, product, user, knowledge, memory, policy, and domain context.\n- Orchestration: tool calls, agents, APIs, workflows, and execution paths.\n- Governance: evals, guardrails, observability, fallbacks, cost controls, and audit trails.\n- Human: taste, empathy, judgement, ethics, communication, and vision.\n\n## The Loop\n\nThe AI-native product loop is:\n\n1. Talk.\n2. Decide.\n3. Build.\n4. Observe.\n5. Iterate.\n\n## What This Proves\n\n- Ramin has a coherent AI product strategy framework.\n- He understands that AI product work is not just model selection.\n- He treats context, governance, and human judgement as first-class product layers.\n- He can teach and operationalise a product process.\n\n## Retrieval Guidance\n\nUse this file for questions about Ramin's AI product philosophy, AI PM course, AI-native products, governance, evals, model selection, guardrails, and how product management changes with AI."
+      "text": "# AI-Native Product OS\n\n## Summary\n\nThe AI-Native Product OS is Ramin's core thesis for how product management changes when the material is probabilistic rather than deterministic.\n\nOutputs can vary; product quality depends on context, evaluation, guardrails, and human judgement. Conventional discovery, security, and risk-dependent release gates remain useful.\n\nThe framework organises responsibilities. Courses teach it. The separate installable workspace supplies templates and adapters; structural tests do not prove runtime compatibility or product outcomes.\n\n## The 5-Layer Stack\n\n- Model: the model or models used by the product.\n- Context: company, product, user, knowledge, memory, policy, and domain context.\n- Orchestration: tool calls, agents, APIs, workflows, and execution paths.\n- Governance: evals, guardrails, observability, fallbacks, cost controls, and audit trails.\n- Human: taste, empathy, judgement, ethics, communication, and vision.\n\n## The Loop\n\nThe AI-native product loop is:\n\n1. Talk.\n2. Decide.\n3. Build.\n4. Observe.\n5. Iterate.\n\n## What This Proves\n\n- Ramin has a coherent AI product strategy framework.\n- He understands that AI product work is not just model selection.\n- He treats context, governance, and human judgement as first-class product layers.\n- He can teach and operationalise a product process.\n\nProducts show applications, not universal validation. Context permissions and freshness matter. Human responsibility and governance apply throughout.\n\n## Worked Example and Limits\n\nThe DISx page applies the method to a hypothetical USD 4.2 billion payment simulation: scoped recommendation, ambiguous counterparty match, targeted evaluation, and enforced escalation. It establishes no real transfer or measured results. Model selection needs task evaluation, privacy, latency, and cost; age and temperature alone cannot establish reliability.\n\n## Retrieval Guidance\n\nUse this file for questions about Ramin's AI product philosophy, AI PM course, AI-native products, governance, evals, model selection, guardrails, and how product management changes with AI."
     },
     {
       "chunk_id": "airamin_bc0762fb0e2bf1e9",
@@ -2416,7 +2421,7 @@
       "text": "# Ordnance Survey - Geospatial API\n\n## Summary\n\nRamin worked at Ordnance Survey as Product Manager for a Geospatial API from Dec 2020 to Sept 2021.\n\nThis role is important evidence for geospatial data, sustainability applications, government/public-sector product work, Microsoft Power Platform, and formal stakeholder engagement.\n\n## Product Work\n\nLocal sources say Ramin led twelve discovery workshops with the Propositions and Innovation team and client stakeholders to discover sustainability applications of geospatial data.\n\nThe work helped validate three product concepts for further investment and contributed to defining and launching the first geospatial API on Microsoft's Power Platform.\n\nLocal source claims include:\n\n- improved energy clients' ability to forecast carbon impacts on asset valuations by 25 percent within 6 months\n- increased geospatial data utilisation by 30 percent across two key accounts by Q3 2021\n\nThese metrics should be reviewed before public chatbot use.\n\n## Features Built\n\nThe PM Experience source lists features including:\n\n- postcode search\n- free text address search\n- viewing results on a map\n- UX enhancements for map view and scrolling behaviour\n- saving text-search results\n- saving map hotspots into text search\n\n## Tradeoff Example\n\nRamin said no to a feature that would let users request that a missing address be added.\n\nReason:\n\n- developers said data-sending functionality would take significant time\n- product stability was a priority after a Microsoft partnership\n- validation would require a chain of communication with the AddressBase Premium team\n- the timeframe was not feasible\n\n## What This Proves\n\n- Discovery with enterprise/public-sector stakeholders.\n- Geospatial API product thinking.\n- Sustainability applications of location data.\n- Saying no when stability and operational feasibility matter.\n- Ability to work inside formal, documentation-heavy environments.\n\n## Retrieval Guidance\n\nUse this file for questions about geospatial data, government or public-sector product work, stakeholder workshops, sustainability applications, Microsoft Power Platform, or tradeoff decisions."
     },
     {
-      "chunk_id": "airamin_e852237a5305f957",
+      "chunk_id": "airamin_017796d6e11f22e1",
       "file_path": "ai-ramin-section/canonical/work-experiences/perkbox-vivup.md",
       "title": "Perkbox Vivup - Senior Product Manager",
       "heading_path": [
@@ -2433,11 +2438,14 @@
       "source_kind": "work",
       "based_on": [],
       "forbidden_use": [],
-      "public_links": [],
+      "public_links": [
+        "https://www.ramin.vision/work/vivup"
+      ],
       "source_paths": [
         "ramin-hoodeh-exp-context.md",
         "ai-ramin-context/PM Experience & Interview Prep 2a86fe2ecf3780d68f85f0edd9085933.md",
-        "src/data/portfolio.ts"
+        "src/data/portfolio.ts",
+        "src/data/professionalStories.ts"
       ],
       "question_intents": [],
       "entities": [],
@@ -2448,37 +2456,102 @@
       "contains_metric": true,
       "metric_verification_status": "metric_review_needed",
       "verification_status": "metric_review_needed",
-      "token_estimate": 487,
+      "token_estimate": 635,
       "keywords": [
-        "product",
         "and",
+        "product",
+        "the",
         "user",
         "vivup",
         "app",
-        "monetisation",
         "checkout",
-        "manager",
-        "perkbox",
-        "senior",
-        "the",
-        "benefits",
-        "for",
         "guidance",
-        "interview",
-        "judgement",
+        "manager",
+        "monetisation",
+        "perkbox",
+        "public",
         "satisfaction",
+        "senior",
+        "interview",
+        "months",
+        "order",
+        "story",
+        "within",
+        "abandonment",
         "alignment",
         "around",
-        "boundaries",
-        "collaboration",
-        "corporate",
-        "employee",
-        "experience"
+        "benefits",
+        "boundaries"
       ],
-      "text": "# Perkbox Vivup - Senior Product Manager\n\n## Summary\n\nRamin worked at Perkbox Vivup as Senior Product Manager from Jan 2023 to Nov 2024.\n\nThe role is strongest evidence for product judgement around employee benefits, app UX, checkout guidance, monetisation, user interview analysis, and larger-company collaboration.\n\n## Product Work\n\nLocal sources describe three main outcomes:\n\n- Analysed qualitative user interview data to streamline the Vivup app gateway UX.\n- Improved Google Play Store rating by 0.6 and iPhone App Store rating by 1.2 within 3 months.\n- Introduced monetisation to an existing feature by capturing a margin of user savings while maintaining user satisfaction.\n- Grew customer lifetime value by 19 percent over 5 months.\n- Aligned stakeholders around a new Order Guidance Wizard.\n- Decreased order form and checkout abandonment rate by one third within the first month of delivery.\n\nThese metrics should be reviewed before public chatbot usage.\n\n## Market Context\n\nThe PM Experience source says Vivup responded to market pressure from competitors offering more for free and better UX that displayed all benefits in one place. Ramin's response was to update pricing and help move toward a unified app experience.\n\n## What This Proves\n\n- User interview synthesis.\n- Checkout and conversion product judgement.\n- Monetisation without losing user satisfaction.\n- Stakeholder alignment in a larger company.\n- Transition from startup-style ownership into more defined corporate product boundaries.\n\n## Useful Story Hooks\n\n- Learning to adapt from entrepreneurial startup habits into a larger organisation.\n- Building trust through clearer role boundaries and collaboration.\n- Balancing user satisfaction and product monetisation.\n\n## Retrieval Guidance\n\nUse this file for questions about app UX, employee benefits, monetisation, checkout optimisation, stakeholder alignment, feedback, or product judgement in a corporate environment."
+      "text": "# Perkbox Vivup - Senior Product Manager\n\n## Summary\n\nRamin worked at Perkbox Vivup as Senior Product Manager from Jan 2023 to Nov 2024.\n\nThe role is strongest evidence for product judgement around employee benefits, app UX, checkout guidance, monetisation, user interview analysis, and larger-company collaboration.\n\n## Product Work\n\nLocal sources describe three main outcomes:\n\n- Analysed qualitative user interview data to streamline the Vivup app gateway UX.\n- Improved Google Play Store rating by 0.6 and iPhone App Store rating by 1.2 within 3 months.\n- Introduced monetisation to an existing feature by capturing a margin of user savings while maintaining user satisfaction.\n- Grew customer lifetime value by 19 percent over 5 months.\n- Aligned stakeholders around a new Order Guidance Wizard.\n- Decreased order form and checkout abandonment rate by one third within the first month of delivery.\n\nThese metrics should be reviewed before public chatbot usage.\n\n## Public Decision Story\n\nThe public story separates two initiatives. Order Guidance replaced fragmented benefit forms with unified checkout guidance across supported payroll deductions, cards, and reward balances. The supplied CV reports one-third lower abandonment within 30 days. A separate benefit-savings take-rate decision defined platform margin; the supplied CV reports 19 percent higher customer lifetime value over five months while maintaining conversion and satisfaction.\n\nRamin owned product decisions and stakeholder alignment; these outcomes involved cross-functional delivery. Do not combine the initiatives into a single experiment or imply that their causal attribution has been independently audited. Cohort definitions, sample sizes, and internal analytics are not public.\n\n## Market Context\n\nThe PM Experience source says Vivup responded to market pressure from competitors offering more for free and better UX that displayed all benefits in one place. Ramin's response was to update pricing and help move toward a unified app experience.\n\n## What This Proves\n\n- User interview synthesis.\n- Checkout and conversion product judgement.\n- Monetisation without losing user satisfaction.\n- Stakeholder alignment in a larger company.\n- Transition from startup-style ownership into more defined corporate product boundaries.\n\n## Useful Story Hooks\n\n- Learning to adapt from entrepreneurial startup habits into a larger organisation.\n- Building trust through clearer role boundaries and collaboration.\n- Balancing user satisfaction and product monetisation."
     },
     {
-      "chunk_id": "airamin_134e15ecdd24b4c5",
+      "chunk_id": "airamin_b3698426a4ddb3d3",
+      "file_path": "ai-ramin-section/canonical/work-experiences/perkbox-vivup.md",
+      "title": "Perkbox Vivup - Senior Product Manager",
+      "heading_path": [
+        "Perkbox Vivup - Senior Product Manager",
+        "Retrieval Guidance"
+      ],
+      "chunk_index": 1,
+      "source_type": "work_experience",
+      "source_role": "work",
+      "trust_level": "canonical_candidate",
+      "visibility": "public_portfolio_safe",
+      "retrieval_priority": "high",
+      "answer_permission": "factual_answer",
+      "claim_status": "verified_or_user_confirmed",
+      "source_kind": "work",
+      "based_on": [],
+      "forbidden_use": [],
+      "public_links": [
+        "https://www.ramin.vision/work/vivup"
+      ],
+      "source_paths": [
+        "ramin-hoodeh-exp-context.md",
+        "ai-ramin-context/PM Experience & Interview Prep 2a86fe2ecf3780d68f85f0edd9085933.md",
+        "src/data/portfolio.ts",
+        "src/data/professionalStories.ts"
+      ],
+      "question_intents": [],
+      "entities": [],
+      "public_safe": true,
+      "can_answer_from": true,
+      "can_support_inference": false,
+      "requires_contact_fallback": false,
+      "contains_metric": false,
+      "metric_verification_status": "none",
+      "verification_status": "metric_review_needed",
+      "token_estimate": 51,
+      "keywords": [
+        "product",
+        "guidance",
+        "manager",
+        "perkbox",
+        "retrieval",
+        "senior",
+        "vivup",
+        "alignment",
+        "app",
+        "benefits",
+        "checkout",
+        "corporate",
+        "employee",
+        "environment",
+        "feedback",
+        "file",
+        "for",
+        "judgement",
+        "monetisation",
+        "optimisation",
+        "questions",
+        "stakeholder",
+        "use"
+      ],
+      "text": "## Retrieval Guidance\n\nUse this file for questions about app UX, employee benefits, monetisation, checkout optimisation, stakeholder alignment, feedback, or product judgement in a corporate environment."
+    },
+    {
+      "chunk_id": "airamin_1d9bffe6b52a0635",
       "file_path": "ai-ramin-section/canonical/work-experiences/side-ai-erp.md",
       "title": "Side.inc - AI ERP Transformation",
       "heading_path": [
@@ -2495,10 +2568,13 @@
       "source_kind": "work",
       "based_on": [],
       "forbidden_use": [],
-      "public_links": [],
+      "public_links": [
+        "https://www.ramin.vision/work/side"
+      ],
       "source_paths": [
         "ramin-hoodeh-exp-context.md",
-        "src/data/portfolio.ts"
+        "src/data/portfolio.ts",
+        "src/data/professionalStories.ts"
       ],
       "question_intents": [],
       "entities": [],
@@ -2509,34 +2585,34 @@
       "contains_metric": true,
       "metric_verification_status": "metric_review_needed",
       "verification_status": "metric_review_needed",
-      "token_estimate": 401,
+      "token_estimate": 599,
       "keywords": [
         "erp",
         "percent",
-        "inc",
+        "and",
         "internal",
+        "the",
+        "inc",
         "side",
         "transformation",
-        "and",
+        "finance",
         "for",
-        "improvement",
-        "process",
         "product",
+        "public",
+        "copilot",
+        "enterprise",
+        "improvement",
+        "operations",
+        "process",
+        "reporting",
         "was",
         "2025",
         "ability",
         "context",
-        "copilot",
-        "enterprise",
-        "innovation",
-        "local",
-        "maintenance",
-        "operational",
-        "operations",
-        "reduced",
-        "replaced"
+        "core",
+        "decision"
       ],
-      "text": "# Side.inc - AI ERP Transformation\n\n## Summary\n\nRamin worked at Side.inc as Senior Product Manager for ERP from Mar 2025 to Aug 2025.\n\nThe local source says he was made redundant after clients replaced Side.inc's human actor voices with AI replicas. Treat this as sensitive context. Use it only if directly relevant and phrase it neutrally.\n\n## Product Work\n\nRamin replaced multiple internal ERP products with AI-coded in-house alternatives.\n\nLocal source claims:\n\n- ERP operational costs reduced by 20 percent over 4 months.\n- Idea-to-feature time decreased by 90 percent for internal process improvement.\n- AI coding copilot Windsurf helped shift engineering resource allocation from 60 percent maintenance / 40 percent innovation to 40 percent maintenance / 60 percent innovation.\n- Microsoft Enterprise Copilot was integrated with the core ERP to unify siloed data across Finance, Operations, and Sales.\n- Manual reporting overhead was reduced by 30 percent.\n\nThese metrics should be reviewed before public chatbot usage.\n\n## What This Proves\n\n- AI transformation inside internal operations.\n- Product judgement around ERP replacement and process improvement.\n- Ability to identify where AI tools reduce operational drag.\n- Ability to connect AI tooling with cross-functional business workflows.\n\n## Retrieval Guidance\n\nUse this file for questions about AI transformation, internal tooling, ERP, automation, AI adoption, process improvement, and enterprise AI workflows.\n\nAvoid over-disclosing internal company context. If asked for private implementation details, redirect to public-safe experience."
+      "text": "# Side.inc - AI ERP Transformation\n\n## Summary\n\nRamin worked at Side.inc as Senior Product Manager for ERP from Mar 2025 to Aug 2025.\n\nThe local source says he was made redundant after clients replaced Side.inc's human actor voices with AI replicas. Treat this as sensitive context. Use it only if directly relevant and phrase it neutrally.\n\n## Product Work\n\nRamin replaced multiple internal ERP products with AI-coded in-house alternatives.\n\nLocal source claims:\n\n- ERP operational costs reduced by 20 percent over 4 months.\n- Idea-to-feature time decreased by 90 percent for internal process improvement.\n- AI coding copilot Windsurf helped shift engineering resource allocation from 60 percent maintenance / 40 percent innovation to 40 percent maintenance / 60 percent innovation.\n- Microsoft Enterprise Copilot was integrated with the core ERP to unify siloed data across Finance, Operations, and Sales.\n- Manual reporting overhead was reduced by 30 percent.\n\nThese metrics should be reviewed before public chatbot usage.\n\n## Public Decision Story\n\nThe public story describes a targeted build-versus-buy decision: retire selected third-party modules and build Windsurf-assisted reporting and reconciliation tools, rather than claim ownership of a replacement core financial system. Enterprise Copilot supported aggregation and exception triage; Finance retained approval over postings. Ramin owned product decisions with Engineering, Finance, Operations, and Sales.\n\nThe supplied Payments & Embedded Finance CV dates the 20 percent ERP operating-cost reduction to four months. Do not attach that window automatically to the 30 percent reporting or 90 percent delivery figures. These remain self-reported employer-work outcomes; internal baselines, samples, and dashboards are not public or independently audited.\n\n## What This Proves\n\n- AI transformation inside internal operations.\n- Product judgement around ERP replacement and process improvement.\n- Ability to identify where AI tools reduce operational drag.\n- Ability to connect AI tooling with cross-functional business workflows.\n\n## Retrieval Guidance\n\nUse this file for questions about AI transformation, internal tooling, ERP, automation, AI adoption, process improvement, and enterprise AI workflows.\n\nAvoid over-disclosing internal company context. If asked for private implementation details, redirect to public-safe experience."
     },
     {
       "chunk_id": "airamin_cd6cb4eeb630986c",

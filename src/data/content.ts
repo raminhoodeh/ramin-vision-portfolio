@@ -7,6 +7,7 @@ import { deepDives, projectCaseStudies, architectureLayers, toolsAndSystems } fr
 import { experienceEntries } from './experience';
 import { teachingWritingItems } from './teaching';
 import { aiProductCourseEvidence, disxTalkEvidence, productCourseEvidence } from './teachingEvidence';
+import { homepagePositioning } from './homepage';
 import aiNativeProductOsSlideUrl from '../../thoughts-section/courses/ai-native-product-os-light-mode.jpg';
 
 export const assetRequests = [
@@ -2328,15 +2329,15 @@ const thoughtWorkIntegration = {
 export const portfolioContent = {
   hero: {
     name: 'Ramin Hoodeh',
-    role: 'Product Teacher and Fiction Author',
-    headline: 'I use AI to research, design, and build beautiful things that the world really needs. I\'ve shipped 6 live AI products and a framework for building them.',
+    role: homepagePositioning.role,
+    headline: `${homepagePositioning.intro} ${homepagePositioning.experience}`,
     profilePicture: {
       src: profilePictureUrl,
       alt: 'Ramin Hoodeh profile picture',
     },
     pmOsThesisCta: {
-      label: 'My Product Thesis',
-      href: pmOsThesisUrl,
+      label: 'Explore my product thesis',
+      href: '/product-thesis',
     },
   },
   productManagementWorkExperiences: {

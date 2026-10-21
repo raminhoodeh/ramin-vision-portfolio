@@ -1,0 +1,22 @@
+.portfolio-home {
+  min-height: 100%;
+  padding-bottom: calc(7rem + env(safe-area-inset-bottom, 0px));
+  background: rgba(249, 251, 253, 0.86);
+}
+
+.portfolio-document-page {
+  width: min(100%, 76rem);
+  min-height: 100%;
+  margin: 0 auto;
+  padding: clamp(4.5rem, 7vw, 7rem) clamp(1rem, 4vw, 3.5rem) calc(7rem + env(safe-area-inset-bottom, 0px));
+}
+
+.portfolio-document-page a:focus-visible,
+.portfolio-home a:focus-visible {
+  outline: 2px solid #597ca0;
+  outline-offset: 4px;
+}
+
+.portfolio-document-page [id] {
+  scroll-margin-top: 2rem;
+}

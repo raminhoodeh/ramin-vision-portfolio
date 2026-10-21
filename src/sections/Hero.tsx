@@ -1,69 +1,55 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { motion } from 'framer-motion';
+import { useLayoutEffect, useRef } from 'react';
 import gsap from 'gsap';
-import { portfolioContent, roles } from '../data/portfolio';
+import { homepagePositioning } from '../data/homepage';
 import { GlassImprintCta } from '../components/GlassImprintCta';
+import './homeHighlights.css';
 
-function ThesisGlassButton({ onClick }: { onClick: () => void }) {
-  return <GlassImprintCta label="My Product Thesis" onClick={onClick} className="hero-thesis-glass-button--thesis" />;
-}
-
-export function Hero({ ready, onOpenThesis }: { ready: boolean; onOpenThesis: () => void }) {
+export function Hero({ ready }: { ready: boolean; onOpenThesis: () => void }) {
   const rootRef = useRef<HTMLElement | null>(null);
-  const [roleIndex, setRoleIndex] = useState(0);
-  const { hero } = portfolioContent;
-  const activeRole = roles[roleIndex];
+  const hero = homepagePositioning;
 
   useLayoutEffect(() => {
     if (!ready) return undefined;
 
     const ctx = gsap.context(() => {
-      gsap
-        .timeline({ defaults: { ease: 'power3.out' } })
-        .to('.name-reveal', { opacity: 1, y: 0, duration: 1.2, delay: 0.1 })
-        .to(
-          '.blur-in',
-          {
-            opacity: 1,
-            filter: 'blur(0px)',
-            y: 0,
-            duration: 1,
-            stagger: 0.1,
-          },
-          0.3,
-        );
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      gsap.fromTo('.homepage-hero__reveal', { opacity: 0, y: 12 }, {
+        opacity: 1,
+        y: 0,
+        duration: 0.7,
+        stagger: 0.06,
+        ease: 'power3.out',
+        clearProps: 'opacity,transform',
+      });
     }, rootRef);
 
     return () => ctx.revert();
-  }, [ready]);
-
-  useEffect(() => {
-    if (!ready) return undefined;
-
-    const interval = window.setInterval(() => {
-      setRoleIndex((current) => (current + 1) % roles.length);
-    }, 2000);
-
-    return () => window.clearInterval(interval);
   }, [ready]);
 
   return (
     <section
       id="hero"
       ref={rootRef}
-      className="relative flex h-full min-h-full items-center justify-center overflow-hidden px-6 text-center"
+      className="homepage-hero"
     >
-      <div className="absolute inset-0 z-0 bg-white/8" />
+      <div className="homepage-hero__content">
+      <div className="homepage-hero__name homepage-hero__reveal" aria-hidden="true">
       <svg
         className="hero-name-cutout-layer hero-name-cutout-layer-desktop"
-        viewBox="0 0 1600 900"
-        preserveAspectRatio="none"
+        viewBox="0 0 1600 240"
+        preserveAspectRatio="xMidYMid meet"
         aria-hidden="true"
       >
         <defs>
-          <mask id="hero-name-cutout-mask-desktop" maskUnits="userSpaceOnUse" x="0" y="0" width="1600" height="900">
-            <rect x="0" y="0" width="1600" height="900" fill="white" />
-            <text className="hero-name-cutout-mask-text hero-name-cutout-mask-text-desktop" x="800" y="350" fill="black">
+          <linearGradient id="hero-name-glass-desktop" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stopColor="#20374f" />
+            <stop offset="0.36" stopColor="#617e98" />
+            <stop offset="0.62" stopColor="#294965" />
+            <stop offset="1" stopColor="#718ba1" />
+          </linearGradient>
+          <mask id="hero-name-cutout-mask-desktop" maskUnits="userSpaceOnUse" x="0" y="0" width="1600" height="240">
+            <rect x="0" y="0" width="1600" height="240" fill="black" />
+            <text className="hero-name-cutout-mask-text hero-name-cutout-mask-text-desktop" x="800" y="120" fill="white">
               {hero.name}
             </text>
           </mask>
@@ -73,27 +59,33 @@ export function Hero({ ready, onOpenThesis }: { ready: boolean; onOpenThesis: ()
           x="0"
           y="0"
           width="1600"
-          height="900"
-          fill="white"
+          height="240"
+          fill="url(#hero-name-glass-desktop)"
           mask="url(#hero-name-cutout-mask-desktop)"
         />
       </svg>
       <svg
         className="hero-name-cutout-layer hero-name-cutout-layer-mobile"
-        viewBox="0 0 600 760"
-        preserveAspectRatio="none"
+        viewBox="0 0 600 180"
+        preserveAspectRatio="xMidYMid meet"
         aria-hidden="true"
       >
         <defs>
-          <mask id="hero-name-cutout-mask-mobile" maskUnits="userSpaceOnUse" x="0" y="0" width="600" height="760">
-            <rect x="0" y="0" width="600" height="760" fill="white" />
+          <linearGradient id="hero-name-glass-mobile" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stopColor="#20374f" />
+            <stop offset="0.36" stopColor="#617e98" />
+            <stop offset="0.62" stopColor="#294965" />
+            <stop offset="1" stopColor="#718ba1" />
+          </linearGradient>
+          <mask id="hero-name-cutout-mask-mobile" maskUnits="userSpaceOnUse" x="0" y="0" width="600" height="180">
+            <rect x="0" y="0" width="600" height="180" fill="black" />
             <text
               className="hero-name-cutout-mask-text hero-name-cutout-mask-text-mobile"
               x="300"
-              y="306"
-              fill="black"
-              stroke="black"
-              transform="translate(300 306) scale(1.45 1) translate(-300 -306)"
+              y="90"
+              fill="white"
+              stroke="white"
+              transform="translate(300 90) scale(1.3 1) translate(-300 -90)"
             >
               {hero.name}
             </text>
@@ -104,37 +96,26 @@ export function Hero({ ready, onOpenThesis }: { ready: boolean; onOpenThesis: ()
           x="0"
           y="0"
           width="600"
-          height="760"
-          fill="white"
+          height="180"
+          fill="url(#hero-name-glass-mobile)"
           mask="url(#hero-name-cutout-mask-mobile)"
         />
       </svg>
-      <div className="absolute bottom-0 left-0 right-0 z-[2] h-48 bg-gradient-to-t from-bg/90 to-transparent" />
-
-      <div className="relative z-10 mx-auto flex max-w-3xl flex-col items-center">
-        <h1 className="sr-only">{hero.name}</h1>
-        <div className="hero-name-cutout-spacer name-reveal translate-y-[50px]" aria-hidden="true" />
-        <p className="blur-in mt-6 translate-y-5 text-center text-[1.14rem] font-semibold leading-normal text-[#4f5863] [filter:blur(10px)] md:text-[1.3rem]">
-          <span>Product </span>
-          <motion.span
-            key={activeRole}
-            className="inline-block align-baseline font-display text-[1.04em] italic leading-normal text-[#65707c]"
-            initial={{ opacity: 0.55, y: 3 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.28, ease: [0.25, 0.1, 0.25, 1] }}
-          >
-            {activeRole}
-          </motion.span>
-          <span> and Fiction Author</span>
-        </p>
-        <p className="blur-in mt-5 max-w-md translate-y-5 text-sm leading-7 text-muted [filter:blur(10px)] md:text-base">
-          {hero.headline}
-        </p>
-        <div className="blur-in mt-12 flex translate-y-5 flex-wrap justify-center gap-4 [filter:blur(10px)]">
-          <ThesisGlassButton onClick={onOpenThesis} />
-        </div>
       </div>
-
+        <h1 className="homepage-hero__role homepage-hero__reveal"><span className="sr-only">{hero.name}, </span>{hero.role}</h1>
+        <h2 className="homepage-hero__intro homepage-hero__reveal">{hero.intro}</h2>
+        <p className="homepage-hero__experience homepage-hero__reveal">{hero.experience}</p>
+        <div className="homepage-hero__recognition homepage-hero__reveal">
+          {hero.recognition.map((item) => <a href={item.href} key={item.label}>{item.label}</a>)}
+        </div>
+        <nav className="homepage-hero__actions homepage-hero__reveal" aria-label="Explore Ramin’s work">
+          <GlassImprintCta label="View selected work" href="/experience-education" className="homepage-hero__primary" />
+          <a href="/cv">CV</a>
+          <a href="/contact">Contact</a>
+          <a href="/product-thesis">Product thesis</a>
+        </nav>
+        <p className="homepage-hero__personal homepage-hero__reveal"><a href="/thoughts/books">{hero.personalNote}</a></p>
+      </div>
     </section>
   );
 }

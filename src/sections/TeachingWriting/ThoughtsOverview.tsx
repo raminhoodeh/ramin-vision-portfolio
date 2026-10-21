@@ -412,7 +412,10 @@ export function ThoughtsOverview({
       proof: `${disxTalkEvidence.event} · ${disxTalkEvidence.dateLabel} · ${disxTalkEvidence.location} · ${disxTalkEvidence.stage}. ${disxTalkEvidence.title}`,
       body: disxTalkEvidence.summary,
       artwork: aiNativeProductOsLightModeUrl,
-      ctas: disxTalkEvidence.sources.map((source) => ({ kind: 'link' as const, ...source })),
+      ctas: [
+        { kind: 'link', label: 'Read the talk & worked example →', href: '/talks/disx-dubai' },
+        ...disxTalkEvidence.sources.map((source) => ({ kind: 'link' as const, ...source })),
+      ],
       wide: true,
       sectionHead: 'On the agentic AI stage',
     },

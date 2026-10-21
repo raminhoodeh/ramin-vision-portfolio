@@ -1,0 +1,86 @@
+.thesis-method-overview {
+  padding: 1.2rem;
+  border: 1px solid rgba(100, 125, 160, 0.28);
+  border-radius: 1.15rem;
+  background: rgba(255, 255, 255, 0.74);
+  color: #2b3d53;
+}
+
+.thesis-method-overview h3 {
+  margin: 0 0 0.9rem;
+  font-size: 1.05rem;
+  font-weight: 650;
+  line-height: 1.45;
+}
+
+.thesis-method-overview p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.8;
+}
+
+.thesis-method-overview dl {
+  display: grid;
+  gap: 0.55rem;
+  padding: 0.9rem 0;
+  margin: 0.9rem 0;
+  border-top: 1px solid rgba(100, 125, 160, 0.2);
+  border-bottom: 1px solid rgba(100, 125, 160, 0.2);
+}
+
+.thesis-method-overview dl > div {
+  display: grid;
+  grid-template-columns: 7.5rem 1fr;
+  gap: 0.7rem;
+  font-size: 0.84rem;
+  line-height: 1.6;
+}
+
+.thesis-method-overview dt {
+  font-weight: 650;
+}
+
+.thesis-method-overview dd {
+  margin: 0;
+}
+
+.thesis-method-overview .thesis-method-overview__loop {
+  margin-bottom: 0.8rem;
+}
+
+.thesis-method-overview nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem 1rem;
+  margin-top: 1rem;
+}
+
+.thesis-method-overview a {
+  color: #31577f;
+  font-size: 0.82rem;
+  line-height: 1.8;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.thesis-method-overview a:focus-visible {
+  outline: 2px solid #3d668f;
+  outline-offset: 4px;
+}
+
+.thesis-method-overview .thesis-method-overview__continue {
+  margin-top: 1rem;
+  color: #526478;
+  font-size: 0.8rem;
+}
+
+@media (max-width: 480px) {
+  .thesis-method-overview {
+    padding: 1rem;
+  }
+
+  .thesis-method-overview dl > div {
+    grid-template-columns: 6.7rem 1fr;
+    gap: 0.5rem;
+  }
+}

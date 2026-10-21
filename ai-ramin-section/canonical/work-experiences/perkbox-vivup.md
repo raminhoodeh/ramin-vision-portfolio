@@ -12,6 +12,9 @@ source_paths:
   - "ramin-hoodeh-exp-context.md"
   - "ai-ramin-context/PM Experience & Interview Prep 2a86fe2ecf3780d68f85f0edd9085933.md"
   - "src/data/portfolio.ts"
+  - "src/data/professionalStories.ts"
+public_links:
+  - "https://www.ramin.vision/work/vivup"
 verification_status: metric_review_needed
 ---
 
@@ -35,6 +38,12 @@ Local sources describe three main outcomes:
 - Decreased order form and checkout abandonment rate by one third within the first month of delivery.
 
 These metrics should be reviewed before public chatbot usage.
+
+## Public Decision Story
+
+The public story separates two initiatives. Order Guidance replaced fragmented benefit forms with unified checkout guidance across supported payroll deductions, cards, and reward balances. The supplied CV reports one-third lower abandonment within 30 days. A separate benefit-savings take-rate decision defined platform margin; the supplied CV reports 19 percent higher customer lifetime value over five months while maintaining conversion and satisfaction.
+
+Ramin owned product decisions and stakeholder alignment; these outcomes involved cross-functional delivery. Do not combine the initiatives into a single experiment or imply that their causal attribution has been independently audited. Cohort definitions, sample sizes, and internal analytics are not public.
 
 ## Market Context
 

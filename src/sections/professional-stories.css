@@ -1,0 +1,40 @@
+.professional-story-selection { flex: 0 0 auto; min-width: 0; }
+.professional-story-eyebrow { margin: 0 0 0.65rem; color: hsl(var(--muted)); font-size: 0.62rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; }
+.professional-story-selection-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.65rem; }
+.professional-story-teaser { display: flex; min-width: 0; flex-direction: column; gap: 0.45rem; border-radius: 1.1rem; padding: 0.9rem; color: hsl(var(--text)); text-decoration: none; }
+.professional-story-teaser > span { color: hsl(var(--muted)); font-size: 0.6rem; letter-spacing: 0.08em; text-transform: uppercase; }
+.professional-story-teaser > strong { font-size: 0.85rem; line-height: 1.35; }
+.professional-story-teaser > p { margin: 0; font-size: 0.75rem; line-height: 1.45; }
+.professional-story-teaser > small { margin-top: auto; color: #446987; font-size: 0.7rem; }
+.professional-story-teaser:hover { background: rgba(255,255,255,0.75); }
+.professional-story-teaser:focus-visible, .professional-story-page a:focus-visible { outline: 2px solid #597ca0; outline-offset: 3px; }
+.work-collapsed-signal { display: flex; gap: 0.65rem; align-items: baseline; margin-top: 0.7rem; padding: 0.6rem 0.75rem; border-radius: 0.8rem; background: rgba(255,255,255,0.25); }
+.work-collapsed-signal > span { flex: 0 0 auto; font-size: 0.55rem; letter-spacing: 0.09em; text-transform: uppercase; color: hsl(var(--muted)); }
+.work-collapsed-signal > p { margin: 0; font-size: 0.75rem; line-height: 1.45; color: hsl(var(--text)); }
+.professional-story-page { height: 100%; min-height: 0; overflow-y: auto; padding: 4.5rem 1.1rem calc(var(--portfolio-dock-clearance, 5.5rem) + 1rem); }
+.professional-story-reader { width: min(100%, 52rem); margin: 0 auto; border-radius: 1.7rem; padding: clamp(1.25rem, 4vw, 3rem); }
+.professional-story-back { display: inline-flex; min-height: 2.75rem; align-items: center; margin-bottom: 1.6rem; color: #446987; font-size: 0.85rem; text-decoration: none; }
+.professional-story-reader h1 { max-width: 18ch; font-family: var(--font-display); font-size: clamp(2.2rem, 5vw, 3.8rem); font-style: italic; line-height: 1.05; letter-spacing: -0.035em; }
+.professional-story-meta { margin-top: 1rem; font-size: 0.82rem; line-height: 1.6; color: hsl(var(--muted)); }
+.professional-story-highlight { display: grid; gap: 0.5rem; margin-top: 1.6rem; padding: 1rem 1.2rem; border: 1px solid rgba(93,118,145,0.23); border-radius: 1.1rem; background: rgba(255,255,255,0.36); }
+.professional-story-highlight > span { font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; color: hsl(var(--muted)); }
+.professional-story-highlight > strong { font-size: 1.12rem; line-height: 1.45; }
+.professional-story-reader > section { margin-top: 1.8rem; }
+.professional-story-reader h2 { margin-bottom: 0.65rem; font-size: 0.8rem; letter-spacing: 0.09em; text-transform: uppercase; }
+.professional-story-reader section p, .professional-story-reader li { font-size: 0.95rem; line-height: 1.8; }
+.professional-story-reader section p + p { margin-top: 0.85rem; }
+.professional-story-reader ul { padding-left: 1.25rem; list-style: disc; }
+.professional-story-reader li + li { margin-top: 0.5rem; }
+.professional-story-evidence { border-top: 1px solid rgba(93,118,145,0.22); padding-top: 1.4rem; }
+.professional-story-context-note { color: hsl(var(--muted)); font-size: 0.8rem !important; }
+.professional-story-links { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1rem; }
+.professional-story-links a, .professional-story-contact { display: inline-flex; min-height: 2.75rem; align-items: center; gap: 0.4rem; color: #446987; font-size: 0.85rem; text-underline-offset: 0.2em; }
+.professional-story-links a { border: 1px solid rgba(93,118,145,0.28); border-radius: 999px; padding: 0.5rem 0.85rem; text-decoration: none; }
+.professional-story-contact { margin-top: 1.5rem; }
+@media (max-width: 767px) {
+  .professional-story-selection-grid { gap: 0.5rem; }
+  .professional-story-teaser { padding: 0.8rem; }
+  .professional-story-teaser > strong { font-size: 0.8rem; }
+  .work-collapsed-signal { flex-direction: column; gap: 0.3rem; }
+  .professional-story-page { padding-top: 4rem; }
+}

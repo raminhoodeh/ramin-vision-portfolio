@@ -498,7 +498,7 @@ const CONSEQUENCES = [
   { n: 4, tag: 'Human', desc: 'redefines the professional', ty: 670, tx: 206, by: 544, t0: 7.18 },
   { n: 3, tag: 'Governance', desc: 'guardrails & evals, not hope', ty: 705, tx: 225, by: 568, t0: 7.3 },
   { n: 2, tag: 'Orchestration', desc: 'loops, not straight lines', ty: 743, tx: 245, by: 592, t0: 7.42 },
-  { n: 1, tag: 'Model + Context', desc: 'know it, own the context', ty: 800, tx: 274, by: 616, t0: 7.54 },
+  { n: 1, tag: 'Model + Context', desc: 'capabilities & context rights', ty: 800, tx: 274, by: 616, t0: 7.54 },
 ];
 
 const PIP_STAGES = ['Idea', 'Design', 'Concept', 'Alpha/Beta', 'Live'];
@@ -724,7 +724,7 @@ export const DerivationCanvas = memo(function DerivationCanvas({ x }: { x: Motio
       {/* the retired linear process, sitting just above the new Loop as the
           thing it replaces — a dashed, dimmed chain (Idea → … → Live) */}
       <FadeText x={x} t0={5.74} t1={5.94} px={452} py={584} size={7} color={TXT} tracking="0.12em">
-        RETIRED · LINEAR PROCESS
+        LINEAR STAGES · STILL USEFUL
       </FadeText>
       <FadeGroup x={x} t0={5.62} t1={5.9}>
         <g opacity={0.5}>
@@ -903,8 +903,8 @@ export const DerivationCanvas = memo(function DerivationCanvas({ x }: { x: Motio
         PRODUCTS &amp; SERVICES
       </FadeText>
 
-      {/* the products run on shared infrastructure — the canopy's support */}
-      <FadeText x={x} t0={8.96} t1={9.08} px={150} py={462} size={6.6} anchor="start" tracking="0.16em">RUNS ON</FadeText>
+      {/* Reusable tools developed alongside the products, without implying deployment. */}
+      <FadeText x={x} t0={8.96} t1={9.08} px={150} py={462} size={6.6} anchor="start" tracking="0.16em">TOOLS ALONGSIDE</FadeText>
       <DashedWire x={x} t0={8.98} t1={9.16} d="M150,466 C260,482 420,482 520,466" color={STRONG} width={1} dash="3 5" to={0.7} />
       {INFRA_CHIPS.map((chip) => (
         <MiniChip key={chip.label} x={x} t0={chip.t0} t1={chip.t0 + 0.14} bx={chip.bx} by={472} bw={chip.bw} label={chip.label} />
@@ -915,12 +915,12 @@ export const DerivationCanvas = memo(function DerivationCanvas({ x }: { x: Motio
         <path d="M-26,1560 L-26,300" stroke="rgba(255,255,255,0.32)" strokeWidth={1.1} strokeLinecap="round" />
         <path d="M-26,300 L-33,314 L-19,314 Z" fill="rgba(255,255,255,0.6)" />
         <text x={-16} y={400} textAnchor="start" fontSize={9} fill={TXT_STRONG} style={{ letterSpacing: '0.16em' }}>
-          UP: FORCED
+          UP: REASON
         </text>
         <path d="M666,300 L666,1560" stroke="rgba(255,255,255,0.32)" strokeWidth={1.1} strokeLinecap="round" />
         <path d="M666,1560 L659,1546 L673,1546 Z" fill="rgba(255,255,255,0.6)" />
         <text x={656} y={1500} textAnchor="end" fontSize={9} fill={TXT_STRONG} style={{ letterSpacing: '0.16em' }}>
-          DOWN: JUSTIFIED
+          DOWN: CHECK
         </text>
       </FadeGroup>
       <FadeText x={x} t0={9.55} t1={9.8} px={320} py={1632} size={12} color={TXT_STRONG} tracking="0.16em" weight={650}>

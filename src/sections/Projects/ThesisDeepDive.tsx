@@ -2,6 +2,8 @@ import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react'
 import { motion, useMotionValue, useReducedMotion, type MotionValue } from 'framer-motion';
 import { useThesisScrub } from './useThesisScrub';
 import { DerivationCanvas } from './DerivationCanvas';
+import { productMethodLoop, productMethodResponsibilities, productMethodRoutes } from '../../data/disxTalk';
+import './thesis-method-summary.css';
 
 /* -------------------------------------------------------------------------- */
 /*  Links                                                                     */
@@ -16,6 +18,7 @@ const OS_GITHUB_HREF = 'https://github.com/raminhoodeh/AI-Native-Product-OS';
 /* -------------------------------------------------------------------------- */
 
 type Block =
+  | { kind: 'method-summary' }
   | { kind: 'p'; text: ReactNode }
   | { kind: 'h'; text: string }
   | { kind: 'callout'; text: ReactNode }
@@ -52,6 +55,9 @@ const THESIS_SECTIONS: ThesisSection[] = [
             What does the evolving technological landscape reveal about the elusive essence of product management?
           </span>
         ),
+      },
+      {
+        kind: 'method-summary',
       },
       {
         kind: 'p',
@@ -92,8 +98,7 @@ const THESIS_SECTIONS: ThesisSection[] = [
         text: (
           <>
             The structure of this product thesis doubles as a map of this portfolio. The thesis is operationalised by
-            the <strong className="font-semibold">AI-Native Product OS</strong>, which is a replacement of the
-            now-outdated{' '}
+            the <strong className="font-semibold">AI-Native Product OS</strong>, an evolution of my{' '}
             <a
               href={PRODUCT_INNOVATION_PROCESS_HREF}
               target="_blank"
@@ -102,10 +107,8 @@ const THESIS_SECTIONS: ThesisSection[] = [
             >
               Product Innovation Process
             </a>
-            . Arranged as a tree, this thesis logic reads in both directions: climbing upward from the soil, each node
-            is forced by the one beneath it; descending from the fruit, each node is justified by the one beneath it.
-            All of this is in service of one thing: collapsing an infinitely complex world of AI product into one
-            crystal-clear structure.
+            . Arranged as a tree, the argument traces choices from conditions to principles and back again.
+            It is a working structure for my product thinking, open to revision when evidence or the situation changes.
           </>
         ),
       },
@@ -139,10 +142,10 @@ const THESIS_SECTIONS: ThesisSection[] = [
         text: (
           <>
             The second condition is that <strong className="font-semibold">execution changed, on two distinct axes</strong>.
-            Execution became <em>probabilistic</em>; generative AI output is predicted rather than computed. As such,
+            Generative output is <em>probabilistic</em>; it is sampled from learned patterns rather than fixed business rules. As such,
             the same input - e.g. into a now-AI-powered feature - no longer guarantees a completely predictable or
-            identical result. Execution also became <em>cheap (and fast)</em>, with prototyping and shipping approaching
-            a marginal cost compared to before.
+            identical result. Many prototyping and implementation tasks also became <em>cheaper and faster</em>.
+            Integration, reliable operation, security and organisational change still require substantial work.
           </>
         ),
       },
@@ -158,11 +161,11 @@ const THESIS_SECTIONS: ThesisSection[] = [
       },
       {
         kind: 'p',
-        text: 'These new conditions were enough to retire the process I had built a career on: the Product Innovation Process. The pipeline that organised a decade of product work - Idea → Design → Concept → Alpha/Beta → Live - assumed deterministic material: behaviour that could be specified in advance, built once, and trusted to repeat. Probabilistic execution (generative AI) removes its predictability, since the thing it was designed to specify can no longer be fully specified.',
+        text: 'These conditions changed how I use the Product Innovation Process. The pipeline that organised much of my product work - Idea → Design → Concept → Alpha/Beta → Live - still provides useful structure. With generative behaviour, however, a specification and a successful demo cannot establish how every output will behave. Evaluation, clear authority and ongoing observation become explicit parts of the work.',
       },
       {
         kind: 'p',
-        text: 'Additionally, cheap execution removes the economic basis of this old process, since execution itself - the scarce resource it was designed to ration - is no longer scarce. In summary, the linear and stage-gated Product Innovation Process became obsolete because the conditions it assumed no longer hold.',
+        text: 'Cheaper prototypes make some assumptions less expensive to test earlier. They do not remove constraints on delivery, access to users, integration or reliable operation. My response is a faster learning loop within proportionate release gates, rather than the removal of those gates.',
       },
     ],
   },
@@ -205,11 +208,11 @@ const THESIS_SECTIONS: ThesisSection[] = [
           },
           {
             tag: 'Judgement',
-            text: 'Made essential by cheap and probabilistic execution. When any output is possible, the questions become “should we?” and “is this output any good?” The new loop requires it at every turn, where the old pipeline needed it only at the start.',
+            text: 'Judgement has always mattered in product work. With probabilistic output it must also be exercised repeatedly: should we automate this task, is the result useful, and what evidence is enough to release it? The threshold depends on the consequences of being wrong.',
           },
           {
             tag: 'Vision',
-            text: 'Made essential because cheap execution removes the natural constraint that used to force prioritisation. When building anything is possible, you need a fixed point to reason from - without it, cheap execution becomes noise: a lot of shipping, very little compounding.',
+            text: 'Cheaper implementation creates more options, while time, attention and distribution remain constrained. Vision gives those options a direction: a reason to prioritise one useful result over a large volume of output.',
           },
           {
             tag: 'Taste',
@@ -217,7 +220,7 @@ const THESIS_SECTIONS: ThesisSection[] = [
           },
           {
             tag: 'Empathy',
-            text: 'Made essential because execution no longer restricts access to users - scale is now cheap. The differentiator is not whether you can build; it is whether you understand, deeply, what people actually want and how to speak to them. The phrase a beta user used, the gap between what they say and what they mean, the job they hired the product to do - that is the material only the human carries, and it determines whether anything built is worth using.',
+            text: 'Building a product does not establish access to users or demand. Empathy means understanding the job people need done, the words they use and the difference between what they request and what they need. That understanding helps determine whether the output is worth using.',
           },
         ],
       },
@@ -249,7 +252,7 @@ const THESIS_SECTIONS: ThesisSection[] = [
             To define our vision, guided by our values, is to ask: if those roots - of clarity, judgement, vision,
             taste, and empathy - were to grow, what would they become? The answer, in this case,{' '}
             <strong className="font-semibold">
-              is to be anti-fragile; future-proofed with a system that survives your entire career.
+              is to become more adaptable: able to use technological change without rebuilding my thinking from scratch.
             </strong>
           </>
         ),
@@ -260,11 +263,11 @@ const THESIS_SECTIONS: ThesisSection[] = [
       },
       {
         kind: 'p',
-        text: 'Nassim Taleb defines anti-fragility as a property beyond mere resilience: resilient things absorb shocks and return to where they were; anti-fragile things gain from them. That distinction is what this product thesis is built upon, as well as the AI-Native Product OS. The vision of the OS is to be upgraded by the new models, tools or protocols that arrive rather than being threatened by them. The contents are updated but the structure beneath stays fixed, and the person conducting the system is compounded rather than replaced. To me, this is what future-proofing your career actually means.',
+        text: 'The idea of anti-fragility is useful here as an aspiration: learning from change rather than only absorbing it. I want a new model, tool or protocol to prompt a focused reassessment of the relevant choices. The structure is stable enough to help me think, but it remains open to revision; it is not a promise to future-proof a career.',
       },
       {
         kind: 'p',
-        text: 'Overall, we cannot predict what the technology will do next. But we can conceive of and install an architecture and practice stable enough to hold across every technological advancement e.g. a new model generation. This is because the practice should never be about the model, but the way you think.',
+        text: 'We cannot predict what technology will do next. We can maintain a practice for evaluating changes, preserving useful knowledge and revising assumptions when the evidence calls for it. The method supports that work rather than guaranteeing an answer to every future change.',
       },
     ],
   },
@@ -282,7 +285,7 @@ const THESIS_SECTIONS: ThesisSection[] = [
       },
       {
         kind: 'p',
-        text: 'In essence, to be future-proof is to find a way to navigate over-information. It is also to ensure we bring our “build” phase much sooner in our product development process - to leverage the decreased investment it requires. This process must also run as a loop with observable guardrails, to make up for the uncertainty related to probabilistic outputs.',
+        text: 'The aim is to navigate over-information and bring a small, bounded build forward when it can answer a useful question. The process runs as a learning loop with evaluation and observable guardrails. Discovery, approvals and release gates still need to match the risk.',
       },
       {
         kind: 'p',
@@ -300,11 +303,10 @@ const THESIS_SECTIONS: ThesisSection[] = [
         kind: 'p',
         text: (
           <>
-            These containers have a hierarchical order, where each layer presupposes the one beneath it:{' '}
+            I arrange these responsibilities as a teaching model:{' '}
             <strong className="font-semibold">Model → Context → Orchestration → Governance → Human</strong> - running
-            from the most basic and fastest-moving layer at the base to the most durable at the top. The Stack is where
-            you think. It is the structure that makes you anti-fragile to over-information: every new tool, paper, or
-            protocol lands on a shelf instead of threatening everything you know.
+            from the technical engine to the people accountable for its use. This is a way to organise decisions,
+            rather than a universal dependency hierarchy. Governance and human responsibility apply across every layer.
           </>
         ),
       },
@@ -313,11 +315,10 @@ const THESIS_SECTIONS: ThesisSection[] = [
         text: (
           <>
             <strong className="font-semibold">The second instrument is the AI-Native Process Loop</strong> - and it runs
-            on the Stack. The old linear pipeline (<em>Idea → Design → Concept → Alpha/Beta → Live</em>) assumed
-            deterministic material: behaviour you could specify, build once, and trust to repeat. That assumption no
-            longer holds. Probabilistic output must be verified in motion - you validate it as it runs. And cheap execution
-            means you can pull the build forward, long before the specification is complete: when a prototype costs
-            almost nothing, you reason with it early.
+            on the Stack. The familiar pipeline (<em>Idea → Design → Concept → Alpha/Beta → Live</em>) still provides
+            useful release discipline. Within it, a small AI prototype can help test an assumption earlier.
+            Probabilistic output needs evaluation in controlled conditions and monitoring after release; speed does
+            not remove the gates required by the consequences of failure.
           </>
         ),
       },
@@ -326,7 +327,7 @@ const THESIS_SECTIONS: ThesisSection[] = [
         text: (
           <>
             The result is this loop: <strong className="font-semibold">Talk → Decide → Build → Observe → Iterate</strong>{' '}
-            - five verbs, each running on specific layers of the Stack, measured in hours rather than quarters.
+            - five verbs, revisited at a cadence appropriate to the team, the evidence and the risk.
           </>
         ),
       },
@@ -357,18 +358,18 @@ const THESIS_SECTIONS: ThesisSection[] = [
       { kind: 'h', text: 'Principle 1: The 5-Layer Stack' },
       {
         kind: 'p',
-        text: 'Each layer of the Stack is a permanent shelf. Its contents evolve over time, but the shelves and containers do not. Here they are from the most foundational layer to the top:',
+        text: 'Each layer is a useful shelf for organising decisions. The categories help me teach and reason about AI products; they can evolve if the system or evidence requires it. From the technical engine to human responsibility:',
       },
       {
         kind: 'layers',
         items: [
           {
             tag: 'Model',
-            text: 'The LLMs themselves (GPT, Claude, Gemini), small local or frontier; this is the raw pattern-prediction engine you query. It moves fastest, so you treat it as commodity infrastructure you rent. The model is generally accessible to everyone; your advantage lives elsewhere.',
+            text: 'The model supplies capabilities that need to be assessed against the task. It may be a hosted service, an open-weight deployment or a specialised model. Quality, privacy, latency, cost and version changes all influence the choice; a newer or older model is not automatically the better one.',
           },
           {
             tag: 'Context',
-            text: 'Everything that makes the model act like a teammate instead of a stranger: your company, product, and user knowledge, overall memory and prompts. This is the layer you own. The model is rented, but the context is yours.',
+            text: 'Company, product and user knowledge, memory, prompts and retrieved material give the model a relevant working context. That material may be owned, licensed or supplied by another person. Provenance, permitted use, privacy and access controls are part of deciding what belongs here.',
           },
           {
             tag: 'Orchestration',
@@ -386,7 +387,7 @@ const THESIS_SECTIONS: ThesisSection[] = [
       },
       {
         kind: 'p',
-        text: 'The ordering of the 5-Layer Stack carries its own meaning. Model at the base - rented, shared, the fastest to change. Human at the top - owned, personal, the slowest to change. Each layer depends on the one beneath it. The Stack enables you to define, think about and update the right parts of your AI product architecture with clarity over time.',
+        text: 'The ordering is a teaching lens, not a claim that every AI system follows one dependency hierarchy. Model and context choices affect orchestration; governance and human responsibility shape all of them. The Stack helps make those interactions explicit and locate what needs attention.',
       },
       { kind: 'h', text: 'Principle 2: The AI-Native Loop' },
       {
@@ -473,11 +474,11 @@ const THESIS_SECTIONS: ThesisSection[] = [
       {
         kind: 'rules',
         items: [
-          { tag: 'Rule 1', text: 'Build something small each week. Cheap execution makes the working artifact the lowest-cost source of information available. Use it.' },
+          { tag: 'Rule 1', text: 'Build small when it answers an important question safely. A working artifact can be an inexpensive learning tool; an interview, data review or operational check may sometimes be the better next step.' },
           { tag: 'Rule 2', text: 'Distinguish a Model update from a Stack change. Just because a new frontier is released, it doesn’t mean you need to change your entire Stack. The most-publicised layer can be least architecturally significant for you.' },
-          { tag: 'Rule 3', text: 'The model is rented; the context is owned. The model is shared with everyone; the context belongs to you.' },
-          { tag: 'Rule 4', text: 'Operate as conductor, not builder. Vision - the third value in the roots - is what you hold. The Stack is what executes.' },
-          { tag: 'Rule 5', text: 'Ship what can be measured; hold what cannot. Judgement - the second value - is the capacity to make this call when the eval dashboard alone cannot make it for you.' },
+          { tag: 'Rule 3', text: 'Know what context you can use. Owned knowledge can be valuable, but licensed, personal and third-party material still carry access and usage obligations.' },
+          { tag: 'Rule 4', text: 'Direct the system and understand what it builds. Hands-on implementation and the ability to inspect it support the judgement needed to steer the work.' },
+          { tag: 'Rule 5', text: 'Define the evidence needed for release. Quantitative checks, qualitative research and professional judgement all matter; hold a release when unresolved risk exceeds the agreed threshold.' },
           { tag: 'Rule 6', text: 'The Human layer is the control point. Clarity - the first value - is what lets you set the objective without collapsing under the noise. The lower layers serve what it sets.' },
         ],
       },
@@ -493,7 +494,7 @@ const THESIS_SECTIONS: ThesisSection[] = [
     blocks: [
       {
         kind: 'p',
-        text: 'To this point, the thesis has been a framework: a structure derived from first principles and available to anyone who reasons from the same conditions. A framework is validated only by the fruits of what it yields, and the products below are what I built by applying this one. Together they show the framework at work in the hands of a single practitioner.',
+        text: 'The products below are applications of this framework in my own practice. Building and shipping them demonstrates use of the method; it does not, by itself, validate the framework or establish user value. Customer outcomes, evaluation results and operational evidence need to be assessed separately for each product.',
       },
       { kind: 'h', text: 'Apps I’ve built from 0 → 1' },
       { kind: 'links', bare: true, items: [{ label: 'View Projects', href: '/projects' }] },
@@ -551,12 +552,29 @@ const THESIS_SECTIONS: ThesisSection[] = [
       },
       {
         kind: 'p',
-        text: 'As this thesis has traced, AI has changed the physics of product work. Over-information means you need a cognitive framework to hold the field steady - hence the 5-Layer Stack. Cheap, probabilistic execution breaks the old linear pipeline, so the work has to run as a loop. The Stratetree, the 5-Layer Stack, and the AI-Native Process Loop are that rebuilt practice, and the products above are what it yields.',
+        text: 'AI changes the economics of some product work and adds uncertainty to outputs. The Stratetree, Stack and Loop are how I organise those decisions and learn from what happens. They complement established product discipline, with release controls proportionate to the task and its consequences.',
+      },
+      {
+        kind: 'h',
+        text: 'Where this method needs judgment',
+      },
+      {
+        kind: 'p',
+        text: 'This is a teaching and decision framework, not a universal architecture standard or a substitute for specialist review. It does not remove the need for discovery, security, compliance, delivery discipline or release gates. A useful model should make its limits visible, and should change when evidence exposes a gap.',
+      },
+      {
+        kind: 'list',
+        items: [
+          'The control boundary depends on the task: a low-risk draft and a high-value payment need different evidence, permissions and approval conditions.',
+          'The presence of an evaluation suite, monitoring or a human approval step does not establish that a control works. Effectiveness requires task-specific tests, operational evidence and continuing review.',
+          'Products demonstrate applications; course reception and speaking recognition demonstrate teaching and communication. None should be substituted for measured production quality or customer outcomes.',
+        ],
       },
       {
         kind: 'links',
         items: [
-          { label: 'Run it yourself - Install the Product OS', href: OS_GITHUB_HREF },
+          { label: 'Use the installable workspace - GitHub', href: OS_GITHUB_HREF },
+          { label: 'Walk through the hypothetical DISx example', href: '/talks/disx-dubai#worked-example' },
           { label: 'See it in practice - Projects', href: '/projects' },
         ],
       },
@@ -674,6 +692,45 @@ function ThesisRail({
 /*  Right column blocks                                                       */
 /* -------------------------------------------------------------------------- */
 
+function ThesisMethodOverview({ onNavigate }: { onNavigate?: (href: string) => void }) {
+  return (
+    <section id="thesis-summary" className="thesis-method-overview" aria-labelledby="thesis-summary-heading">
+      <h3 id="thesis-summary-heading">The method in 30 seconds</h3>
+      <p>
+        AI can make a first working version cheaper to build while making some outputs harder to predict.
+        I use five areas of responsibility and a repeatable loop to connect faster experiments to
+        customer problems, evidence and clear decision rights.
+      </p>
+      <dl>
+        {productMethodResponsibilities.map((layer) => (
+          <div key={layer.name}><dt>{layer.name}</dt><dd>{layer.question}</dd></div>
+        ))}
+      </dl>
+      <p className="thesis-method-overview__loop"><strong>The Loop:</strong> {productMethodLoop.map((step) => step.name).join(' → ')}.</p>
+      <p>
+        The framework organises decisions. The GitHub workspace packages practical assets;
+        the courses teach the approach. Governance and human responsibility apply throughout,
+        with release gates matched to the risk.
+      </p>
+      <nav aria-label="Explore the method before the full thesis">
+        {productMethodRoutes.filter((route) => route.href !== '/product-thesis').map((route) => {
+          const isExternal = route.href.startsWith('https:');
+          return (
+            <a
+              key={route.href}
+              href={route.href}
+              target={isExternal ? '_blank' : undefined}
+              rel={isExternal ? 'noopener noreferrer' : undefined}
+              onClick={isExternal ? undefined : (event) => { event.preventDefault(); onNavigate?.(route.href); }}
+            >{route.label} ↗</a>
+          );
+        })}
+      </nav>
+      <p className="thesis-method-overview__continue">The full argument, applications and limitations follow below.</p>
+    </section>
+  );
+}
+
 function SectionBlocks({
   blocks,
   onNavigate,
@@ -684,6 +741,9 @@ function SectionBlocks({
   return (
     <div className="mt-4 space-y-4">
       {blocks.map((block, index) => {
+        if (block.kind === 'method-summary') {
+          return <ThesisMethodOverview key={index} onNavigate={onNavigate} />;
+        }
         if (block.kind === 'p') {
           return (
             <p
@@ -839,6 +899,7 @@ export function ThesisDeepDive({ onClose }: { onClose: () => void }) {
   const rootRef = useRef<HTMLDivElement | null>(null);
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const sectionRefs = useRef<(HTMLElement | null)[]>([]);
+  const isDesktopRail = useDesktopRail();
   // Master scrub: smooth (beat units) drives the DerivationCanvas;
   // activeIndex drives the discrete UI (rail caption, dots, section dimming).
   const { activeIndex, smooth } = useThesisScrub(scrollRef, rootRef, sectionRefs, SECTION_UNITS);
@@ -889,7 +950,13 @@ export function ThesisDeepDive({ onClose }: { onClose: () => void }) {
         onClick={onClose}
       />
 
+      <button type="button" aria-label="Close product thesis" onClick={onClose} className="portfolio-case-reader-exit">
+        <span aria-hidden="true">←</span>
+        <span>Close thesis</span>
+      </button>
+
       <motion.article className="portfolio-deep-dive-shell relative mx-auto grid min-h-[calc(100svh-1.5rem)] max-w-[1320px] gap-4 lg:h-[calc(100svh-2.5rem)] lg:min-h-0 lg:grid-cols-[0.86fr_1.14fr] lg:overflow-hidden">
+        {!isDesktopRail ? <ThesisMethodOverview onNavigate={handleSectionNavigate} /> : null}
         <ThesisRail activeIndex={activeIndex} smooth={smooth} onJump={handleJump} />
 
         <div className="portfolio-deep-dive-reader-panel liquid-glass-strong flex flex-col rounded-[2rem] p-6 md:p-8 lg:min-h-0 lg:overflow-hidden">
@@ -936,7 +1003,7 @@ export function ThesisDeepDive({ onClose }: { onClose: () => void }) {
                         <h2 className="max-w-2xl text-3xl font-semibold tracking-[-0.04em] text-text-primary md:text-5xl">
                           {section.heading}
                         </h2>
-                        <SectionBlocks blocks={bodyBlocks} onNavigate={handleSectionNavigate} />
+                        <SectionBlocks blocks={isDesktopRail ? bodyBlocks : bodyBlocks.filter((block) => block.kind !== 'method-summary')} onNavigate={handleSectionNavigate} />
                       </div>
                     </section>
                   );
