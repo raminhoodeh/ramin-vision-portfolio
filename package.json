@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "npm run build:ai-ramin-corpus && vite --host 127.0.0.1 --port ${PORT:-4182}",
+    "prebuild": "npm run check:portfolio-claims",
     "build": "npm run build:ai-ramin-corpus && vite build --manifest && node scripts/prerender-pages.mjs",
     "start": "node server.mjs",
     "preview": "vite preview",

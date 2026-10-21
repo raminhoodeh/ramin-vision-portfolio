@@ -27,7 +27,7 @@ When a changing figure cannot be refreshed, retain its real historical check dat
 
 ## Software verification
 
-`npm run check:priority-eight` runs the claim reconciliation, measurement/report and AI conversation continuity checks. It is also part of `npm run verify`. To inspect date-sensitive claims at a specific review date, use `npm run check:portfolio-claims -- --as-of YYYY-MM-DD --json`. The first current claim reviews fall due on 21 November 2026; this is a manual maintenance date, not a newly scheduled task.
+`npm run check:priority-eight` runs the claim reconciliation, measurement/report and AI conversation continuity checks. It is also part of `npm run verify`. Claim reconciliation additionally runs in `prebuild`, including Vercel production builds, so a due review or source-value mismatch blocks a new build until it is reconciled. To inspect date-sensitive claims at a specific review date, use `npm run check:portfolio-claims -- --as-of YYYY-MM-DD --json`. The first current claim reviews fall due on 21 November 2026; this is a manual maintenance date, not a newly scheduled task.
 
 Use the repository’s checks as executable evidence, and inspect their output. The usual entry point is `npm run verify`; production HTML and routing can also be checked with `npm run check:public-http` after a build, and accessibility contracts with `npm run check:accessibility`.
 
