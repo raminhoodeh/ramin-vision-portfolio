@@ -11,7 +11,7 @@ import { METACOGNITION_SENTINEL } from './MetacognitionDeepDive';
 import { thoughtsAssets } from '../../assets/thoughts';
 import { IPhone3D } from '../../components/IPhone3D';
 import { TahoeGlassSurface } from '../../components/TahoeGlassSurface';
-import dreamseaHomepageScreenUrl from '../../../projects-section/Project Images/dreamsea-images/dreamsea-homepage.PNG';
+import dreamseaHomepageScreenUrl from '../../assets/previews/dreamsea-homepage.webp';
 import dreamseaIphoneRecordingUrl from '../../../projects-section/Project Images/dreamsea-fixed-recording-3d-island.webm';
 import propositionVideoUrl from '../../../thoughts-section/books/the-proposition-video.webm';
 import aiNativeProductOsLightModeUrl from '../../../thoughts-section/courses/ai-native-product-os-light-mode.jpg';

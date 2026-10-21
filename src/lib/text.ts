@@ -1,4 +1,4 @@
-import { navLinks } from '../data/portfolio';
+import { navLinks } from '../data/nav';
 
 export type SectionTarget = (typeof navLinks)[number]['target'];
 

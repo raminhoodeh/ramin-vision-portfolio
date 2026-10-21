@@ -16,7 +16,9 @@ import {
   publicWorkValue,
   type PlaceholderLike,
 } from '../lib/placeholder';
-import { preloadWorkVideoForEntry, preloadWorkVideos } from '../performance/workVideoPreload';
+import { preloadWorkVideoForEntry } from '../performance/workVideoPreload';
+import { ViewportVideo } from '../components/ViewportVideo';
+import { preferredScrollBehavior } from '../lib/scroll';
 import { professionalStories } from '../data/professionalStories';
 import { ProfessionalStories } from './ProfessionalStories';
 
@@ -214,17 +216,11 @@ function ProductVideoPreview({
       aria-label={`${displayWorkCompanyName(entry)} work video`}
     >
       {isNativeVideo && videoUrl ? (
-        <video
+        <ViewportVideo
           src={videoUrl}
-          className="h-full w-full object-cover"
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-          onLoadedData={(event) => {
-            void event.currentTarget.play().catch(() => undefined);
-          }}
+          poster={resolveCompanyLogoSrc(entry.companyLogo)}
+          className="h-full w-full object-contain"
+          label={`${displayWorkCompanyName(entry)} work preview`}
         />
       ) : null}
     </div>
@@ -403,7 +399,7 @@ function ProductManagementWorkRail({
 
       scrollContainer.scrollTo({
         top: Math.max(scrollContainer.scrollTop + activeRect.top - scrollRect.top - 16, 0),
-        behavior: 'smooth',
+        behavior: preferredScrollBehavior(),
       });
     });
   }, [activeIndex]);
@@ -765,16 +761,12 @@ export function ExperienceEducationSection() {
           const section = sectionRef.current;
           const stage = section?.closest<HTMLElement>('.portfolio-stage');
           if (!section || !stage) return;
-          stage.scrollTo({ top: section.offsetTop, left: 0, behavior: 'smooth' });
+          stage.scrollTo({ top: section.offsetTop, left: 0, behavior: preferredScrollBehavior() });
         });
       }
       return next;
     });
   };
-
-  useEffect(() => {
-    preloadWorkVideos('visible');
-  }, []);
 
   useEffect(() => {
     if (previewEntry) preloadWorkVideoForEntry(previewEntry, 'activate');
@@ -789,7 +781,7 @@ export function ExperienceEducationSection() {
       const stage = section?.closest<HTMLElement>('.portfolio-stage');
       if (!section || !stage) return;
 
-      stage.scrollTo({ top: section.offsetTop, left: 0, behavior: 'smooth' });
+      stage.scrollTo({ top: section.offsetTop, left: 0, behavior: preferredScrollBehavior() });
     });
   }, [activeWorkIndex]);
 

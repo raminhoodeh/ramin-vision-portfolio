@@ -1,6 +1,9 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
+import { motion, useIsPresent, useReducedMotion } from 'framer-motion';
+import { useDialogFocus } from '../../lib/useDialogFocus';
+import { ReaderTools } from '../../components/ReaderTools';
+import { ViewportVideo } from '../../components/ViewportVideo';
 import {
   type CaseStudyEntry,
 } from '../types';
@@ -49,9 +52,9 @@ import razinflixBeforeWatchlistScreenUrl from '../../assets/projects/razinflix-d
 import razinflixCategoryRailsScreenUrl from '../../assets/projects/razinflix-deep-dive/razinflix-category-rails.webp';
 import razinflixFilmDetailScreenUrl from '../../assets/projects/razinflix-deep-dive/razinflix-film-detail.webp';
 import razinflixIntelligenceRunScreenUrl from '../../assets/projects/razinflix-deep-dive/razinflix-intelligence-run.webp';
-import dreamseaHomepageScreenUrl from '../../../projects-section/Project Images/dreamsea-images/dreamsea-homepage.PNG';
+import dreamseaHomepageScreenUrl from '../../assets/previews/dreamsea-homepage.webp';
 import dreamseaIphoneRecordingUrl from '../../../projects-section/Project Images/dreamsea-fixed-recording-3d-island.webm';
-import conciergeHomepageScreenUrl from '../../../projects-section/Project Images/24seven-concierge-images/24-seven-homepage.PNG';
+import conciergeHomepageScreenUrl from '../../assets/previews/concierge-homepage.webp';
 import conciergeScreenRecordingUrl from '../../../projects-section/Project Images/24seven-concierge-images/24-seven-concierge-screen-recording-3d-shifted-17.mp4';
 
 const mobileDeepDivePresentation: Record<
@@ -660,7 +663,7 @@ function NonMobileCaseStudyVisualPanel({ item }: { item: CaseStudyEntry }) {
   }, [hasManualSlideSelection, shouldReduceMotion, slides.length]);
 
   return (
-    <aside className="deep-dive-support-rail liquid-glass-strong flex min-h-[64vh] flex-col overflow-hidden rounded-[2rem] lg:h-full lg:min-h-0">
+    <aside data-gallery-paused={hasManualSlideSelection || shouldReduceMotion ? 'true' : 'false'} className="deep-dive-support-rail liquid-glass-strong flex min-h-[64vh] flex-col overflow-hidden rounded-[2rem] lg:h-full lg:min-h-0">
       <div
         className="relative flex min-h-[38rem] flex-1 flex-col overflow-hidden rounded-[2rem] border border-white/14 shadow-[inset_0_1px_0_rgba(255,255,255,0.14)]"
         style={{ backgroundColor: config.surface }}
@@ -726,7 +729,7 @@ function NonMobileCaseStudyVisualPanel({ item }: { item: CaseStudyEntry }) {
                 </div>
               )}
               <div
-                className={`relative overflow-hidden bg-black/30 ${
+                className={`case-study-media-viewport relative overflow-hidden bg-black/30 ${
                   hasMobileImagePass ? 'h-[26.5rem]' : isMobileSlide ? 'aspect-[460/996]' : 'aspect-[16/9]'
                 }`}
               >
@@ -760,22 +763,13 @@ function NonMobileCaseStudyVisualPanel({ item }: { item: CaseStudyEntry }) {
                     ))}
                   </div>
                 ) : activeSlide.video && !shouldReduceMotion ? (
-                  <video
-                    aria-label={`${item.title} ${activeSlide.label}`}
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
-                    preload="auto"
+                  <ViewportVideo
+                    src={activeSlide.video}
+                    label={`${item.title} ${activeSlide.label}`}
                     poster={activeSlide.image}
-                    onLoadedData={(event) => {
-                      void event.currentTarget.play().catch(() => undefined);
-                    }}
                     className="h-full w-full object-cover"
                     style={{ objectPosition: activeSlide.position ?? '50% 50%' }}
-                  >
-                    <source src={activeSlide.video} type="video/webm" />
-                  </video>
+                  />
                 ) : (
                   <img
                     src={activeSlide.image}
@@ -822,6 +816,11 @@ function NonMobileCaseStudyVisualPanel({ item }: { item: CaseStudyEntry }) {
           </div>
 
           <div className="mt-7 shrink-0">
+            {(hasSlideNavigation || hasMobileImagePass) && !shouldReduceMotion ? (
+              <button type="button" className="portfolio-gallery-motion-control" onClick={() => setHasManualSlideSelection((current) => !current)}>
+                {hasManualSlideSelection ? 'Resume gallery' : 'Pause gallery'}
+              </button>
+            ) : null}
             <div className="rounded-[1.35rem] border border-white/12 bg-black/18 p-5 backdrop-blur-xl">
               <p className="text-[0.58rem] uppercase tracking-[0.18em] text-white/40">{activeSlide.label}</p>
               <p className="mt-3 text-sm leading-6 text-white/72">{activeSlide.detail}</p>
@@ -904,6 +903,10 @@ function NonMobileCaseStudyVisualPanel({ item }: { item: CaseStudyEntry }) {
 
 
 export function CaseStudyOverlay({ item, onClose }: { item: CaseStudyEntry; onClose: () => void }) {
+  const rootRef = useRef<HTMLDivElement | null>(null);
+  const isPresent = useIsPresent();
+  const shouldReduceMotion = useReducedMotion();
+  useDialogFocus(rootRef, isPresent, onClose);
   const mobilePresentation = mobileDeepDivePresentation[item.title];
   const overviewBody = getProjectCardDescriptionByName(item.title, item.summary);
   const proofCta = getProofCta(item);
@@ -916,32 +919,25 @@ export function CaseStudyOverlay({ item, onClose }: { item: CaseStudyEntry; onCl
     ...item.sections.filter((section) => section.label.toLowerCase() !== 'overview'),
   ];
 
-  useEffect(() => {
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') onClose();
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [onClose]);
-
   return (
     <motion.div
+      ref={rootRef}
+      role="dialog"
+      aria-modal="true"
+      aria-label={`${item.title} case study`}
+      tabIndex={-1}
+      data-reader-modal
       className="portfolio-deep-dive-overlay fixed inset-0 z-[220] overflow-y-auto px-3 py-3 text-text-primary sm:px-5 sm:py-5"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.28, ease: [0.25, 0.1, 0.25, 1] }}
+      transition={{ duration: shouldReduceMotion ? 0 : 0.28, ease: [0.25, 0.1, 0.25, 1] }}
     >
       <button
         type="button"
         aria-label="Close case study backdrop"
+        tabIndex={-1}
+        aria-hidden="true"
         className="portfolio-deep-dive-backdrop absolute inset-0 bg-bg/20 backdrop-blur-[3px]"
         onClick={onClose}
       />
@@ -949,6 +945,7 @@ export function CaseStudyOverlay({ item, onClose }: { item: CaseStudyEntry; onCl
       <button
         type="button"
         aria-label={`Close ${item.title} case study`}
+        data-dialog-initial
         onClick={onClose}
         className="portfolio-case-reader-exit"
       >
@@ -959,6 +956,7 @@ export function CaseStudyOverlay({ item, onClose }: { item: CaseStudyEntry; onCl
       {shouldShowMassSocialDemo ? (
         <>
           <ProjectBrief title={item.title} className="project-entry-brief--demo" />
+          <div className="portfolio-demo-reader-tools"><ReaderTools /></div>
           <MassSocialWisdomDemo onClose={onClose} githubHref={proofCta?.href} />
         </>
       ) : (
@@ -998,10 +996,12 @@ export function CaseStudyOverlay({ item, onClose }: { item: CaseStudyEntry; onCl
               <p className="mt-2 text-xs uppercase tracking-[0.22em] text-muted">
                 // {item.title}
               </p>
+              <ReaderTools />
             </div>
             <button
               type="button"
               aria-label="Close case study"
+              data-dialog-initial
               onClick={onClose}
               className="portfolio-deep-dive-inline-close card-glass-attachment is-active"
             >

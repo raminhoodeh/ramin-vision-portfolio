@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, useIsPresent, useReducedMotion } from 'framer-motion';
 import { type CaseStudyEntry } from '../types';
+import { useDialogFocus } from '../../lib/useDialogFocus';
+import { ReaderTools } from '../../components/ReaderTools';
 
 /* ------------------------------------------------------------------ */
 /*  Public identifiers                                                  */
@@ -264,6 +266,14 @@ function BranchGroup({
 }
 
 function StratetreeSvg({ activeSet }: { activeSet: Set<number> }) {
+  const svgRef = useRef<SVGSVGElement | null>(null);
+  const shouldReduceMotion = useReducedMotion();
+  useEffect(() => {
+    const svg = svgRef.current;
+    if (!svg) return;
+    if (shouldReduceMotion) svg.pauseAnimations();
+    else svg.unpauseAnimations();
+  }, [shouldReduceMotion]);
   // TX is the trunk x-axis. Every branch is mirrored ±offset from TX so the
   // tree is horizontally symmetric. Labels sit to the right starting at LX.
   const TX = 80;
@@ -282,6 +292,9 @@ function StratetreeSvg({ activeSet }: { activeSet: Set<number> }) {
 
   return (
     <svg
+      ref={svgRef}
+      role="img"
+      aria-label="Metacognition tree: metaphysics, values, vision, mission, strategy, tactics and products"
       viewBox="0 0 280 324"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -751,6 +764,10 @@ function RenderBlocks({
 /* ------------------------------------------------------------------ */
 
 export function MetacognitionDeepDive({ onClose }: { onClose: () => void }) {
+  const rootRef = useRef<HTMLDivElement | null>(null);
+  const isPresent = useIsPresent();
+  const shouldReduceMotion = useReducedMotion();
+  useDialogFocus(rootRef, isPresent, onClose);
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const sectionRefs = useRef<(HTMLElement | null)[]>([]);
   const stepRefs = useRef<Map<string, HTMLElement>>(new Map());
@@ -844,46 +861,49 @@ export function MetacognitionDeepDive({ onClose }: { onClose: () => void }) {
 
   // Trigger sequential root-to-fruit grow when the layers section is first reached
   useEffect(() => {
+    if (shouldReduceMotion) return;
+    let timeout: ReturnType<typeof setTimeout> | undefined;
     if (activeIndex === 1 && !grownRef.current) {
       grownRef.current = true;
       let i = 0;
       const step = () => {
         setGrowOverride(new Set(Array.from({ length: i + 1 }, (_, k) => k)));
         i++;
-        if (i < 7) setTimeout(step, 160);
-        else setTimeout(() => setGrowOverride(null), 700);
+        if (i < 7) timeout = setTimeout(step, 160);
+        else timeout = setTimeout(() => setGrowOverride(null), 700);
       };
       step();
     }
-  }, [activeIndex]);
-
-  useEffect(() => {
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') onClose();
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [onClose]);
+    return () => { clearTimeout(timeout); setGrowOverride(null); };
+  }, [activeIndex, shouldReduceMotion]);
 
   return (
     <motion.div
+      ref={rootRef}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Framework of Metacognition"
+      tabIndex={-1}
+      data-reader-modal
       className="portfolio-deep-dive-overlay fixed inset-0 z-[220] overflow-y-auto px-3 py-3 text-text-primary sm:px-5 sm:py-5"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.28, ease: [0.25, 0.1, 0.25, 1] }}
+      transition={{ duration: shouldReduceMotion ? 0 : 0.28, ease: [0.25, 0.1, 0.25, 1] }}
     >
       <button
         type="button"
         aria-label="Close framework"
+        tabIndex={-1}
+        aria-hidden="true"
         className="portfolio-deep-dive-backdrop absolute inset-0 bg-bg/20 backdrop-blur-[3px]"
         onClick={onClose}
       />
+
+      <button type="button" aria-label="Close metacognition framework" data-dialog-initial onClick={onClose} className="portfolio-case-reader-exit">
+        <span aria-hidden="true">←</span>
+        <span>Close framework</span>
+      </button>
 
       <motion.article className="portfolio-deep-dive-shell relative mx-auto grid min-h-[calc(100svh-1.5rem)] max-w-[1320px] gap-4 lg:h-[calc(100svh-2.5rem)] lg:min-h-0 lg:grid-cols-[0.86fr_1.14fr] lg:overflow-hidden">
         <MetacognitionRail activeIndex={activeIndex} activeSet={growOverride ?? activeSet} />
@@ -893,8 +913,9 @@ export function MetacognitionDeepDive({ onClose }: { onClose: () => void }) {
             <div>
               <p className="text-xs uppercase tracking-[0.3em] text-muted">How I think</p>
               <p className="mt-2 text-xs uppercase tracking-[0.22em] text-muted">// Framework of Metacognition</p>
+              <ReaderTools />
             </div>
-            <button type="button" aria-label="Close" onClick={onClose} className="portfolio-deep-dive-inline-close card-glass-attachment is-active">
+            <button type="button" aria-label="Close metacognition framework" data-dialog-initial onClick={onClose} className="portfolio-deep-dive-inline-close card-glass-attachment is-active">
               <span className="card-glass-attachment__glyph">
                 <span className="card-glass-attachment__line card-glass-attachment__line-horizontal" />
                 <span className="card-glass-attachment__line card-glass-attachment__line-vertical" />
@@ -909,7 +930,6 @@ export function MetacognitionDeepDive({ onClose }: { onClose: () => void }) {
             <div className="grid gap-4">
               {SECTIONS.map((section, index) => {
                 const isOpening = section.id === 'opening';
-                const focusClass = index === activeIndex ? 'opacity-100' : 'opacity-[0.55]';
                 const [firstBlock, ...restBlocks] = section.blocks;
 
                 const stepRefCallback = (stepIdx: number, el: HTMLElement | null) =>
@@ -920,7 +940,7 @@ export function MetacognitionDeepDive({ onClose }: { onClose: () => void }) {
                     <section
                       key={section.id}
                       ref={(node) => { sectionRefs.current[index] = node; }}
-                      className={`scroll-mt-6 grid gap-4 transition-opacity duration-300 ${focusClass}`}
+                      className="scroll-mt-6 grid gap-4"
                     >
                       <div className="thesis-opening-hero rounded-[1.5rem] p-5 md:p-8">
                         <blockquote className="thesis-opening-quote">
@@ -943,7 +963,7 @@ export function MetacognitionDeepDive({ onClose }: { onClose: () => void }) {
                   <section
                     key={section.id}
                     ref={(node) => { sectionRefs.current[index] = node; }}
-                    className={`scroll-mt-6 liquid-glass rounded-[1.5rem] p-5 transition-opacity duration-300 md:p-6 ${focusClass}`}
+                    className="scroll-mt-6 liquid-glass rounded-[1.5rem] p-5 md:p-6"
                   >
                     <p className="text-[0.58rem] font-semibold uppercase tracking-[0.24em] text-muted">{section.num}</p>
                     <h2 className="mt-2 text-xl font-semibold tracking-[-0.03em] text-text-primary md:text-2xl">

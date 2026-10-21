@@ -72,7 +72,9 @@ try {
     assertIncludes(bottomNavigationSource, 'onNavIntent={onNavIntent}', 'BottomNavigation must pass predictive preload intent callbacks to the active nav shell');
     assert(!bottomNavigation.includes('?t=stage'), 'BottomNavigation module must not include stage cache tags');
   }
-  assertIncludes(appSource, "requestBonusRockPreload('idle')", 'App must idle-preload Bonus rock assets');
+  assert(!appSource.includes("requestBonusRockPreload('idle')"), 'App must not idle-preload unrelated Bonus assets');
+  assertIncludes(appSource, "requestBonusRockPreload('intent')", 'App must retain guarded Bonus intent loading');
+  assertIncludes(appSource, "requestBonusRockPreload('navigate')", 'App must retain explicit Bonus entry loading');
   assertIncludes(appSource, 'data-bonus-rock-preload-status', 'App must expose root Bonus preload status for QA');
   assert(!app.includes('?t=stage'), 'App module must not include stage cache tags');
 
@@ -118,7 +120,7 @@ try {
   const rockPreload = await get('/src/three/bonusRockPreload.ts');
   const rockPreloadSource = sourceContent(rockPreload);
   assertIncludes(rockPreloadSource, 'warmHashgraphRockAssetPipeline', 'Bonus preloader must warm the asset pipeline');
-  assertIncludes(rockPreloadSource, "import('three')", 'Bonus preloader must warm Three.js before navigation');
+  assertIncludes(rockPreloadSource, "import('three')", 'Bonus preloader must dynamically load Three.js for Bonus intent or entry');
   assertIncludes(rockPreloadSource, 'subscribeBonusRockPreload', 'Bonus preloader must expose observable status');
 
   const rockMotion = await get('/src/three/hashgraphRockMotion.ts');

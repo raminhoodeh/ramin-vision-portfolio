@@ -1,3 +1,9 @@
+import { prefersReducedMotion } from './dialogFocus';
+
+export function preferredScrollBehavior(): ScrollBehavior {
+  return prefersReducedMotion() ? 'auto' : 'smooth';
+}
+
 const pathByElementId: Record<string, string> = {
   hero: '/',
   'experience-education': '/experience-education',
@@ -46,10 +52,10 @@ export function scrollToId(target: string) {
 
     scrollContainer.scrollTo({
       top: Math.max(scrollContainer.scrollTop + targetRect.top - containerRect.top, 0),
-      behavior: 'smooth',
+      behavior: preferredScrollBehavior(),
     });
     return;
   }
 
-  targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  targetElement.scrollIntoView({ behavior: preferredScrollBehavior(), block: 'start' });
 }

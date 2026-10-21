@@ -13,13 +13,12 @@ export function Hero({ ready }: { ready: boolean; onOpenThesis: () => void }) {
 
     const ctx = gsap.context(() => {
       if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-      gsap.fromTo('.homepage-hero__reveal', { opacity: 0, y: 12 }, {
-        opacity: 1,
+      gsap.fromTo('.homepage-hero__reveal', { y: 8 }, {
         y: 0,
-        duration: 0.7,
-        stagger: 0.06,
+        duration: 0.45,
+        stagger: 0.03,
         ease: 'power3.out',
-        clearProps: 'opacity,transform',
+        clearProps: 'transform',
       });
     }, rootRef);
 

@@ -55,20 +55,23 @@ function sliceBetween(source, startNeedle, endNeedle) {
 }
 
 const shaderPresetFps = readDivisionFps(shader, 'SHADER_PRESET_SAMPLE_MS');
-const usesTahoeNav = app.includes('TahoeGlassTabNav');
+const navigation = fs.readFileSync(path.join(rootDir, 'src/components/BottomNavigation.tsx'), 'utf8');
+const usesTahoeNav = navigation.includes('TahoeGlassTabNav');
 let navGuardSummary = 'nav guard unavailable';
 
 if (usesTahoeNav) {
-  assertIncludes(app, "import { TahoeGlassTabNav }", 'App must import the active Tahoe glass nav');
-  assertIncludes(app, 'onNavIntent={onNavIntent}', 'active nav must receive predictive preload intent callback');
+  assertIncludes(navigation, 'TahoeGlassTabNav', 'App must import the active Tahoe glass nav');
+  assertIncludes(navigation, 'onNavIntent={onNavIntent}', 'active nav must receive predictive preload intent callback');
   assertIncludes(tahoeNav, 'onNavIntent', 'Tahoe glass nav must expose intent callbacks for predictive loading');
   assertIncludes(tahoeNav, 'onPointerEnter={() => onNavIntent?.(link.target)}', 'Tahoe nav hover intent must be available for preloading');
   assertIncludes(tahoeNav, 'onFocus={() => onNavIntent?.(link.target)}', 'Tahoe nav focus intent must be available for preloading');
-  assertIncludes(tahoeNav, 'role="tablist"', 'Tahoe nav must preserve tablist semantics');
-  assertIncludes(tahoeNav, 'role="tab"', 'Tahoe nav must preserve tab semantics');
-  assert(!tahoeNav.includes('requestAnimationFrame'), 'Tahoe nav must not add its own RAF loop');
+  assertIncludes(tahoeNav, 'href={link.href}', 'Tahoe nav must expose real route links');
+  assertIncludes(tahoeNav, 'aria-current=', 'Tahoe nav must expose the current route');
+  const surfaceSample = sliceBetween(tahoeNav, 'const sampleSurface =', 'const scheduleSample =');
+  assert(surfaceSample && !surfaceSample.includes('requestAnimationFrame'), 'Tahoe nav surface sampling must not schedule a recurring RAF loop');
+  assertIncludes(tahoeNav, 'if (frame) return;', 'Tahoe nav must coalesce event-driven surface samples');
   assert(!tahoeNav.includes('new WebGL'), 'Tahoe nav must not create a WebGL context');
-  navGuardSummary = 'tahoe nav intent hooks, no RAF/WebGL';
+  navGuardSummary = 'tahoe nav intent hooks, event-driven samples, no render loop/WebGL';
 } else {
   const activeGlassFps = readDivisionFps(legacyGlass, 'GLASS_ACTIVE_REFRESH_MS');
   const idleGlassFps = readDivisionFps(legacyGlass, 'GLASS_IDLE_REFRESH_MS');
@@ -97,7 +100,7 @@ if (usesTahoeNav) {
 }
 
 assert(!app.includes("activeSection !== 'bonus'"), 'live shader background must remain enabled while Bonus is active');
-assertIncludes(app, 'const shouldUseLiveBackground = liveBackgroundReady', 'live shader background must depend on readiness only');
+assertIncludes(app, 'const shouldUseLiveBackground = liveBackgroundReady', 'live shader background must retain its readiness gate');
 assertIncludes(app, '<StaticShaderGradientBackground variant={shaderVariant} />', 'static shader fallback must stay mounted under live shader');
 assertIncludes(bonusSection, 'rockVisibilityObserver', 'Bonus rock renderer must keep an IntersectionObserver visibility gate');
 assertIncludes(bonusSection, 'handleRockDocumentVisibility', 'Bonus rock renderer must pause/resume on document visibility');
@@ -105,7 +108,9 @@ assertIncludes(bonusSection, 'scheduleRockFrame', 'Bonus rock renderer must sche
 assertIncludes(bonusSection, 'targetTracksRef', 'Bonus rock renderer must cache animation targets outside the frame loop');
 assertIncludes(bonusSection, 'const particleCount = window.innerWidth < 720 ? 640 : 920', 'Bonus rock renderer must keep an adaptive particle budget');
 assertIncludes(bonusSection, 'particleMotionActive', 'Bonus rock renderer must skip invisible particle buffer updates');
-assertIncludes(app, "requestBonusRockPreload('idle')", 'Bonus rock assets must warm during idle time');
+assert(!app.includes("requestBonusRockPreload('idle')"), 'Bonus rock assets must not warm on unrelated route idle');
+assertIncludes(app, "requestBonusRockPreload('intent')", 'Bonus rock assets must retain deliberate intent warming');
+assertIncludes(app, "requestBonusRockPreload('navigate')", 'Bonus rock assets must load on explicit entry');
 assertIncludes(bonusSection, "preloadBonusRockAssets('visible')", 'visible Bonus rock scene must join the preload state machine');
 assertIncludes(bonusSection, 'data-rock-preload-status', 'Bonus rock preload status must be observable on the Bonus scene');
 assertIncludes(app, 'data-bonus-rock-preload-status', 'root preload status must be observable without mounting Bonus');

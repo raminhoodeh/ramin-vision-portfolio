@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
-import { motion, useMotionValue, useReducedMotion, type MotionValue } from 'framer-motion';
+import { motion, useIsPresent, useMotionValue, useReducedMotion, type MotionValue } from 'framer-motion';
+import { useDialogFocus } from '../../lib/useDialogFocus';
+import { ReaderTools } from '../../components/ReaderTools';
 import { useThesisScrub } from './useThesisScrub';
 import { DerivationCanvas } from './DerivationCanvas';
 import { productMethodLoop, productMethodResponsibilities, productMethodRoutes } from '../../data/disxTalk';
@@ -891,35 +893,30 @@ function getThesisSectionTitle(section: ThesisSection) {
   return section.heading.startsWith(prefix) ? section.heading.slice(prefix.length) : section.heading;
 }
 
+// The same authored sections, without an overlay or scroll-driven presentation, for readable initial HTML.
+export function ThesisReadingCopy() {
+  return <article><h1>The AI-Native Product Thesis</h1>{THESIS_SECTIONS.map((section) => <section key={section.id}><h2>{section.heading}</h2><SectionBlocks blocks={section.blocks} /></section>)}</article>;
+}
+
 /* -------------------------------------------------------------------------- */
 /*  Overlay                                                                   */
 /* -------------------------------------------------------------------------- */
 
 export function ThesisDeepDive({ onClose }: { onClose: () => void }) {
   const rootRef = useRef<HTMLDivElement | null>(null);
+  const isPresent = useIsPresent();
+  const shouldReduceMotion = useReducedMotion();
+  useDialogFocus(rootRef, isPresent, onClose);
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const sectionRefs = useRef<(HTMLElement | null)[]>([]);
   const isDesktopRail = useDesktopRail();
   // Master scrub: smooth (beat units) drives the DerivationCanvas;
-  // activeIndex drives the discrete UI (rail caption, dots, section dimming).
+  // activeIndex drives the rail caption and dots; the article stays fully readable.
   const { activeIndex, smooth } = useThesisScrub(scrollRef, rootRef, sectionRefs, SECTION_UNITS);
 
-  useEffect(() => {
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') onClose();
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [onClose]);
-
   const handleJump = useCallback((index: number) => {
-    sectionRefs.current[index]?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, []);
+    sectionRefs.current[index]?.scrollIntoView({ behavior: shouldReduceMotion ? 'auto' : 'smooth', block: 'start' });
+  }, [shouldReduceMotion]);
 
   const handleSectionNavigate = useCallback(
     (href: string) => {
@@ -937,20 +934,27 @@ export function ThesisDeepDive({ onClose }: { onClose: () => void }) {
   return (
     <motion.div
       ref={rootRef}
+      role="dialog"
+      aria-modal="true"
+      aria-label="AI-Native Product OS thesis"
+      tabIndex={-1}
+      data-reader-modal
       className="portfolio-deep-dive-overlay fixed inset-0 z-[220] overflow-y-auto px-3 py-3 text-text-primary sm:px-5 sm:py-5"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.28, ease: [0.25, 0.1, 0.25, 1] }}
+      transition={{ duration: shouldReduceMotion ? 0 : 0.28, ease: [0.25, 0.1, 0.25, 1] }}
     >
       <button
         type="button"
         aria-label="Close thesis backdrop"
+        tabIndex={-1}
+        aria-hidden="true"
         className="portfolio-deep-dive-backdrop absolute inset-0 bg-bg/20 backdrop-blur-[3px]"
         onClick={onClose}
       />
 
-      <button type="button" aria-label="Close product thesis" onClick={onClose} className="portfolio-case-reader-exit">
+      <button type="button" aria-label="Close product thesis" data-dialog-initial onClick={onClose} className="portfolio-case-reader-exit">
         <span aria-hidden="true">←</span>
         <span>Close thesis</span>
       </button>
@@ -964,8 +968,9 @@ export function ThesisDeepDive({ onClose }: { onClose: () => void }) {
             <div>
               <p className="text-xs uppercase tracking-[0.3em] text-muted">Product Thesis</p>
               <p className="mt-2 text-xs uppercase tracking-[0.22em] text-muted">// AI-Native Product OS</p>
+              <ReaderTools />
             </div>
-            <button type="button" aria-label="Close thesis" onClick={onClose} className="portfolio-deep-dive-inline-close card-glass-attachment is-active">
+            <button type="button" aria-label="Close thesis" data-dialog-initial onClick={onClose} className="portfolio-deep-dive-inline-close card-glass-attachment is-active">
               <span className="card-glass-attachment__glyph">
                 <span className="card-glass-attachment__line card-glass-attachment__line-horizontal" />
                 <span className="card-glass-attachment__line card-glass-attachment__line-vertical" />
@@ -978,9 +983,6 @@ export function ThesisDeepDive({ onClose }: { onClose: () => void }) {
               {THESIS_SECTIONS.map((section, index) => {
                 const isThesis = section.id === 'thesis';
                 const [leadBlock, ...bodyBlocks] = section.blocks;
-                // Anthropic-style focus: the section under the read line is full-strength,
-                // the rest recede — the eye stays on the persistent canvas.
-                const focusClass = index === activeIndex ? 'opacity-100' : 'opacity-[0.55]';
 
                 if (isThesis) {
                   return (
@@ -991,7 +993,7 @@ export function ThesisDeepDive({ onClose }: { onClose: () => void }) {
                       }}
                       data-index={index}
                       data-state={index === activeIndex ? 'active' : 'inactive'}
-                      className={`scroll-mt-6 grid gap-4 transition-opacity duration-300 ${focusClass}`}
+                      className="scroll-mt-6 grid gap-4"
                     >
                       <div className="thesis-opening-hero rounded-[1.5rem] p-5 md:p-8">
                         <blockquote className="thesis-opening-quote">
@@ -1017,7 +1019,7 @@ export function ThesisDeepDive({ onClose }: { onClose: () => void }) {
                     }}
                     data-index={index}
                     data-state={index === activeIndex ? 'active' : 'inactive'}
-                    className={`liquid-glass scroll-mt-6 rounded-[1.5rem] p-5 md:p-6 transition-opacity duration-300 ${focusClass}`}
+                    className="liquid-glass scroll-mt-6 rounded-[1.5rem] p-5 md:p-6"
                   >
                     <p className="thesis-section-kicker text-xs uppercase tracking-[0.22em]">
                       {section.num} / {section.rail}

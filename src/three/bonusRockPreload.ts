@@ -1,4 +1,4 @@
-import { warmHashgraphRockAssetPipeline } from './hashgraphRockAssets';
+import { canSpeculativelyLoad } from '../performance/loadingPolicy';
 
 export type BonusRockPreloadStatus = 'idle' | 'preloading' | 'ready' | 'failed';
 export type BonusRockPreloadReason = 'idle' | 'intent' | 'navigate' | 'visible';
@@ -50,6 +50,7 @@ export function subscribeBonusRockPreload(listener: BonusRockPreloadListener) {
 
 export function preloadBonusRockAssets(reason: BonusRockPreloadReason = 'idle') {
   if (typeof window === 'undefined') return Promise.resolve(preloadSnapshot);
+  if (reason === 'idle' || (reason === 'intent' && !canSpeculativelyLoad())) return Promise.resolve(preloadSnapshot);
   if (preloadSnapshot.status === 'ready') return Promise.resolve(preloadSnapshot);
   if (preloadPromise) return preloadPromise;
 
@@ -59,7 +60,10 @@ export function preloadBonusRockAssets(reason: BonusRockPreloadReason = 'idle') 
     startedAt: now(),
   });
 
-  preloadPromise = Promise.all([preloadBonusRockModules(), warmHashgraphRockAssetPipeline()])
+  preloadPromise = Promise.all([
+    preloadBonusRockModules(),
+    import('./hashgraphRockAssets').then(({ warmHashgraphRockAssetPipeline }) => warmHashgraphRockAssetPipeline()),
+  ])
     .then(() =>
       publish({
         status: 'ready',

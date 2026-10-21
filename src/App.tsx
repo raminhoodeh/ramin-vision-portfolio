@@ -1,47 +1,58 @@
-import { AnimatePresence, motion } from 'framer-motion';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { AnimatePresence, MotionConfig, motion } from 'framer-motion';
+import { lazy, Suspense, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
-import { VisionLoadingScreen } from './components/VisionLoadingScreen';
 import { StaticShaderGradientBackground, type PortfolioShaderVariant } from './components/StaticShaderGradientBackground';
 import { AiViewportBorderGlow } from './components/AiViewportBorderGlow';
 import { BottomNavigation } from './components/BottomNavigation';
-import { ContentReadinessPanel } from './components/ContentReadinessPanel';
 import {
   getBonusRockPreloadSnapshot,
   preloadBonusRockAssets,
   subscribeBonusRockPreload,
   type BonusRockPreloadStatus,
 } from './three/bonusRockPreload';
-import { preloadWorkVideos, type WorkVideoPreloadReason } from './performance/workVideoPreload';
+import { BONUS_ROCK_FINAL_CLICK_COUNT } from './three/hashgraphRockMotion';
+import { RouteLoadBoundary } from './performance/RouteLoadBoundary';
+import { deferredComponent } from './performance/deferredComponent';
+import { canSpeculativelyLoad, getLoadingPreferences } from './performance/loadingPolicy';
+import {
+  THESIS_CASE_STUDY_ID, METACOGNITION_DEEP_DIVE_ID, METACOGNITION_SENTINEL,
+  thesisReference, projectCaseStudyBySlug, caseStudyByDeepDiveSlug,
+} from './performance/readerRouteReferences';
 import { normalizeSectionTarget, type SectionTarget } from './lib/text';
-import { scrollToId } from './lib/scroll';
+import { preferredScrollBehavior, scrollToId } from './lib/scroll';
+import { focusRouteContent, hasOpenDialog } from './lib/dialogFocus';
 import { type CaseStudyEntry } from './sections/types';
-import { Contact } from './sections/Contact';
 import { Hero } from './sections/Hero';
 import { HomeHighlights, HomeRecognition } from './sections/HomeHighlights';
-import { ProfessionalStories } from './sections/ProfessionalStories';
 import { ProductMethodSummary } from './sections/ProductMethodSummary';
-import { DisxTalkPage } from './sections/DisxTalkPage';
-import './sections/portfolioDocuments.css';
-import { AiRaminSection } from './sections/AiRamin';
-import { ExperienceEducationSection } from './sections/ExperienceEducation';
-import {
-  BonusSection,
-  clampBonusRockClicks,
-} from './sections/Bonus';
-import { CaseStudyGrid } from './sections/Projects/index';
-import { CaseStudyOverlay } from './sections/Projects/CaseStudyOverlay';
-import { ThesisDeepDive } from './sections/Projects/ThesisDeepDive';
-import { caseStudyByDeepDiveSlug, projectCaseStudyEntries } from './sections/Projects/types';
-import { TeachingWritingShelf } from './sections/TeachingWriting/index';
-import { MetacognitionDeepDive, METACOGNITION_DEEP_DIVE_ID, METACOGNITION_SENTINEL } from './sections/TeachingWriting/MetacognitionDeepDive';
 import { SectionMarker } from './components/SectionHeader';
+import { isKnownPortfolioPath } from './seo/routes.mjs';
+import { useRouteMetadata } from './seo/useRouteMetadata';
+import { PortfolioAppReady } from './seo/PortfolioAppReady';
+import { NotFoundPage } from './seo/NotFoundPage';
+import './sections/portfolioDocuments.css';
+import './performance/loading.css';
 
-gsap.registerPlugin(ScrollTrigger);
+const contactSection = deferredComponent(() => import('./sections/Contact').then((m) => ({ default: m.Contact })));
+const { Component: Contact } = contactSection;
+const workSection = deferredComponent(() => import('./sections/ExperienceEducation').then((m) => ({ default: m.ExperienceEducationSection })));
+const projectsSection = deferredComponent(() => import('./sections/Projects/index').then((m) => ({ default: m.CaseStudyGrid })));
+const thoughtsSection = deferredComponent(() => import('./sections/TeachingWriting/index').then((m) => ({ default: m.TeachingWritingShelf })));
+const aiSection = deferredComponent(() => import('./sections/AiRamin').then((m) => ({ default: m.AiRaminSection })));
+const bonusSection = deferredComponent(() => import('./sections/Bonus').then((m) => ({ default: m.BonusSection })));
+const { Component: ExperienceEducationSection } = workSection;
+const { Component: CaseStudyGrid } = projectsSection;
+const { Component: TeachingWritingShelf } = thoughtsSection;
+const { Component: AiRaminSection } = aiSection;
+const { Component: BonusSection } = bonusSection;
+const { Component: ProfessionalStories } = deferredComponent(() => import('./sections/ProfessionalStories').then((m) => ({ default: m.ProfessionalStories })));
+const { Component: DisxTalkPage } = deferredComponent(() => import('./sections/DisxTalkPage').then((m) => ({ default: m.DisxTalkPage })));
+const { Component: ThesisDeepDive } = deferredComponent(() => import('./sections/Projects/ThesisDeepDive').then((m) => ({ default: m.ThesisDeepDive })));
+const { Component: MetacognitionDeepDive } = deferredComponent(() => import('./sections/TeachingWriting/MetacognitionDeepDive').then((m) => ({ default: m.MetacognitionDeepDive })));
+const { Component: CaseStudyReader } = deferredComponent(() => import('./performance/ResolvedCaseStudyReader').then((m) => ({ default: m.ResolvedCaseStudyReader })));
+const { Component: VisionLoadingScreen } = deferredComponent(() => import('./components/VisionLoadingScreen').then((m) => ({ default: m.VisionLoadingScreen })));
+const { Component: ContentReadinessPanel } = deferredComponent(() => import('./components/ContentReadinessPanel').then((m) => ({ default: m.ContentReadinessPanel })));
 
-const THESIS_CASE_STUDY_ID = 'writeup-ai-native-product-os';
 const PRODUCT_THESIS_PATH = '/product-thesis';
 const METACOGNITION_PATH = '/thoughts/framework-of-metacognition';
 
@@ -133,10 +144,6 @@ const legacyDomIdRoutes: Record<string, { section: SectionTarget; scrollTargetId
   'thoughts-case-studies': { section: 'thoughts', scrollTargetId: 'thoughts-case-studies', canonicalPath: '/thoughts/case-studies' },
 };
 
-const projectCaseStudyBySlug = new Map(
-  projectCaseStudyEntries.map((item) => [item.id.replace(/^project-/, ''), item] as const),
-);
-
 type ParsedPortfolioRoute = {
   section: SectionTarget;
   caseStudy: CaseStudyEntry | null;
@@ -146,7 +153,9 @@ type ParsedPortfolioRoute = {
 };
 
 function normalizeRouteSegment(value: string | undefined) {
-  return decodeURIComponent(value ?? '')
+  let decoded = value ?? '';
+  try { decoded = decodeURIComponent(decoded); } catch { /* Leave malformed paths for the 404 route. */ }
+  return decoded
     .trim()
     .toLowerCase()
     .replace(/^#\/?/, '')
@@ -161,7 +170,7 @@ function getRouteSegments(pathnameOrHash: string) {
 function thesisRoute(section: SectionTarget = 'hero', canonicalPath = PRODUCT_THESIS_PATH): ParsedPortfolioRoute {
   return {
     section,
-    caseStudy: caseStudyByDeepDiveSlug.get('ai-native-product-os') ?? null,
+    caseStudy: thesisReference,
     scrollTargetId: null,
     canonicalPath,
   };
@@ -189,6 +198,15 @@ function parseSegmentsToRoute(segments: string[]): ParsedPortfolioRoute {
   const second = normalizeRouteSegment(secondRaw);
 
   if (!first) return sectionRoute('hero');
+
+  if (first === 'case-studies') {
+    if (second === THESIS_CASE_STUDY_ID) return thesisRoute();
+    if (second === METACOGNITION_DEEP_DIVE_ID) return { section: 'thoughts', caseStudy: METACOGNITION_SENTINEL, scrollTargetId: null, canonicalPath: METACOGNITION_PATH };
+    const project = projectCaseStudyBySlug.get(second.replace(/^project-|^writeup-/, ''));
+    const writeup = caseStudyByDeepDiveSlug.get(second.replace(/^writeup-/, ''));
+    const item = second.startsWith('writeup-') ? writeup ?? project : project ?? writeup;
+    if (item) return { section: item.id.startsWith('project-') ? 'projects' : 'thoughts', caseStudy: item, scrollTargetId: null, canonicalPath: caseStudyPath(item) };
+  }
 
   if (first === 'work' && (second === 'side' || second === 'vivup')) {
     return { ...sectionRoute('experience-education', `/work/${second}`), documentPage: second };
@@ -292,6 +310,18 @@ const PerformanceBaselinePanel = import.meta.env.DEV
     )
   : null;
 
+function RouteContentReady({ onReady }: { onReady: () => void }) {
+  useLayoutEffect(onReady, [onReady]);
+  return <PortfolioAppReady />;
+}
+
+function RoutePending({ reader = false, onClose }: { reader?: boolean; onClose?: () => void }) {
+  return <section className={reader ? 'portfolio-reader-pending' : 'portfolio-route-pending'} aria-label="Loading selected content">
+    <p role="status">Opening selected content…</p>
+    {onClose ? <button type="button" onClick={onClose}>Return to the portfolio</button> : null}
+  </section>;
+}
+
 function ActivePortfolioSection({
   active,
   ready,
@@ -303,6 +333,7 @@ function ActivePortfolioSection({
   onBonusRockClick,
   onOpenMobileMenu,
   documentPage,
+  notFound,
 }: {
   active: SectionTarget;
   ready: boolean;
@@ -314,7 +345,9 @@ function ActivePortfolioSection({
   onBonusRockClick: () => void;
   onOpenMobileMenu: () => void;
   documentPage?: ParsedPortfolioRoute['documentPage'];
+  notFound: boolean;
 }) {
+  if (notFound) return <NotFoundPage />;
   if (documentPage === 'side' || documentPage === 'vivup') {
     return <ProfessionalStories activeSlug={documentPage} />;
   }
@@ -339,7 +372,7 @@ function ActivePortfolioSection({
             preloadStatus={bonusRockPreloadStatus}
             onRockClick={onBonusRockClick}
           />
-          {showContentReadiness ? <ContentReadinessPanel /> : null}
+          {showContentReadiness ? <Suspense fallback={null}><ContentReadinessPanel /></Suspense> : null}
         </>
       );
     case 'ai-ramin':
@@ -360,10 +393,20 @@ function ActivePortfolioSection({
 function PortfolioPage() {
   const location = useLocation();
   const navigate = useNavigate();
-  const documentPage = parsePortfolioLocation(location.pathname, location.hash).documentPage;
-  const [isLoading, setIsLoading] = useState(
-    () => !(import.meta.env.DEV && new URLSearchParams(window.location.search).has('noIntro')),
-  );
+  const requestedRoute = useMemo(() => parsePortfolioLocation(location.pathname, location.hash), [location.pathname, location.hash]);
+  const documentPage = requestedRoute.documentPage;
+  const notFound = !isKnownPortfolioPath(location.pathname) && !isLegacyHashRoute(location.hash);
+  useRouteMetadata(location.pathname);
+  // The visual intro is an explicit replay, never a prerequisite to reading.
+  const [isLoading, setIsLoading] = useState(() => new URLSearchParams(window.location.search).get('intro') === '1' && !getLoadingPreferences().reducedMotion);
+  const completeIntro = useCallback(() => setIsLoading(false), []);
+  const [loadingPreferences, setLoadingPreferences] = useState(getLoadingPreferences);
+  const [resolvedContentKey, setResolvedContentKey] = useState('');
+  const routeKey = `${location.pathname}${location.hash}`;
+  const mainRef = useRef<HTMLElement>(null);
+  const completedRouteRef = useRef<{ key: string; reader: boolean } | null>(null);
+  const requestedReader = !notFound && requestedRoute.caseStudy !== null;
+
   const [liveBackgroundReady, setLiveBackgroundReady] = useState(false);
   const [bonusRockPreloadStatus, setBonusRockPreloadStatus] = useState<BonusRockPreloadStatus>(
     () => getBonusRockPreloadSnapshot().status,
@@ -383,7 +426,11 @@ function PortfolioPage() {
   const [caseStudyReturnSection, setCaseStudyReturnSection] = useState<SectionTarget>(() =>
     typeof window === 'undefined' ? 'hero' : parsePortfolioLocation(window.location.pathname, window.location.hash).section,
   );
-  const thesisCaseStudy = caseStudyByDeepDiveSlug.get('ai-native-product-os');
+  const thesisCaseStudy = thesisReference;
+  const contentMatchesRoute = notFound || (requestedReader
+    ? activeCaseStudy?.id === requestedRoute.caseStudy?.id
+    : activeCaseStudy === null && activeSection === requestedRoute.section);
+
   const showContentReadiness = useMemo(() => {
     const searchParams = new URLSearchParams(location.search);
     return searchParams.has('intake') || searchParams.has('stage12-content-intake');
@@ -408,7 +455,33 @@ function PortfolioPage() {
       ? 'bonus'
       : 'default';
   const liveShaderVariant = shaderVariant;
-  const shouldUseLiveBackground = liveBackgroundReady && !hasActiveDeepDive;
+  const shouldUseLiveBackground = liveBackgroundReady && !hasActiveDeepDive && canSpeculativelyLoad(loadingPreferences);
+
+  const handleRouteReady = useCallback(() => {
+    const previous = completedRouteRef.current;
+    if (previous?.key === routeKey) return;
+    completedRouteRef.current = { key: routeKey, reader: requestedReader };
+    setResolvedContentKey(routeKey);
+    // Dialogs manage their own focus and restoration. Initial entry leaves the
+    // browser's reading position alone; ordinary route changes focus main.
+    if (previous && !previous.reader && !requestedReader && !location.hash && !hasOpenDialog()) {
+      focusRouteContent(mainRef.current);
+    }
+  }, [location.hash, requestedReader, routeKey]);
+
+  useEffect(() => {
+    const update = () => setLoadingPreferences(getLoadingPreferences());
+    const media = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const connection = (navigator as Navigator & { connection?: EventTarget }).connection;
+    media.addEventListener('change', update);
+    connection?.addEventListener('change', update);
+    document.addEventListener('visibilitychange', update);
+    return () => {
+      media.removeEventListener('change', update);
+      connection?.removeEventListener('change', update);
+      document.removeEventListener('visibilitychange', update);
+    };
+  }, []);
 
   useEffect(() => {
     const handleInternalLinkClick = (event: MouseEvent) => {
@@ -451,13 +524,9 @@ function PortfolioPage() {
     void preloadBonusRockAssets(reason);
   }, []);
 
-  const requestWorkVideoPreload = useCallback((reason: WorkVideoPreloadReason = 'intent') => {
-    preloadWorkVideos(reason);
-  }, []);
-
   const handleBonusRockClick = useCallback(() => {
     setBonusRockClicks((current) => {
-      const nextClickCount = clampBonusRockClicks(current + 1);
+      const nextClickCount = Math.max(0, Math.min(BONUS_ROCK_FINAL_CLICK_COUNT, Math.floor(current + 1)));
       bonusRockClickMemory = nextClickCount;
       return nextClickCount;
     });
@@ -484,36 +553,42 @@ function PortfolioPage() {
       setRouteScrollTargetId(null);
       setCaseStudyReturnSection(target);
       navigateToPath(sectionPathByTarget[target]);
-      resetViewportScroll('smooth');
+      resetViewportScroll(preferredScrollBehavior());
     },
     [navigateToPath, resetViewportScroll],
   );
 
   const handleBottomNavigation = useCallback(
     (target: string) => {
-      if (target === 'experience-education') {
-        requestWorkVideoPreload('navigate');
-      }
-
       if (target === 'bonus') {
         requestBonusRockPreload('navigate');
       }
 
       handleSectionNavigate(normalizeSectionTarget(target));
     },
-    [handleSectionNavigate, requestBonusRockPreload, requestWorkVideoPreload],
+    [handleSectionNavigate, requestBonusRockPreload],
   );
 
   const handleBottomNavigationIntent = useCallback(
     (target: string) => {
-      if (target === 'experience-education') requestWorkVideoPreload('intent');
-      if (target === 'bonus') requestBonusRockPreload('intent');
+      if (!canSpeculativelyLoad()) return;
+      const section = normalizeSectionTarget(target);
+      const deferred = {
+        'experience-education': workSection, projects: projectsSection,
+        thoughts: thoughtsSection, 'ai-ramin': aiSection, bonus: bonusSection, contact: contactSection,
+      }[section as 'experience-education' | 'projects' | 'thoughts' | 'ai-ramin' | 'bonus' | 'contact'];
+      void deferred?.preload().catch(() => { /* Explicit navigation can retry a failed speculative request. */ });
+      if (section === 'bonus') requestBonusRockPreload('intent');
     },
-    [requestBonusRockPreload, requestWorkVideoPreload],
+    [requestBonusRockPreload],
   );
 
   useEffect(() => {
-    const route = parsePortfolioLocation(location.pathname, location.hash);
+    if (notFound) {
+      setActiveCaseStudy(null);
+      return;
+    }
+    const route = requestedRoute;
     const legacyHash = Boolean(location.hash) && isLegacyHashRoute(location.hash);
     const shouldCanonicalize = legacyHash || location.pathname !== route.canonicalPath;
 
@@ -527,7 +602,6 @@ function PortfolioPage() {
     setRouteScrollTargetId(route.scrollTargetId);
     if (!route.caseStudy) setCaseStudyReturnSection(route.section);
 
-    if (route.section === 'experience-education') requestWorkVideoPreload('navigate');
     if (route.section === 'bonus') requestBonusRockPreload('navigate');
   }, [
     caseStudyReturnSection,
@@ -536,7 +610,8 @@ function PortfolioPage() {
     location.search,
     navigate,
     requestBonusRockPreload,
-    requestWorkVideoPreload,
+    requestedRoute,
+    notFound,
   ]);
 
   const handleOpenThesis = useCallback(() => {
@@ -564,57 +639,19 @@ function PortfolioPage() {
   }, [caseStudyReturnSection, location.search, navigate, navigateToPath]);
 
   useEffect(() => {
-    if (!isLoading) {
-      resetViewportScroll('auto');
-      window.setTimeout(() => ScrollTrigger.refresh(), 100);
+    if (isLoading || resolvedContentKey !== routeKey || activeCaseStudy) return;
+    if (!routeScrollTargetId && !location.hash) resetViewportScroll('auto');
+    if (routeScrollTargetId) scrollToId(routeScrollTargetId);
+    if (location.hash && !isLegacyHashRoute(location.hash)) {
+      let id = location.hash.slice(1);
+      try { id = decodeURIComponent(id); } catch { /* A malformed fragment has no target. */ }
+      document.getElementById(id)?.scrollIntoView({ block: 'start', behavior: 'auto' });
     }
-  }, [activeSection, documentPage, isLoading, resetViewportScroll]);
-
-  useEffect(() => {
-    if (isLoading || !routeScrollTargetId || activeCaseStudy) return undefined;
-
-    const frame = window.requestAnimationFrame(() => {
-      window.requestAnimationFrame(() => {
-        scrollToId(routeScrollTargetId);
-        window.setTimeout(() => ScrollTrigger.refresh(), 100);
-      });
-    });
-
+    // ScrollTrigger is owned by the sections that use it. Refresh an already
+    // registered plugin without making it part of the initial route graph.
+    const frame = window.requestAnimationFrame(() => window.dispatchEvent(new Event('resize')));
     return () => window.cancelAnimationFrame(frame);
-  }, [activeCaseStudy, activeSection, isLoading, routeScrollTargetId]);
-
-  useEffect(() => {
-    if (isLoading || !location.hash || isLegacyHashRoute(location.hash)) return undefined;
-    let frame = 0;
-    let attempts = 0;
-    const revealAnchor = () => {
-      const target = document.getElementById(decodeURIComponent(location.hash.slice(1)));
-      if (target) {
-        target.scrollIntoView({ block: 'start', behavior: 'auto' });
-      } else if (++attempts < 45) {
-        frame = window.requestAnimationFrame(revealAnchor);
-      }
-    };
-    frame = window.requestAnimationFrame(() => {
-      frame = window.requestAnimationFrame(revealAnchor);
-    });
-    return () => window.cancelAnimationFrame(frame);
-  }, [activeCaseStudy, documentPage, isLoading, location.hash, location.pathname]);
-
-  useEffect(() => {
-    if (isLoading || activeCaseStudy || routeScrollTargetId || location.hash || activeSection !== 'thoughts') return undefined;
-    if (!window.matchMedia('(max-width: 767px)').matches) return undefined;
-
-    const frame = window.requestAnimationFrame(() => {
-      window.requestAnimationFrame(() => {
-        const thoughtsStage = document.querySelector<HTMLElement>('.portfolio-stage.is-thoughts-stage');
-        thoughtsStage?.scrollTo({ top: 0, left: 0, behavior: 'auto' });
-        window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
-      });
-    });
-
-    return () => window.cancelAnimationFrame(frame);
-  }, [activeCaseStudy, activeSection, isLoading, location.hash, routeScrollTargetId]);
+  }, [activeCaseStudy, isLoading, location.hash, resetViewportScroll, resolvedContentKey, routeKey, routeScrollTargetId]);
 
   useEffect(
     () =>
@@ -625,35 +662,7 @@ function PortfolioPage() {
   );
 
   useEffect(() => {
-    if (isLoading) return undefined;
-
-    const idleWindow = window as Window & {
-      requestIdleCallback?: (callback: () => void, options?: { timeout: number }) => number;
-      cancelIdleCallback?: (handle: number) => void;
-    };
-
-    const warmBonusRock = () => requestBonusRockPreload('idle');
-    const warmWorkVideos = () => requestWorkVideoPreload('idle');
-
-    if (idleWindow.requestIdleCallback) {
-      const workIdleId = idleWindow.requestIdleCallback(warmWorkVideos, { timeout: 1800 });
-      const bonusIdleId = idleWindow.requestIdleCallback(warmBonusRock, { timeout: 3200 });
-      return () => {
-        idleWindow.cancelIdleCallback?.(workIdleId);
-        idleWindow.cancelIdleCallback?.(bonusIdleId);
-      };
-    }
-
-    const workTimer = window.setTimeout(warmWorkVideos, 900);
-    const bonusTimer = window.setTimeout(warmBonusRock, 1700);
-    return () => {
-      window.clearTimeout(workTimer);
-      window.clearTimeout(bonusTimer);
-    };
-  }, [isLoading, requestBonusRockPreload, requestWorkVideoPreload]);
-
-  useEffect(() => {
-    if (isLoading) {
+    if (isLoading || !resolvedContentKey || !canSpeculativelyLoad(loadingPreferences)) {
       setLiveBackgroundReady(false);
       return undefined;
     }
@@ -670,26 +679,24 @@ function PortfolioPage() {
 
     const timer = window.setTimeout(() => setLiveBackgroundReady(true), 900);
     return () => window.clearTimeout(timer);
-  }, [isLoading]);
+  }, [isLoading, loadingPreferences, resolvedContentKey]);
 
   return (
     <motion.div
       className="h-dvh min-h-dvh overflow-hidden bg-transparent text-text-primary"
       data-bonus-rock-preload-status={bonusRockPreloadStatus}
       data-deep-dive-active={hasActiveDeepDive ? 'true' : 'false'}
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.35 }}
+      initial={false}
     >
       <AnimatePresence mode="wait">
-        {isLoading ? <VisionLoadingScreen key="loading" onComplete={() => setIsLoading(false)} /> : null}
+        {isLoading ? <RouteLoadBoundary routeKey="intro" optional><Suspense fallback={null}><VisionLoadingScreen key="loading" onComplete={completeIntro} /></Suspense></RouteLoadBoundary> : null}
       </AnimatePresence>
+      <a className="portfolio-skip-link" href="#portfolio-main" onClick={(event) => { event.preventDefault(); focusRouteContent(mainRef.current); }}>Skip to content</a>
       <StaticShaderGradientBackground variant={shaderVariant} />
       {shouldUseLiveBackground ? (
-        <Suspense fallback={null}>
+        <RouteLoadBoundary routeKey="live-background" optional><Suspense fallback={null}>
           <LiveShaderGradientBackground variant={liveShaderVariant} />
-        </Suspense>
+        </Suspense></RouteLoadBoundary>
       ) : null}
       <div
         className={`fixed inset-0 z-10 overflow-hidden ${isFullBleedSection || isAiRaminSection ? 'p-0' : 'p-3 sm:p-5 lg:p-4'}`}
@@ -720,16 +727,18 @@ function PortfolioPage() {
               isContactSection ? 'is-contact-stage' : ''
             }`}
           >
-            <main className="relative z-10 h-full">
+            <main id="portfolio-main" ref={mainRef} tabIndex={-1} data-route-focus className="relative z-10 h-full">
               <AnimatePresence mode="wait" initial={false}>
                 <motion.div
-                  key={documentPage ?? activeSection}
+                  key={notFound ? location.pathname : documentPage ?? activeSection}
                   className="h-full"
-                  initial={{ opacity: 0, y: 18 }}
+                  initial={loadingPreferences.reducedMotion ? false : { opacity: 0, y: 18 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.28, ease: [0.25, 0.1, 0.25, 1] }}
+                  exit={loadingPreferences.reducedMotion ? { opacity: 1 } : { opacity: 0, y: -10 }}
+                  transition={{ duration: loadingPreferences.reducedMotion ? 0 : 0.28, ease: [0.25, 0.1, 0.25, 1] }}
                 >
+                  <RouteLoadBoundary routeKey={routeKey}>
+                  <Suspense fallback={<RoutePending />}>
                   <ActivePortfolioSection
                     active={activeSection}
                     ready={!isLoading}
@@ -741,7 +750,11 @@ function PortfolioPage() {
                     onBonusRockClick={handleBonusRockClick}
                     onOpenMobileMenu={openMobileMenu}
                     documentPage={documentPage}
+                    notFound={notFound}
                   />
+                  {contentMatchesRoute && !requestedReader ? <RouteContentReady key={routeKey} onReady={handleRouteReady} /> : null}
+                  </Suspense>
+                  </RouteLoadBoundary>
                 </motion.div>
               </AnimatePresence>
             </main>
@@ -749,18 +762,19 @@ function PortfolioPage() {
         </div>
       </div>
       <AnimatePresence>
-        {activeCaseStudy ? (
-          activeCaseStudy.id === THESIS_CASE_STUDY_ID ? (
-            <ThesisDeepDive key="thesis-deep-dive" onClose={handleCloseCaseStudy} />
-          ) : activeCaseStudy.id === METACOGNITION_DEEP_DIVE_ID ? (
-            <MetacognitionDeepDive key="metacognition-deep-dive" onClose={handleCloseCaseStudy} />
-          ) : (
-            <CaseStudyOverlay
-              key={activeCaseStudy.id}
-              item={activeCaseStudy}
-              onClose={handleCloseCaseStudy}
-            />
-          )
+        {activeCaseStudy && !notFound ? (
+          <div key={activeCaseStudy.id} className="portfolio-reader-layer"><RouteLoadBoundary routeKey={routeKey} onClose={handleCloseCaseStudy}>
+          <Suspense fallback={<RoutePending reader onClose={handleCloseCaseStudy} />}>
+            {activeCaseStudy.id === THESIS_CASE_STUDY_ID ? (
+              <ThesisDeepDive onClose={handleCloseCaseStudy} />
+            ) : activeCaseStudy.id === METACOGNITION_DEEP_DIVE_ID ? (
+              <MetacognitionDeepDive onClose={handleCloseCaseStudy} />
+            ) : (
+              <CaseStudyReader item={activeCaseStudy} onClose={handleCloseCaseStudy} />
+            )}
+            {contentMatchesRoute ? <RouteContentReady key={routeKey} onReady={handleRouteReady} /> : null}
+          </Suspense>
+          </RouteLoadBoundary></div>
         ) : null}
       </AnimatePresence>
       <BottomNavigation
@@ -782,8 +796,10 @@ function PortfolioPage() {
 
 export default function App() {
   return (
-    <Routes>
-      <Route path="*" element={<PortfolioPage />} />
-    </Routes>
+    <MotionConfig reducedMotion="user">
+      <Routes>
+        <Route path="*" element={<PortfolioPage />} />
+      </Routes>
+    </MotionConfig>
   );
 }

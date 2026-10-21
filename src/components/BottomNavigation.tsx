@@ -1,17 +1,18 @@
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { useEffect, useId, useRef, useState } from 'react';
 import { detectSurfaceToneUnderNav, TahoeGlassFilter, TahoeGlassTabNav } from './TahoeGlassTabNav';
 import type { TahoeGlassFilterStyle } from './TahoeGlassTabNav';
 import type { SectionTarget } from '../lib/text';
+import { useDialogFocus } from '../lib/useDialogFocus';
 
 const bottomNavigationLinks = [
-  { label: 'Intro', target: 'hero', icon: 'intro' },
-  { label: 'Work', target: 'experience-education', icon: 'work' },
-  { label: 'Projects', target: 'projects', icon: 'projects' },
-  { label: 'Thoughts', target: 'thoughts', icon: 'thoughts' },
-  { label: 'Contact', target: 'contact', icon: 'contact' },
-  { label: 'Bonus', target: 'bonus', icon: 'bonus' },
-  { label: 'AI Ramin', target: 'ai-ramin', icon: 'ai' },
+  { label: 'Intro', target: 'hero', href: '/', icon: 'intro' },
+  { label: 'Work', target: 'experience-education', href: '/experience-education', icon: 'work' },
+  { label: 'Projects', target: 'projects', href: '/projects', icon: 'projects' },
+  { label: 'Thoughts', target: 'thoughts', href: '/thoughts', icon: 'thoughts' },
+  { label: 'Contact', target: 'contact', href: '/contact', icon: 'contact' },
+  { label: 'Bonus', target: 'bonus', href: '/bonus', icon: 'bonus' },
+  { label: 'AI Ramin', target: 'ai-ramin', href: '/ai-ramin', icon: 'ai' },
 ] as const;
 
 const PHONE_NAV_QUERY = '(max-width: 767px)';
@@ -51,28 +52,13 @@ export function BottomNavigation({
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobileNavOnDarkSurface, setIsMobileNavOnDarkSurface] = useState(isDarkPage);
   const mobileNavTriggerRef = useRef<HTMLButtonElement | null>(null);
+  const mobileMenuRef = useRef<HTMLDivElement | null>(null);
+  const shouldReduceMotion = useReducedMotion();
+  useDialogFocus(mobileMenuRef, isMobileMenuOpen, () => setIsMobileMenuOpen(false));
   const activeLink = bottomNavigationLinks.find((link) => link.target === active) ?? bottomNavigationLinks[0];
   const mobileTriggerFilterId = `portfolio-mobile-nav-filter-${useId().replace(/:/g, '')}`;
   const mobileMenuItemFilterBaseId = `portfolio-mobile-menu-item-filter-${useId().replace(/:/g, '')}`;
   const mobileTriggerFilterStyle: TahoeGlassFilterStyle = { '--tahoe-glass-filter': `url(#${mobileTriggerFilterId})` };
-
-  useEffect(() => {
-    if (!isMobileMenuOpen) return undefined;
-
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setIsMobileMenuOpen(false);
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [isMobileMenuOpen]);
 
   useEffect(() => {
     if (!isPhoneNavigation) setIsMobileMenuOpen(false);
@@ -142,7 +128,10 @@ export function BottomNavigation({
               aria-haspopup="dialog"
               aria-expanded={isMobileMenuOpen}
               aria-controls="portfolio-mobile-menu"
-              onClick={() => setIsMobileMenuOpen(true)}
+              onClick={(event) => {
+                event.currentTarget.focus({ preventScroll: true });
+                setIsMobileMenuOpen(true);
+              }}
             >
               <TahoeGlassFilter id={mobileTriggerFilterId} />
               <span className="tahoe-glass-nav-lens" aria-hidden="true" />
@@ -161,15 +150,17 @@ export function BottomNavigation({
         <AnimatePresence>
           {isMobileMenuOpen ? (
             <motion.div
+              ref={mobileMenuRef}
               id="portfolio-mobile-menu"
               className="portfolio-mobile-menu"
               role="dialog"
               aria-modal="true"
               aria-label="Website sections"
+              tabIndex={-1}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.28, ease: [0.25, 0.1, 0.25, 1] }}
+              transition={{ duration: shouldReduceMotion ? 0 : 0.28, ease: [0.25, 0.1, 0.25, 1] }}
             >
               <div className="portfolio-mobile-menu-aurora" aria-hidden="true" />
               <span className="portfolio-mobile-menu-wash" aria-hidden="true" />
@@ -179,12 +170,13 @@ export function BottomNavigation({
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.92 }}
-                transition={{ duration: 0.24, ease: [0.25, 0.1, 0.25, 1] }}
+                transition={{ duration: shouldReduceMotion ? 0 : 0.24, ease: [0.25, 0.1, 0.25, 1] }}
               >
                 <button
                   type="button"
                   className="portfolio-mobile-menu-close-button portfolio-deep-dive-mobile-close card-glass-attachment is-active"
                   aria-label="Close menu"
+                  data-dialog-initial
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   <span className="card-glass-attachment__glyph" aria-hidden="true">
@@ -199,7 +191,7 @@ export function BottomNavigation({
                 initial={{ opacity: 0, y: 18 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: 12 }}
-                transition={{ duration: 0.36, ease: [0.25, 0.1, 0.25, 1] }}
+                transition={{ duration: shouldReduceMotion ? 0 : 0.36, ease: [0.25, 0.1, 0.25, 1] }}
               >
                 <p className="portfolio-mobile-menu-eyebrow">Portfolio</p>
                 <h2 className="portfolio-mobile-menu-title">Menu</h2>
@@ -210,15 +202,17 @@ export function BottomNavigation({
                       const itemFilterId = `${mobileMenuItemFilterBaseId}-${link.target}`;
 
                       return (
-                        <button
+                        <a
                           key={link.target}
-                          type="button"
+                          href={link.href}
                           className={`portfolio-mobile-menu-item tahoe-glass-chip ${isActive ? 'is-active' : ''}`}
                           style={{ '--tahoe-glass-filter': `url(#${itemFilterId})` } as TahoeGlassFilterStyle}
                           aria-current={isActive ? 'page' : undefined}
                           onPointerEnter={() => onNavIntent?.(link.target)}
                           onFocus={() => onNavIntent?.(link.target)}
-                          onClick={() => {
+                          onClick={(event) => {
+                            if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+                            event.preventDefault();
                             setIsMobileMenuOpen(false);
                             onNavigate(link.target);
                           }}
@@ -226,7 +220,7 @@ export function BottomNavigation({
                           <TahoeGlassFilter id={itemFilterId} />
                           <span className="tahoe-glass-chip-lens portfolio-mobile-menu-item-lens" aria-hidden="true" />
                           <span className="portfolio-mobile-menu-item-label">{link.label}</span>
-                        </button>
+                        </a>
                       );
                     })}
                   </div>

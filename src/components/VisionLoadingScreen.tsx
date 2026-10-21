@@ -1,5 +1,7 @@
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import { useEffect, useRef, useState } from 'react';
+import { useDialogFocus } from '../lib/useDialogFocus';
+import { prefersReducedMotion } from '../lib/dialogFocus';
 import { AuroraBackground } from './ui/aurora-background';
 
 const loadingWords = ['Vision', 'Taste', 'Clarity', 'Judgement', 'Empathy'] as const;
@@ -11,6 +13,9 @@ type VisionLoadingScreenProps = {
 };
 
 export function VisionLoadingScreen({ onComplete }: VisionLoadingScreenProps) {
+  const rootRef = useRef<HTMLDivElement>(null);
+  const reduceMotion = useReducedMotion();
+  useDialogFocus(rootRef, true, onComplete);
   const [count, setCount] = useState(0);
   const [wordIndex, setWordIndex] = useState(0);
   const completeRef = useRef(false);
@@ -18,7 +23,9 @@ export function VisionLoadingScreen({ onComplete }: VisionLoadingScreenProps) {
   const wordIndexRef = useRef(0);
 
   useEffect(() => {
+    if (reduceMotion || prefersReducedMotion()) { onComplete(); return; }
     let raf = 0;
+    let completionTimer = 0;
     const start = performance.now();
 
     const tick = (now: number) => {
@@ -38,7 +45,7 @@ export function VisionLoadingScreen({ onComplete }: VisionLoadingScreenProps) {
 
       if (nextCount >= 100 && !completeRef.current) {
         completeRef.current = true;
-        window.setTimeout(onComplete, completionDelayMs);
+        completionTimer = window.setTimeout(onComplete, completionDelayMs);
         return;
       }
 
@@ -46,11 +53,16 @@ export function VisionLoadingScreen({ onComplete }: VisionLoadingScreenProps) {
     };
 
     raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [onComplete]);
+    return () => { cancelAnimationFrame(raf); window.clearTimeout(completionTimer); };
+  }, [onComplete, reduceMotion]);
 
   return (
     <motion.div
+      ref={rootRef}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Portfolio visual intro"
+      tabIndex={-1}
       data-testid="vision-loading-screen"
       className="fixed inset-0 z-[9999] overflow-hidden bg-zinc-50 text-black"
       initial={{ opacity: 1 }}
@@ -70,10 +82,12 @@ export function VisionLoadingScreen({ onComplete }: VisionLoadingScreenProps) {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.7, ease: [0.25, 0.1, 0.25, 1] }}
       >
-        Portfolio
+        Visual intro
       </motion.div>
 
-      <div className="absolute inset-0 flex items-center justify-center">
+      <button type="button" data-dialog-initial onClick={onComplete} className="absolute right-6 top-6 z-10 rounded-full border border-black/25 bg-white/80 px-4 py-2 text-sm text-black md:right-10 md:top-9">Skip intro</button>
+
+      <div aria-hidden="true" className="absolute inset-0 flex items-center justify-center">
         <AnimatePresence mode="wait">
           <motion.p
             key={loadingWords[wordIndex]}
@@ -88,11 +102,11 @@ export function VisionLoadingScreen({ onComplete }: VisionLoadingScreenProps) {
         </AnimatePresence>
       </div>
 
-      <div className="absolute bottom-9 right-6 font-display text-6xl tabular-nums text-black md:bottom-12 md:right-10 md:text-8xl lg:text-9xl">
+      <div aria-hidden="true" className="absolute bottom-9 right-6 font-display text-6xl tabular-nums text-black md:bottom-12 md:right-10 md:text-8xl lg:text-9xl">
         {String(count).padStart(3, '0')}
       </div>
 
-      <div className="absolute bottom-0 left-0 h-[3px] w-full bg-stroke/50">
+      <div aria-hidden="true" className="absolute bottom-0 left-0 h-[3px] w-full bg-stroke/50">
         <div
           className="accent-gradient h-full origin-left"
           style={{

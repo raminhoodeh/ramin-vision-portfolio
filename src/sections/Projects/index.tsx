@@ -19,7 +19,7 @@ import dreamseaCarousel5Url from '../../../projects-section/Project Images/dream
 import dreamseaCarousel6Url from '../../../projects-section/Project Images/dreamsea-images/dreamsea-carousel/dreamsea-6.webp';
 import dreamseaCarousel7Url from '../../../projects-section/Project Images/dreamsea-images/dreamsea-carousel/dreamsea-7.webp';
 import dreamseaCarousel8Url from '../../../projects-section/Project Images/dreamsea-images/dreamsea-carousel/dreamsea-8.webp';
-import dreamseaHomepageScreenUrl from '../../../projects-section/Project Images/dreamsea-images/dreamsea-homepage.PNG';
+import dreamseaHomepageScreenUrl from '../../assets/previews/dreamsea-homepage.webp';
 import dreamseaIphoneRecordingUrl from '../../../projects-section/Project Images/dreamsea-fixed-recording-3d-island.webm';
 import massSocialWisdomAgentArtworkUrl from '../../assets/projects/mass-social.gif';
 import nssoSelfwareArtworkUrl from '../../assets/projects/nsso-mock.webp';
@@ -51,6 +51,7 @@ import {
 } from '../../lib/placeholder';
 import { ContentToken } from '../../components/ContentToken';
 import { WorkflowDiagram } from '../../components/WorkflowDiagram';
+import { ViewportVideo } from '../../components/ViewportVideo';
 import {
   projectExperienceGroups,
   toolsSystemSignals,
@@ -288,12 +289,16 @@ function ProjectMediaCarousel({
 }) {
   const duration = Math.max(52, images.length * 9);
   const sequences = [0, 1] as const;
+  const [paused, setPaused] = useState(false);
+  const reduceMotion = useReducedMotion();
+  const isStatic = paused || reduceMotion;
 
   return (
     <div
-      className="project-media-carousel"
+      className={`project-media-carousel ${isStatic ? 'is-paused' : ''}`}
       style={{ '--project-carousel-duration': `${duration}s` } as CSSProperties}
       aria-label={`${projectName} screenshot carousel`}
+      tabIndex={isStatic ? 0 : undefined}
     >
       <div className="project-media-carousel-track">
         {sequences.map((sequence) => (
@@ -310,8 +315,8 @@ function ProjectMediaCarousel({
                 <img
                   src={image}
                   alt={sequence === 0 ? `${projectName} app screenshot ${imageIndex + 1}` : ''}
-                  loading={index <= 1 ? 'eager' : 'lazy'}
-                  fetchPriority={index <= 1 ? 'low' : 'auto'}
+                  loading={index === 0 && imageIndex === 0 && sequence === 0 ? 'eager' : 'lazy'}
+                  fetchPriority="low"
                   decoding="async"
                   draggable={false}
                 />
@@ -320,6 +325,11 @@ function ProjectMediaCarousel({
           </div>
         ))}
       </div>
+      {!reduceMotion ? (
+        <button type="button" className="viewport-media-toggle" onClick={() => setPaused(!paused)} aria-label={`${paused ? 'Resume' : 'Pause'} ${projectName} screenshot slideshow`}>
+          {paused ? 'Resume slideshow' : 'Pause slideshow'}
+        </button>
+      ) : null}
     </div>
   );
 }
@@ -639,21 +649,12 @@ function CinematicProjectVisual({
         </>
       ) : video ? (
         <>
-          <video
-            aria-label={`${project.projectName} project screen recording`}
-            autoPlay
-            muted
-            loop
-            playsInline
-            preload="auto"
+          <ViewportVideo
+            src={video}
+            label={`${project.projectName} project screen recording`}
             poster={image}
-            onLoadedData={(event) => {
-              void event.currentTarget.play().catch(() => undefined);
-            }}
             className="absolute inset-0 h-full w-full object-cover opacity-95"
-          >
-            <source src={video} type="video/webm" />
-          </video>
+          />
           <div className="absolute inset-0 bg-gradient-to-t from-black/22 via-black/8 to-transparent" />
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_18%_16%,rgba(255,255,255,0.26),transparent_24%)] mix-blend-screen" />
         </>

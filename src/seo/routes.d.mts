@@ -1,0 +1,15 @@
+export type PublicPage = { path: string; title: string; description: string; kind: string; key?: string };
+export type PageMetadata = PublicPage & { canonical: string | null; image: string; robots: string };
+export const CANONICAL_ORIGIN: string;
+export const DEFAULT_PREVIEW_IMAGE: string;
+export const publicPages: PublicPage[];
+export const routeAliases: Record<string, string>;
+export const sectionPathAliases: Record<string, string>;
+export function normalizePublicPath(value: string): string | null;
+export function getPublicPage(value: string): PublicPage | null;
+export function isKnownPortfolioPath(value: string): boolean;
+export function previewImagePath(value: string): string;
+export function getPageMetadata(value: string): PageMetadata;
+export type PortfolioStructuredData = { '@context': string; '@graph': Record<string, unknown>[] };
+export function getStructuredData(value: string): PortfolioStructuredData | null;
+export function serializeStructuredData(value: unknown): string;

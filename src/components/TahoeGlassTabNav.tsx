@@ -7,6 +7,7 @@ type NavLink = {
   label: string;
   menuLabel?: string;
   target: string;
+  href: string;
   icon?: NavIconName;
 };
 
@@ -329,7 +330,7 @@ export function TahoeGlassTabNav({
       ref={rootRef}
       className={`tahoe-glass-tab-nav ${isExpanded ? 'is-expanded' : ''} ${isDarkPage ? 'is-dark-page' : ''} ${isOnDarkSurface ? 'is-on-dark-surface' : ''} ${className}`}
       style={filterStyle}
-      role="tablist"
+      role="group"
       aria-label={navLabel}
       onPointerEnter={expand}
       onPointerLeave={() => {
@@ -348,18 +349,19 @@ export function TahoeGlassTabNav({
           const isActive = active === link.target;
 
           return (
-            <button
+            <a
               key={link.target}
-              type="button"
-              role="tab"
-              aria-selected={isActive}
+              href={link.href}
+              aria-current={isActive ? 'page' : undefined}
               aria-label={link.menuLabel ?? link.label}
               data-target={link.target}
               className={`tahoe-glass-nav-tab ${isActive ? 'is-active' : ''}`}
               onPointerEnter={() => onNavIntent?.(link.target)}
               onFocus={() => onNavIntent?.(link.target)}
               onPointerDown={holdAfterTouchOrClick}
-              onClick={() => {
+              onClick={(event) => {
+                if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+                event.preventDefault();
                 holdAfterTouchOrClick();
                 onNavigate(link.target);
               }}
@@ -369,7 +371,7 @@ export function TahoeGlassTabNav({
                 <NavIcon icon={link.icon} />
                 <span className="tahoe-glass-nav-label">{link.label}</span>
               </span>
-            </button>
+            </a>
           );
         })}
       </div>

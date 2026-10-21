@@ -11,6 +11,8 @@ import type {
 import { createAiRaminMessageId } from '../lib/text';
 import { SectionKicker, sectionMarkerMeta } from '../components/SectionHeader';
 import profileImageUrl from '../assets/ramin-profile-nav.webp';
+import { useDialogFocus } from '../lib/useDialogFocus';
+import { prefersReducedMotion } from '../lib/dialogFocus';
 
 type AiRaminMessageRole = 'assistant' | 'user';
 type AiRaminEvidenceCard = {
@@ -1756,27 +1758,36 @@ function AiRaminTahoeFilter({ id }: { id: string }) {
 }
 
 function AiRaminConsiderationsPanel({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
+  const panelRef = useRef<HTMLElement | null>(null);
+  useDialogFocus(panelRef, isOpen, onClose);
   return (
     <>
       <button
         type="button"
         className={`ai-ramin-considerations-backdrop ${isOpen ? 'is-open' : ''}`}
         aria-label="Close AI Ramin build considerations"
-        aria-hidden={!isOpen}
+        aria-hidden="true"
+        data-dialog-backdrop
         onClick={onClose}
-        tabIndex={isOpen ? 0 : -1}
+        tabIndex={-1}
       />
       <aside
+        ref={panelRef}
         id="ai-ramin-considerations"
         className={`ai-ramin-considerations-panel ${isOpen ? 'is-open' : ''}`}
         aria-hidden={!isOpen}
+        inert={!isOpen}
+        role="dialog"
+        aria-modal={isOpen ? true : undefined}
+        aria-labelledby="ai-ramin-considerations-title"
+        tabIndex={-1}
       >
         <div className="ai-ramin-considerations-header">
           <div>
             <p>Build logic</p>
-            <h3>How AI Ramin works</h3>
+            <h3 id="ai-ramin-considerations-title">How AI Ramin works</h3>
           </div>
-          <button type="button" onClick={onClose} tabIndex={isOpen ? 0 : -1}>
+          <button type="button" data-dialog-initial onClick={onClose} tabIndex={isOpen ? 0 : -1}>
             Close
           </button>
         </div>
@@ -1829,14 +1840,26 @@ function AiRaminModeSelector({
         <strong>{findHiringMode(selectedMode).label}</strong>
       </div>
       <div className="ai-ramin-mode-grid" role="radiogroup" aria-label="AI Ramin visitor lens">
-        {aiRaminPrototype.hiringModes.map((mode) => (
+        {aiRaminPrototype.hiringModes.map((mode, index) => (
           <button
             key={mode.id}
             type="button"
             className={`ai-ramin-mode-button ${selectedMode === mode.id ? 'is-active' : ''}`}
             aria-checked={selectedMode === mode.id}
             role="radio"
+            tabIndex={selectedMode === mode.id ? 0 : -1}
             onClick={() => onSelectMode(mode.id)}
+            onKeyDown={(event) => {
+              const modes = aiRaminPrototype.hiringModes;
+              const nextIndex = event.key === 'Home' ? 0 : event.key === 'End' ? modes.length - 1
+                : event.key === 'ArrowRight' || event.key === 'ArrowDown' ? (index + 1) % modes.length
+                : event.key === 'ArrowLeft' || event.key === 'ArrowUp' ? (index - 1 + modes.length) % modes.length : -1;
+              if (nextIndex < 0) return;
+              event.preventDefault();
+              onSelectMode(modes[nextIndex].id);
+              const radios = event.currentTarget.parentElement?.querySelectorAll<HTMLButtonElement>('[role="radio"]');
+              radios?.[nextIndex]?.focus();
+            }}
           >
             <span>{mode.label}</span>
             <small>{mode.proofBias.slice(0, 2).join(' / ')}</small>
@@ -1866,8 +1889,12 @@ function AiRaminComposerLensControl({
       type="button"
       className={`ai-ramin-composer-lens ${isOpen ? 'is-active' : ''}`}
       aria-expanded={isOpen}
+      aria-haspopup="dialog"
       aria-controls="ai-ramin-context-panel"
-      onClick={onOpen}
+      onClick={(event) => {
+        event.currentTarget.focus({ preventScroll: true });
+        onOpen();
+      }}
     >
       <span>Lens</span>
       <strong>{modeLabel}</strong>
@@ -1892,12 +1919,13 @@ function AiRaminRequestTypeSelector({
         <span>Request type</span>
         <strong>{getRequestTypeLabel(selectedRequestType)}</strong>
       </div>
-      <div className="ai-ramin-request-grid">
+      <div className="ai-ramin-request-grid" role="group" aria-label="AI Ramin request type">
         {aiRaminPrototype.requestTypes.map((requestType) => (
           <button
             key={requestType.id}
             type="button"
             className={`ai-ramin-request-button ${selectedRequestType === requestType.id ? 'is-active' : ''}`}
+            aria-pressed={selectedRequestType === requestType.id}
             onClick={() => onSelectRequestType(requestType.id)}
           >
             <span>{requestType.label}</span>
@@ -1923,27 +1951,36 @@ function AiRaminContextPanel({
   selectedRequestType: AiRaminRequestType;
   onSelectRequestType: (requestType: AiRaminRequestType) => void;
 }) {
+  const panelRef = useRef<HTMLElement | null>(null);
+  useDialogFocus(panelRef, isOpen, onClose);
   return (
     <>
       <button
         type="button"
         className={`ai-ramin-context-backdrop ${isOpen ? 'is-open' : ''}`}
         aria-label="Close AI Ramin lens panel"
-        aria-hidden={!isOpen}
+        aria-hidden="true"
+        data-dialog-backdrop
         onClick={onClose}
-        tabIndex={isOpen ? 0 : -1}
+        tabIndex={-1}
       />
       <aside
+        ref={panelRef}
         id="ai-ramin-context-panel"
         className={`ai-ramin-context-panel ${isOpen ? 'is-open' : ''}`}
         aria-hidden={!isOpen}
+        inert={!isOpen}
+        role="dialog"
+        aria-modal={isOpen ? true : undefined}
+        aria-labelledby="ai-ramin-context-title"
+        tabIndex={-1}
       >
         <div className="ai-ramin-context-panel-header">
           <div>
             <p>Context</p>
-            <h3>Lens and request</h3>
+            <h3 id="ai-ramin-context-title">Lens and request</h3>
           </div>
-          <button type="button" onClick={onClose} tabIndex={isOpen ? 0 : -1}>
+          <button type="button" data-dialog-initial onClick={onClose} tabIndex={isOpen ? 0 : -1}>
             Close
           </button>
         </div>
@@ -2009,7 +2046,7 @@ export function AiRaminSection({ onOpenMenu }: { onOpenMenu?: () => void }) {
   }, [prompt]);
 
   useEffect(() => {
-    threadEndRef.current?.scrollIntoView({ block: 'end', behavior: 'smooth' });
+    threadEndRef.current?.scrollIntoView({ block: 'end', behavior: prefersReducedMotion() ? 'auto' : 'smooth' });
   }, [messages, isSending, chatError]);
 
   // Title cutout: generate a text-knockout mask that tracks the actual rendered
@@ -2342,7 +2379,10 @@ export function AiRaminSection({ onOpenMenu }: { onOpenMenu?: () => void }) {
             type="button"
             className="ai-ramin-mobile-icon-btn"
             aria-label="Open navigation menu"
-            onClick={onOpenMenu}
+            onClick={(event) => {
+              event.currentTarget.focus({ preventScroll: true });
+              onOpenMenu?.();
+            }}
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
               <path d="M4 6h16M4 12h16M4 18h16" />
@@ -2361,7 +2401,10 @@ export function AiRaminSection({ onOpenMenu }: { onOpenMenu?: () => void }) {
               aria-label="How it works"
               aria-expanded={isConsiderationsOpen}
               aria-controls="ai-ramin-considerations"
-              onClick={() => setIsConsiderationsOpen((current) => !current)}
+              onClick={(event) => {
+                event.currentTarget.focus({ preventScroll: true });
+                setIsConsiderationsOpen((current) => !current);
+              }}
             >
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
                 <circle cx="12" cy="12" r="10" />
@@ -2373,7 +2416,10 @@ export function AiRaminSection({ onOpenMenu }: { onOpenMenu?: () => void }) {
               className={`ai-ramin-mobile-icon-btn ${isContextPanelOpen ? 'is-active' : ''}`}
               aria-label="Settings"
               aria-expanded={isContextPanelOpen}
-              onClick={() => setIsContextPanelOpen((current) => !current)}
+              onClick={(event) => {
+                event.currentTarget.focus({ preventScroll: true });
+                setIsContextPanelOpen((current) => !current);
+              }}
             >
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
                 <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z" />
@@ -2400,7 +2446,10 @@ export function AiRaminSection({ onOpenMenu }: { onOpenMenu?: () => void }) {
               style={eyebrowFilterStyle}
               aria-expanded={isConsiderationsOpen}
               aria-controls="ai-ramin-considerations"
-              onClick={() => setIsConsiderationsOpen((current) => !current)}
+              onClick={(event) => {
+                event.currentTarget.focus({ preventScroll: true });
+                setIsConsiderationsOpen((current) => !current);
+              }}
             >
               <AiRaminTahoeFilter id={eyebrowFilterId} />
               <span className="tahoe-glass-nav-lens" aria-hidden="true" />
@@ -2425,7 +2474,10 @@ export function AiRaminSection({ onOpenMenu }: { onOpenMenu?: () => void }) {
           selectedMode={selectedMode}
           onSelectMode={setSelectedMode}
           selectedRequestType={selectedRequestType}
-          onSelectRequestType={handleRequestTypeSelect}
+          onSelectRequestType={(requestType) => {
+            setIsContextPanelOpen(false);
+            handleRequestTypeSelect(requestType);
+          }}
         />
 
         <div className="ai-ramin-workspace">
@@ -2517,7 +2569,7 @@ export function AiRaminSection({ onOpenMenu }: { onOpenMenu?: () => void }) {
               </div>
 
               {!isStructuredRequest ? (
-                <div className={`ai-ramin-suggestion-tray ${isSuggestionsOpen ? 'is-open' : ''}`} aria-hidden={!isSuggestionsOpen}>
+                <div className={`ai-ramin-suggestion-tray ${isSuggestionsOpen ? 'is-open' : ''}`} aria-hidden={!isSuggestionsOpen} inert={!isSuggestionsOpen}>
                   <div className="ai-ramin-example-grid">
                     {examplePrompts.map((example, index) => (
                       <button

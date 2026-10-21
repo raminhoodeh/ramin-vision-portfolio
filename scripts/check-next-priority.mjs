@@ -26,9 +26,10 @@ function load(file) {
   if (cache.has(file)) return cache.get(file);
   const exports = evaluate(fs.readFileSync(file, 'utf8'), (name) => {
     if (name.endsWith('.css')) return {};
+    if (/\.(png|jpe?g|webp|gif|svg|webm|mp4)(\?url)?$/.test(name)) return name;
     if (!name.startsWith('.')) return require(name);
     const base = path.resolve(path.dirname(file), name);
-    const resolved = [base, `${base}.ts`, `${base}.tsx`].find((candidate) => fs.existsSync(candidate) && fs.statSync(candidate).isFile());
+    const resolved = [base, `${base}.ts`, `${base}.tsx`, path.join(base, 'index.ts')].find((candidate) => fs.existsSync(candidate) && fs.statSync(candidate).isFile());
     assert.ok(resolved, `Cannot resolve ${name} from ${file}`);
     return load(resolved);
   });
@@ -84,22 +85,34 @@ for (const title of projectTitles) {
 }
 assert.ok(getProjectBrief('AI-Native Product OS'), 'The thesis reader title resolves to its project brief');
 
-// Evaluate the real route parser with light case-study fixtures, rather than importing App.
+// Exercise the real parser using the production light references. Cross-check
+// identities against the full production transformations so the split cannot
+// silently leave cold reader URLs pointing to invented or stale IDs.
 const app = source('src/App.tsx');
 const text = source('src/lib/text.ts');
-const appConstants = ['THESIS_CASE_STUDY_ID', 'PRODUCT_THESIS_PATH', 'METACOGNITION_PATH', 'sectionPathByTarget', 'sectionAliases', 'projectSubsectionBySlug', 'thoughtsSubsectionBySlug', 'legacyDomIdRoutes', 'projectCaseStudyBySlug'];
+const appConstants = [ 'PRODUCT_THESIS_PATH', 'METACOGNITION_PATH', 'sectionPathByTarget', 'sectionAliases', 'projectSubsectionBySlug', 'thoughtsSubsectionBySlug', 'legacyDomIdRoutes'];
 const parserFunctions = ['normalizeRouteSegment', 'getRouteSegments', 'thesisRoute', 'sectionRoute', 'scrollRoute', 'caseStudyPath', 'parseSegmentsToRoute', 'isLegacyHashRoute', 'parsePortfolioLocation'];
-const fixtureCode = [
-  functionText(text, 'slugifyTitle'),
-  `const projectCaseStudyEntries = ${JSON.stringify(projectTitles)}.map(title => ({ title, id: 'project-' + slugifyTitle(title) }));`,
-  "const METACOGNITION_DEEP_DIVE_ID = 'framework-of-metacognition';",
-  'const METACOGNITION_SENTINEL = { id: METACOGNITION_DEEP_DIVE_ID };',
-  "const caseStudyByDeepDiveSlug = new Map([['ai-native-product-os', { id: 'writeup-ai-native-product-os' }]]);",
+const references = load('src/performance/readerRouteReferences.ts');
+const fullCases = load('src/sections/Projects/types.ts');
+assert.equal(references.projectCaseStudyBySlug.size, fullCases.projectCaseStudyEntries.length);
+for (const entry of fullCases.projectCaseStudyEntries) {
+  const ref = references.projectCaseStudyBySlug.get(entry.id.replace(/^project-/, ''));
+  assert.equal(ref?.id, entry.id, `${entry.title}: cold-route identity`);
+  assert.equal(ref?.title, entry.title, `${entry.title}: cold-route title`);
+}
+assert.equal(references.caseStudyByDeepDiveSlug.size, fullCases.caseStudyByDeepDiveSlug.size);
+for (const [slug, entry] of fullCases.caseStudyByDeepDiveSlug) {
+  assert.equal(references.caseStudyByDeepDiveSlug.get(slug)?.id, entry.id, `${slug}: cold-writeup identity`);
+}
+const metacognitionAst = source('src/sections/TeachingWriting/MetacognitionDeepDive.tsx');
+assert.equal(references.METACOGNITION_DEEP_DIVE_ID, variable(metacognitionAst, 'METACOGNITION_DEEP_DIVE_ID').initializer.text, 'Cold metacognition identity matches its actual reader');
+const parserCode = [
+  "const { THESIS_CASE_STUDY_ID, METACOGNITION_DEEP_DIVE_ID, METACOGNITION_SENTINEL, thesisReference, projectCaseStudyBySlug, caseStudyByDeepDiveSlug } = require('reader-references');",
   ...appConstants.map((name) => `const ${variable(app, name).getText(app)};`),
   ...parserFunctions.map((name) => functionText(app, name)),
   'module.exports = { parsePortfolioLocation };',
 ].join('\n');
-const { parsePortfolioLocation } = evaluate(fixtureCode);
+const { parsePortfolioLocation } = evaluate(parserCode, (name) => name === 'reader-references' ? references : require(name));
 const cases = [
   ['/work/side', '', { canonicalPath: '/work/side', documentPage: 'side', section: 'experience-education' }],
   ['/work/vivup', '', { canonicalPath: '/work/vivup', documentPage: 'vivup', section: 'experience-education' }],
@@ -112,9 +125,15 @@ const cases = [
   ['/nsso', '', { canonicalPath: '/projects/nsso', caseId: 'project-nsso' }],
   ['/', '#projects/nsso', { canonicalPath: '/projects/nsso', caseId: 'project-nsso' }],
   ['/projects/ai-native-product-os', '', { canonicalPath: '/product-thesis', caseId: 'writeup-ai-native-product-os' }],
-  ['/thoughts/framework-of-metacognition', '', { canonicalPath: '/thoughts/framework-of-metacognition', caseId: 'framework-of-metacognition' }],
+  ['/thoughts/framework-of-metacognition', '', { canonicalPath: '/thoughts/framework-of-metacognition', caseId: references.METACOGNITION_DEEP_DIVE_ID }],
   ['/', '#contact', { canonicalPath: '/contact', section: 'contact' }],
 ];
+for (const [slug, entry] of references.projectCaseStudyBySlug) {
+  for (const pathname of [`/projects/${slug}`, `/thoughts/${slug}`, `/${slug}`, `/case-studies/${entry.id}`]) {
+    const writeup = pathname.startsWith('/thoughts/') ? references.caseStudyByDeepDiveSlug.get(slug) : null;
+    cases.push([pathname, '', { canonicalPath: writeup ? `/thoughts/${slug}` : `/projects/${slug}`, caseId: writeup?.id ?? entry.id }]);
+  }
+}
 for (const [pathname, hash, expected] of cases) {
   const route = parsePortfolioLocation(pathname, hash);
   for (const [key, value] of Object.entries(expected)) assert.equal(key === 'caseId' ? route.caseStudy?.id : route[key], value, `${pathname}${hash}: ${key}`);
