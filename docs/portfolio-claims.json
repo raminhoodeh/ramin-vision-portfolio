@@ -2427,7 +2427,27 @@
       "publicLinks": [],
       "checkedScope": "local-reconciliation",
       "lastChecked": "2026-10-22",
-      "reviewAfter": "2027-04-20"
+      "reviewAfter": "2027-04-20",
+      "boundaries": [
+        {
+          "file": "ai-ramin-section/canonical/ramin-overview.md",
+          "required": [
+            "OS Places connector"
+          ],
+          "forbidden": [
+            "first geospatial API"
+          ]
+        },
+        {
+          "file": "ai-ramin-section/canonical/work-experiences/ordnance-survey-os-maps-api.md",
+          "required": [
+            "does not establish a first-in-market claim"
+          ],
+          "forbidden": [
+            "launching the first geospatial API"
+          ]
+        }
+      ]
     },
     {
       "id": "work-urgentem",

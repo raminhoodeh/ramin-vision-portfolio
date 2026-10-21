@@ -30,7 +30,7 @@ The AI-Native Product OS and related course are positioned for product managers 
 ## Career Highlights
 
 - Built a carbon calculator used to assess the environmental impact of GBP 1B+ of media investment in 2022.
-- Released the first geospatial API on Microsoft's Power Platform, improving energy clients' ability to forecast carbon impacts on asset valuations.
+- Contributed to defining and launching the OS Places connector on Microsoft Power Platform, supported by geospatial sustainability discovery. Public connector documentation establishes its scope, not a first-in-market claim or individual authorship; reported forecasting outcomes lack a public metric definition.
 - Product Manager for a climate-risk analytics platform used across client portfolios representing GBP 900M+ AUM, featured in the Financial Times. This is client portfolio context, not assets Ramin personally managed.
 - Led product work on Family Pay nursery salary-sacrifice payments at Work&Life Partners, later acquired by Vivup. The latest supplied 2026 career record uses Family Pay; an earlier export using FamilyCare does not establish a second product or a formal rebrand.
 - Created the Product Innovation Process and AI-Native Product OS. Current public course titles and reception belong to their individual platform listings, rather than an undated aggregate teaching figure.
