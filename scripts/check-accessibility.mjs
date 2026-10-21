@@ -264,16 +264,23 @@ function evaluateComponent(code, overrides = {}) {
   return componentModule.exports;
 }
 const nav = evaluateComponent(fs.readFileSync(new URL('../src/components/TahoeGlassTabNav.tsx', import.meta.url), 'utf8'));
+const destinationData = evaluateComponent(fs.readFileSync(new URL('../src/data/nav.ts', import.meta.url), 'utf8'));
 const { BottomNavigation } = evaluateComponent(fs.readFileSync(new URL('../src/components/BottomNavigation.tsx', import.meta.url), 'utf8'), {
   './TahoeGlassTabNav': nav,
   '../lib/useDialogFocus': { useDialogFocus() {} },
+  '../data/nav': destinationData,
 });
 const navigation = renderToStaticMarkup(React.createElement(BottomNavigation, { active: 'projects', currentSection: 'projects', onNavigate() {} }));
-for (const href of ['/', '/experience-education', '/projects', '/thoughts', '/contact', '/bonus', '/ai-ramin']) {
+for (const href of ['/', '/experience-education', '/projects', '/thoughts', '/about', '/contact', '/resources', '/ai-ramin']) {
   assert.ok(navigation.includes(`href="${href}"`), `Page navigation exposes ${href} as a real link`);
 }
 assert.equal((navigation.match(/aria-current="page"/g) ?? []).length, 1, 'Exactly one current page is announced');
 assert.ok(!navigation.includes('role="tab"') && !navigation.includes('role="tablist"'), 'Page links do not claim tab-panel keyboard behavior');
+for (const [section, destination] of [['thoughts', 'about'], ['bonus', 'resources']]) {
+  const html = renderToStaticMarkup(React.createElement(BottomNavigation, { active: section, currentSection: section, activeDestination: destination, onNavigate() {} }));
+  assert.equal((html.match(/aria-current="page"/g) ?? []).length, 1, `One current link for ${destination}`);
+  assert.match(html, new RegExp(`href="/${destination}"[^>]*aria-current="page"`), `${destination} is distinct from its legacy section`);
+}
 
 const aiSource = fs.readFileSync(new URL('../src/sections/AiRamin.tsx', import.meta.url), 'utf8');
 const aiAst = ts.createSourceFile('AiRamin.tsx', aiSource, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
@@ -341,4 +348,4 @@ for (const handler of openerHandlers) {
   flushFrame();
   assert.equal(document.activeElement, trigger, 'Escape returns focus to the pointer opener');
 }
-console.log('Accessibility passed: focus entry/cold-load retry, Tab/Shift+Tab, Escape, nested isolation, restoration, reduced motion, seven route links, closed AI dialogs and six pointer-opener handlers.');
+console.log('Accessibility passed: focus entry/cold-load retry, Tab/Shift+Tab, Escape, nested isolation, restoration, reduced motion, eight route links, closed AI dialogs and six pointer-opener handlers.');

@@ -1405,7 +1405,7 @@
       "evidenceStatus": "self-reported-employer-outcomes",
       "source": {
         "sourceCheckedOn": null,
-        "note": "Canonical record and supplied-CV-derived public story; original internal dashboards and measurement samples are not public. lastChecked is local review only.",
+        "note": "Canonical record and supplied-CV-derived public story; original internal dashboards and measurement samples are not public. lastChecked is local review only. The latest supplied Payments & Embedded Finance CV uses Family Pay; earlier FamilyCare copy is superseded for public naming, without asserting a rebrand.",
         "files": [
           "ai-ramin-section/canonical/work-experiences/perkbox-vivup.md",
           "docs/ramin-hoodeh-exp-context.md",
@@ -1449,7 +1449,7 @@
             "monthYearRangeWorked": "Jan 2023 - Nov 2024",
             "productsWorkedOn": [
               "Highfive Recognition App",
-              "FamilyCare"
+              "Family Pay childcare benefits"
             ],
             "mainAchievements": [
               "Improved the App gateway experience through qualitative user research and UX iteration.",
@@ -2170,6 +2170,669 @@
       ],
       "publicLinks": [
         "/ai-ramin"
+      ],
+      "checkedScope": "local-reconciliation",
+      "lastChecked": "2026-10-22",
+      "reviewAfter": "2026-11-21"
+    },
+    {
+      "id": "work-groupm",
+      "entity": "GroupM",
+      "kind": "work",
+      "scope": "GroupM is the role-era name for the 2022 engagement. The reported £1bn+ describes media investment assessed by the calculator in 2022; it is a product-usage context, with no independently audited personal revenue attribution.",
+      "period": "Jan 2022 - Dec 2022",
+      "attribution": "Translated carbon methodology into product specifications for a media Carbon Calculator.",
+      "publication": {
+        "status": "public-safe-career-summary",
+        "basis": "Existing public career material and supplied 2026 CV, reconciled with canonical source and explicit scope limits.",
+        "exclusions": [
+          "No employer-sensitive implementation details",
+          "No independently audited or sole-causal attribution",
+          "No invented metric definitions or software ownership"
+        ]
+      },
+      "implementationStatus": "historical-professional-work",
+      "evidenceStatus": "supplied-career-record-with-public-context",
+      "cadenceDays": 180,
+      "source": {
+        "sourceCheckedOn": null,
+        "note": "Local reconciliation of the supplied 2026 career record and approved canonical account; underlying employer analytics were not independently audited.",
+        "files": [
+          "src/data/workEvidence.ts",
+          "ai-ramin-section/canonical/work-experiences/groupm-carbon-calculator.md"
+        ]
+      },
+      "surfaceRefs": [
+        {
+          "file": "src/sections/ExperienceEducation.tsx",
+          "symbol": "getWorkEvidence"
+        },
+        {
+          "file": "src/seo/InitialDocument.tsx",
+          "symbol": "getWorkEvidence"
+        }
+      ],
+      "bindings": [
+        {
+          "file": "src/data/content.ts",
+          "declaration": "workExperienceData",
+          "where": {
+            "field": "companyName",
+            "value": "WPP Media"
+          },
+          "pick": [
+            "companyName",
+            "jobTitle",
+            "monthYearRangeWorked",
+            "productsWorkedOn",
+            "mainAchievements"
+          ],
+          "equals": {
+            "companyName": "WPP Media",
+            "jobTitle": "Product Manager",
+            "monthYearRangeWorked": "Jan 2022 - Dec 2022",
+            "productsWorkedOn": [
+              "Carbon Calculator",
+              "Product Innovation Process"
+            ],
+            "mainAchievements": [
+              "Translated EY's carbon emissions methodology with 300+ dataset variables into product specifications for a media carbon calculator.",
+              "Career record reports that the Carbon Calculator assessed the environmental impact of GBP 1bn+ of media investment in 2022. This was media investment assessed, rather than revenue generated."
+            ]
+          }
+        },
+        {
+          "file": "src/data/workEvidence.ts",
+          "declaration": "workEvidenceByCompany",
+          "path": [
+            "GroupM"
+          ],
+          "equals": {
+            "label": "Product contribution",
+            "summary": "Translated carbon methodology into product specifications for a media Carbon Calculator.",
+            "scopeNote": "GroupM is the role-era name for the 2022 engagement. The reported £1bn+ describes media investment assessed by the calculator in 2022; it is a product-usage context, with no independently audited personal revenue attribution."
+          }
+        }
+      ],
+      "publicLinks": [],
+      "checkedScope": "local-reconciliation",
+      "lastChecked": "2026-10-22",
+      "reviewAfter": "2027-04-20"
+    },
+    {
+      "id": "work-cox",
+      "entity": "Cox Automotive",
+      "kind": "work",
+      "scope": "This was a contract Product Owner role. The reported halving of stakeholder feedback cycles has no defined baseline or measurement window in the public record; manufacturer-specific roadmap details remain private.",
+      "period": "Sept 2021 - Dec 2021",
+      "attribution": "Turned an ambiguous auction-platform backlog into a ranked roadmap with a Feature Scoring Framework.",
+      "publication": {
+        "status": "public-safe-career-summary",
+        "basis": "Existing public career material and supplied 2026 CV, reconciled with canonical source and explicit scope limits.",
+        "exclusions": [
+          "No employer-sensitive implementation details",
+          "No independently audited or sole-causal attribution",
+          "No invented metric definitions or software ownership"
+        ]
+      },
+      "implementationStatus": "historical-professional-work",
+      "evidenceStatus": "supplied-career-record-with-public-context",
+      "cadenceDays": 180,
+      "source": {
+        "sourceCheckedOn": null,
+        "note": "Local reconciliation of the supplied 2026 career record and approved canonical account; underlying employer analytics were not independently audited.",
+        "files": [
+          "src/data/workEvidence.ts",
+          "ai-ramin-section/canonical/work-experiences/cox-automotive-auction-platform.md"
+        ]
+      },
+      "surfaceRefs": [
+        {
+          "file": "src/sections/ExperienceEducation.tsx",
+          "symbol": "getWorkEvidence"
+        },
+        {
+          "file": "src/seo/InitialDocument.tsx",
+          "symbol": "getWorkEvidence"
+        }
+      ],
+      "bindings": [
+        {
+          "file": "src/data/content.ts",
+          "declaration": "workExperienceData",
+          "where": {
+            "field": "companyName",
+            "value": "Cox Auto"
+          },
+          "pick": [
+            "companyName",
+            "jobTitle",
+            "monthYearRangeWorked",
+            "productsWorkedOn",
+            "mainAchievements"
+          ],
+          "equals": {
+            "companyName": "Cox Auto",
+            "jobTitle": "Product Owner [Contract]",
+            "monthYearRangeWorked": "Sept 2021 - Dec 2021",
+            "productsWorkedOn": [
+              "Manheim Express"
+            ],
+            "mainAchievements": [
+              "Introduced a feature scoring framework that turned a large, ambiguous auction-platform backlog into a ranked delivery roadmap.",
+              "Reduced stakeholder feedback cycles by 50% by creating clearer acceptance criteria, decision records, and prioritisation rituals.",
+              "Improved roadmap confidence by tying backlog decisions to manufacturer needs, user evidence, commercial value, and delivery complexity."
+            ]
+          }
+        },
+        {
+          "file": "src/data/workEvidence.ts",
+          "declaration": "workEvidenceByCompany",
+          "path": [
+            "Cox Automotive"
+          ],
+          "equals": {
+            "label": "Prioritisation decision",
+            "summary": "Turned an ambiguous auction-platform backlog into a ranked roadmap with a Feature Scoring Framework.",
+            "scopeNote": "This was a contract Product Owner role. The reported halving of stakeholder feedback cycles has no defined baseline or measurement window in the public record; manufacturer-specific roadmap details remain private."
+          }
+        }
+      ],
+      "publicLinks": [],
+      "checkedScope": "local-reconciliation",
+      "lastChecked": "2026-10-22",
+      "reviewAfter": "2027-04-20"
+    },
+    {
+      "id": "work-ordnance-survey",
+      "entity": "Ordnance Survey",
+      "kind": "work",
+      "scope": "The linked Microsoft documentation identifies the OS Places connector. Discovery counts are supplied career claims; the separate data-utilisation and forecasting improvements lack public metric definitions and baselines.",
+      "period": "Dec 2020 - Sept 2021",
+      "attribution": "Led 12 discovery workshops and helped validate three product concepts for further investment.",
+      "publication": {
+        "status": "public-safe-career-summary",
+        "basis": "Existing public career material and supplied 2026 CV, reconciled with canonical source and explicit scope limits.",
+        "exclusions": [
+          "No employer-sensitive implementation details",
+          "No independently audited or sole-causal attribution",
+          "No invented metric definitions or software ownership"
+        ]
+      },
+      "implementationStatus": "historical-professional-work",
+      "evidenceStatus": "supplied-career-record-with-public-context",
+      "cadenceDays": 180,
+      "source": {
+        "sourceCheckedOn": null,
+        "note": "Local reconciliation of the supplied 2026 career record and approved canonical account; underlying employer analytics were not independently audited.",
+        "files": [
+          "src/data/workEvidence.ts",
+          "ai-ramin-section/canonical/work-experiences/ordnance-survey-os-maps-api.md"
+        ]
+      },
+      "surfaceRefs": [
+        {
+          "file": "src/sections/ExperienceEducation.tsx",
+          "symbol": "getWorkEvidence"
+        },
+        {
+          "file": "src/seo/InitialDocument.tsx",
+          "symbol": "getWorkEvidence"
+        }
+      ],
+      "bindings": [
+        {
+          "file": "src/data/content.ts",
+          "declaration": "workExperienceData",
+          "where": {
+            "field": "companyName",
+            "value": "Ordnance Survey"
+          },
+          "pick": [
+            "companyName",
+            "jobTitle",
+            "monthYearRangeWorked",
+            "productsWorkedOn",
+            "mainAchievements"
+          ],
+          "equals": {
+            "companyName": "Ordnance Survey",
+            "jobTitle": "Product Manager; Geospatial API",
+            "monthYearRangeWorked": "Dec 2020 - Sept 2021",
+            "productsWorkedOn": [
+              "OS Places connector on Microsoft Power Platform",
+              "Sustainability applications of geospatial data"
+            ],
+            "mainAchievements": [
+              "Defined and launched the OS Places connector on Microsoft Power Platform.",
+              "Increased geospatial data utilisation by 30% across 2 key accounts by Q3 2021.",
+              "Led twelve discovery workshops for client stakeholders, validating 3 product concepts approved for further investment.",
+              "Improved energy clients' ability to forecast carbon impacts on asset valuations by 25% within 6 months."
+            ]
+          }
+        },
+        {
+          "file": "src/data/workEvidence.ts",
+          "declaration": "workEvidenceByCompany",
+          "path": [
+            "Ordnance Survey"
+          ],
+          "equals": {
+            "label": "Discovery contribution",
+            "summary": "Led 12 discovery workshops and helped validate three product concepts for further investment.",
+            "scopeNote": "The linked Microsoft documentation identifies the OS Places connector. Discovery counts are supplied career claims; the separate data-utilisation and forecasting improvements lack public metric definitions and baselines."
+          }
+        }
+      ],
+      "publicLinks": [],
+      "checkedScope": "local-reconciliation",
+      "lastChecked": "2026-10-22",
+      "reviewAfter": "2027-04-20"
+    },
+    {
+      "id": "work-urgentem",
+      "entity": "Urgentem",
+      "kind": "work",
+      "scope": "The latest supplied CV reports £900m in client-portfolio AUM; this describes clients’ portfolios, rather than assets Ramin managed. The separate climate-risk reduction lacks a defined measure. Outcomes remain supplied employer claims, with shared cross-functional ownership.",
+      "period": "Oct 2019 - Nov 2020",
+      "attribution": "Co-managed Element6’s launch; reported demo-to-buy conversion rose 30% over four months.",
+      "publication": {
+        "status": "public-safe-career-summary",
+        "basis": "Existing public career material and supplied 2026 CV, reconciled with canonical source and explicit scope limits.",
+        "exclusions": [
+          "No employer-sensitive implementation details",
+          "No independently audited or sole-causal attribution",
+          "No invented metric definitions or software ownership"
+        ]
+      },
+      "implementationStatus": "historical-professional-work",
+      "evidenceStatus": "supplied-career-record-with-public-context",
+      "cadenceDays": 180,
+      "source": {
+        "sourceCheckedOn": null,
+        "note": "Local reconciliation of the supplied 2026 career record and approved canonical account; underlying employer analytics were not independently audited.",
+        "files": [
+          "src/data/workEvidence.ts",
+          "ai-ramin-section/canonical/work-experiences/urgentem-element6.md"
+        ]
+      },
+      "surfaceRefs": [
+        {
+          "file": "src/sections/ExperienceEducation.tsx",
+          "symbol": "getWorkEvidence"
+        },
+        {
+          "file": "src/seo/InitialDocument.tsx",
+          "symbol": "getWorkEvidence"
+        }
+      ],
+      "bindings": [
+        {
+          "file": "src/data/content.ts",
+          "declaration": "workExperienceData",
+          "where": {
+            "field": "companyName",
+            "value": "Urgentem"
+          },
+          "pick": [
+            "companyName",
+            "jobTitle",
+            "monthYearRangeWorked",
+            "productsWorkedOn",
+            "mainAchievements"
+          ],
+          "equals": {
+            "companyName": "Urgentem",
+            "jobTitle": "Product Manager · contract",
+            "monthYearRangeWorked": "Oct 2019 - Nov 2020",
+            "productsWorkedOn": [
+              "Element6"
+            ],
+            "mainAchievements": [
+              "Co-managed development and start-up launch of [now acquired] Element6, a climate risk platform for investors.",
+              "Supported climate-risk analysis across client portfolios representing GBP 900m AUM in the supplied 2026 career record.",
+              "Featured in the Financial Times.",
+              "Improved Demo-to-Buy conversion rate by 30% over 4 months and reduced quarterly churn by 25%.",
+              "Used feature-uptake analytics to remove three underused features and prioritise development."
+            ]
+          }
+        },
+        {
+          "file": "src/data/workEvidence.ts",
+          "declaration": "workEvidenceByCompany",
+          "path": [
+            "Urgentem"
+          ],
+          "equals": {
+            "label": "Reported product and commercial contribution",
+            "summary": "Co-managed Element6’s launch; reported demo-to-buy conversion rose 30% over four months.",
+            "scopeNote": "The latest supplied CV reports £900m in client-portfolio AUM; this describes clients’ portfolios, rather than assets Ramin managed. The separate climate-risk reduction lacks a defined measure. Outcomes remain supplied employer claims, with shared cross-functional ownership."
+          }
+        }
+      ],
+      "publicLinks": [],
+      "checkedScope": "local-reconciliation",
+      "lastChecked": "2026-10-22",
+      "reviewAfter": "2027-04-20"
+    },
+    {
+      "id": "work-deity",
+      "entity": "Deity AI",
+      "kind": "work",
+      "scope": "This historical product is separate from the newer Deity profile coach in nsso. The reported chat-retention improvement covers the first three months; cohort, retention definition and model architecture are not established in the public account.",
+      "period": "Jul 2017 - Oct 2019",
+      "attribution": "Ideated and implemented a conversation mediator for a dating/social product in 2017–2019.",
+      "publication": {
+        "status": "public-safe-career-summary",
+        "basis": "Existing public career material and supplied 2026 CV, reconciled with canonical source and explicit scope limits.",
+        "exclusions": [
+          "No employer-sensitive implementation details",
+          "No independently audited or sole-causal attribution",
+          "No invented metric definitions or software ownership"
+        ]
+      },
+      "implementationStatus": "historical-professional-work",
+      "evidenceStatus": "supplied-career-record-with-public-context",
+      "cadenceDays": 180,
+      "source": {
+        "sourceCheckedOn": null,
+        "note": "Local reconciliation of the supplied 2026 career record and approved canonical account; underlying employer analytics were not independently audited.",
+        "files": [
+          "src/data/workEvidence.ts",
+          "ai-ramin-section/canonical/work-experiences/deity-ai.md"
+        ]
+      },
+      "surfaceRefs": [
+        {
+          "file": "src/sections/ExperienceEducation.tsx",
+          "symbol": "getWorkEvidence"
+        },
+        {
+          "file": "src/seo/InitialDocument.tsx",
+          "symbol": "getWorkEvidence"
+        }
+      ],
+      "bindings": [
+        {
+          "file": "src/data/content.ts",
+          "declaration": "workExperienceData",
+          "where": {
+            "field": "companyName",
+            "value": "Deity AI"
+          },
+          "pick": [
+            "companyName",
+            "jobTitle",
+            "monthYearRangeWorked",
+            "productsWorkedOn",
+            "mainAchievements"
+          ],
+          "equals": {
+            "companyName": "Deity AI",
+            "jobTitle": "Product Manager · part-time contract",
+            "monthYearRangeWorked": "Jul 2017 - Oct 2019",
+            "productsWorkedOn": [
+              "Circles by Deity",
+              "Deity conversational chatbot mediator"
+            ],
+            "mainAchievements": [
+              "Increased footfall from partnering venues by 15% over a sustained period of 7 months.",
+              "Improved chat retention rate by over 50% in first 3 months after Deity mediator release."
+            ]
+          }
+        },
+        {
+          "file": "src/data/workEvidence.ts",
+          "declaration": "workEvidenceByCompany",
+          "path": [
+            "Deity AI"
+          ],
+          "equals": {
+            "label": "Historical conversational product",
+            "summary": "Ideated and implemented a conversation mediator for a dating/social product in 2017–2019.",
+            "scopeNote": "This historical product is separate from the newer Deity profile coach in nsso. The reported chat-retention improvement covers the first three months; cohort, retention definition and model architecture are not established in the public account."
+          }
+        }
+      ],
+      "publicLinks": [],
+      "checkedScope": "local-reconciliation",
+      "lastChecked": "2026-10-22",
+      "reviewAfter": "2027-04-20"
+    },
+    {
+      "id": "work-erm",
+      "entity": "ERM",
+      "kind": "work",
+      "scope": "The reported 10% product revenue growth over six months concerns partner RepRisk. Ramin contributed use cases; the underlying commercial attribution is not public or independently audited.",
+      "period": "Dec 2018 - Oct 2019",
+      "attribution": "Co-authored lifecycle research and identified environmental-risk uses for satellite data.",
+      "publication": {
+        "status": "public-safe-career-summary",
+        "basis": "Existing public career material and supplied 2026 CV, reconciled with canonical source and explicit scope limits.",
+        "exclusions": [
+          "No employer-sensitive implementation details",
+          "No independently audited or sole-causal attribution",
+          "No invented metric definitions or software ownership"
+        ]
+      },
+      "implementationStatus": "historical-professional-work",
+      "evidenceStatus": "supplied-career-record-with-public-context",
+      "cadenceDays": 180,
+      "source": {
+        "sourceCheckedOn": null,
+        "note": "Local reconciliation of the supplied 2026 career record and approved canonical account; underlying employer analytics were not independently audited.",
+        "files": [
+          "src/data/workEvidence.ts",
+          "ai-ramin-section/canonical/work-experiences/erm-tesla.md"
+        ]
+      },
+      "surfaceRefs": [
+        {
+          "file": "src/sections/ExperienceEducation.tsx",
+          "symbol": "getWorkEvidence"
+        },
+        {
+          "file": "src/seo/InitialDocument.tsx",
+          "symbol": "getWorkEvidence"
+        }
+      ],
+      "bindings": [
+        {
+          "file": "src/data/content.ts",
+          "declaration": "workExperienceData",
+          "where": {
+            "field": "companyName",
+            "value": "ERM"
+          },
+          "pick": [
+            "companyName",
+            "jobTitle",
+            "monthYearRangeWorked",
+            "productsWorkedOn",
+            "mainAchievements"
+          ],
+          "equals": {
+            "companyName": "ERM",
+            "jobTitle": "Product Stewardship Consultant",
+            "monthYearRangeWorked": "Dec 2018 - Oct 2019",
+            "productsWorkedOn": [
+              "DISC European Commission research project"
+            ],
+            "mainAchievements": [
+              "Co-authored European Commission-funded research on the social risks and benefits of new solar product lifecycles.",
+              "Assessed socio-economic value and value-chain benefits created by new solar product innovation in Europe.",
+              "Identified satellite-data use cases for environmental risk detection, including detecting copper mines at risk of leaking waste into waterways.",
+              "Contributed use cases to partner RepRisk; the career record reports 10% product revenue growth over six months, with shared commercial attribution."
+            ]
+          }
+        },
+        {
+          "file": "src/data/workEvidence.ts",
+          "declaration": "workEvidenceByCompany",
+          "path": [
+            "ERM"
+          ],
+          "equals": {
+            "label": "Research and advisory contribution",
+            "summary": "Co-authored lifecycle research and identified environmental-risk uses for satellite data.",
+            "scopeNote": "The reported 10% product revenue growth over six months concerns partner RepRisk. Ramin contributed use cases; the underlying commercial attribution is not public or independently audited."
+          }
+        }
+      ],
+      "publicLinks": [],
+      "checkedScope": "local-reconciliation",
+      "lastChecked": "2026-10-22",
+      "reviewAfter": "2027-04-20"
+    },
+    {
+      "id": "work-tesla",
+      "entity": "Tesla",
+      "kind": "work",
+      "scope": "The career record supports customer education, sales and Powerwall market work. It does not establish software product ownership or Ramin’s specific contribution to a Power Flow app release.",
+      "period": "Apr 2017 - Sept 2018",
+      "attribution": "Progressed from Product Specialist to Senior Product Specialist across Model S and Powerwall customer work.",
+      "publication": {
+        "status": "public-safe-career-summary",
+        "basis": "Existing public career material and supplied 2026 CV, reconciled with canonical source and explicit scope limits.",
+        "exclusions": [
+          "No employer-sensitive implementation details",
+          "No independently audited or sole-causal attribution",
+          "No invented metric definitions or software ownership"
+        ]
+      },
+      "implementationStatus": "historical-professional-work",
+      "evidenceStatus": "supplied-career-record-with-public-context",
+      "cadenceDays": 180,
+      "source": {
+        "sourceCheckedOn": null,
+        "note": "Local reconciliation of the supplied 2026 career record and approved canonical account; underlying employer analytics were not independently audited.",
+        "files": [
+          "src/data/workEvidence.ts",
+          "ai-ramin-section/canonical/work-experiences/erm-tesla.md"
+        ]
+      },
+      "surfaceRefs": [
+        {
+          "file": "src/sections/ExperienceEducation.tsx",
+          "symbol": "getWorkEvidence"
+        },
+        {
+          "file": "src/seo/InitialDocument.tsx",
+          "symbol": "getWorkEvidence"
+        }
+      ],
+      "bindings": [
+        {
+          "file": "src/data/content.ts",
+          "declaration": "workExperienceData",
+          "where": {
+            "field": "companyName",
+            "value": "Tesla"
+          },
+          "pick": [
+            "companyName",
+            "jobTitle",
+            "monthYearRangeWorked",
+            "productsWorkedOn",
+            "mainAchievements"
+          ],
+          "equals": {
+            "companyName": "Tesla",
+            "jobTitle": "Senior Product Specialist",
+            "monthYearRangeWorked": "Apr 2017 - Sept 2018",
+            "productsWorkedOn": [
+              "Tesla Model S",
+              "Tesla Powerwall",
+              "Owner education and marketing"
+            ],
+            "mainAchievements": [
+              "Worked on customer-facing Model S and Powerwall experiences, energy-product education and sales.",
+              "Ideated and initiated a Tesla / SpaceX marketing campaign through direct communication with the CEO, leading to more than double the attendance of Owners Orientation events in Q1-Q3 2018.",
+              "Averaged 120% performance on Tesla Model S sales target from Q3 2017 to Q2 2018.",
+              "Sold the first Tesla Powerwall to a residential customer in the UK."
+            ]
+          }
+        },
+        {
+          "file": "src/data/workEvidence.ts",
+          "declaration": "workEvidenceByCompany",
+          "path": [
+            "Tesla"
+          ],
+          "equals": {
+            "label": "Customer and commercial foundation",
+            "summary": "Progressed from Product Specialist to Senior Product Specialist across Model S and Powerwall customer work.",
+            "scopeNote": "The career record supports customer education, sales and Powerwall market work. It does not establish software product ownership or Ramin’s specific contribution to a Power Flow app release."
+          }
+        }
+      ],
+      "publicLinks": [],
+      "checkedScope": "local-reconciliation",
+      "lastChecked": "2026-10-22",
+      "reviewAfter": "2027-04-20"
+    },
+    {
+      "id": "resource-access",
+      "entity": "Resources and optional Bonus offers",
+      "kind": "resource",
+      "scope": "Direct workspace, fictional evaluation and slide links; enquiries instead of unsupported automatic coupon or lifetime-access entitlements.",
+      "period": "Public resource links reviewed 22 October 2026; eligibility and availability remain unconfirmed.",
+      "attribution": "Ramin authored the workspace and teaching materials; platform access is determined by the linked provider or confirmed with Ramin.",
+      "publication": {
+        "status": "public-links-and-enquiry-options",
+        "basis": "Public workspace/evaluation destinations and existing authored slide; unconfirmed offers are described as enquiries.",
+        "exclusions": [
+          "No promised free coupon",
+          "No automatic lifetime entitlement",
+          "No verified appointment availability",
+          "No current database size/freshness claim"
+        ]
+      },
+      "implementationStatus": "direct-public-resources",
+      "evidenceStatus": "public-link-check-and-unconfirmed-offer-boundaries",
+      "cadenceDays": 30,
+      "source": {
+        "sourceCheckedOn": "2026-10-22",
+        "note": "Public workspace/evaluation links checked; this is not a redemption or booking verification.",
+        "files": [
+          "src/data/resources.ts"
+        ]
+      },
+      "surfaceRefs": [
+        {
+          "file": "src/sections/Resources.tsx",
+          "symbol": "Resources"
+        },
+        {
+          "file": "src/sections/Bonus.tsx",
+          "symbol": "resourceOffers"
+        },
+        {
+          "file": "src/sections/Contact.tsx",
+          "symbol": "resourceContact"
+        }
+      ],
+      "bindings": [
+        {
+          "file": "src/data/resources.ts",
+          "declaration": "resourceEvidence",
+          "path": [],
+          "equals": {
+            "checkedOn": "2026-10-22",
+            "workspacePublic": true,
+            "evaluationExamplePublic": true,
+            "evaluationExampleScope": "fictional teaching example",
+            "bookingAvailability": "unconfirmed",
+            "coursePromotion": "unconfirmed",
+            "dreamseaSpecialAccess": "unconfirmed",
+            "toolsCatalogueReviewDate": null
+          }
+        }
+      ],
+      "publicLinks": [
+        "/resources",
+        "https://github.com/raminhoodeh/AI-Native-Product-OS",
+        "https://github.com/raminhoodeh/AI-Native-Product-OS/blob/main/examples/fictional-ai-feature/governance/eval-set.md"
       ],
       "checkedScope": "local-reconciliation",
       "lastChecked": "2026-10-22",

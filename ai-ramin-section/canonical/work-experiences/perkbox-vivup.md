@@ -45,6 +45,10 @@ The public story separates two initiatives. Order Guidance replaced fragmented b
 
 Ramin owned product decisions and stakeholder alignment; these outcomes involved cross-functional delivery. Do not combine the initiatives into a single experiment or imply that their causal attribution has been independently audited. Cohort definitions, sample sizes, and internal analytics are not public.
 
+## Product Naming
+
+The latest supplied Payments & Embedded Finance CV uses Family Pay for the Work&Life Partners nursery salary-sacrifice payment journey. Earlier portfolio exports use FamilyCare. Use the latest CV name or describe the childcare payment journey generically; do not claim two distinct products or a verified rebrand.
+
 ## Market Context
 
 The PM Experience source says Vivup responded to market pressure from competitors offering more for free and better UX that displayed all benefits in one place. Ramin's response was to update pricing and help move toward a unified app experience.

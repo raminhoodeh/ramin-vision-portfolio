@@ -9,7 +9,7 @@ export const experienceEntries = [
     outcome:
       'Developed confidential AI-native features across property search, recommendations, and conversational AI, using model selection, eval suite design, guardrail implementation, and MCP integration.',
     proof:
-      'Embeds the AI-Native Product OS as a standard framework across the wider Product team.',
+      'Public remit includes model selection, evaluation and guardrails; measured team-wide framework adoption is not established.',
     whatItProves:
       'Can lead AI-native product work where probabilistic behavior, safety, evaluation, and product taste all matter at once.',
     confidentiality:
@@ -121,7 +121,7 @@ export const experienceEntries = [
     outcome:
       'Led twelve discovery workshops to discover sustainability applications of geospatial data and validated 3 product concepts for further investment.',
     proof:
-      "Defined and launched the first geospatial API on Microsoft's Power Platform.",
+      "Defined and launched the OS Places connector on Microsoft Power Platform.",
     whatItProves:
       'Can discover new markets for technical data platforms, validate concepts, and ship ecosystem integrations.',
     confidentiality:
@@ -139,7 +139,7 @@ export const experienceEntries = [
   },
   {
     company: 'Urgentem',
-    role: 'Product Manager; Climate Data Platform',
+    role: 'Product Manager; Climate Data Platform (contract)',
     dates: 'Oct 2019 - Nov 2020',
     domain: 'Financial climate risk analytics',
     outcome:
@@ -164,7 +164,7 @@ export const experienceEntries = [
   },
   {
     company: 'Deity AI',
-    role: 'Product Manager; Chatbot',
+    role: 'Product Manager; Chatbot (part-time contract)',
     dates: 'Jul 2017 - Oct 2019',
     domain: 'Conversational AI for dating and profile interaction',
     outcome:

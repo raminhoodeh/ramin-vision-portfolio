@@ -3,13 +3,16 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import vm from 'node:vm';
+import { createRequire } from 'node:module';
+import React from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
 import ts from 'typescript';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const uiSource = fs.readFileSync(path.join(root, 'src/sections/AiRamin.tsx'), 'utf8');
 const helperSource = fs.readFileSync(path.join(root, 'src/lib/aiRaminConversation.ts'), 'utf8');
 const uiAst = ts.createSourceFile('AiRamin.tsx', uiSource, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
-const compile = (code) => ts.transpileModule(code, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.CommonJS } }).outputText;
+const compile = (code) => ts.transpileModule(code, { compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX } }).outputText;
 const timers = new Map();
 let timerId = 0;
 let storageAttempts = 0;
@@ -110,6 +113,8 @@ assert.equal(timers.size, 1);
 assert.equal(await stalled, 'unavailable');
 assert.equal(session.getSnapshot().isSending, false, 'A stalled request cannot hold the session busy indefinitely');
 assert.match(session.getSnapshot().chatError, /longer than expected/);
+assert.equal(session.getSnapshot().prompt, user(4).content, 'A timed-out prompt is ready for editing');
+assert.equal(session.getSnapshot().failedRequest.message.id, 'u-4', 'Timeout preserves the original retry identity');
 never.resolve({ message: answer('too-late') });
 await Promise.resolve();
 assert.equal(session.getSnapshot().messages.some((message) => message.id === 'a-too-late'), false);
@@ -187,7 +192,67 @@ assert.equal(followUp.history[1].metadata.requestType, 'role_fit', 'Real request
 transports[1].result.resolve({ ok: false, json: async () => ({ error: 'Deterministic unavailable fixture' }) });
 await next;
 assert.equal(uiSession.getSnapshot().chatError, 'Deterministic unavailable fixture');
+assert.equal(uiSession.getSnapshot().prompt, 'A test follow-up', 'Failed request text returns to the composer');
 assert.deepEqual(metrics.at(-1), ['ai_result', 'unavailable', 'ai']);
+
+// Invoke the actual rendered error-panel Retry callback; history and the user
+// message must not duplicate, and a newer draft/lens must survive the retry.
+let retryHandler;
+let cancelHandler;
+const visitUi = (node) => {
+  if (ts.isJsxSelfClosingElement(node) && node.tagName.getText(uiAst) === 'AiRaminRequestRecovery') {
+    retryHandler = node.attributes.properties.find((attribute) => ts.isJsxAttribute(attribute) && attribute.name.getText(uiAst) === 'onRetry')?.initializer?.expression;
+  }
+  if (ts.isJsxElement(node) && node.openingElement.tagName.getText(uiAst) === 'button' && node.children.some((child) => ts.isJsxText(child) && child.text.includes('Cancel request'))) {
+    cancelHandler = node.openingElement.attributes.properties.find((attribute) => ts.isJsxAttribute(attribute) && attribute.name.getText(uiAst) === 'onClick')?.initializer?.expression;
+  }
+  ts.forEachChild(node, visitUi);
+};
+visitUi(uiAst);
+assert.ok(retryHandler && cancelHandler, 'Actual retry and cancel affordances are rendered');
+uiSession.setPrompt('A newer draft while reviewing the error');
+uiSession.setSelectedMode('founder');
+uiSession.setSelectedRequestType('product_judgment');
+const retryModule = { exports: {} };
+let retried;
+vm.runInNewContext(compile(`module.exports = ${retryHandler.getText(uiAst)};`), { module: retryModule, sendMessage: (...args) => { retried = mountSender()(...args); } });
+retryModule.exports();
+await Promise.resolve();
+const retriedBody = JSON.parse(transports[2].options.body);
+assert.equal(retriedBody.message, 'A test follow-up');
+assert.equal(retriedBody.requestType, 'role_fit', 'Retry uses the failed request type');
+assert.equal(retriedBody.hiringMode, 'hiring-manager', 'Retry uses the failed request lens');
+assert.equal(retriedBody.history.length, 2, 'Failed question is excluded from its own retry history');
+assert.equal(uiSession.getSnapshot().messages.filter((message) => message.content === 'A test follow-up').length, 1);
+transports[2].result.resolve({ ok: true, json: async () => fixturePayload });
+await retried;
+assert.equal(uiSession.getSnapshot().failedRequest, null);
+assert.equal(uiSession.getSnapshot().prompt, 'A newer draft while reviewing the error');
+assert.equal(uiSession.getSnapshot().selectedMode, 'founder', 'Retry cannot overwrite a newer visitor lens');
+assert.equal(uiSession.getSnapshot().selectedRequestType, 'product_judgment');
+
+const cancelTurn = mountSender()('Cancel this deterministic fixture');
+await Promise.resolve();
+const cancelledTransport = transports.at(-1);
+uiSession.setPrompt('A draft typed while waiting');
+const cancelModule = { exports: {} };
+vm.runInNewContext(compile(`module.exports = ${cancelHandler.getText(uiAst)};`), { module: cancelModule, aiRaminConversation: uiSession });
+cancelModule.exports();
+await cancelTurn;
+assert.equal(cancelledTransport.options.signal.aborted, true, 'Actual cancel control aborts the transport');
+assert.equal(uiSession.getSnapshot().isSending, false);
+assert.equal(uiSession.getSnapshot().prompt, 'A draft typed while waiting', 'Cancel preserves a newer composer draft');
+assert.equal(uiSession.getSnapshot().failedRequest.message.content, 'Cancel this deterministic fixture');
+cancelledTransport.result.resolve({ ok: true, json: async () => fixturePayload });
+await Promise.resolve();
+assert.equal(uiSession.getSnapshot().messages.at(-1).role, 'user', 'A late cancelled result is never appended');
+
+const emptyTurn = mountSender()('A malformed-success fixture');
+await Promise.resolve();
+transports.at(-1).result.resolve({ ok: true, json: async () => ({}) });
+await emptyTurn;
+assert.match(uiSession.getSnapshot().chatError, /did not return an answer/);
+assert.equal(uiSession.getSnapshot().prompt, 'A malformed-success fixture');
 const beforeCancelledMetrics = metrics.length;
 const beforeCancelledTransport = transports.length;
 const cancelledBeforeStart = mountSender()('Cleared before transport begins');
@@ -195,6 +260,36 @@ uiSession.clear();
 await cancelledBeforeStart;
 assert.equal(transports.length, beforeCancelledTransport);
 assert.equal(metrics.length, beforeCancelledMetrics, 'Clear-before-start is not counted as an actual AI request');
+
+// Run the real feedback submission callback against deterministic persistence
+// responses. HTTP success alone must never be presented as a saved record.
+const feedbackComponent = uiAst.statements.find((node) => ts.isFunctionDeclaration(node) && node.name?.text === 'AiRaminAnswerFeedback');
+const feedbackDeclaration = feedbackComponent.body.statements.filter(ts.isVariableStatement).flatMap((node) => [...node.declarationList.declarations]).find((node) => node.name.getText(uiAst) === 'submitFeedback');
+const feedbackCode = feedbackDeclaration.initializer.arguments[0].getText(uiAst);
+for (const [ok, payload, expected] of [[true, { persisted: false }, 'failed'], [true, {}, 'failed'], [true, { persisted: 'true' }, 'failed'], [false, { persisted: true }, 'failed'], [true, null, 'failed'], [true, { persisted: true }, 'saved']]) {
+  const feedbackModule = { exports: {} };
+  const statuses = [];
+  const noteOpen = [];
+  vm.runInNewContext(compile(`module.exports = ${feedbackCode};`), {
+    module: feedbackModule, Error, disabled: false, status: 'idle', response: fixturePayload, messageId: 'fixture-only', userPrompt: 'Fixture prompt',
+    setSelectedFeedback() {}, setStatus: (value) => statuses.push(value), setIsNoteOpen: (value) => noteOpen.push(value),
+    fetch: async (url) => { assert.equal(url, '/api/ai-ramin/feedback'); return { ok, json: async () => payload }; },
+  });
+  await feedbackModule.exports('needs_review', 'Deterministic feedback note');
+  assert.equal(statuses.at(-1), expected, `Feedback status follows actual persisted=${payload?.persisted}`);
+  assert.equal(noteOpen.length, expected === 'saved' ? 1 : 0, 'An unsaved note stays available for retry');
+}
+
+const pureUi = ['AiRaminRequestRecovery', 'AiRaminStartingQuestions'].map((name) => uiAst.statements.find((node) => ts.isFunctionDeclaration(node) && node.name?.text === name).getText(uiAst)).join('\n');
+const controlsModule = { exports: {} };
+vm.runInNewContext(compile(`${pureUi}\nmodule.exports = { AiRaminRequestRecovery, AiRaminStartingQuestions };`), { module: controlsModule, exports: controlsModule.exports, require: createRequire(import.meta.url) });
+const recoveryHtml = renderToStaticMarkup(React.createElement(controlsModule.exports.AiRaminRequestRecovery, { error: 'Unavailable fixture', canRetry: true, onRetry() {} }));
+for (const href of ['/experience-education', '/projects', '/contact']) assert.ok(recoveryHtml.includes(`href="${href}"`), `Error recovery exposes ${href}`);
+const starting = controlsModule.exports.AiRaminStartingQuestions({ onSelect: (value) => selectedPrompts.push(value) });
+const selectedPrompts = [];
+for (const button of starting.props.children) button.props.onClick();
+assert.equal(selectedPrompts.length, 3, 'Three visible initial phone questions fill the composer without an API request');
+assert.ok(selectedPrompts.every((value) => typeof value === 'string' && value.length > 30));
 
 // Bound count, record size, draft and total retained conversation size.
 const bounded = createAiRaminConversation(initial());
@@ -217,4 +312,4 @@ assert.equal(storageAttempts, 0);
 assert.equal(networkAttempts, 0);
 assert.equal(logAttempts, 0);
 assert.equal(timers.size, 0, 'Completed/cleared requests release their deadline timers');
-console.log('AI Ramin session checks passed: draft/lens/history restoration; real send callback across unsubscribe/remount; pending/off-route replies; clear and late-response isolation; errors/deadlines; bounded memory; no browser storage, session network calls or prompt logging. All responses were deterministic test fixtures; no model/API was called.');
+console.log('AI Ramin session checks passed: real send/retry/cancel and feedback callbacks; failed-prompt/history recovery; pending/off-route replies; clear/late-response isolation; strict persisted acknowledgement; three phone starts and evidence/contact fallbacks; bounded in-memory session. No model/API or real feedback endpoint was called.');

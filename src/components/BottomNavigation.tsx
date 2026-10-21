@@ -4,16 +4,9 @@ import { detectSurfaceToneUnderNav, TahoeGlassFilter, TahoeGlassTabNav } from '.
 import type { TahoeGlassFilterStyle } from './TahoeGlassTabNav';
 import type { SectionTarget } from '../lib/text';
 import { useDialogFocus } from '../lib/useDialogFocus';
+import { portfolioDestinations } from '../data/nav';
 
-const bottomNavigationLinks = [
-  { label: 'Intro', target: 'hero', href: '/', icon: 'intro' },
-  { label: 'Work', target: 'experience-education', href: '/experience-education', icon: 'work' },
-  { label: 'Projects', target: 'projects', href: '/projects', icon: 'projects' },
-  { label: 'Thoughts', target: 'thoughts', href: '/thoughts', icon: 'thoughts' },
-  { label: 'Contact', target: 'contact', href: '/contact', icon: 'contact' },
-  { label: 'Bonus', target: 'bonus', href: '/bonus', icon: 'bonus' },
-  { label: 'AI Ramin', target: 'ai-ramin', href: '/ai-ramin', icon: 'ai' },
-] as const;
+const bottomNavigationLinks = portfolioDestinations;
 
 const PHONE_NAV_QUERY = '(max-width: 767px)';
 
@@ -40,14 +33,19 @@ export function BottomNavigation({
   onNavigate,
   onNavIntent,
   onRegisterMenuOpen,
+  activeDestination,
+  lightPage = false,
 }: {
   active: SectionTarget;
   currentSection: SectionTarget;
   onNavigate: (target: string) => void;
   onNavIntent?: (target: string) => void;
   onRegisterMenuOpen?: (fn: () => void) => void;
+  activeDestination?: string;
+  lightPage?: boolean;
 }) {
-  const isDarkPage = currentSection === 'bonus' || currentSection === 'projects';
+  const selection = activeDestination ?? (active === 'bonus' ? 'resources' : active);
+  const isDarkPage = !lightPage && (currentSection === 'bonus' || currentSection === 'projects');
   const isPhoneNavigation = useIsPhoneNavigation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isMobileNavOnDarkSurface, setIsMobileNavOnDarkSurface] = useState(isDarkPage);
@@ -55,7 +53,7 @@ export function BottomNavigation({
   const mobileMenuRef = useRef<HTMLDivElement | null>(null);
   const shouldReduceMotion = useReducedMotion();
   useDialogFocus(mobileMenuRef, isMobileMenuOpen, () => setIsMobileMenuOpen(false));
-  const activeLink = bottomNavigationLinks.find((link) => link.target === active) ?? bottomNavigationLinks[0];
+  const activeLink = bottomNavigationLinks.find((link) => link.target === selection) ?? bottomNavigationLinks[0];
   const mobileTriggerFilterId = `portfolio-mobile-nav-filter-${useId().replace(/:/g, '')}`;
   const mobileMenuItemFilterBaseId = `portfolio-mobile-menu-item-filter-${useId().replace(/:/g, '')}`;
   const mobileTriggerFilterStyle: TahoeGlassFilterStyle = { '--tahoe-glass-filter': `url(#${mobileTriggerFilterId})` };
@@ -198,13 +196,14 @@ export function BottomNavigation({
                 <div className="portfolio-mobile-menu-list-glass">
                   <div className="portfolio-mobile-menu-list" aria-label="Mobile website sections">
                     {bottomNavigationLinks.map((link) => {
-                      const isActive = active === link.target;
+                      const isActive = selection === link.target;
                       const itemFilterId = `${mobileMenuItemFilterBaseId}-${link.target}`;
 
                       return (
                         <a
                           key={link.target}
                           href={link.href}
+                          data-nav-kind={'utility' in link ? 'utility' : 'primary'}
                           className={`portfolio-mobile-menu-item tahoe-glass-chip ${isActive ? 'is-active' : ''}`}
                           style={{ '--tahoe-glass-filter': `url(#${itemFilterId})` } as TahoeGlassFilterStyle}
                           aria-current={isActive ? 'page' : undefined}
@@ -239,7 +238,7 @@ export function BottomNavigation({
       className={`portfolio-bottom-navigation ${active === 'ai-ramin' ? 'has-ai-ramin-active' : ''}`}
     >
       <TahoeGlassTabNav
-        active={active}
+        active={selection}
         navLinks={bottomNavigationLinks}
         onNavigate={onNavigate}
         onNavIntent={onNavIntent}

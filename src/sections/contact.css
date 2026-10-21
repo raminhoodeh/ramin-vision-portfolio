@@ -1,0 +1,35 @@
+.portfolio-stage.portfolio-stage-scroll.is-contact-stage { overflow-x: hidden !important; overflow-y: auto !important; }
+.portfolio-stage.is-contact-stage #contact.contact-page--useful {
+  display: block;
+  height: auto;
+  min-height: 100%;
+  overflow: hidden;
+  padding: clamp(5.4rem, 10svh, 6.5rem) 1.25rem calc(var(--portfolio-dock-clearance, 6rem) + 2.5rem);
+}
+.portfolio-stage.is-contact-stage #contact.contact-page--useful .contact-content { width: 100%; max-width: 60rem; padding: 0; }
+.contact-page--useful .contact-intro { position: relative; z-index: 3; }
+.contact-page--useful .contact-hook { margin: 0; transform: none; color: #4a6178; font-size: 0.75rem; line-height: 1.5; letter-spacing: 0.16em; text-transform: uppercase; }
+.contact-page--useful .contact-expression { position: relative; flex-shrink: 0; width: calc(100vw - 2.5rem); max-width: 100rem; height: clamp(12rem, 20vw, 15rem); margin-block: 0.8rem 1rem; isolation: isolate; }
+.contact-page--useful .contact-expression .contact-headline-cutout-layer { mask-image: linear-gradient(transparent, #000 8%, #000 92%, transparent); -webkit-mask-image: linear-gradient(transparent, #000 8%, #000 92%, transparent); }
+.portfolio-stage.is-contact-stage #contact.contact-page--useful .contact-headline-cutout-mask-text-desktop { transform: none; font-size: 112px; }
+.portfolio-stage.is-contact-stage #contact.contact-page--useful .contact-headline-cutout-mask-text-mobile { transform: none; font-size: 49px; }
+.contact-page--useful .contact-purpose { max-width: 40rem; }
+.contact-page--useful .contact-purpose p { margin: 0; color: #354d64; font-size: 1rem; line-height: 1.65; }
+.contact-page--useful .contact-purpose .contact-timezone { margin-top: 0.65rem; color: #526a80; font-size: 0.8rem; }
+.portfolio-stage.is-contact-stage #contact.contact-page--useful .contact-content > .contact-visible-email { position: static; display: block; margin: 1rem 0 0; transform: none; color: #203c55; font-size: 1rem; line-height: 1.5; user-select: text; }
+.portfolio-stage.is-contact-stage #contact.contact-page--useful .contact-cta-row { display: flex; flex-direction: row; flex-wrap: wrap; width: 100%; align-items: center; justify-content: center; gap: 0.8rem; margin-top: 0.8rem !important; }
+.contact-page--useful .contact-compose-email { width: auto; min-width: 10rem; height: auto; min-height: 2.85rem; }
+.contact-page--useful .contact-copy-control { min-height: 2.85rem; border: 1px solid #9fb2c3; border-radius: 999px; padding: 0.6rem 1.1rem; background: rgba(255,255,255,0.8); color: #294a67; font-size: 0.9rem; cursor: pointer; }
+.contact-page--useful .contact-copy-control:hover { background: white; }
+.contact-page--useful .contact-copy-control:focus-visible, .contact-page--useful .contact-professional-links a:focus-visible { outline: 2px solid #365f85; outline-offset: 3px; }
+.contact-page--useful .contact-copy-status { min-height: 1.4rem; max-width: 36rem; padding-top: 0.35rem; color: #37536d; font-size: 0.75rem; line-height: 1.5; }
+.contact-page--useful .contact-professional-links { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0.15rem 1.3rem; margin-top: 0.15rem; }
+.contact-page--useful .contact-professional-links a { display: inline-flex; min-height: 2.75rem; align-items: center; color: #264f74; font-size: 0.9rem; text-decoration: underline; text-underline-offset: 0.2em; }
+.contact-page--useful #privacy { margin-top: 1.2rem; }
+@media (max-width: 767px) {
+  .portfolio-stage.is-contact-stage #contact.contact-page--useful { padding-top: calc(env(safe-area-inset-top, 0px) + 5rem); }
+  .contact-page--useful .contact-expression { height: clamp(11.5rem, 50vw, 14rem); margin-block: 0.6rem 0.8rem; }
+  .contact-page--useful .contact-purpose p { font-size: 0.93rem; }
+}
+@media (min-width: 641px) { .contact-page--useful .contact-headline-cutout-layer-desktop { display: block; } .contact-page--useful .contact-headline-cutout-layer-mobile { display: none; } }
+@media (max-width: 640px) { .contact-page--useful .contact-headline-cutout-layer-desktop { display: none; } .contact-page--useful .contact-headline-cutout-layer-mobile { display: block; } }

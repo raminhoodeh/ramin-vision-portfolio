@@ -27,6 +27,7 @@ export type AiRaminConversationSnapshot<Message, Mode, RequestType> = Initial<Me
   prompt: string;
   isSending: boolean;
   chatError: string | null;
+  failedRequest: { message: Message; selectedMode: Mode; selectedRequestType: RequestType } | null;
 };
 type Reply<Message, Mode, RequestType> = {
   message: Message;
@@ -45,6 +46,7 @@ export function createAiRaminConversation<Message extends AiRaminConversationMes
   let settingsRevision = 0;
   let suggestionsRevision = 0;
   let pendingController: AbortController | null = null;
+  let cancelledByVisitor = false;
 
   const boundMessage = (message: Message): Message => {
     const bounded = { ...message, content: message.content.slice(0, AI_RAMIN_SESSION_LIMITS.messageChars) };
@@ -76,6 +78,7 @@ export function createAiRaminConversation<Message extends AiRaminConversationMes
     prompt: '',
     isSending: false,
     chatError: null,
+    failedRequest: null,
   };
   const publish = (patch: Partial<Snapshot>) => {
     if (Object.entries(patch).every(([key, value]) => Object.is(snapshot[key as keyof Snapshot], value))) return;
@@ -107,12 +110,20 @@ export function createAiRaminConversation<Message extends AiRaminConversationMes
     publish({
       messages: boundMessages(initial.messages), prompt: '', isSending: false,
       chatError: null, isSuggestionsOpen: initial.isSuggestionsOpen,
+      failedRequest: null,
     });
+  };
+
+  const cancelRequest = () => {
+    if (!pendingController || !snapshot.isSending) return;
+    cancelledByVisitor = true;
+    pendingController.abort(new Error('Request cancelled. You can retry or edit your question.'));
   };
 
   const runRequest = async (
     userMessage: Message,
     request: (signal: AbortSignal) => Promise<Reply<Message, Mode, RequestType>>,
+    context?: { selectedMode?: Mode; selectedRequestType?: RequestType; retry?: boolean },
   ): Promise<AiRaminRequestOutcome> => {
     if (snapshot.isSending) return 'busy';
     const requestGeneration = ++generation;
@@ -120,7 +131,10 @@ export function createAiRaminConversation<Message extends AiRaminConversationMes
     const requestSuggestionsRevision = suggestionsRevision;
     const controller = new AbortController();
     pendingController = controller;
-    publish({ messages: boundMessages([...snapshot.messages, userMessage]), prompt: '', chatError: null, isSending: true, isSuggestionsOpen: false });
+    cancelledByVisitor = false;
+    const requestContext = { message: boundMessage(userMessage), selectedMode: context?.selectedMode ?? snapshot.selectedMode, selectedRequestType: context?.selectedRequestType ?? snapshot.selectedRequestType };
+    const messages = snapshot.messages.some((message) => message.id === userMessage.id) ? snapshot.messages : [...snapshot.messages, userMessage];
+    publish({ messages: boundMessages(messages), prompt: context?.retry && snapshot.prompt !== userMessage.content ? snapshot.prompt : '', chatError: null, failedRequest: null, isSending: true, isSuggestionsOpen: false });
     let onAbort = () => {};
     const cancelled = new Promise<never>((_resolve, reject) => {
       onAbort = () => reject(controller.signal.reason instanceof Error ? controller.signal.reason : new Error('Request cancelled.'));
@@ -134,7 +148,8 @@ export function createAiRaminConversation<Message extends AiRaminConversationMes
       });
       const reply = await Promise.race([work, cancelled]);
       if (requestGeneration !== generation) return 'cancelled';
-      const settingsUnchanged = settingsRevision === requestSettingsRevision;
+      const settingsUnchanged = settingsRevision === requestSettingsRevision && (!context?.retry ||
+        snapshot.selectedMode === requestContext.selectedMode && snapshot.selectedRequestType === requestContext.selectedRequestType);
       publish({
         messages: boundMessages([...snapshot.messages, reply.message]),
         isSending: false,
@@ -145,8 +160,11 @@ export function createAiRaminConversation<Message extends AiRaminConversationMes
       return 'success';
     } catch (error) {
       if (requestGeneration !== generation) return 'cancelled';
-      publish({ isSending: false, chatError: (error instanceof Error ? error.message : 'AI Ramin could not answer that yet.').slice(0, 1_000) });
-      return 'unavailable';
+      publish({ isSending: false, chatError: (error instanceof Error ? error.message : 'AI Ramin could not answer that yet.').slice(0, 1_000),
+        failedRequest: requestContext,
+        prompt: snapshot.prompt || userMessage.content.slice(0, AI_RAMIN_SESSION_LIMITS.draftChars),
+      });
+      return cancelledByVisitor ? 'cancelled' : 'unavailable';
     } finally {
       clearTimeout(timeout);
       controller.signal.removeEventListener('abort', onAbort);
@@ -158,6 +176,6 @@ export function createAiRaminConversation<Message extends AiRaminConversationMes
     getSnapshot: () => snapshot,
     subscribe: (listener: () => void) => { listeners.add(listener); return () => { listeners.delete(listener); }; },
     setPrompt, setSelectedMode, setSelectedRequestType, setIsSuggestionsOpen, setChatError,
-    runRequest, clear,
+    runRequest, cancelRequest, clear,
   };
 }

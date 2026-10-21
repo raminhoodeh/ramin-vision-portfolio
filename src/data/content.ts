@@ -8,6 +8,7 @@ import { experienceEntries } from './experience';
 import { teachingWritingItems } from './teaching';
 import { aiProductCourseEvidence, disxTalkEvidence, productCourseEvidence } from './teachingEvidence';
 import { homepagePositioning } from './homepage';
+import { resourceOffers, bonusResourceCopy } from './resources';
 import aiNativeProductOsSlideUrl from '../../thoughts-section/courses/ai-native-product-os-light-mode.jpg';
 
 export const assetRequests = [
@@ -872,7 +873,7 @@ const thoughtTalks = [
         {
           label: 'The imposter fix',
           body:
-            'At every new company, I felt like an imposter - there was no formal process for this job. So I wrote one. The Product Innovation Process has since been adopted by start-ups, SMEs, and large corporates to build products without me in the room.',
+            'At every new company, I felt like an imposter - there was no formal process for this job. So I wrote one. The Product Innovation Process became a course and a reusable process document for others to adapt.',
         },
       ],
       quote: 'Son... just think about the end result.',
@@ -939,13 +940,13 @@ const thoughtCourses = [
     courseLink: aiProductCourseEvidence.udemy.href,
     media: [thoughtAssetSources.courses.aiProductManager],
     positioning:
-      'The successor to the deterministic Product Innovation Process: old stage-gates become a loop because AI systems are probabilistic.',
+      'Builds on the Product Innovation Process with a loop for evaluating generative behaviour; risk-dependent checks and release gates still matter.',
     framework: {
       name: 'AI-Native Product OS',
       loop: ['Talk', 'Decide', 'Build', 'Observe', 'Iterate'],
       stack: ['Model', 'Context', 'Orchestration', 'Governance', 'Human'],
       durableClaim:
-        'Models change fast, but the stack gives every future model, tool, or workflow a permanent shelf in your head.',
+        'The Stack gives me a stable place to examine model, context, orchestration, governance and human choices, while remaining open to revision.',
     },
     includedAssets: [
       'Installable AI-Native Product OS',
@@ -985,7 +986,7 @@ const thoughtCourses = [
     courseLink: 'https://www.udemy.com/course/the-fastest-way-to-become-a-product-manager/',
     media: [thoughtAssetSources.courses.productInnovationThumbnail, thoughtAssetSources.courses.productInnovationMockup],
     positioning:
-      'A deterministic-era product operating system for aligning cross-functional teams around one vision, one process, and one source of truth.',
+      'A product-development foundation for aligning cross-functional teams around a shared vision, process and source of truth.',
     framework: {
       name: 'Product Innovation Process',
       loop: ['Discovery', 'Product Design', 'Alpha', 'Beta', 'Live'],
@@ -1259,12 +1260,12 @@ const workExperienceData = [
       'Perkbox and Vivup combined to form an employee wellbeing, benefits, rewards, and engagement platform for employers, HR teams, and their employees.',
     industryTag: 'Employee Benefits SaaS',
     industryTags: ['Employee Benefits SaaS'],
-    productsWorkedOn: ['Highfive Recognition App', 'FamilyCare'],
+    productsWorkedOn: ['Highfive Recognition App', 'Family Pay childcare benefits'],
     productDetails: [
       {
-        name: 'Highfive Recognition App, FamilyCare',
+        name: 'Highfive Recognition App, Family Pay childcare benefits',
         description:
-          'The Vivup Highfive Recognition and Reward app enables continuous appreciation through a simple recognition experience aligned with company values. FamilyCare is the first platform in the UK that allows employees to use salary sacrifice to pay for childcare costs.',
+          'The Vivup Highfive Recognition and Reward app supports employee recognition. The supplied 2026 career record calls the childcare benefits product Family Pay: a nursery-payment journey connecting parents, employers, payroll and childcare providers through salary sacrifice.',
       },
     ],
     mainAchievements: [
@@ -1300,6 +1301,7 @@ const workExperienceData = [
       sourceNotes: 'Only the GroupM logo asset is present; replace with WPP Media logo when supplied.',
     },
     companyName: 'WPP Media',
+    fullCompanyName: 'GroupM / WPP Media',
     previousCompanyName: 'GroupM',
     productVideo: companyVideoPath.groupm,
     productVideoAsset: {
@@ -1323,7 +1325,7 @@ const workExperienceData = [
       {
         name: 'Carbon Calculator',
         description:
-          "The media sector's most widely used carbon calculation tool, comparing the CO2 emissions of over 7 physical and digital formats and providing recommendations on advertisement reach against environmental impact for global brands.",
+          'A media carbon calculation tool comparing emissions across physical and digital formats and helping teams weigh advertisement reach against environmental impact.',
       },
       {
         name: 'Product Innovation Process',
@@ -1332,12 +1334,12 @@ const workExperienceData = [
       },
     ],
     mainAchievements: [
-      "Translated EY's carbon emissions methodology with over 300+ dataset variables and 20+ climate APIs into product specifications for a world-first media carbon calculator.",
-      'Carbon Calculator measured the environmental impact of GBP 1bn+ of media investment in 2022, remaining the most widely used calculator in the media sector.',
+      "Translated EY's carbon emissions methodology with 300+ dataset variables into product specifications for a media carbon calculator.",
+      'Career record reports that the Carbon Calculator assessed the environmental impact of GBP 1bn+ of media investment in 2022. This was media investment assessed, rather than revenue generated.',
     ],
     impact: [
-      "Translated EY's carbon emissions methodology with over 300+ dataset variables and 20+ climate APIs into product specifications for a world-first media carbon calculator.",
-      'Carbon Calculator measured the environmental impact of GBP 1bn+ of media investment in 2022, remaining the most widely used calculator in the media sector.',
+      "Translated EY's carbon emissions methodology with 300+ dataset variables into product specifications for a media carbon calculator.",
+      'Career record reports that the Carbon Calculator assessed the environmental impact of GBP 1bn+ of media investment in 2022. This was media investment assessed, rather than revenue generated.',
     ],
     processesIntroducedManagerial: [
       "Product Innovation Process: managed product strategy, mentored junior PMs and engineers, and defined the product division of WPP Media's Global Innovation Group.",
@@ -1448,22 +1450,22 @@ const workExperienceData = [
       "Ordnance Survey is Britain's Geospatial Intelligence agency, maintaining trusted geographic data, maps, APIs, and location products used by government, business, and the public.",
     industryTag: 'Geospatial',
     industryTags: ['Geospatial', 'Climate'],
-    productsWorkedOn: ['OS Maps API on Microsoft Power Platform', 'Sustainability applications of geospatial data'],
+    productsWorkedOn: ['OS Places connector on Microsoft Power Platform', 'Sustainability applications of geospatial data'],
     productDetails: [
       {
-        name: 'OS Maps API on Microsoft Power Platform, Sustainability applications of geospatial data',
+        name: 'OS Places connector on Microsoft Power Platform; sustainability applications of geospatial data',
         description:
           'The OS Places API provides a detailed view of an address and its life cycle. Created new product concepts using geospatial intelligence for positive impact across energy, infrastructure, defence, and space sector clients.',
       },
     ],
     mainAchievements: [
-      "Defined and launched the first geospatial API product on Microsoft's Power Platform.",
+      "Defined and launched the OS Places connector on Microsoft Power Platform.",
       'Increased geospatial data utilisation by 30% across 2 key accounts by Q3 2021.',
       'Led twelve discovery workshops for client stakeholders, validating 3 product concepts approved for further investment.',
       "Improved energy clients' ability to forecast carbon impacts on asset valuations by 25% within 6 months.",
     ],
     impact: [
-      "Defined and launched the first geospatial API product on Microsoft's Power Platform.",
+      "Defined and launched the OS Places connector on Microsoft Power Platform.",
       'Increased geospatial data utilisation by 30% across 2 key accounts by Q3 2021.',
       'Led twelve discovery workshops for client stakeholders, validating 3 product concepts approved for further investment.',
       "Improved energy clients' ability to forecast carbon impacts on asset valuations by 25% within 6 months.",
@@ -1508,7 +1510,7 @@ const workExperienceData = [
     companyLink: 'http://bit.ly/urgentemwebsite',
     location: 'London, UK',
     monthYearRangeWorked: 'Oct 2019 - Nov 2020',
-    jobTitle: 'Product Manager',
+    jobTitle: 'Product Manager · contract',
     companyDescription:
       'Urgentem was a London climate data and analytics company, now acquired by ICE, providing emissions data and climate risk analytics for financial institutions and investors.',
     industryTag: 'Fintech',
@@ -1523,17 +1525,17 @@ const workExperienceData = [
     ],
     mainAchievements: [
       'Co-managed development and start-up launch of [now acquired] Element6, a climate risk platform for investors.',
-      'Helped reduce climate-related risk by 20% across client portfolios totalling GBP 900m in AUM.',
+      'Supported climate-risk analysis across client portfolios representing GBP 900m AUM in the supplied 2026 career record.',
       'Featured in the Financial Times.',
       'Improved Demo-to-Buy conversion rate by 30% over 4 months and reduced quarterly churn by 25%.',
-      'Increased ratio of story point development to feature usage by 25% over 8 months.',
+      'Used feature-uptake analytics to remove three underused features and prioritise development.',
     ],
     impact: [
       'Co-managed development and start-up launch of [now acquired] Element6, a climate risk platform for investors.',
-      'Helped reduce climate-related risk by 20% across client portfolios totalling GBP 900m in AUM.',
+      'Supported climate-risk analysis across client portfolios representing GBP 900m AUM in the supplied 2026 career record.',
       'Featured in the Financial Times.',
       'Improved Demo-to-Buy conversion rate by 30% over 4 months and reduced quarterly churn by 25%.',
-      'Increased ratio of story point development to feature usage by 25% over 8 months.',
+      'Used feature-uptake analytics to remove three underused features and prioritise development.',
     ],
     processesIntroducedManagerial: [
       'Sprint planning and SCRUM setup: introduced sprint planning to the early founding team to prioritise and implement agile and prioritisation best practices.',
@@ -1576,7 +1578,7 @@ const workExperienceData = [
     companyLink: 'http://www.deity.ai/',
     location: 'London, UK',
     monthYearRangeWorked: 'Jul 2017 - Oct 2019',
-    jobTitle: 'Product Manager',
+    jobTitle: 'Product Manager · part-time contract',
     companyDescription:
       'Deity AI was a London information-services startup building technology for social discovery, connecting people, places, and partner businesses through data-led digital and physical experiences.',
     industryTag: 'Social Networking',
@@ -1652,13 +1654,13 @@ const workExperienceData = [
       'Co-authored European Commission-funded research on the social risks and benefits of new solar product lifecycles.',
       'Assessed socio-economic value and value-chain benefits created by new solar product innovation in Europe.',
       'Identified satellite-data use cases for environmental risk detection, including detecting copper mines at risk of leaking waste into waterways.',
-      'Improved partner RepRisk product offering revenue by 10% over 6 months.',
+      'Contributed use cases to partner RepRisk; the career record reports 10% product revenue growth over six months, with shared commercial attribution.',
     ],
     impact: [
       'Co-authored European Commission-funded research on the social risks and benefits of new solar product lifecycles.',
       'Assessed socio-economic value and value-chain benefits created by new solar product innovation in Europe.',
       'Identified satellite-data use cases for environmental risk detection, including detecting copper mines at risk of leaking waste into waterways.',
-      'Improved partner RepRisk product offering revenue by 10% over 6 months.',
+      'Contributed use cases to partner RepRisk; the career record reports 10% product revenue growth over six months, with shared commercial attribution.',
     ],
     processesIntroducedManagerial: [detailNeeded()],
     businessModel: ['B2B'],
@@ -1703,22 +1705,22 @@ const workExperienceData = [
       'Tesla is an automotive and clean-energy company building electric vehicles, energy storage, solar, charging, and supporting software around the transition to sustainable energy.',
     industryTag: 'Energy',
     industryTags: ['Energy', 'Automotive'],
-    productsWorkedOn: ['Tesla app 3.23 Power Flow', 'Tesla Model S', 'Tesla Powerwall', 'Tesla / SpaceX marketing campaign'],
+    productsWorkedOn: ['Tesla Model S', 'Tesla Powerwall', 'Owner education and marketing'],
     productDetails: [
       {
-        name: 'Tesla app 3.23 Power Flow',
+        name: 'Model S and Powerwall customer experience',
         description:
-          'Tesla app update introducing Power Flow, allowing users to see whether home electricity is coming from the grid, solar installation, or Powerwall, and set preferences to optimise for energy independence, outage protection, or savings.',
+          'Customer education, sales and Powerwall market work. The available career evidence does not establish software ownership or a specific contribution to a Power Flow app release.',
       },
     ],
     mainAchievements: [
-      "Worked around Tesla's energy product experience, including Power Flow visibility for grid, solar, and Powerwall energy usage.",
+      'Worked on customer-facing Model S and Powerwall experiences, energy-product education and sales.',
       'Ideated and initiated a Tesla / SpaceX marketing campaign through direct communication with the CEO, leading to more than double the attendance of Owners Orientation events in Q1-Q3 2018.',
       'Averaged 120% performance on Tesla Model S sales target from Q3 2017 to Q2 2018.',
       'Sold the first Tesla Powerwall to a residential customer in the UK.',
     ],
     impact: [
-      "Worked around Tesla's energy product experience, including Power Flow visibility for grid, solar, and Powerwall energy usage.",
+      'Worked on customer-facing Model S and Powerwall experiences, energy-product education and sales.',
       'Ideated and initiated a Tesla / SpaceX marketing campaign through direct communication with the CEO, leading to more than double the attendance of Owners Orientation events in Q1-Q3 2018.',
       'Averaged 120% performance on Tesla Model S sales target from Q3 2017 to Q2 2018.',
       'Sold the first Tesla Powerwall to a residential customer in the UK.',
@@ -1936,7 +1938,7 @@ const thoughtFoundationalThinking = {
   title: 'How I approach life',
   stageQuestion: 'How can I feel clear, overcome over-information, and stay focused in a noisy world?',
   intro:
-    'The quality of a decision can be measured by the degree to which it achieved the goal it set out to do. To get where you want to go, you must first know where you are. To fulfil your potential, you must set a vision representing the maximum possible achievement out of your current and future capabilities. This requires knowledge of yourself, your capabilities, and your place in the world - which is exactly what metaphysics is. The Stratetree is that inquiry made operational for product.',
+    'I use these questions to connect what I have experienced with what I value and the direction I choose. The Stratetree makes that reasoning easier to inspect. It remains a personal working model: evidence can change the goal, the assumptions behind it or the next action.',
   metaphysicsBridge: {
     eyebrow: 'Metaphysics and product judgment',
     title: 'Clarity starts by knowing where you are.',
@@ -1952,7 +1954,7 @@ const thoughtFoundationalThinking = {
       {
         label: 'What can I become?',
         body:
-          'Fulfilment depends on setting a vision that reflects the maximum possible achievement of present and future capabilities.',
+          'I ask which direction feels meaningful and feasible, then revise that view as I learn about my capabilities and constraints.',
       },
       {
         label: 'What should I do?',
@@ -2081,7 +2083,7 @@ const thoughtFoundationalThinking = {
         { label: 'Tactics / What', detail: 'The concrete actions that make the strategy real.' },
       ],
       application:
-        'This is why I do not see my work as isolated output. Each creation records how experience became judgment.',
+        'I use this as a working method, open to revision: customer evidence, market conditions and failed assumptions can change the vision or strategy as well as the next action.',
     },
     {
       id: 'reality',
@@ -2090,9 +2092,9 @@ const thoughtFoundationalThinking = {
       role: 'How metaphysics becomes clarity',
       sourceLabel: 'Framework of Reality',
       thesis:
-        'A metacognitive approach to metaphysics: organize existential knowledge into one practical frame for meaning, values, purpose, principles, and presence.',
+        'My way of examining meaning, values, purpose, principles and presence through a small set of existential questions.',
       body:
-        'Framework of Reality applies the same strategic structure to life itself. It takes scattered religious, philosophical, and spiritual information and turns it into a clear map for knowing who you are, why you exist, how to act, and what to do in the present moment.',
+        'Framework of Reality is how I organise my personal reading and enquiry into meaning. It gives me questions to examine rather than a complete account of religion, philosophy or spirituality.',
       sequence: [
         { label: 'Meaning', detail: 'Look back at the experiences where life felt meaningful, connected, or growth-producing.' },
         { label: 'Values', detail: 'Extract the values implied by those meaningful experiences.' },
@@ -2113,7 +2115,7 @@ const thoughtFoundationalThinking = {
         aiNativeProductOsSource?.dek ??
         'The product operating system changes when the material changes from deterministic software to probabilistic AI.',
       body:
-        'The AI-Native Product OS turns the same clarity instinct into architecture. The old linear product process worked for deterministic software. Probabilistic systems require a loop, a context layer, governance, orchestration, and stronger human judgment.',
+        'I use the AI-Native Product OS to organise model, context, orchestration, governance and human decisions. Its loop complements discovery and risk-dependent release gates; it does not make established product discipline obsolete.',
       sequence: [
         { label: 'Talk', detail: 'Human plus context: ask, frame, and load what the model needs to see.' },
         { label: 'Decide', detail: 'Human plus governance: make judgment calls against explicit standards.' },
@@ -2291,12 +2293,12 @@ const thoughtWorkIntegration = {
       index: '01',
       label: 'Product Innovation Process - giving teams a single source of truth',
       eyebrow: 'Process',
-      summary: 'Used by start-ups, SMEs, and large corporates - without me in the room.',
+      summary: 'A process document and course shaped by my product work.',
       body: [
         'The PIP started as a 100-page document I wrote for myself because there was no formal process for product management. I felt like an imposter at every new company, and realised everyone else was also improvising. So I distilled best practices from OS, GroupM, and Vivup into one step-by-step guide.',
-        'At GroupM, the process shaped how the global innovation team built what became the most widely used carbon calculator in the media sector. At OS, it ran alongside geospatial product work with UK and European Space Agency ambassadors. It has since been adopted independently by start-ups, SMEs, and large corporates - to build products without me being there.',
+        'At GroupM, the process shaped how the global innovation team built a media carbon calculator. At OS, it ran alongside geospatial product work with UK and European Space Agency ambassadors. I later packaged the process as a course and a reusable document; independent organisational adoption is not established by this portfolio.',
       ],
-      stat: 'Most widely used carbon calculator in the UK media sector - built at GroupM',
+      stat: '£1bn of media investment assessed at GroupM in 2022 — reported career figure',
       link: productManagementCourseSource?.href ?? linkNeeded(),
     },
     {
@@ -2308,7 +2310,7 @@ const thoughtWorkIntegration = {
         'Building Selfware introduced me to the discipline I now call AI-native development: treating the model as a collaborator with a known failure profile, not a magic box. I learned to read diffs, write evaluation criteria, and own the technical specification at the level where product decisions and engineering decisions converge.',
         'At Bayut, that translated into public-safe AI property-search work: shaping conversational search, recommendations, and insight features around model selection, evaluation criteria, guardrails, MCP-style tool integration, and context boundaries. The product decision was not simply "add chat"; it was to define where the model could reason, where retrieval and tools had to ground the answer, where the user needed confirmation, and how PMs could move from idea to workable prototype without losing engineering discipline.',
       ],
-      stat: 'AI-Native Product OS introduced to the wider Bayut product team',
+      stat: 'My applied-AI product practice; internal team adoption is not claimed here',
       link: 'https://www.bayut.com/',
     },
     {
@@ -2461,34 +2463,10 @@ export const portfolioContent = {
     ],
   },
   bonus: {
-    hook: 'Congratulations, you\'ve reached the bonus section',
-    body: 'As a reward for making it this far, click the magical rock 3 times to reveal 4 incredible gifts…',
-    trigger: {
-      element: '3D webGL exploding rock element from the original Ventures website scrape',
-      interaction: 'Three clicks to explode and reveal gifts',
-    },
-    gifts: [
-      {
-        title: '100% coupon code for new AI PM Course',
-        detail: 'Use the code FREEPM',
-        link: 'https://www.udemy.com/course/from-product-manager-to-ai-product-manager/?couponCode=FREEPM',
-      },
-      {
-        title: '30-minute AI Product consultation',
-        detail: 'Google Meet link',
-        link: 'https://calendar.app.google/ritTa9aSxXNpz5Df8',
-      },
-      {
-        title: 'Lifetime membership to Dreamsea dream interpretation app',
-        detail: 'Set your username as "iloverazin" to activate',
-        link: 'https://apps.apple.com/us/app/dreamsea/id6761101193',
-      },
-      {
-        title: 'AI Tools Database',
-        detail: 'An organised list of over 350 AI tools, categorised by use case',
-        link: 'https://docs.google.com/spreadsheets/d/16MHU2CgFHK4LoyvgPa9jf3lIw2udxSDESD0UZ4A_lKU/edit?usp=sharing',
-      },
-    ],
+    hook: bonusResourceCopy.hook,
+    body: bonusResourceCopy.body,
+    trigger: { element: 'Optional interactive rock', interaction: 'Three clicks reveal the same resources linked directly on /resources' },
+    gifts: resourceOffers,
   },
   aiRaminChatbot: {
     floatingLauncher: true,

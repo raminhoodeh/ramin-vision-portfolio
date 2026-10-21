@@ -1,0 +1,29 @@
+.resources-page {
+  --resource-ink: #23394e;
+  box-sizing: border-box;
+  min-height: 100%;
+  padding: clamp(5rem, 10vh, 7rem) clamp(1.2rem, 5vw, 5rem) calc(var(--portfolio-dock-clearance, 6rem) + 3rem);
+  background: rgba(247, 250, 252, 0.96);
+  color: var(--resource-ink);
+}
+.resources-page > * { max-width: 72rem; margin-inline: auto; }
+.resources-page__eyebrow, .resources-page__platform { font-size: 0.75rem; font-weight: 650; letter-spacing: 0.06em; }
+.resources-page__eyebrow { text-transform: uppercase; }
+.resources-page h1 { max-width: 18ch; margin-block: 1rem; font-size: clamp(2.1rem, 5vw, 4.6rem); line-height: 1.08; letter-spacing: -0.045em; font-weight: 600; }
+.resources-page h2 { margin: 0 0 1rem; font-size: clamp(1.35rem, 2.8vw, 2rem); line-height: 1.25; letter-spacing: -0.025em; font-weight: 650; }
+.resources-page h3 { margin: 0; font-size: 1.12rem; line-height: 1.4; font-weight: 650; }
+.resources-page p { max-width: 68ch; margin-block: 0.8rem; color: #42596e; font-size: 0.95rem; line-height: 1.75; }
+.resources-page__section { margin-top: clamp(2.6rem, 6vw, 4rem); }
+.resources-page__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+.resources-page__grid--offers { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.resources-page__card { display: flex; min-width: 0; flex-direction: column; align-items: flex-start; padding: 1.35rem; border: 1px solid #ccd7e1; border-radius: 1.3rem; background: rgba(255, 255, 255, 0.78); }
+.resources-page__card p { flex-grow: 1; }
+.resources-page__card .resources-page__platform { flex-grow: 0; margin-top: 0; font-size: 0.73rem; }
+.resources-page a { display: inline-flex; align-items: center; min-height: 2.75rem; gap: 0.4rem; color: #244e75; font-size: 0.9rem; line-height: 1.5; text-decoration: underline; text-underline-offset: 0.2em; overflow-wrap: anywhere; }
+.resources-page a:hover { color: #0b355b; }
+.resources-page a:focus-visible { outline: 2px solid #365f85; outline-offset: 4px; border-radius: 0.15rem; }
+.resources-page__actions { display: flex; flex-wrap: wrap; gap: 0.2rem 1rem; }
+.resources-page__related { display: flex; flex-wrap: wrap; align-items: center; gap: 0.1rem 0.6rem; }
+.resources-page__optional { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid #ccd7e1; }
+@media (max-width: 800px) { .resources-page__grid { grid-template-columns: 1fr; } .resources-page__grid--offers { grid-template-columns: 1fr; } }
+@media print { .resources-page { padding: 0; background: white; } .resources-page__grid { grid-template-columns: 1fr; } .resources-page__card { break-inside: avoid; } }

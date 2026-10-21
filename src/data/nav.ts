@@ -20,3 +20,15 @@ export const navLinks = [
 ] as const satisfies readonly NavLink[];
 
 export const roles = ['Manager', 'Teacher', 'Engineer'] as const;
+
+// Visitor destinations are independent of the seven legacy section identifiers.
+export const portfolioDestinations = [
+  { label: 'Home', target: 'hero', href: '/', icon: 'intro' },
+  { label: 'Work', target: 'experience-education', href: '/experience-education', icon: 'work' },
+  { label: 'Products', target: 'projects', href: '/projects', icon: 'projects' },
+  { label: 'Teaching & speaking', target: 'thoughts', href: '/thoughts', icon: 'thoughts' },
+  { label: 'About & writing', target: 'about', href: '/about', icon: 'intro' },
+  { label: 'Contact', target: 'contact', href: '/contact', icon: 'contact' },
+  { label: 'Resources', target: 'resources', href: '/resources', icon: 'bonus', utility: true },
+  { label: 'AI Ramin', target: 'ai-ramin', href: '/ai-ramin', icon: 'ai', utility: true },
+] as const;

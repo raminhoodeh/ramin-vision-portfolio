@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { portfolioContent } from '../data/portfolio';
@@ -21,6 +21,35 @@ import { ViewportVideo } from '../components/ViewportVideo';
 import { preferredScrollBehavior } from '../lib/scroll';
 import { professionalStories } from '../data/professionalStories';
 import { ProfessionalStories } from './ProfessionalStories';
+import { getWorkEvidence } from '../data/workEvidence';
+
+export type MobileWorkReturnState = {
+  companyName: string;
+  stage: HTMLElement;
+  scrollTop: number;
+  scrollLeft: number;
+};
+
+export function captureMobileWorkReturn(section: HTMLElement | null, companyName: string): MobileWorkReturnState | null {
+  const stage = section?.closest<HTMLElement>('.portfolio-stage');
+  return stage ? { companyName, stage, scrollTop: stage.scrollTop, scrollLeft: stage.scrollLeft } : null;
+}
+
+export function restoreMobileWorkReturn(list: HTMLElement, saved: MobileWorkReturnState): boolean {
+  if (!list.isConnected || !saved.stage.isConnected) return false;
+  const card = [...list.querySelectorAll<HTMLElement>('[data-work-index]')]
+    .find((item) => item.dataset.workCompany === saved.companyName);
+  if (!card) return false;
+  const previousBehavior = saved.stage.style.scrollBehavior;
+  saved.stage.style.scrollBehavior = 'auto';
+  try {
+    saved.stage.scrollTo({ top: saved.scrollTop, left: saved.scrollLeft, behavior: 'instant' });
+    try { card.focus({ preventScroll: true }); } catch { card.focus(); }
+    // A browser without preventScroll support must also keep the saved position.
+    saved.stage.scrollTo({ top: saved.scrollTop, left: saved.scrollLeft, behavior: 'instant' });
+  } finally { saved.stage.style.scrollBehavior = previousBehavior; }
+  return true;
+}
 
 function CompanyLogoMark({
   logo,
@@ -127,9 +156,11 @@ function WorkListBlock({
 
 function WorkPublicDetails({ entry, compact = false }: { entry: ProductManagementWorkExperience; compact?: boolean }) {
   const details = getWorkPublicDetails(entry);
+  const evidence = getWorkEvidence(entry.companyName);
 
   return (
     <>
+      {evidence ? <div className="rounded-2xl bg-white/30 p-4"><p className="text-sm font-semibold text-text-primary">{evidence.summary}</p><p className="work-scope-note">{evidence.scopeNote}</p></div> : null}
       <WorkListBlock
         label={details.achievements.length ? 'Main achievements' : 'Public remit'}
         items={details.achievements.length ? details.achievements : details.remit}
@@ -262,12 +293,14 @@ function ProductManagementWorkCard({
   const location = publicWorkValue(entry.location);
   const clients = publicWorkValue(entry.customerClientTypesAndUserNumbers);
   const decisionStory = professionalStories.find((story) => story.companyNames.some((name) => name === entry.companyName));
-  const collapsedSignal = decisionStory?.highlight ?? (entry.companyName === 'Bayut' ? getWorkPublicDetails(entry).remit[0] : undefined);
+  const evidence = getWorkEvidence(entry.companyName);
+  const collapsedSignal = decisionStory?.highlight ?? evidence?.summary ?? getWorkPublicDetails(entry).achievements[0] ?? getWorkPublicDetails(entry).remit[0];
 
   return (
     <motion.article
       layout
       data-work-index={index}
+      data-work-company={entry.companyName}
       role="button"
       tabIndex={0}
       aria-expanded={isActive}
@@ -333,7 +366,7 @@ function ProductManagementWorkCard({
 
       {!isActive && collapsedSignal ? (
         <div className="work-collapsed-signal">
-          <span>{decisionStory ? 'Reported outcome' : 'Public remit'}</span>
+          <span>{evidence?.label ?? 'Work summary'}</span>
           <p>{collapsedSignal}</p>
         </div>
       ) : null}
@@ -349,6 +382,7 @@ function ProductManagementWorkCard({
             className="overflow-hidden"
           >
             <div className="mt-3 grid gap-2 border-t border-stroke/50 pt-3">
+              <WorkPublicDetails entry={entry} compact />
               {location ? (
                 <div className="grid grid-cols-[5.5rem_minmax(0,1fr)] items-baseline gap-3 rounded-[0.95rem] bg-white/20 px-3 py-2">
                   <p className="text-[0.58rem] uppercase tracking-[0.16em] text-muted">Location</p>
@@ -362,9 +396,6 @@ function ProductManagementWorkCard({
                 </div>
               ) : null}
 
-              <div className="grid gap-2">
-                <WorkPublicDetails entry={entry} compact />
-              </div>
             </div>
           </motion.div>
         ) : null}
@@ -471,21 +502,40 @@ function MobileWorkDetail({
 }) {
   const location = publicWorkValue(entry.location);
   const clients = publicWorkValue(entry.customerClientTypesAndUserNumbers);
+  const detailRef = useRef<HTMLElement | null>(null);
+  const closeRef = useRef<HTMLButtonElement | null>(null);
+
+  useLayoutEffect(() => {
+    if (!window.matchMedia('(max-width: 767px)').matches) return;
+    const section = detailRef.current?.closest<HTMLElement>('#experience-education');
+    const stage = section?.closest<HTMLElement>('.portfolio-stage');
+    if (section && stage) stage.scrollTo({ top: section.offsetTop, left: 0, behavior: 'instant' });
+    closeRef.current?.focus({ preventScroll: true });
+  }, [entry.companyName]);
 
   return (
     <motion.article
+      ref={detailRef}
       key={`${entry.companyName}-mobile-detail`}
       className="work-mobile-detail"
+      onKeyDownCapture={(event) => {
+        if (event.key !== 'Escape' || event.defaultPrevented || document.fullscreenElement) return;
+        if (!window.matchMedia('(max-width: 767px)').matches) return;
+        event.preventDefault();
+        event.stopPropagation();
+        onClose();
+      }}
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 12 }}
       transition={{ duration: 0.26, ease: [0.25, 0.1, 0.25, 1] }}
     >
-      <button type="button" className="work-mobile-detail-close" aria-label="Close work detail" onClick={onClose}>
+      <button ref={closeRef} type="button" className="work-mobile-detail-close" aria-label="Close work detail" onClick={onClose}>
         <span aria-hidden="true" />
       </button>
 
       <MobileWorkSummaryCard entry={entry} index={index} />
+      <WorkPublicDetails entry={entry} />
       <ProductVideoPreview entry={entry} isActive />
       <SelectedCompanyContextCard entry={entry} />
 
@@ -495,7 +545,6 @@ function MobileWorkDetail({
       </div>
 
       <WorkProductDetailsBlock entry={entry} />
-      <WorkPublicDetails entry={entry} />
     </motion.article>
   );
 }
@@ -751,7 +800,27 @@ export function ExperienceEducationSection() {
   const sectionRef = useRef<HTMLElement | null>(null);
   const educationCardRef = useRef<HTMLDivElement | null>(null);
   const mobileEducationCardRef = useRef<HTMLDivElement | null>(null);
+  const mobileWorkReturnRef = useRef<MobileWorkReturnState | null>(null);
+  const mobileRestoreFrameRef = useRef<number | null>(null);
   const previewEntry = activeWorkIndex === null ? null : companies[activeWorkIndex];
+
+  const restoreMobileWorkList = useCallback((list: HTMLDivElement | null) => {
+    if (mobileRestoreFrameRef.current !== null) window.cancelAnimationFrame(mobileRestoreFrameRef.current);
+    mobileRestoreFrameRef.current = null;
+    const saved = mobileWorkReturnRef.current;
+    if (!list || !saved) return;
+    // AnimatePresence(mode="wait") mounts the list after the detail exits.
+    mobileRestoreFrameRef.current = window.requestAnimationFrame(() => {
+      mobileRestoreFrameRef.current = null;
+      if (!window.matchMedia('(max-width: 767px)').matches) return;
+      if (restoreMobileWorkReturn(list, saved)) mobileWorkReturnRef.current = null;
+    });
+  }, []);
+
+  useEffect(() => () => {
+    if (mobileRestoreFrameRef.current !== null) window.cancelAnimationFrame(mobileRestoreFrameRef.current);
+    mobileWorkReturnRef.current = null;
+  }, []);
 
   const handleEducationToggle = () => {
     setIsEducationExpanded((current) => {
@@ -771,19 +840,6 @@ export function ExperienceEducationSection() {
   useEffect(() => {
     if (previewEntry) preloadWorkVideoForEntry(previewEntry, 'activate');
   }, [previewEntry]);
-
-  useEffect(() => {
-    if (activeWorkIndex === null || typeof window === 'undefined') return;
-    if (!window.matchMedia('(max-width: 767px)').matches) return;
-
-    requestAnimationFrame(() => {
-      const section = sectionRef.current;
-      const stage = section?.closest<HTMLElement>('.portfolio-stage');
-      if (!section || !stage) return;
-
-      stage.scrollTo({ top: section.offsetTop, left: 0, behavior: preferredScrollBehavior() });
-    });
-  }, [activeWorkIndex]);
 
   useEffect(() => {
     document.body.classList.toggle('work-certifications-expanded', isEducationExpanded);
@@ -868,6 +924,7 @@ export function ExperienceEducationSection() {
           ) : (
             <motion.div
               key="mobile-work-list"
+              ref={restoreMobileWorkList}
               className="grid gap-4"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -884,6 +941,7 @@ export function ExperienceEducationSection() {
                     index={index}
                     isActive={false}
                     onActivate={() => {
+                      mobileWorkReturnRef.current = captureMobileWorkReturn(sectionRef.current, entry.companyName);
                       setIsEducationExpanded(false);
                       setActiveWorkIndex(index);
                     }}

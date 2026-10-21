@@ -546,9 +546,9 @@ const THESIS_SECTIONS: ThesisSection[] = [
           <>
             <strong className="font-semibold">Bayut</strong> - <strong className="font-semibold">AI Product Manager</strong>{' '}
             <em>(Jan 2026 – Present).</em> One of MENA&rsquo;s leading property platforms. Building search,
-            recommendation, and conversational experiences on frontier models for a mass audience - underpinned by
-            model selection, eval suites, guardrails, and MCP. Rolled out the AI-Native Product OS across the product
-            team.
+            recommendation, and conversational product work. My public account focuses on problem framing,
+            model and context choices, evaluation, review boundaries and collaboration; employer-sensitive
+            implementation details and internal adoption are outside this account.
           </>
         ),
       },
@@ -570,6 +570,8 @@ const THESIS_SECTIONS: ThesisSection[] = [
           'The control boundary depends on the task: a low-risk draft and a high-value payment need different evidence, permissions and approval conditions.',
           'The presence of an evaluation suite, monitoring or a human approval step does not establish that a control works. Effectiveness requires task-specific tests, operational evidence and continuing review.',
           'Products demonstrate applications; course reception and speaking recognition demonstrate teaching and communication. None should be substituted for measured production quality or customer outcomes.',
+          'The model does not explain distribution, pricing, organisational incentives or every specialist engineering concern. Those need their own investigation rather than being forced into a diagram.',
+          'I would revise the categories or sequence if repeated cases were difficult to explain, if the method obscured an important risk, or if another approach led a team to better evidenced decisions with less overhead. Customer evidence and failed assumptions can change the higher-level strategy too.',
         ],
       },
       {

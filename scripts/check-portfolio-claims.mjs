@@ -9,7 +9,7 @@ import ts from 'typescript';
 const root = fileURLToPath(new URL('../', import.meta.url));
 const registryPath = path.join(root, 'docs/portfolio-claims.json');
 const day = 86_400_000;
-const requiredIds = ['course-product-udemy', 'course-ai-udemy', 'course-ai-coursera', 'work-bayut', 'work-side', 'work-vivup', 'framework-product-os', 'framework-metacognition', 'framework-pip', 'talk-disx', 'book-proposition', 'book-meaning-of-life', 'ai-ramin'];
+const requiredIds = ['course-product-udemy', 'course-ai-udemy', 'course-ai-coursera', 'work-bayut', 'work-side', 'work-vivup', 'work-groupm', 'work-cox', 'work-ordnance-survey', 'work-urgentem', 'work-deity', 'work-erm', 'work-tesla', 'resource-access', 'framework-product-os', 'framework-metacognition', 'framework-pip', 'talk-disx', 'book-proposition', 'book-meaning-of-life', 'ai-ramin'];
 
 export function authorMaintenanceDate(date = new Date()) {
   const parts = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Dubai', year: 'numeric', month: '2-digit', day: '2-digit' }).formatToParts(date);

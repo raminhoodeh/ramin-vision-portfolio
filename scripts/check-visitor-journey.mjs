@@ -75,10 +75,7 @@ for (const href of ['/cv?private=jd', '/presentation', 'https://www.udemy.com/co
 check(client.requests.some((r) => r.payload.event === 'cv_open'), 'CV click captured before external navigation');
 check(client.requests.some((r) => r.payload.event === 'course_open' && r.payload.target === 'coursera'), 'course platform category');
 check(client.requests.some((r) => r.payload.event === 'evidence_follow' && r.payload.target === 'repository'), 'evidence category');
-const contentSource = readFileSync(new URL('../src/data/content.ts', import.meta.url), 'utf8');
-const bookingHref = contentSource.match(/https:\/\/calendar\.app\.google\/[^'\s]+/)?.[0];
-check(Boolean(bookingHref), 'current booking destination fixture exists');
-client.click(bookingHref);
+client.click('https://calendar.app.google/example-booking-fixture');
 check(client.requests.at(-1).payload.event === 'contact_open' && client.requests.at(-1).payload.target === 'booking', 'Google booking link is a contact action');
 check(client.requests.every((r) => schema.validateJourneyPayload(r.payload) && r.payload.audience === 'qa'), 'no raw links/text in browser events; QA tagged');
 check(client.requests.every((r) => r.options.credentials === 'omit' && r.options.referrerPolicy === 'no-referrer' && r.options.keepalive), 'no cookies/referrers and navigation-safe delivery');

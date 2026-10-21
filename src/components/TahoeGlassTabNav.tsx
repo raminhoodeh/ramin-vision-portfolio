@@ -9,6 +9,7 @@ type NavLink = {
   target: string;
   href: string;
   icon?: NavIconName;
+  utility?: boolean;
 };
 
 type TahoeGlassTabNavProps = {
@@ -345,7 +346,7 @@ export function TahoeGlassTabNav({
       <TahoeGlassFilter id={filterId} />
       <span className="tahoe-glass-nav-lens" aria-hidden="true" />
       <div className="tahoe-glass-nav-tabs">
-        {navLinks.map((link) => {
+        {navLinks.map((link, index) => {
           const isActive = active === link.target;
 
           return (
@@ -355,6 +356,8 @@ export function TahoeGlassTabNav({
               aria-current={isActive ? 'page' : undefined}
               aria-label={link.menuLabel ?? link.label}
               data-target={link.target}
+              data-utility={link.utility ? 'true' : undefined}
+              data-utility-first={link.utility && !navLinks[index - 1]?.utility ? 'true' : undefined}
               className={`tahoe-glass-nav-tab ${isActive ? 'is-active' : ''}`}
               onPointerEnter={() => onNavIntent?.(link.target)}
               onFocus={() => onNavIntent?.(link.target)}

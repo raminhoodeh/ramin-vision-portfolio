@@ -68,6 +68,9 @@ try {
     assert.equal([...initial.matchAll(/<h1\b/g)].length, 1, `one page heading ${page.path}`);
     assert.ok(!/\[confidential\]|\[object Object\]/i.test(initial), `public-safe readable fields ${page.path}`);
     assert.ok(!/src="\/(?:src|thoughts-section|projects-section)\//.test(initial), `built image URLs ${page.path}`);
+    for (const [, fragment] of initial.matchAll(/<a\b[^>]*href="#([^"]+)"/g)) {
+      assert.ok(initial.includes(`id="${decodeURIComponent(fragment)}"`), `initial HTML fragment target ${page.path}#${fragment}`);
+    }
     const image = await request(new URL(expected.image).pathname); assert.equal(image.status, 200);
     assert.match(image.headers.get('content-type'), /image\/png/);
     const dimensions = await sharp(Buffer.from(await image.arrayBuffer())).metadata();

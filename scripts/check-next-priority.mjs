@@ -114,6 +114,10 @@ const parserCode = [
 ].join('\n');
 const { parsePortfolioLocation } = evaluate(parserCode, (name) => name === 'reader-references' ? references : require(name));
 const cases = [
+  ['/about', '', { canonicalPath: '/about', documentPage: 'about', section: 'thoughts' }],
+  ['/resources', '', { canonicalPath: '/resources', documentPage: 'resources', section: 'bonus' }],
+  ['/thoughts/books', '', { canonicalPath: '/thoughts/books', documentPage: 'about', scrollTargetId: 'thoughts-books' }],
+  ['/thoughts/talks', '', { canonicalPath: '/thoughts/talks', scrollTargetId: 'thoughts-disx' }],
   ['/work/side', '', { canonicalPath: '/work/side', documentPage: 'side', section: 'experience-education' }],
   ['/work/vivup', '', { canonicalPath: '/work/vivup', documentPage: 'vivup', section: 'experience-education' }],
   ['/product-method', '#method-diagram', { canonicalPath: '/product-method', documentPage: 'method' }],

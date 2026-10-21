@@ -31,6 +31,8 @@ export function journeySurface(path: string): JourneySurface {
   if (['experience', 'story'].includes(page.kind)) return 'work';
   if (page.kind === 'case') return 'case';
   if (page.kind === 'disx' || page.kind === 'talks') return 'talk';
+  if (page.kind === 'about' || page.kind === 'books') return 'about';
+  if (page.kind === 'resources') return 'resources';
   if (['thoughts', 'courses', 'books', 'metacognition'].includes(page.kind)) return 'teaching';
   if (page.path === '/ai-ramin') return 'ai';
   if (['projects', 'contact', 'bonus', 'method', 'thesis'].includes(page.kind)) return page.kind as JourneySurface;

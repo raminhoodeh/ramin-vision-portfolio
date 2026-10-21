@@ -70,6 +70,7 @@ import { GlassImprintCta } from '../../components/GlassImprintCta';
 import { TahoeGlassChip } from '../../components/TahoeGlassChip';
 import Aurora from '../../components/Aurora';
 import { getProjectDescription } from './projectCopy';
+import { ProjectEntry } from './ProjectEntry';
 
 export const selfwareGeneratedArtwork: Record<string, string> = {
   Qadam: qadamSelfwareArtworkUrl,
@@ -1943,7 +1944,7 @@ export function CaseStudyGrid({ onOpen }: { onOpen: (item: CaseStudyEntry) => vo
     >
       <div className="projects-page-content relative z-10">
         <ProjectActRail />
-        <ProjectCinematicHero selfware={selfware} tools={tools} layerCount={layerCount} />
+        <ProjectEntry />
         {featured ? <FeaturedProject project={featured} selfware={selfware} tools={tools} onOpen={onOpen} /> : null}
         <div className="projects-build-aurora-zone relative isolate">
           <div className="projects-build-aurora-canvas" aria-hidden="true">

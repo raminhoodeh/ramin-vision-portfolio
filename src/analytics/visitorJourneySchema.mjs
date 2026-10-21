@@ -1,5 +1,5 @@
 // Finite categories only. Never add free text, URLs, prompts, identifiers or headers.
-export const JOURNEY_SURFACES = ['home', 'work', 'projects', 'teaching', 'ai', 'contact', 'bonus', 'method', 'thesis', 'talk', 'case', 'other'];
+export const JOURNEY_SURFACES = ['home', 'work', 'projects', 'teaching', 'about', 'resources', 'ai', 'contact', 'bonus', 'method', 'thesis', 'talk', 'case', 'other'];
 export const JOURNEY_TARGETS = {
   page_view: JOURNEY_SURFACES,
   case_open: ['nsso', 'dreamsea', 'qadam', '24seven-concierge', 'razinflix', 'ai-native-product-manager-os', 'mass-social-wisdom-agent', 'ai-costs-dashboard', 'rag-pipeline', 'product-thesis', 'metacognition', 'side', 'vivup'],

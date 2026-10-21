@@ -15,6 +15,9 @@ import dreamseaHomepageScreenUrl from '../../assets/previews/dreamsea-homepage.w
 import dreamseaIphoneRecordingUrl from '../../../projects-section/Project Images/dreamsea-fixed-recording-3d-island.webm';
 import propositionVideoUrl from '../../../thoughts-section/books/the-proposition-video.webm';
 import aiNativeProductOsLightModeUrl from '../../../thoughts-section/courses/ai-native-product-os-light-mode.jpg';
+import { ProductMethodSummary } from '../ProductMethodSummary';
+import { CourseLearningDetails } from './CourseLearningDetails';
+import './TeachingWriting.css';
 
 type BeatCta =
   | { kind: 'link'; label: string; href: string }
@@ -48,7 +51,7 @@ const defaultCourseProofScrollState: CourseProofScrollState = {
   atEnd: false,
 };
 
-const valueHomageWords = new Map([
+const valueHomageWords = new Map<string, string>([
   ['vision', 'Vision'],
   ['taste', 'Taste'],
   ['clarity', 'Clarity'],
@@ -78,7 +81,7 @@ function getCourseHref(course: TeachingEntry) {
 function orderCourses(courses: readonly TeachingEntry[]) {
   const productInnovation = courses.find((course) => course.framework.name === 'Product Innovation Process');
   const aiNative = courses.find((course) => course.framework.name === 'AI-Native Product OS');
-  const ordered = [productInnovation, aiNative].filter((course): course is TeachingEntry => Boolean(course));
+  const ordered = [aiNative, productInnovation].filter((course): course is TeachingEntry => Boolean(course));
   const remaining = courses.filter((course) => !ordered.includes(course));
 
   return [...ordered, ...remaining];
@@ -112,7 +115,7 @@ function getCourseProof(course: TeachingEntry) {
     return {
       ...aiProductCourseEvidence.udemy,
       description:
-        'A practical AI product management course that installs the model, context, orchestration, governance, and human layers needed to work with probabilistic systems.',
+        'A practical AI product management course about model choice, context, orchestration, governance and human judgment.',
       coursera: aiProductCourseEvidence.coursera,
       links: [
         { label: 'Udemy', href: aiProductCourseEvidence.udemy.href },
@@ -174,6 +177,7 @@ function CourseProofMiniCard({ course }: { course: TeachingEntry }) {
             {' '}<time dateTime={proof.coursera.checkedOn}>{proof.coursera.checkedLabel}</time>.
           </p>
         ) : null}
+        <CourseLearningDetails framework={course.framework.name === 'AI-Native Product OS' ? 'AI-Native Product OS' : 'Product Innovation Process'} />
         {proof.links.length > 0 ? (
           <div className="thoughts-course-proof-mini-links">
             <span className="thoughts-course-proof-mini-links-label">Learn on</span>
@@ -332,8 +336,7 @@ export function ThoughtsOverview({
       index: '01',
       label: 'How I gain clarity',
       title: 'Framework of metacognition',
-      proof:
-        'OVERCOME OVER-INFORMATION WITH FIRST PRINCIPLES-DERIVED THINKING. THE SUMMARY: UNDERSTAND WHERE YOUR VALUES COME FROM, FOCUS ON THEM AND SEE HOW EVERY DECISION FLOWS FROM THERE.',
+      proof: 'How I connect experience, values and strategy to a decision, while leaving room for new evidence to change the direction.',
       body: 'The framework starts by reducing the noise. When there is too much information, I go back to first principles: what is true, what matters, where those values came from, and what decision naturally follows. That is how experience turns into values, values turn into vision, and vision turns into action.',
       artwork: thoughtsAssets.metacognitionTree,
       ctas: osReader
@@ -347,8 +350,7 @@ export function ThoughtsOverview({
       index: '02',
       label: 'How I find my values',
       title: 'TEDx talk',
-      proof:
-        'TAKING LESSONS FROM BUSINESS STRATEGY AND SPACE TRAVEL, I SPEAK ABOUT A METHOD TO DISCOVER WHAT WE PERSONALLY FIND IMPORTANT.',
+      proof: 'Taking lessons from business strategy and space travel, I explore a way to discover what we personally find important.',
       body: '',
       artwork: tedxImagePath,
       ctas: [
@@ -371,11 +373,10 @@ export function ThoughtsOverview({
       index: '03',
       label: 'What I love',
       title: 'Fiction books & "selfware"',
-      proof:
-        "I FIND THE MOST MEANING IN MAKING BEAUTIFUL THINGS THAT THE WORLD REALLY NEEDS. FOR MY SKILLSET, THAT MEANS WRITING INSPIRING STORIES WITH DEEPER LIFE LESSONS, AND MAKING SOFTWARE THAT'S ENJOYABLE TO USE AND GENUINELY SOLVES PROBLEMS.",
+      proof: 'I find meaning in writing stories with deeper life questions and making software that is enjoyable and useful.',
       body: '',
       artwork: bookCoverPath,
-      ctas: [],
+      ctas: [{ kind: 'link', label: 'Both books & my writing →', href: '/about#thoughts-books' }],
       anchorIds: ['thoughts-books', 'thoughts-act-formation'],
       sectionHead: 'What I value',
     },
@@ -383,8 +384,7 @@ export function ThoughtsOverview({
       index: '04',
       label: 'How I teach it',
       title: 'University talk',
-      proof:
-        'INTRODUCING THE "MIDDLE WAY" - AN EMERGING APPROACH TO PERSONAL AND PROFESSIONAL LIFE: HOW TO ENSURE YOUR PERSONAL PROJECTS AND PROFESSIONAL CAREER ACTIVELY SYNERGISE, AND MUTUALLY REINFORCE EACH OTHER.',
+      proof: 'The “Middle Way”: how personal projects and a professional career can inform and reinforce one another.',
       body: '',
       artwork: uniTalkImagePath,
       ctas: [
@@ -423,20 +423,16 @@ export function ThoughtsOverview({
       index: '05',
       label: 'How I apply it',
       title: 'Product management & AI product management frameworks',
-      proof:
-        'PRACTICING WHAT I TEACH: A NATURAL PULL TOWARD METAPHYSICS, STORYTELLING, AND SYSTEMS THINKING BECAME THE PRODUCT INNOVATION PROCESS AND THE AI-NATIVE PRODUCT OS; FUTURE-PROOF, EFFECTIVE SYSTEMS FOR BUILDING BEAUTIFUL, USEFUL PRODUCTS WITH THE LATEST BEST PRACTICES AND TECHNOLOGY.',
+      proof: 'The Product Innovation Process and AI-Native Product OS are ways I make my product practice teachable, rather than guarantees of an outcome.',
       body: [
-        "There's a feeling you get when a story is built right. You don't always know why it works, you just feel it. The same thing happens with a great product. Something in the clarity of how it was thought through, the vision behind it, the empathy for the person using it, the taste that decided what stays and what goes. The elegant simplicity of the copy, the thoughtfulness of the design. Holding it all together is yet another invisible essentiality that we call Judgement; the art of knowing what to do next.",
-        "Spend enough time thinking like this, work with enough teams, naturally you want to turn those five things into a process that a team could actually run on. This took a mix of three inclinations I've always had. And systems thinking is what let it scale beyond me into something repeatable. That combination is the Product Innovation Process.",
-        "It started at GroupM's Global Innovation team, where it gave other PMs a standardised way to manage products and align stakeholders. It also became the fastest path I found for turning a junior PM into someone trusted with real ownership, since the steps were clear enough to run without me in the room. And it shipped the carbon calculator still used to measure £1billion+ of media investment, the most widely adopted tool of its kind in the sector.",
-        "Carried into Work & Life Partners at its start-up stage, the same process built their product from the ground up on sound PM principles. That discipline helped get WLP's product and its start-up acquired by Vivup. After the acquisition, I used the same process to fold WLP's product into Vivup's wider portfolio, and it ended up shaping the core Vivup app too, (now Perkbox Vivup). The App Store rating climbed 1.2 points and Google Play 0.6 in three months. A new monetisation model grew customer lifetime value by 19%, and a checkout redesign cut abandonment by a third.",
-        "Then execution, the exact thing the process existed to make reliable, itself changed. AI democratised the build process, making it both cheap and probabilistic. Therefore, the old process of specifying behaviour once and repeating it stopped matching how the work actually happened. What mattered now was judgement, catching the moments an output looked right but wasn't, and taste, knowing which version was actually worth shipping. So I built what came next, the AI-Native Product OS, designed around those human skills that an automated spec sheet can't hand you.",
-        "At Side.inc, the OS revamped internal tools and ERP systems on AI-coded, in-house tooling. It shifted engineering's time split from 60% maintenance to 60% innovation, cut opex 20%, cut idea-to-feature time 90%, and cut manual reporting by a third, all within four months. The same OS is now shaping more customer-facing AI features I'm building next at Bayut.",
+        'My Product Innovation Process brings discovery, design and release decisions into a shared account that a team can inspect. The AI-Native Product OS adds a way to organise model behaviour, context, action authority and continuing evaluation.',
+        'AI can make a first prototype cheaper without making integration, customer understanding or release controls disappear. I use the Stack and Loop alongside those disciplines, with checks proportionate to the consequences of failure.',
+        'My professional work and independent builds are applications of these ideas. Their results, ownership and evidence limits belong in the individual cases; they do not establish that a framework caused every outcome.',
       ].join('\n\n'),
       artwork: osArtwork,
       expandedArtwork: aiNativeProductOsLightModeUrl,
-      ctas: [],
-      anchorIds: ['thoughts-courses', 'thoughts-act-integration-proof'],
+      ctas: [{ kind: 'link', label: 'Professional decisions →', href: '/experience-education' }, { kind: 'link', label: 'Independent products →', href: '/projects' }],
+      anchorIds: ['thoughts-act-integration-proof'],
       wide: true,
       sectionHead: 'How that shows up in practice',
     },
@@ -579,8 +575,8 @@ export function ThoughtsOverview({
                             <a
                               key={cta.label}
                               href={cta.href}
-                              target="_blank"
-                              rel="noopener noreferrer"
+                              target={cta.href.startsWith('http') ? '_blank' : undefined}
+                              rel={cta.href.startsWith('http') ? 'noopener noreferrer' : undefined}
                               className="thoughts-beat-cta thoughts-beat-cta--watch card-glass-attachment card-glass-attachment--deep-dive"
                             >
                               <span className="card-glass-attachment__label">{ctaLabel(cta.label)}</span>
@@ -633,8 +629,8 @@ export function ThoughtsOverview({
                             <a
                               key={cta.label}
                               href={cta.href}
-                              target="_blank"
-                              rel="noopener noreferrer"
+                              target={cta.href.startsWith('http') ? '_blank' : undefined}
+                              rel={cta.href.startsWith('http') ? 'noopener noreferrer' : undefined}
                             className="thoughts-beat-cta thoughts-beat-cta--watch card-glass-attachment card-glass-attachment--deep-dive"
                           >
                               <span className="card-glass-attachment__label">{ctaLabel(cta.label)}</span>
@@ -653,13 +649,7 @@ export function ThoughtsOverview({
                       </div>
                     )}
                   </div>
-                  <div className="thoughts-course-proof-mini-grid">
-                    {orderCourses(teaching)
-                      .slice(0, 2)
-                      .map((course) => (
-                        <CourseProofMiniCard key={course.courseTitle} course={course} />
-                      ))}
-                  </div>
+                  <p className="thoughts-beat-description"><a href="#thoughts-courses">Return to the courses and sample exercises ↑</a></p>
                 </div>
               ) : (
                 <>
@@ -671,8 +661,8 @@ export function ThoughtsOverview({
                           <a
                             key={cta.label}
                             href={cta.href}
-                            target="_blank"
-                            rel="noopener noreferrer"
+                            target={cta.href.startsWith('http') ? '_blank' : undefined}
+                            rel={cta.href.startsWith('http') ? 'noopener noreferrer' : undefined}
                             className="thoughts-beat-cta thoughts-beat-cta--watch card-glass-attachment card-glass-attachment--deep-dive"
                           >
                             <span className="card-glass-attachment__label">{ctaLabel(cta.label)}</span>
@@ -852,23 +842,42 @@ export function ThoughtsOverview({
 
   return (
     <div className="thoughts-overview-root">
+      <header className="teaching-entry">
+        <h1>Teaching &amp; speaking</h1>
+        <p>I turn product practice into ideas and tools other people can use. Start with the current AI course, the DISx example and a concise view of my method.</p>
+        <nav aria-label="Teaching and speaking sections"><a href="#thoughts-courses">Courses</a><a href="#thoughts-disx">DISx Dubai</a><a href="#thoughts-method">The method</a><a href="/about">About &amp; writing</a></nav>
+      </header>
+      <section id="thoughts-courses" className="teaching-current" aria-labelledby="current-courses-title">
+        <h2 id="current-courses-title">Learn the product method.</h2>
+        <div className="thoughts-course-proof-mini-grid">
+          {orderCourses(teaching).map((course) => <CourseProofMiniCard key={course.courseTitle} course={course} />)}
+        </div>
+      </section>
       <div className="thoughts-overview-grid">
-        {/* Group 1 - section heads above their cards in the same columns */}
-        {[beats[0], beats[1]].map((beat) => buildSectionHead(beat))}
-        {[beats[0], beats[1]].map((beat, j) => buildCard(beat, j))}
-
-        {/* Group 2 */}
-        {[beats[2], beats[3]].map((beat) => buildSectionHead(beat))}
-        {[beats[2], beats[3]].map((beat, j) => buildCard(beat, j + 2))}
-
-        {/* Recent speaking and the frameworks remain in the existing expandable-card layout. */}
-        {beats.slice(4).map((beat, j) => (
-          <div key={beat.index} className="contents">
-            {buildSectionHead(beat)}
-            {buildCard(beat, j + 4)}
-          </div>
-        ))}
+        {buildSectionHead(beats[4])}
+        {buildCard(beats[4], 0)}
       </div>
+      <div id="thoughts-method" className="teaching-current-method"><ProductMethodSummary compact /></div>
+      <section aria-labelledby="earlier-talks-title">
+        <h2 id="earlier-talks-title" className="sr-only">Earlier talks</h2>
+        <div className="thoughts-overview-grid">
+          {[beats[1], beats[3]].map((beat) => buildSectionHead(beat))}
+          {[beats[1], beats[3]].map((beat, index) => buildCard(beat, index))}
+        </div>
+      </section>
+      <section aria-labelledby="personal-thinking-title">
+        <header className="teaching-entry">
+          <h2 id="personal-thinking-title">Writing and intellectual foundations</h2>
+          <p>I’m interested in how people find clarity in complex systems. In product work, that means making decisions traceable. In teaching, it means making ideas usable. In fiction, it means making them felt.</p>
+          <a href="/about">Explore both books and the personal side of my work →</a>
+        </header>
+        <div className="thoughts-overview-grid">
+          {[beats[0], beats[2]].map((beat) => buildSectionHead(beat))}
+          {[beats[0], beats[2]].map((beat, index) => buildCard(beat, index))}
+          {buildSectionHead(beats[5])}
+          {buildCard(beats[5], 0)}
+        </div>
+      </section>
 
       <div className="thoughts-beat-wide thoughts-proof-wall">
         <TahoeGlassSurface

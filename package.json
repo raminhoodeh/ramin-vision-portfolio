@@ -1,7 +1,7 @@
 {
   "name": "ramin-portfolio",
   "version": "1.0.0",
-  "description": "Ramin Hoodeh \u2014 AI Product Manager Portfolio",
+  "description": "Ramin Hoodeh — AI Product Manager Portfolio",
   "type": "module",
   "scripts": {
     "dev": "npm run build:ai-ramin-corpus && vite --host 127.0.0.1 --port ${PORT:-4182}",
@@ -51,14 +51,19 @@
     "check:performance-guardrails": "node scripts/check-performance-guardrails.mjs",
     "check:preview": "node scripts/check-preview.mjs",
     "verify:ai-ramin": "npm run check:ai-ramin-corpus && npm run check:ai-ramin-session && npm run check:ai-ramin-eval && npm run check:ai-ramin-routing && npm run check:ai-ramin-routing-observability && npm run check:ai-ramin-intent-contract && npm run check:ai-ramin-intent-classifier && npm run check:ai-ramin-semantic-routing && npm run check:ai-ramin-semantic-confidence && npm run check:ai-ramin-conversation-context && npm run check:ai-ramin-regression && npm run check:ai-ramin-clarification-routing && npm run check:ai-ramin-prompt && npm run check:ai-ramin-ui-copy && npm run check:ai-ramin-markdown && npm run check:ai-ramin-weak-ui && npm run check:ai-ramin-feedback && npm run check:ai-ramin-review && npm run check:ai-ramin-eval-promotion && npm run check:ai-ramin-live-capture && npm run check:ai-ramin-live-review && npm run check:ai-ramin-live-review-contract && npm run check:ai-ramin-live-review-report",
-    "verify": "npm run check:content && npm run check:accessibility && npm run check:next-priority && npm run check:priority-one-ui && npm run check:project-claims && npm run check:priority-eight && npm run check:ai-ramin-corpus && npm run check:ai-ramin-eval && npm run check:ai-ramin-routing && npm run check:ai-ramin-routing-observability && npm run check:ai-ramin-intent-contract && npm run check:ai-ramin-intent-classifier && npm run check:ai-ramin-semantic-routing && npm run check:ai-ramin-semantic-confidence && npm run check:ai-ramin-conversation-context && npm run check:ai-ramin-regression && npm run check:ai-ramin-clarification-routing && npm run check:ai-ramin-prompt && npm run check:ai-ramin-ui-copy && npm run check:ai-ramin-markdown && npm run check:ai-ramin-weak-ui && npm run check:ai-ramin-feedback && npm run check:ai-ramin-review && npm run check:ai-ramin-eval-promotion && npm run check:ai-ramin-live-capture && npm run check:ai-ramin-live-review && npm run check:ai-ramin-live-review-contract && npm run check:ai-ramin-live-review-report && npm run build && npm run check:public-http && npm run check:performance-loading && npm run check:rock-assets && npm run check:performance-guardrails",
+    "verify": "npm run check:content && npm run check:accessibility && npm run check:next-priority && npm run check:priority-one-ui && npm run check:project-claims && npm run check:priority-eight && npm run check:plan-review && npm run check:ai-ramin-corpus && npm run check:ai-ramin-eval && npm run check:ai-ramin-routing && npm run check:ai-ramin-routing-observability && npm run check:ai-ramin-intent-contract && npm run check:ai-ramin-intent-classifier && npm run check:ai-ramin-semantic-routing && npm run check:ai-ramin-semantic-confidence && npm run check:ai-ramin-conversation-context && npm run check:ai-ramin-regression && npm run check:ai-ramin-clarification-routing && npm run check:ai-ramin-prompt && npm run check:ai-ramin-ui-copy && npm run check:ai-ramin-markdown && npm run check:ai-ramin-weak-ui && npm run check:ai-ramin-feedback && npm run check:ai-ramin-review && npm run check:ai-ramin-eval-promotion && npm run check:ai-ramin-live-capture && npm run check:ai-ramin-live-review && npm run check:ai-ramin-live-review-contract && npm run check:ai-ramin-live-review-report && npm run build && npm run check:public-http && npm run check:performance-loading && npm run check:rock-assets && npm run check:performance-guardrails",
     "verify:preview": "npm run verify && npm run check:preview",
     "check:accessibility": "node scripts/check-accessibility.mjs",
     "check:public-http": "node scripts/check-public-http.mjs",
     "check:performance-loading": "node scripts/check-performance-loading.mjs",
     "report:initial-assets": "node scripts/report-initial-assets.mjs",
     "check:ai-ramin-session": "node scripts/check-ai-ramin-session.mjs",
-    "check:priority-eight": "npm run check:portfolio-claims && npm run check:visitor-journey && npm run check:ai-ramin-session"
+    "check:priority-eight": "npm run check:portfolio-claims && npm run check:visitor-journey && npm run check:ai-ramin-session",
+    "check:contact-resources": "node scripts/check-contact-resources.mjs",
+    "check:teaching-content": "node scripts/check-teaching-content.mjs",
+    "check:plan-review": "npm run check:contact-resources && npm run check:teaching-content && npm run check:reader-return && npm run check:mobile-work-return",
+    "check:reader-return": "node scripts/check-reader-return.mjs",
+    "check:mobile-work-return": "node scripts/check-mobile-work-return.mjs"
   },
   "dependencies": {
     "@gltf-transform/core": "^4.3.0",

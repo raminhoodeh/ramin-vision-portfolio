@@ -21,13 +21,15 @@ export function SectionKicker({
 }
 
 export const sectionMarkerMeta: Record<string, { number: string; label: string; tone: 'default' | 'dark' }> = {
-  hero: { number: '01', label: 'Intro', tone: 'default' },
+  hero: { number: '01', label: 'Home', tone: 'default' },
   'experience-education': { number: '02', label: 'Work', tone: 'default' },
-  projects: { number: '03', label: 'Projects', tone: 'dark' },
-  thoughts: { number: '04', label: 'Thoughts', tone: 'default' },
-  contact: { number: '05', label: 'Contact', tone: 'default' },
-  bonus: { number: '06', label: 'Bonus', tone: 'dark' },
-  'ai-ramin': { number: '07', label: 'AI Ramin', tone: 'default' },
+  projects: { number: '03', label: 'Products', tone: 'dark' },
+  thoughts: { number: '04', label: 'Teaching & speaking', tone: 'default' },
+  about: { number: '05', label: 'About & writing', tone: 'default' },
+  resources: { number: '', label: 'Resources', tone: 'default' },
+  contact: { number: '06', label: 'Contact', tone: 'default' },
+  bonus: { number: '', label: 'Bonus', tone: 'dark' },
+  'ai-ramin': { number: '', label: 'AI Ramin', tone: 'default' },
 };
 
 /**

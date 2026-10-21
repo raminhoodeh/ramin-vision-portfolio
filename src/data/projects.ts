@@ -155,7 +155,7 @@ export const deepDives = [
       {
         heading: 'AI product leadership',
         body: [
-          'At Bayut, the public-safe story is AI-native product work across property search, recommendations, and conversational AI: model selection, eval suite design, guardrails, MCP integration, and the AI-Native Product OS as a team framework.',
+          'At Bayut, the public-safe story is AI-native product work across property search, recommendations, and conversational AI: model selection, eval suite design, guardrails and MCP integration. Team-wide adoption or measured impact of the AI-Native Product OS is not established here.',
           'At Side.inc, the proof is operational transformation: replacing multiple internal ERP products with AI-coded in-house alternatives, reducing ERP operational costs, and making internal process improvement dramatically faster.',
         ],
       },

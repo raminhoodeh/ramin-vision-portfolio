@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 import { motion, useIsPresent, useReducedMotion } from 'framer-motion';
 import { type CaseStudyEntry } from '../types';
 import { useDialogFocus } from '../../lib/useDialogFocus';
@@ -89,7 +89,7 @@ const SECTIONS: Section[] = [
     num: '',
     rail: 'The framework',
     heading: 'Framework of Metacognition',
-    caption: 'A chain from self-knowledge to output. Personal, organisational, and essential.',
+    caption: 'A personal working method for connecting experience to choices and revising the assumptions behind them.',
     activeSteps: [0, 1, 2, 3, 4, 5, 6],
     blocks: [
       {
@@ -107,16 +107,15 @@ const SECTIONS: Section[] = [
       },
       {
         kind: 'quote',
-        text: 'The devil makes the world noisy so that we can no longer hear ourselves.',
-        cite: 'C.S. Lewis',
+        text: 'What matters to me, and what evidence might change the direction I have chosen?',
       },
       {
         kind: 'p',
-        text: 'There has always been noise. But the volume has risen tremendously in the 80 years since Lewis penned those words. Rapidly evolving and democratised execution through AI advancements mean more can be built, written, and shipped than any team can often meaningfully evaluate. The filtering mechanism - knowing what actually matters to you - has become the differentiator. When you don\'t have it, over-information fills the vacuum. Every direction looks equally valid. The loudest signal wins, not the most useful.',
+        text: "There has always been noise. AI makes it possible to build, write and ship more than a team can meaningfully evaluate. I find it useful to make my filtering criteria explicit: what matters, what evidence I have and which assumptions I need to question. That is a working practice, rather than a promise that introspection alone will identify the right choice.",
       },
       {
         kind: 'p',
-        text: 'The cost of noise runs deeper in business and in life, just as the value of focus remains crucial. This is because true, lasting, happiness comes not from fleeting pleasure but from a feeling of fulfilment; of knowing who you are and what you\'re here to do. This is what drove my deeper interest in metaphysics, often in the form of writing metaphysical fiction books: The Proposition and The Untold Story of Adam and Eve. My books are both built around this same enquiry into existential clarity. When I applied first-principles metacognitive thinking to metaphysics in my writing, I realised that the entire field, across religion, spirituality, and philosophy, can be distilled into five hierarchical questions, each one derivable from the last: Who am I // Where am I going // Why do I exist // How should I be // and What, therefore, should I do? Each answer opens the next, which is what makes this a clear train of thought that instills personal and professional clarity.',
+        text: "For me, fulfilment has often come from understanding what I find important and giving it a useful expression. That enquiry runs through my fiction books, The Proposition and The Meaning of Life. The Untold Story of Adam and Eve is the story within the latter. I organise my enquiry through five questions: Who am I? Where am I going? Why do I exist? How should I be? What should I do? They are a personal route into a large subject, rather than a reduction of all religion, spirituality or philosophy to one hierarchy.",
       },
       {
         kind: 'quote',
@@ -129,7 +128,7 @@ const SECTIONS: Section[] = [
       },
       {
         kind: 'p',
-        text: 'Simon Sinek\'s Golden Circle theory (Why, How, What) is the closest thing in business strategy to this logic. His argument is that most companies communicate from the outside in; what they make, how they make it - rarely why. Inspired leaders reverse this, leading instead with the belief, the cause, the purpose. This works because belief is what customers are motivated by - the product follows as proof in service of that.',
+        text: "Simon Sinek's Golden Circle theory (Why, How, What) is one influence on this approach: explaining a purpose can make a product story easier to understand. Customers also choose on practical grounds such as usefulness, price and trust. A coherent belief still needs a product that meets a real need.",
       },
       {
         kind: 'p',
@@ -142,12 +141,12 @@ const SECTIONS: Section[] = [
     num: '01',
     rail: 'Stratetree',
     heading: 'The Metacognitive "Stratetree"',
-    caption: 'Seven layers. Each accountable to the one below.',
+    caption: 'Seven prompts for examining a direction. Evidence can change any layer.',
     activeSteps: [0, 1, 2, 3, 4, 5, 6],
     blocks: [
       {
         kind: 'p',
-        text: 'The Framework of Metacognition applies at both personal and professional scales because the logic is identical at each. For a person, it restores the meaningful link from what you\'ve lived to what you ultimately create. For a company, it traces the same chain or "tree" from founding story to product. The framework has seven layers, each one accountable to the one below it:',
+        text: "I use this framework at personal and professional scales. For myself, it connects what I have experienced with what I choose to create. For a company, it can help trace a founding problem through values and strategy into a product. The analogy is useful without making the two situations identical. These seven layers are prompts to examine, with the examples below illustrating possible choices and intended outcomes.",
       },
       {
         kind: 'steps',
@@ -205,11 +204,11 @@ const SECTIONS: Section[] = [
       },
       {
         kind: 'p',
-        text: 'When each layer is explicitly articulated and connected to the one above it, both personal and organisational choices become traceable, defensible, and self-correcting. The framework therefore functions as a diagnostic tool: any sense of disconnection in output can be traced downward until the break in the chain is located.',
+        text: "Making the connections explicit helps me inspect and discuss a choice. When an output disappoints, I can examine its execution and then work back through the assumptions that shaped it. This is one diagnostic aid; it cannot identify a cause without customer, market and operational evidence.",
       },
       {
         kind: 'p',
-        text: 'Trace backwards from the noise. The strategy you need is already implied by the vision you hold. The vision is implied by your values. The values by what you\'ve lived. For a company, the logic holds at every layer: when a product feels disconnected from the brand, the break is never at layer seven. Follow the chain down and you\'ll find it.',
+        text: "I start by asking whether a decision serves the direction we intended. A product can drift because of execution, a mistaken strategy, changed market conditions or an assumption about customers that was never true. The investigation can change the tactics, the mission or the vision itself. The tree is a way to organise that inquiry, not a rule that the roots must always stay fixed.",
       },
     ],
   },
@@ -227,7 +226,7 @@ const SECTIONS: Section[] = [
       },
       {
         kind: 'p',
-        text: 'The same logic governs what to cut. Saying no to a feature stops being a political act and becomes a principled one: does this serve the mission? Does it align with the strategy? The answer is already implied by the layers below. And when something feels wrong; when a product drifts from its brand, when a team loses confidence in the roadmap, when priorities keep shifting - the break is rarely at the top. Follow the chain down and you\'ll find it. The Framework of Metacognition is, at its core, a diagnostic as much as a planning tool.',
+        text: "The framework also helps me explain what to cut: does the proposal serve the mission, and what evidence makes that worth pursuing now? Alignment does not settle the answer by itself. A customer need, delivery constraint or failed experiment may show that our strategy needs to change. I use the chain to make those disagreements inspectable, including the possibility that the direction is wrong.",
       },
       {
         kind: 'p',
@@ -235,7 +234,7 @@ const SECTIONS: Section[] = [
       },
       {
         kind: 'p',
-        text: 'Ultimately, T.S. Eliot\'s question of where wisdom is lost in knowledge, and knowledge in information, describes a failure of structure rather than a loss of capability. The framework resolves this entropy by reversing it: information filtered by intentionality becomes knowledge, and knowledge grounded in foundational values becomes wisdom. Whether applied to restore existential clarity for the individual or to defensibly govern product strategy for an organisation, the fulfillment of wisdom requires the discipline to define the root and build upward - more so than the acquisition of more data.',
+        text: "I return to Eliot’s question because collecting more information does not necessarily improve a decision. My aim is to make the purpose, assumptions and evidence easier to inspect, then revise them when reality disagrees. This method helps me hold that conversation; it does not establish a universal account of wisdom or guarantee fulfilment or commercial success.",
       },
     ],
   },
@@ -625,7 +624,7 @@ function RenderBlocks({
   onStepRef?: (stepIdx: number, el: HTMLElement | null) => void;
 }) {
   const renderLinkedText = (text: string, keyPrefix: string) => {
-    const pieces: (string | JSX.Element)[] = [];
+    const pieces: ReactNode[] = [];
     let remaining = text;
     let keyIndex = 0;
 
@@ -762,6 +761,18 @@ function RenderBlocks({
 /* ------------------------------------------------------------------ */
 /*  Overlay                                                            */
 /* ------------------------------------------------------------------ */
+
+export function MetacognitionReadingCopy() {
+  return <article aria-labelledby="metacognition-reading-title">
+    <h1 id="metacognition-reading-title">Framework of Metacognition</h1>
+    {SECTIONS.map((section) => <section key={section.id} id={`metacognition-${section.id}`}>
+      {section.id !== 'opening' ? <h2>{section.heading}</h2> : null}
+      <p>{section.caption}</p>
+      <RenderBlocks blocks={section.blocks} sectionId={section.id} />
+    </section>)}
+    <p><a href="/about">About &amp; writing</a> · <a href="/product-method">The AI product method</a></p>
+  </article>;
+}
 
 export function MetacognitionDeepDive({ onClose }: { onClose: () => void }) {
   const rootRef = useRef<HTMLDivElement | null>(null);

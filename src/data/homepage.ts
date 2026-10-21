@@ -58,7 +58,7 @@ export const homepageOutcomes = [
 export const homepageProducts = [
   {
     name: 'nsso',
-    kind: 'Web app',
+    kind: 'Independent web product',
     focus: 'Reviewed agent actions',
     description: 'An AI profile coach that proposes changes for the owner to review before saving.',
     href: '/projects/nsso',
@@ -67,7 +67,7 @@ export const homepageProducts = [
   },
   {
     name: '24Seven Concierge',
-    kind: 'iOS app',
+    kind: 'Client AI enhancement · iOS app',
     focus: 'Catalogue-led planning',
     description: 'Travel requests become visual catalogue suggestions and a brief for a human concierge.',
     href: '/projects/24seven-concierge',
@@ -76,7 +76,7 @@ export const homepageProducts = [
   },
   {
     name: 'Dreamsea',
-    kind: 'iOS app',
+    kind: 'Independent iOS product',
     focus: 'Voice and multimodal AI',
     description: 'Voice-first dream capture, symbolic interpretation and imagery, with resumable generation.',
     href: '/projects/dreamsea',

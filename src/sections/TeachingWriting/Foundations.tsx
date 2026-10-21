@@ -239,7 +239,7 @@ export function ThoughtFoundationsSection() {
             Framework of Metacognition is the method. Framework of Reality is the life application. Stratetree is the route from values into products.
           </p>
           <p className="thought-foundations-synthesis-route">
-            The same three moves work at every scale. A person overwhelmed by choices, a company lost in its market, a product team buried in requirements. Reduce over-information - know where you are and what you are - find the vision that follows. The Stratetree is the map that runs that sequence.
+            I find these questions useful at different scales: a personal choice, a company direction, or a product team buried in requirements. The answers still need to be tested against the situation. Customer evidence, market conditions and failed assumptions can change the vision and strategy, as well as the next task.
           </p>
         </div>
       </div>

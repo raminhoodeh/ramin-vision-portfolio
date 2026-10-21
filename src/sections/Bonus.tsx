@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import type { CSSProperties } from 'react';
+import type { CSSProperties, MouseEvent as ReactMouseEvent } from 'react';
 import dreamseaGiftLogoUrl from '../../bonus-section/dreamsea-app-icon-2026-card.jpg';
 import googleMeetGiftLogoUrl from '../../bonus-section/google-meet-logo.png';
 import googleSheetsGiftLogoUrl from '../../bonus-section/google-sheets-logo.png';
@@ -18,9 +18,7 @@ import {
   getBonusRockAnimationTargets,
   getBonusRockStage,
 } from '../three/hashgraphRockMotion';
-import { portfolioContent } from '../data/portfolio';
-import { isPlaceholderValue, contentValue } from '../lib/placeholder';
-import { type BonusGiftEntry } from './types';
+import { bonusResourceCopy, resourceOffers, type ResourceOffer } from '../data/resources';
 
 type BonusRockLayerStyle = CSSProperties & Record<`--${string}`, string | number>;
 type BonusGiftLogo = {
@@ -35,14 +33,14 @@ export function clampBonusRockClicks(value: number) {
   return Math.max(0, Math.min(BONUS_ROCK_FINAL_CLICK_COUNT, Math.trunc(value)));
 }
 
-function getBonusGiftLogo(gift: BonusGiftEntry): BonusGiftLogo {
+function getBonusGiftLogo(gift: ResourceOffer): BonusGiftLogo {
   const title = gift.title.toLowerCase();
 
   if (title.includes('dreamsea')) {
     return { src: dreamseaGiftLogoUrl, alt: 'Dreamsea app logo' };
   }
 
-  if (title.includes('tools database')) {
+  if (title.includes('tools')) {
     return { src: googleSheetsGiftLogoUrl, alt: 'Google Sheets logo' };
   }
 
@@ -62,7 +60,7 @@ function MagicalRockScene({
 }: {
   clickCount: number;
   revealed: boolean;
-  gifts: BonusGiftEntry[];
+  gifts: readonly ResourceOffer[];
   preloadStatus: BonusRockPreloadStatus;
   onRockClick: () => void;
 }) {
@@ -817,7 +815,7 @@ function MagicalRockScene({
     '--bonus-gift-preview-blur': `${rockStage.giftPreview.blurPx}px`,
   };
   const liveStatus = revealed
-    ? 'The Bonus rock exploded and the gifts are unlocked.'
+    ? 'The rock opened and the resource links are visible.'
     : `${clicksRemaining} ${clicksRemaining === 1 ? 'click' : 'clicks'} until the Bonus rock explodes.`;
   const handleRockActivation = () => {
     const now = performance.now();
@@ -848,30 +846,26 @@ function MagicalRockScene({
     >
       <div className="bonus-gift-reveal absolute grid gap-3 sm:grid-cols-2" aria-hidden={!revealed}>
         {gifts.map((gift, index) => {
-          const giftLabel = `Gift ${String(index + 1).padStart(2, '0')}`;
+          const giftLabel = `Resource ${String(index + 1).padStart(2, '0')}`;
           const giftLogo = getBonusGiftLogo(gift);
           const giftContent = (
             <>
               <div className="bonus-gift-card-copy">
                 <span>{giftLabel}</span>
                 <strong>{gift.title}</strong>
-                <em>{contentValue(gift.detail)}</em>
-                <small>{isPlaceholderValue(gift.link) ? 'Gift revealed' : 'Open gift'}</small>
+                <em>{gift.detail}</em>
+                <small>{gift.actionLabel}</small>
               </div>
               <img className="bonus-gift-card-logo" src={giftLogo.src} alt={giftLogo.alt} loading="lazy" />
             </>
           );
 
-          return isPlaceholderValue(gift.link) ? (
-            <div key={gift.title} className="bonus-gift-card is-disabled">
-              {giftContent}
-            </div>
-          ) : (
+          return (
             <a
               key={gift.title}
               href={gift.link}
-              target="_blank"
-              rel="noreferrer"
+              target={gift.link.startsWith('https:') ? '_blank' : undefined}
+              rel={gift.link.startsWith('https:') ? 'noreferrer' : undefined}
               className="bonus-gift-card"
               tabIndex={revealed ? undefined : -1}
             >
@@ -921,7 +915,7 @@ export function BonusSection({
   preloadStatus: BonusRockPreloadStatus;
   onRockClick: () => void;
 }) {
-  const { bonus } = portfolioContent;
+
   const revealed = rockClicks >= 3;
 
   return (
@@ -930,7 +924,7 @@ export function BonusSection({
       <MagicalRockScene
         clickCount={rockClicks}
         revealed={revealed}
-        gifts={bonus.gifts}
+        gifts={resourceOffers}
         preloadStatus={preloadStatus}
         onRockClick={onRockClick}
       />
@@ -939,9 +933,10 @@ export function BonusSection({
           <div className="bonus-copy-card min-w-0 rounded-[2rem] p-7 md:p-10">
             {/* Section label rendered globally via <SectionMarker> */}
             <h2 className="bonus-copy-title mt-4 text-text-primary">
-              {bonus.hook}
+              {bonusResourceCopy.hook}
             </h2>
-            <p className="mt-6 text-sm leading-7 text-muted md:text-base">{bonus.body}</p>
+            <p className="mt-6 text-sm leading-7 text-muted md:text-base">{bonusResourceCopy.body}</p>
+            <a href="/resources" className="mt-5 inline-flex min-h-11 items-center rounded-full border border-stroke bg-white/75 px-5 py-2 text-sm text-text-primary underline underline-offset-4">Open resources directly <span aria-hidden="true">→</span></a>
           </div>
         </div>
       </div>

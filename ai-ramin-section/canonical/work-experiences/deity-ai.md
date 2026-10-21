@@ -6,7 +6,7 @@ visibility: public_portfolio_safe
 retrieval_priority: high
 answer_permission: factual_answer
 entity: Deity AI
-role: Product Manager, Chatbot
+role: Product Manager, Chatbot (Part-time contract)
 date_range: "Jul 2017 - Oct 2019"
 source_paths:
   - "ramin-hoodeh-exp-context.md"
@@ -19,7 +19,7 @@ verification_status: metric_review_needed
 
 ## Summary
 
-Ramin worked at Deity AI as Product Manager for a chatbot-mediated dating/social product from Jul 2017 to Oct 2019.
+The supplied 2026 CV identifies Deity AI as a part-time contract Product Manager role from Jul 2017 to Oct 2019, overlapping other engagements. This historical dating/social conversation mediator is separate from the newer Deity profile coach in nsso; current LLM architecture must not be projected onto the historical product.
 
 This role is important because it is early evidence of conversational AI product thinking.
 

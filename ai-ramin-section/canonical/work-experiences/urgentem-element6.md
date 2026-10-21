@@ -6,7 +6,7 @@ visibility: public_portfolio_safe
 retrieval_priority: highest
 answer_permission: factual_answer
 entity: Urgentem
-role: Product Manager, Climate Data Platform
+role: Product Manager, Climate Data Platform (Contract)
 date_range: "Oct 2019 - Nov 2020"
 source_paths:
   - "ramin-hoodeh-exp-context.md"
@@ -21,7 +21,7 @@ verification_status: metric_conflict_review_needed
 
 ## Summary
 
-Ramin worked at Urgentem as Product Manager for a climate data platform from Oct 2019 to Nov 2020.
+Ramin worked at Urgentem as a contract Product Manager for a climate data platform from Oct 2019 to Nov 2020.
 
 The product was Element6, an award-winning financial climate risk analytics platform that was later acquired.
 
@@ -56,12 +56,9 @@ The PM Experience source lists:
 
 ## Metrics and Review Notes
 
-There is a metric conflict between local sources:
+The latest supplied Payments & Embedded Finance CV (2026) reports GBP 900 million in client-portfolio AUM. Use that supplied career context, with explicit attribution: these are clients’ portfolios, not assets Ramin managed. The older interview draft’s GBP 600 million figure is superseded for public summaries. The underlying portfolio records are not independently audited here.
 
-- PM Experience source: reducing climate-related risk by 20 percent across portfolios totalling GBP 600M in AUM, approximately GBP 12M saved.
-- Resume source: reducing climate-related risk by 20 percent across portfolios totalling GBP 900M in AUM.
-
-Before public chatbot use, choose one verified public-safe metric and mark the other as superseded or draft.
+Do not quote a climate-risk reduction percentage or a saving estimate: the public material does not define the measure, baseline, attribution or calculation needed to interpret it.
 
 Other local source claims:
 

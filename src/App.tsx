@@ -33,6 +33,7 @@ import { NotFoundPage } from './seo/NotFoundPage';
 import { recordJourneyPage } from './lib/visitorJourney';
 import './sections/portfolioDocuments.css';
 import './performance/loading.css';
+import './styles/planReview.css';
 
 const contactSection = deferredComponent(() => import('./sections/Contact').then((m) => ({ default: m.Contact })));
 const { Component: Contact } = contactSection;
@@ -47,6 +48,10 @@ const { Component: TeachingWritingShelf } = thoughtsSection;
 const { Component: AiRaminSection } = aiSection;
 const { Component: BonusSection } = bonusSection;
 const { Component: ProfessionalStories } = deferredComponent(() => import('./sections/ProfessionalStories').then((m) => ({ default: m.ProfessionalStories })));
+const resourcesSection = deferredComponent(() => import('./sections/Resources').then((m) => ({ default: m.Resources })));
+const aboutSection = deferredComponent(() => import('./sections/TeachingWriting/AboutWritingPage').then((m) => ({ default: m.AboutWritingPage })));
+const { Component: Resources } = resourcesSection;
+const { Component: AboutWritingPage } = aboutSection;
 const { Component: DisxTalkPage } = deferredComponent(() => import('./sections/DisxTalkPage').then((m) => ({ default: m.DisxTalkPage })));
 const { Component: ThesisDeepDive } = deferredComponent(() => import('./sections/Projects/ThesisDeepDive').then((m) => ({ default: m.ThesisDeepDive })));
 const { Component: MetacognitionDeepDive } = deferredComponent(() => import('./sections/TeachingWriting/MetacognitionDeepDive').then((m) => ({ default: m.MetacognitionDeepDive })));
@@ -104,7 +109,7 @@ const thoughtsSubsectionBySlug: Record<string, string> = {
   think: 'thoughts-act-method-values',
   method: 'thoughts-act-method-values',
   'method-values': 'thoughts-act-method-values',
-  talks: 'thoughts-talks',
+  talks: 'thoughts-disx',
   values: 'thoughts-talks',
   passions: 'thoughts-passions',
   formation: 'thoughts-act-formation',
@@ -150,7 +155,7 @@ type ParsedPortfolioRoute = {
   caseStudy: CaseStudyEntry | null;
   scrollTargetId: string | null;
   canonicalPath: string;
-  documentPage?: 'side' | 'vivup' | 'disx' | 'method';
+  documentPage?: 'side' | 'vivup' | 'disx' | 'method' | 'about' | 'resources';
 };
 
 function normalizeRouteSegment(value: string | undefined) {
@@ -220,6 +225,9 @@ function parseSegmentsToRoute(segments: string[]): ParsedPortfolioRoute {
   if (first === 'product-method' || first === 'method') {
     return { ...sectionRoute('thoughts', '/product-method'), documentPage: 'method' };
   }
+  if (first === 'about') return { ...sectionRoute('thoughts', '/about'), documentPage: 'about' };
+  if (first === 'resources') return { ...sectionRoute('bonus', '/resources'), documentPage: 'resources' };
+  if (first === 'thoughts' && second === 'books') return { ...scrollRoute('thoughts', 'thoughts-books', '/thoughts/books'), documentPage: 'about' };
 
   const legacyDomRoute = legacyDomIdRoutes[first];
   if (legacyDomRoute) return { ...legacyDomRoute, caseStudy: null };
@@ -299,6 +307,86 @@ function parsePortfolioLocation(pathname: string, hash: string): ParsedPortfolio
   return parseSegmentsToRoute(getRouteSegments(pathname));
 }
 
+type ReaderReturnLocation = { pathname: string; search: string; hash: string };
+type ReaderReturnSnapshot = {
+  location: ReaderReturnLocation;
+  route: ParsedPortfolioRoute;
+  opener: HTMLElement | null;
+  scroll: { element: HTMLElement; top: number; left: number }[];
+  windowScroll: { top: number; left: number };
+  pending: boolean;
+};
+
+function captureReaderReturn(location: ReaderReturnLocation, route: ParsedPortfolioRoute, opener?: HTMLElement | null): ReaderReturnSnapshot {
+  const stage = document.querySelector<HTMLElement>('.portfolio-stage');
+  const elements = stage ? [stage, ...stage.querySelectorAll<HTMLElement>('*')].filter((element) => element === stage || element.scrollTop || element.scrollLeft) : [];
+  return {
+    location: { pathname: location.pathname, search: location.search, hash: location.hash },
+    route,
+    opener: opener ?? (document.activeElement instanceof HTMLElement ? document.activeElement : null),
+    scroll: elements.map((element) => ({ element, top: element.scrollTop, left: element.scrollLeft })),
+    windowScroll: { top: window.scrollY, left: window.scrollX },
+    pending: true,
+  };
+}
+
+function isReaderReturn(snapshot: ReaderReturnSnapshot | null, location: ReaderReturnLocation) {
+  return Boolean(snapshot && snapshot.location.pathname === location.pathname && snapshot.location.search === location.search && snapshot.location.hash === location.hash);
+}
+
+function readerBackgroundRoute(route: ParsedPortfolioRoute, snapshot: ReaderReturnSnapshot | null) {
+  return route.caseStudy && snapshot ? snapshot.route : route;
+}
+
+function restoreReaderReturn(snapshot: ReaderReturnSnapshot, main: HTMLElement | null) {
+  window.scrollTo({ ...snapshot.windowScroll, behavior: 'auto' });
+  for (const { element, top, left } of snapshot.scroll) {
+    if (element.isConnected) element.scrollTo({ top, left, behavior: 'auto' });
+  }
+  const opener = snapshot.opener;
+  const available = (element: HTMLElement) => element.isConnected && !element.closest('[inert], [hidden], [aria-hidden="true"]') &&
+    element.getClientRects().length > 0 && getComputedStyle(element).visibility !== 'hidden' && !element.matches(':disabled');
+  const current = document.activeElement;
+  // A visitor who has already focused another control after closing wins.
+  const keepCurrentFocus = current instanceof HTMLElement && current !== document.body && current !== document.documentElement &&
+    current !== main && current !== opener && !current.closest('.portfolio-reader-layer') && available(current);
+  if (!keepCurrentFocus) {
+    if (opener && available(opener) && opener.matches('a[href], button, input, select, textarea, summary, [tabindex], [contenteditable="true"]')) {
+      const bounds = opener.getBoundingClientRect();
+      const stageBounds = document.querySelector<HTMLElement>('.portfolio-stage')?.getBoundingClientRect();
+      const visibleTop = Math.max(0, stageBounds?.top ?? 0);
+      const visibleBottom = Math.min(window.innerHeight, stageBounds?.bottom ?? window.innerHeight);
+      if (bounds.bottom <= visibleTop || bounds.top >= visibleBottom || bounds.right <= 0 || bounds.left >= window.innerWidth) {
+        opener.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'auto' });
+      }
+      opener.focus({ preventScroll: true });
+    } else focusRouteContent(main);
+  }
+  snapshot.pending = false;
+}
+
+function scheduleReaderReturn(snapshot: ReaderReturnSnapshot, main: HTMLElement | null) {
+  let frame: number | null = null;
+  let cancelled = false;
+  let attempts = 0;
+  const restore = () => {
+    if (cancelled) return;
+    // Reader exit animations and dialog isolation must finish before focusing
+    // the underlay. Cancellation on navigation prevents a stale restoration.
+    if (hasOpenDialog()) {
+      if (++attempts < 120) frame = window.requestAnimationFrame(restore);
+      return;
+    }
+    restoreReaderReturn(snapshot, main);
+    window.dispatchEvent(new Event('resize'));
+  };
+  frame = window.requestAnimationFrame(restore);
+  return () => {
+    cancelled = true;
+    if (frame !== null) window.cancelAnimationFrame(frame);
+  };
+}
+
 const LiveShaderGradientBackground = lazy(() =>
   import('./components/ShaderGradientBackground').then((module) => ({ default: module.ShaderGradientBackground })),
 );
@@ -353,6 +441,8 @@ function ActivePortfolioSection({
     return <ProfessionalStories activeSlug={documentPage} />;
   }
   if (documentPage === 'disx') return <DisxTalkPage onOpenThesis={onOpenThesis} />;
+  if (documentPage === 'about') return <AboutWritingPage />;
+  if (documentPage === 'resources') return <Resources />;
   if (documentPage === 'method') {
     return <section className="portfolio-document-page"><ProductMethodSummary /></section>;
   }
@@ -395,8 +485,13 @@ function PortfolioPage() {
   const location = useLocation();
   const navigate = useNavigate();
   const requestedRoute = useMemo(() => parsePortfolioLocation(location.pathname, location.hash), [location.pathname, location.hash]);
-  const documentPage = requestedRoute.documentPage;
   const notFound = !isKnownPortfolioPath(location.pathname) && !isLegacyHashRoute(location.hash);
+  const readerReturnRef = useRef<ReaderReturnSnapshot | null>(null);
+  const lastReaderOpenerRef = useRef<HTMLElement | null>(null);
+  // A reader is an overlay on the existing page. Keeping this document and its
+  // React key stable preserves disclosures, local state and the real opener.
+  const backgroundRoute = readerBackgroundRoute(requestedRoute, readerReturnRef.current);
+  const documentPage = backgroundRoute.documentPage;
   useRouteMetadata(location.pathname);
   // The visual intro is an explicit replay, never a prerequisite to reading.
   const [isLoading, setIsLoading] = useState(() => new URLSearchParams(window.location.search).get('intro') === '1' && !getLoadingPreferences().reducedMotion);
@@ -441,18 +536,22 @@ function PortfolioPage() {
     return import.meta.env.DEV && searchParams.has('perf');
   }, [location.search]);
   const mobileMenuOpenRef = useRef<(() => void) | null>(null);
-  const readerReturnLocationRef = useRef<{ pathname: string; hash: string } | null>(null);
+  const rememberReaderReturn = useCallback((opener?: HTMLElement | null) => {
+    if (requestedReader) return;
+    readerReturnRef.current = captureReaderReturn(location, requestedRoute, opener ?? lastReaderOpenerRef.current);
+    setCaseStudyReturnSection(requestedRoute.section);
+  }, [location, requestedReader, requestedRoute]);
   const openMobileMenu = useCallback(() => { mobileMenuOpenRef.current?.(); }, []);
   const isProjectsSection = activeSection === 'projects';
   const isThoughtsSection = activeSection === 'thoughts';
   const isAiRaminSection = activeSection === 'ai-ramin';
   const isContactSection = activeSection === 'contact';
-  const isFullBleedSection = isProjectsSection || isThoughtsSection;
+  const isFullBleedSection = isProjectsSection || (isThoughtsSection && !documentPage);
   const hasActiveDeepDive = activeCaseStudy !== null;
   const usesProjectsBackdrop = isProjectsSection;
   const shaderVariant: PortfolioShaderVariant = usesProjectsBackdrop
     ? 'projects'
-    : activeSection === 'bonus'
+    : activeSection === 'bonus' && documentPage !== 'resources'
       ? 'bonus'
       : 'default';
   const liveShaderVariant = shaderVariant;
@@ -466,10 +565,11 @@ function PortfolioPage() {
     recordJourneyPage(notFound ? location.pathname : requestedRoute.canonicalPath);
     // Dialogs manage their own focus and restoration. Initial entry leaves the
     // browser's reading position alone; ordinary route changes focus main.
-    if (previous && !previous.reader && !requestedReader && !location.hash && !hasOpenDialog()) {
+    if (previous && !previous.reader && !requestedReader && !location.hash &&
+      !(readerReturnRef.current?.pending && isReaderReturn(readerReturnRef.current, location)) && !hasOpenDialog()) {
       focusRouteContent(mainRef.current);
     }
-  }, [location.hash, location.pathname, notFound, requestedReader, requestedRoute.canonicalPath, routeKey]);
+  }, [location.hash, location.pathname, location.search, notFound, requestedReader, requestedRoute.canonicalPath, routeKey]);
 
   useEffect(() => {
     const update = () => setLoadingPreferences(getLoadingPreferences());
@@ -486,6 +586,13 @@ function PortfolioPage() {
   }, []);
 
   useEffect(() => {
+    const rememberClickedOpener = (event: MouseEvent) => {
+      const target = event.target instanceof Element ? event.target : null;
+      const opener = target?.closest<HTMLElement>('a[href], button, [role="button"]');
+      if (!opener?.closest('[data-portfolio-underlay]')) return;
+      lastReaderOpenerRef.current = opener;
+      queueMicrotask(() => { if (lastReaderOpenerRef.current === opener) lastReaderOpenerRef.current = null; });
+    };
     const handleInternalLinkClick = (event: MouseEvent) => {
       if (
         event.defaultPrevented ||
@@ -511,16 +618,20 @@ function PortfolioPage() {
       if (/^\/(cv|presentation)\/?$/.test(url.pathname)) return;
 
       if (parsePortfolioLocation(url.pathname, url.hash).caseStudy && !parsePortfolioLocation(window.location.pathname, window.location.hash).caseStudy) {
-        readerReturnLocationRef.current = { pathname: window.location.pathname, hash: window.location.hash };
+        rememberReaderReturn(anchor);
       }
 
       event.preventDefault();
       navigate({ pathname: url.pathname, search: url.search || location.search, hash: url.hash });
     };
 
+    document.addEventListener('click', rememberClickedOpener, true);
     document.addEventListener('click', handleInternalLinkClick);
-    return () => document.removeEventListener('click', handleInternalLinkClick);
-  }, [location.search, navigate]);
+    return () => {
+      document.removeEventListener('click', rememberClickedOpener, true);
+      document.removeEventListener('click', handleInternalLinkClick);
+    };
+  }, [location.search, navigate, rememberReaderReturn]);
 
   const requestBonusRockPreload = useCallback((reason: 'idle' | 'intent' | 'navigate' = 'intent') => {
     void preloadBonusRockAssets(reason);
@@ -562,18 +673,27 @@ function PortfolioPage() {
 
   const handleBottomNavigation = useCallback(
     (target: string) => {
+      if (target === 'about' || target === 'resources') {
+        navigateToPath(`/${target}`);
+        resetViewportScroll(preferredScrollBehavior());
+        return;
+      }
       if (target === 'bonus') {
         requestBonusRockPreload('navigate');
       }
 
       handleSectionNavigate(normalizeSectionTarget(target));
     },
-    [handleSectionNavigate, requestBonusRockPreload],
+    [handleSectionNavigate, navigateToPath, requestBonusRockPreload, resetViewportScroll],
   );
 
   const handleBottomNavigationIntent = useCallback(
     (target: string) => {
       if (!canSpeculativelyLoad()) return;
+      if (target === 'about' || target === 'resources') {
+        void (target === 'about' ? aboutSection : resourcesSection).preload().catch(() => {});
+        return;
+      }
       const section = normalizeSectionTarget(target);
       const deferred = {
         'experience-education': workSection, projects: projectsSection,
@@ -599,12 +719,21 @@ function PortfolioPage() {
       return;
     }
 
-    setActiveSection(route.caseStudy ? caseStudyReturnSection : route.section);
+    setActiveSection(route.caseStudy ? readerReturnRef.current?.route.section ?? caseStudyReturnSection : route.section);
     setActiveCaseStudy(route.caseStudy);
     setRouteScrollTargetId(route.scrollTargetId);
-    if (!route.caseStudy) setCaseStudyReturnSection(route.section);
+    if (route.caseStudy && readerReturnRef.current) {
+      const previousReturn = readerReturnRef.current;
+      // Forward can reopen a reader after the visitor has moved farther down
+      // its origin page. Capture that current position on each new opening.
+      readerReturnRef.current = previousReturn.pending ? previousReturn : captureReaderReturn(previousReturn.location, previousReturn.route, previousReturn.opener);
+    }
+    if (!route.caseStudy) {
+      setCaseStudyReturnSection(route.section);
+      if (!isReaderReturn(readerReturnRef.current, location)) readerReturnRef.current = null;
+    }
 
-    if (route.section === 'bonus') requestBonusRockPreload('navigate');
+    if (route.section === 'bonus' && route.documentPage !== 'resources') requestBonusRockPreload('navigate');
   }, [
     caseStudyReturnSection,
     location.hash,
@@ -618,30 +747,28 @@ function PortfolioPage() {
 
   const handleOpenThesis = useCallback(() => {
     if (!thesisCaseStudy) return;
-    setCaseStudyReturnSection(activeSection);
-    readerReturnLocationRef.current = { pathname: location.pathname, hash: location.hash };
+    rememberReaderReturn();
     navigateToPath(PRODUCT_THESIS_PATH);
-  }, [activeSection, location.hash, location.pathname, navigateToPath, thesisCaseStudy]);
+  }, [navigateToPath, rememberReaderReturn, thesisCaseStudy]);
 
   const handleOpenCaseStudy = useCallback(
     (item: CaseStudyEntry) => {
-      setCaseStudyReturnSection(activeSection);
-      readerReturnLocationRef.current = { pathname: location.pathname, hash: location.hash };
+      rememberReaderReturn();
       navigateToPath(caseStudyPath(item));
     },
-    [activeSection, location.hash, location.pathname, navigateToPath],
+    [navigateToPath, rememberReaderReturn],
   );
 
   const handleCloseCaseStudy = useCallback(() => {
-    setActiveCaseStudy(null);
-    const returnLocation = readerReturnLocationRef.current;
-    readerReturnLocationRef.current = null;
-    if (returnLocation) navigate({ ...returnLocation, search: location.search });
+    const returnLocation = readerReturnRef.current?.location;
+    if (returnLocation) navigate(returnLocation);
     else navigateToPath(sectionPathByTarget[caseStudyReturnSection]);
-  }, [caseStudyReturnSection, location.search, navigate, navigateToPath]);
+  }, [caseStudyReturnSection, navigate, navigateToPath]);
 
   useEffect(() => {
     if (isLoading || resolvedContentKey !== routeKey || activeCaseStudy) return;
+    const readerReturn = readerReturnRef.current;
+    if (readerReturn?.pending && isReaderReturn(readerReturn, location)) return scheduleReaderReturn(readerReturn, mainRef.current);
     if (!routeScrollTargetId && !location.hash) resetViewportScroll('auto');
     if (routeScrollTargetId) scrollToId(routeScrollTargetId);
     if (location.hash && !isLegacyHashRoute(location.hash)) {
@@ -653,7 +780,7 @@ function PortfolioPage() {
     // registered plugin without making it part of the initial route graph.
     const frame = window.requestAnimationFrame(() => window.dispatchEvent(new Event('resize')));
     return () => window.cancelAnimationFrame(frame);
-  }, [activeCaseStudy, isLoading, location.hash, resetViewportScroll, resolvedContentKey, routeKey, routeScrollTargetId]);
+  }, [activeCaseStudy, isLoading, location.hash, location.pathname, location.search, resetViewportScroll, resolvedContentKey, routeKey, routeScrollTargetId]);
 
   useEffect(
     () =>
@@ -706,7 +833,7 @@ function PortfolioPage() {
         aria-hidden={hasActiveDeepDive ? true : undefined}
       >
         {/* AI Ramin renders its section label inside its own layout. */}
-        {isAiRaminSection ? null : <SectionMarker section={activeSection} />}
+        {isAiRaminSection ? null : <SectionMarker section={documentPage === 'about' || documentPage === 'resources' ? documentPage : activeSection} />}
           <div
             className={`portfolio-frame relative mx-auto flex h-full w-full lg:w-full ${
               isFullBleedSection ? (isProjectsSection ? 'is-projects-frame' : 'is-thoughts-frame') : 'lg:max-w-[1426px]'
@@ -780,6 +907,8 @@ function PortfolioPage() {
         ) : null}
       </AnimatePresence>
       <BottomNavigation
+        activeDestination={documentPage === 'about' || documentPage === 'resources' ? documentPage : undefined}
+        lightPage={documentPage === 'resources'}
         active={activeSection}
         currentSection={activeSection}
         onNavigate={handleBottomNavigation}

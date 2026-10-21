@@ -341,6 +341,7 @@ type AiRaminGlassButtonStyle = CSSProperties & {
 type AiRaminSendMessageOptions = {
   requestType?: AiRaminRequestType;
   hiringMode?: AiRaminHiringModeId;
+  retry?: boolean;
 };
 type AiRaminFeedbackValue = 'helpful' | 'needs_review';
 type AiRaminFeedbackStatus = 'idle' | 'submitting' | 'saved' | 'failed';
@@ -1253,9 +1254,9 @@ function AiRaminAnswerFeedback({
             contextTruncated: sourceMetadata?.contextTruncated,
           }),
         });
-        const payload = (await apiResponse.json().catch(() => null)) as { error?: string } | null;
+        const payload = (await apiResponse.json().catch(() => null)) as { error?: string; persisted?: boolean } | null;
 
-        if (!apiResponse.ok) {
+        if (!apiResponse.ok || payload?.persisted !== true) {
           throw new Error(payload?.error || 'Feedback could not be saved.');
         }
 
@@ -2017,9 +2018,39 @@ function AiRaminContextPanel({
   );
 }
 
+function AiRaminRequestRecovery({ error, canRetry, onRetry }: { error: string; canRetry: boolean; onRetry: () => void }) {
+  return (
+    <div className="ai-ramin-chat-error" role="alert">
+      <p className="m-0">{error}</p>
+      <p className="mb-0 mt-2 text-xs">Your question is kept in this tab. You can retry, edit it below, or explore the evidence directly.</p>
+      <div className="mt-3 flex flex-wrap items-center gap-3 text-xs">
+        {canRetry ? <button type="button" className="min-h-11 rounded-full border border-current px-4" onClick={onRetry}>Retry question</button> : null}
+        <a className="inline-flex min-h-11 items-center underline" href="/experience-education">Work and outcomes</a>
+        <a className="inline-flex min-h-11 items-center underline" href="/projects">Product evidence</a>
+        <a className="inline-flex min-h-11 items-center underline" href="/contact">Contact Ramin</a>
+      </div>
+    </div>
+  );
+}
+
+function AiRaminStartingQuestions({ onSelect }: { onSelect: (prompt: string) => void }) {
+  const questions = [
+    { label: 'What has Ramin shipped?', prompt: 'Which AI products has Ramin shipped, what did he personally own, and where can I inspect the evidence?' },
+    { label: 'Strongest outcomes and gaps', prompt: 'What are Ramin’s strongest measurable business outcomes, over what periods, and what evidence is still missing?' },
+    { label: 'How does he govern AI?', prompt: 'Give a concrete example of Ramin balancing AI autonomy, evaluation and human review. Distinguish implemented controls from planned work.' },
+  ];
+  return (
+    <div className="mt-3 grid gap-2 md:hidden" aria-label="Starting questions">
+      {questions.map((question) => (
+        <button key={question.label} type="button" className="min-h-11 rounded-2xl border border-slate-300/70 bg-white/60 px-3 py-2 text-left text-xs text-slate-700" onClick={() => onSelect(question.prompt)}>{question.label}</button>
+      ))}
+    </div>
+  );
+}
+
 export function AiRaminSection({ onOpenMenu }: { onOpenMenu?: () => void }) {
   const chatbot = portfolioContent.aiRaminChatbot;
-  const { prompt, isSuggestionsOpen, selectedMode, selectedRequestType, messages, isSending, chatError } =
+  const { prompt, isSuggestionsOpen, selectedMode, selectedRequestType, messages, isSending, chatError, failedRequest } =
     useSyncExternalStore(aiRaminConversation.subscribe, aiRaminConversation.getSnapshot, aiRaminConversation.getSnapshot);
   const { setPrompt, setIsSuggestionsOpen, setSelectedMode, setSelectedRequestType, setChatError } = aiRaminConversation;
   const [loadingMessageIndex, setLoadingMessageIndex] = useState(0);
@@ -2132,13 +2163,15 @@ export function AiRaminSection({ onOpenMenu }: { onOpenMenu?: () => void }) {
 
   const sendMessage = useCallback(
     async (messageOverride?: string, options?: AiRaminSendMessageOptions) => {
-      const messageText = (messageOverride ?? prompt).trim();
-      if (!messageText || aiRaminConversation.getSnapshot().isSending) return;
-      const requestMode = options?.hiringMode ?? selectedMode;
-      const requestType = options?.requestType ?? selectedRequestType;
+      const current = aiRaminConversation.getSnapshot();
+      const retry = options?.retry ? current.failedRequest : null;
+      const messageText = (retry?.message.content ?? messageOverride ?? current.prompt).trim();
+      if (!messageText || current.isSending) return;
+      const requestMode = retry?.selectedMode ?? options?.hiringMode ?? current.selectedMode;
+      const requestType = retry?.selectedRequestType ?? options?.requestType ?? current.selectedRequestType;
 
-      const requestHistory = messages
-        .filter((message) => !message.isIntro)
+      const requestHistory = current.messages
+        .filter((message) => !message.isIntro && message.id !== retry?.message.id)
         .map((message) => ({
           role: message.role,
           content: message.content,
@@ -2153,7 +2186,7 @@ export function AiRaminSection({ onOpenMenu }: { onOpenMenu?: () => void }) {
               }
             : undefined,
         }));
-      const userMessage: AiRaminMessage = {
+      const userMessage: AiRaminMessage = retry?.message ?? {
         id: createAiRaminMessageId('user'),
         role: 'user',
         content: messageText,
@@ -2182,6 +2215,9 @@ export function AiRaminSection({ onOpenMenu }: { onOpenMenu?: () => void }) {
         if (!response.ok) {
           throw new Error(responsePayload?.error || 'AI Ramin could not answer that yet.');
         }
+        if (!String(responsePayload?.answer || '').trim()) {
+          throw new Error('AI Ramin did not return an answer. Please retry or inspect the evidence directly.');
+        }
 
         const responseIntent =
           responsePayload?.sourceMetadata?.intentRoute?.intent ||
@@ -2204,7 +2240,7 @@ export function AiRaminSection({ onOpenMenu }: { onOpenMenu?: () => void }) {
           isSuggestionsOpen: responseIntent === 'casual_chat' || responseIntent === 'clarification_needed' ||
             responseQuestionType === 'conversation_open' || responseQuestionType === 'clarification_needed',
         };
-      });
+      }, { selectedMode: requestMode, selectedRequestType: requestType, retry: Boolean(retry) });
       const outcome = await pendingRequest;
       if (outcome === 'success' || outcome === 'unavailable') recordJourneyEvent('ai_result', outcome, 'ai');
     },
@@ -2366,6 +2402,7 @@ export function AiRaminSection({ onOpenMenu }: { onOpenMenu?: () => void }) {
 
   return (
     <section ref={sectionRef} id="ai-ramin" className="ai-ramin-section ai-ramin-thoughts-background relative isolate h-full min-h-full overflow-hidden">
+      <h1 className="sr-only">AI Ramin</h1>
       <div className="ai-ramin-ambient" aria-hidden="true" />
       <div className="ai-ramin-frost" aria-hidden="true" />
       <div className="ai-ramin-page-shell relative z-10 mx-auto flex h-full min-h-0 w-full flex-col px-5 pt-8 pb-8 sm:px-8 md:px-12 lg:px-16">
@@ -2511,6 +2548,7 @@ export function AiRaminSection({ onOpenMenu }: { onOpenMenu?: () => void }) {
                           }`}
                         >
                           <AiRaminMessageMarkdown content={message.content} />
+                          {message.isIntro ? <AiRaminStartingQuestions onSelect={insertExamplePrompt} /> : null}
                         </div>
                         {message.role === 'assistant' && message.response ? (
                           <>
@@ -2552,14 +2590,13 @@ export function AiRaminSection({ onOpenMenu }: { onOpenMenu?: () => void }) {
                       <span className="ai-ramin-loading-message" aria-live="polite">
                         {loadingMessage}
                       </span>
+                      <button type="button" className="ml-3 min-h-11 rounded-full border border-slate-300 px-3 text-xs" onClick={() => aiRaminConversation.cancelRequest()}>Cancel request</button>
                     </div>
                   </div>
                 ) : null}
 
                 {chatError ? (
-                  <div className="ai-ramin-chat-error" role="alert">
-                    {chatError}
-                  </div>
+                  <AiRaminRequestRecovery error={chatError} canRetry={Boolean(failedRequest) && !isSending} onRetry={() => void sendMessage(undefined, { retry: true })} />
                 ) : null}
 
                 <div ref={threadEndRef} />

@@ -13,7 +13,7 @@ source_paths:
   - "ai-ramin-context/PM Experience & Interview Prep 2a86fe2ecf3780d68f85f0edd9085933.md"
   - "src/data/portfolio.ts"
 public_links:
-  - "https://docs.microsoft.com/en-gb/connectors/ordnancesurveyplaces/"
+  - "https://learn.microsoft.com/en-us/connectors/ordnancesurveyplaces/"
 verification_status: metric_review_needed
 ---
 
@@ -29,7 +29,7 @@ This role is important evidence for geospatial data, sustainability applications
 
 Local sources say Ramin led twelve discovery workshops with the Propositions and Innovation team and client stakeholders to discover sustainability applications of geospatial data.
 
-The work helped validate three product concepts for further investment and contributed to defining and launching the first geospatial API on Microsoft's Power Platform.
+Local career sources report three product concepts validated for further investment and Ramin's contribution to defining and launching the OS Places connector on Microsoft Power Platform. Microsoft's public documentation names it Ordnance Survey Places (Preview) and describes address search through the OS Places API. The documentation supports the connector's existence and scope; it does not establish a first-in-market claim or attribute its authorship to Ramin.
 
 Local source claims include:
 
