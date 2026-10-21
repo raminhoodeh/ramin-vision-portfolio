@@ -8,7 +8,11 @@ dist/
 # Local-only references, notes, and generated artifacts
 .claude/
 artifacts/
-docs/
+# Only the internal claim registry and its referenced provenance enter the build.
+# They are build inputs and are never copied to dist/public output.
+docs/*
+!docs/portfolio-claims.json
+!docs/ramin-hoodeh-exp-context.md
 anthropic-animation-inspiration/
 ai-native-product-os-context/
 Ramin Hoodeh - CV.docx
