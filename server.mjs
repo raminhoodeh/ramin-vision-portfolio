@@ -5,6 +5,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { handleAiRaminFeedbackRequest, handleAiRaminRequest } from './server/aiRaminHandler.mjs';
 import { handleMassSocialWisdomRequest } from './server/massSocialWisdomHandler.mjs';
+import { handleVisitorJourneyRequest } from './server/visitorJourneyHandler.mjs';
 import { CANONICAL_ORIGIN, getPublicPage, normalizePublicPath, routeAliases } from './src/seo/routes.mjs';
 
 const ROOT_DIR = path.dirname(fileURLToPath(import.meta.url));
@@ -137,6 +138,11 @@ const server = http.createServer((req, res) => {
       console.error(error);
       sendText(res, 500, 'AI Ramin request failed.');
     });
+    return;
+  }
+
+  if (requestUrl.pathname === '/api/visitor-journey') {
+    void handleVisitorJourneyRequest(req, res).catch(() => sendText(res, 500, 'Measurement unavailable.'));
     return;
   }
 

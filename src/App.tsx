@@ -30,6 +30,7 @@ import { isKnownPortfolioPath } from './seo/routes.mjs';
 import { useRouteMetadata } from './seo/useRouteMetadata';
 import { PortfolioAppReady } from './seo/PortfolioAppReady';
 import { NotFoundPage } from './seo/NotFoundPage';
+import { recordJourneyPage } from './lib/visitorJourney';
 import './sections/portfolioDocuments.css';
 import './performance/loading.css';
 
@@ -462,12 +463,13 @@ function PortfolioPage() {
     if (previous?.key === routeKey) return;
     completedRouteRef.current = { key: routeKey, reader: requestedReader };
     setResolvedContentKey(routeKey);
+    recordJourneyPage(notFound ? location.pathname : requestedRoute.canonicalPath);
     // Dialogs manage their own focus and restoration. Initial entry leaves the
     // browser's reading position alone; ordinary route changes focus main.
     if (previous && !previous.reader && !requestedReader && !location.hash && !hasOpenDialog()) {
       focusRouteContent(mainRef.current);
     }
-  }, [location.hash, requestedReader, routeKey]);
+  }, [location.hash, location.pathname, notFound, requestedReader, requestedRoute.canonicalPath, routeKey]);
 
   useEffect(() => {
     const update = () => setLoadingPreferences(getLoadingPreferences());

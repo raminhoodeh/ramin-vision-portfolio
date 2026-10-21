@@ -1,0 +1,2180 @@
+{
+  "version": 1,
+  "visibility": "internal-maintenance",
+  "owner": "Portfolio author/editor",
+  "datePolicy": "lastChecked is a local-reconciliation date. source.sourceCheckedOn is an actual source-observation date, null when not established. Advancing lastChecked never refreshes a platform listing or validates an employer metric. reviewAfter is inclusive and equals lastChecked plus cadenceDays. The default --as-of date uses Asia/Dubai, the author maintenance timezone; server telemetry may use UTC independently.",
+  "maintenance": "Edit the source first after reviewing evidence and publication scope, reconcile bindings and canonical/UI surfaces, then run check-portfolio-claims with --self-test. Do not auto-update dates or copy a changed value without review. Historical raw/scrape material is provenance, not approved current statistics.",
+  "linkedChecks": [
+    "scripts/check-project-claims.mjs"
+  ],
+  "claims": [
+    {
+      "id": "course-product-udemy",
+      "entity": "The Fastest Path to Product Management · Udemy",
+      "kind": "course",
+      "scope": "One named platform edition. Ratings, rating counts, enrolments and badges remain attached to that edition; enrolments are not deduplicated people or evidence of production AI quality.",
+      "period": "Platform listing snapshot checked 22 October 2026; time-sensitive figures, not lifetime unique reach.",
+      "attribution": "Ramin is the instructor/creator; Coursera edition is offered through LearnKartS. Platform availability is not platform employment or accreditation.",
+      "publication": {
+        "status": "public-platform-facts",
+        "basis": "The current reconciled export and canonical record identify the 22 October public listing review.",
+        "exclusions": [
+          "No merged audience total",
+          "No Udemy metrics or badges transferred to Coursera or the foundation course",
+          "No teaching-to-deployment inference"
+        ]
+      },
+      "implementationStatus": "public-course",
+      "evidenceStatus": "dated-public-listing-observation",
+      "cadenceDays": 30,
+      "source": {
+        "sourceCheckedOn": "2026-10-22",
+        "note": "Actual platform observation date is preserved from teachingEvidence.checkedOn; lastChecked only records this local reconciliation.",
+        "files": [
+          "ai-ramin-section/canonical/talks-writing-courses.md",
+          "src/data/teachingEvidence.ts"
+        ]
+      },
+      "surfaceRefs": [
+        {
+          "file": "src/data/content.ts",
+          "symbol": "thoughtCourses"
+        },
+        {
+          "file": "src/data/teaching.ts",
+          "symbol": "teachingWritingItems"
+        },
+        {
+          "file": "src/sections/TeachingWriting/ThoughtsOverview.tsx",
+          "symbol": "ThoughtsOverview"
+        }
+      ],
+      "bindings": [
+        {
+          "file": "src/data/teachingEvidence.ts",
+          "declaration": "productCourseEvidence",
+          "path": [],
+          "equals": {
+            "platform": "Udemy",
+            "title": "The Fastest Path to Product Management",
+            "href": "https://www.udemy.com/course/the-fastest-way-to-become-a-product-manager/",
+            "checkedOn": "2026-10-22",
+            "checkedLabel": "Checked 22 October 2026",
+            "rating": "4.8",
+            "ratings": "162",
+            "students": "4,881",
+            "badges": []
+          }
+        }
+      ],
+      "boundaries": [
+        {
+          "file": "ai-ramin-section/canonical/talks-writing-courses.md",
+          "required": [
+            "4\\.8 out of 5, 162 ratings, and 4,881",
+            "No Highest Rated or Bestseller badge was confirmed"
+          ]
+        }
+      ],
+      "publicLinks": [
+        "https://www.udemy.com/course/the-fastest-way-to-become-a-product-manager/"
+      ],
+      "checkedScope": "local-reconciliation",
+      "lastChecked": "2026-10-22",
+      "reviewAfter": "2026-11-21"
+    },
+    {
+      "id": "course-ai-udemy",
+      "entity": "Transition from Product Manager to AI Product Manager · Udemy",
+      "kind": "course",
+      "scope": "One named platform edition. Ratings, rating counts, enrolments and badges remain attached to that edition; enrolments are not deduplicated people or evidence of production AI quality.",
+      "period": "Platform listing snapshot checked 22 October 2026; time-sensitive figures, not lifetime unique reach.",
+      "attribution": "Ramin is the instructor/creator; Coursera edition is offered through LearnKartS. Platform availability is not platform employment or accreditation.",
+      "publication": {
+        "status": "public-platform-facts",
+        "basis": "The current reconciled export and canonical record identify the 22 October public listing review.",
+        "exclusions": [
+          "No merged audience total",
+          "No Udemy metrics or badges transferred to Coursera or the foundation course",
+          "No teaching-to-deployment inference"
+        ]
+      },
+      "implementationStatus": "public-course",
+      "evidenceStatus": "dated-public-listing-observation",
+      "cadenceDays": 30,
+      "source": {
+        "sourceCheckedOn": "2026-10-22",
+        "note": "Actual platform observation date is preserved from teachingEvidence.checkedOn; lastChecked only records this local reconciliation.",
+        "files": [
+          "ai-ramin-section/canonical/talks-writing-courses.md",
+          "src/data/teachingEvidence.ts"
+        ]
+      },
+      "surfaceRefs": [
+        {
+          "file": "src/data/content.ts",
+          "symbol": "thoughtCourses"
+        },
+        {
+          "file": "src/data/teaching.ts",
+          "symbol": "teachingWritingItems"
+        },
+        {
+          "file": "src/sections/TeachingWriting/ThoughtsOverview.tsx",
+          "symbol": "ThoughtsOverview"
+        }
+      ],
+      "bindings": [
+        {
+          "file": "src/data/teachingEvidence.ts",
+          "declaration": "aiProductCourseEvidence",
+          "path": [
+            "udemy"
+          ],
+          "equals": {
+            "platform": "Udemy",
+            "title": "Transition from Product Manager to AI Product Manager",
+            "href": "https://www.udemy.com/course/from-product-manager-to-ai-product-manager/",
+            "checkedOn": "2026-10-22",
+            "checkedLabel": "Checked 22 October 2026",
+            "rating": "4.6",
+            "ratings": "387",
+            "students": "1,920",
+            "badges": [
+              "Bestseller",
+              "Highest Rated"
+            ]
+          }
+        }
+      ],
+      "boundaries": [
+        {
+          "file": "ai-ramin-section/canonical/talks-writing-courses.md",
+          "required": [
+            "1,920 enrolled students, 387 ratings, and 4\\.6",
+            "both Bestseller and Highest Rated badges"
+          ]
+        }
+      ],
+      "publicLinks": [
+        "https://www.udemy.com/course/from-product-manager-to-ai-product-manager/"
+      ],
+      "checkedScope": "local-reconciliation",
+      "lastChecked": "2026-10-22",
+      "reviewAfter": "2026-11-21"
+    },
+    {
+      "id": "course-ai-coursera",
+      "entity": "From Product Manager to AI Product Manager · Coursera",
+      "kind": "course",
+      "scope": "One named platform edition. Ratings, rating counts, enrolments and badges remain attached to that edition; enrolments are not deduplicated people or evidence of production AI quality.",
+      "period": "Platform listing snapshot checked 22 October 2026; time-sensitive figures, not lifetime unique reach.",
+      "attribution": "Ramin is the instructor/creator; Coursera edition is offered through LearnKartS. Platform availability is not platform employment or accreditation.",
+      "publication": {
+        "status": "public-platform-facts",
+        "basis": "The current reconciled export and canonical record identify the 22 October public listing review.",
+        "exclusions": [
+          "No merged audience total",
+          "No Udemy metrics or badges transferred to Coursera or the foundation course",
+          "No teaching-to-deployment inference"
+        ]
+      },
+      "implementationStatus": "public-course",
+      "evidenceStatus": "dated-public-listing-observation",
+      "cadenceDays": 30,
+      "source": {
+        "sourceCheckedOn": "2026-10-22",
+        "note": "Actual platform observation date is preserved from teachingEvidence.checkedOn; lastChecked only records this local reconciliation.",
+        "files": [
+          "ai-ramin-section/canonical/talks-writing-courses.md",
+          "src/data/teachingEvidence.ts"
+        ]
+      },
+      "surfaceRefs": [
+        {
+          "file": "src/data/content.ts",
+          "symbol": "thoughtCourses"
+        },
+        {
+          "file": "src/data/teaching.ts",
+          "symbol": "teachingWritingItems"
+        },
+        {
+          "file": "src/sections/TeachingWriting/ThoughtsOverview.tsx",
+          "symbol": "ThoughtsOverview"
+        }
+      ],
+      "bindings": [
+        {
+          "file": "src/data/teachingEvidence.ts",
+          "declaration": "aiProductCourseEvidence",
+          "path": [
+            "coursera"
+          ],
+          "equals": {
+            "platform": "Coursera",
+            "title": "From Product Manager to AI Product Manager",
+            "href": "https://www.coursera.org/learn/ai-product-management/",
+            "provider": "LearnKartS",
+            "modules": 10,
+            "checkedOn": "2026-10-22",
+            "checkedLabel": "Checked 22 October 2026"
+          }
+        }
+      ],
+      "boundaries": [
+        {
+          "file": "ai-ramin-section/canonical/talks-writing-courses.md",
+          "required": [
+            "LearnKartS is the course provider",
+            "10 modules and 10 assignments",
+            "do not present them as Coursera figures"
+          ]
+        }
+      ],
+      "publicLinks": [
+        "https://www.coursera.org/learn/ai-product-management/"
+      ],
+      "checkedScope": "local-reconciliation",
+      "lastChecked": "2026-10-22",
+      "reviewAfter": "2026-11-21"
+    },
+    {
+      "id": "project-nsso",
+      "entity": "nsso",
+      "kind": "project",
+      "scope": "Independent product and public profile. Owner-reviewed profile changes are implemented; Intros teaching evals are a separate scope.",
+      "period": "Current described implementation snapshot; no fabricated adoption or commercial measurement period.",
+      "attribution": "Ramin’s independent product/workspace/tool work; external provider and collaborator roles remain acknowledged in the case.",
+      "publication": {
+        "status": "existing-public-safe-copy",
+        "basis": "Existing reconciled public case, brief and canonical text; does not grant access to private products, accounts or source data.",
+        "exclusions": [
+          "No published adoption/conversion lift",
+          "No runtime-wide evaluation coverage inferred from the 50-case teaching example"
+        ]
+      },
+      "implementationStatus": "live-public-product",
+      "evidenceStatus": "repository-listing-and-author-recordings-not-outcome-audit",
+      "cadenceDays": 60,
+      "source": {
+        "sourceCheckedOn": null,
+        "note": "Local reconciliation of the described implementation and evidence limits. No external product or repository refresh is claimed by this date.",
+        "files": [
+          "ai-ramin-section/canonical/projects/nsso.md",
+          "src/data/projectBriefs.ts",
+          "src/data/projects.ts"
+        ]
+      },
+      "surfaceRefs": [
+        {
+          "file": "src/sections/Projects/index.tsx",
+          "symbol": "CaseStudyGrid"
+        },
+        {
+          "file": "src/sections/Projects/CaseStudyOverlay.tsx",
+          "symbol": "CaseStudyOverlay"
+        },
+        {
+          "file": "src/sections/Projects/ProjectBrief.tsx",
+          "symbol": "ProjectBrief"
+        }
+      ],
+      "bindings": [
+        {
+          "file": "src/data/projectBriefs.ts",
+          "declaration": "projectBriefs",
+          "path": [
+            "nsso"
+          ],
+          "pick": [
+            "owned",
+            "current",
+            "evidence",
+            "links"
+          ],
+          "equals": {
+            "owned": "Independent product design and implementation, including Deity and commerce integrations.",
+            "current": "Live profile and storefront product with an AI coaching surface.",
+            "evidence": "Live product and public profile. Adoption, conversion lift and AI quality results are not published here.",
+            "links": [
+              {
+                "label": "Live product",
+                "href": "https://nsso.me/"
+              },
+              {
+                "label": "My public profile",
+                "href": "https://nsso.me/ramin"
+              }
+            ]
+          }
+        },
+        {
+          "file": "src/data/projects.ts",
+          "declaration": "works",
+          "where": {
+            "field": "title",
+            "value": "nsso"
+          },
+          "pick": [
+            "title",
+            "tag",
+            "sourceStatus"
+          ],
+          "equals": {
+            "title": "nsso",
+            "tag": "Identity platform",
+            "sourceStatus": "local-primary"
+          }
+        }
+      ],
+      "boundaries": [
+        {
+          "file": "ai-ramin-section/canonical/projects/nsso.md",
+          "required": [
+            "separate scope"
+          ]
+        }
+      ],
+      "publicLinks": [
+        "https://nsso.me/",
+        "https://nsso.me/ramin"
+      ],
+      "checkedScope": "local-reconciliation",
+      "lastChecked": "2026-10-22",
+      "reviewAfter": "2026-12-21"
+    },
+    {
+      "id": "project-dreamsea",
+      "entity": "Dreamsea",
+      "kind": "project",
+      "scope": "Released iPhone app built with psychotherapist input; on-device persistence coexists with cloud AI processing.",
+      "period": "Current described implementation snapshot; no fabricated adoption or commercial measurement period.",
+      "attribution": "Ramin designed and built the product with a psychotherapist partner shaping interpretation context.",
+      "publication": {
+        "status": "existing-public-safe-copy",
+        "basis": "Existing reconciled public case, brief and canonical text; does not grant access to private products, accounts or source data.",
+        "exclusions": [
+          "No cloud-audio deletion or privacy guarantee without fresh evidence",
+          "No published retention or interpretation-quality benchmark"
+        ]
+      },
+      "implementationStatus": "released-independent-app",
+      "evidenceStatus": "repository-listing-and-author-recordings-not-outcome-audit",
+      "cadenceDays": 60,
+      "source": {
+        "sourceCheckedOn": null,
+        "note": "Local reconciliation of the described implementation and evidence limits. No external product or repository refresh is claimed by this date.",
+        "files": [
+          "ai-ramin-section/canonical/projects/dreamsea.md",
+          "src/data/projectBriefs.ts",
+          "src/data/projects.ts"
+        ]
+      },
+      "surfaceRefs": [
+        {
+          "file": "src/sections/Projects/index.tsx",
+          "symbol": "CaseStudyGrid"
+        },
+        {
+          "file": "src/sections/Projects/CaseStudyOverlay.tsx",
+          "symbol": "CaseStudyOverlay"
+        },
+        {
+          "file": "src/sections/Projects/ProjectBrief.tsx",
+          "symbol": "ProjectBrief"
+        }
+      ],
+      "bindings": [
+        {
+          "file": "src/data/projectBriefs.ts",
+          "declaration": "projectBriefs",
+          "path": [
+            "Dreamsea"
+          ],
+          "pick": [
+            "owned",
+            "current",
+            "evidence",
+            "links"
+          ],
+          "equals": {
+            "owned": "Product design and implementation with a psychotherapist partner shaping interpretation context.",
+            "current": "Released iPhone app, with on-device persistence and cloud AI generation.",
+            "evidence": "Public App Store release and recorded product flow. Retention and interpretation-quality benchmarks are not published here.",
+            "links": [
+              {
+                "label": "App Store",
+                "href": "https://apps.apple.com/us/app/dreamsea/id6761101193"
+              }
+            ]
+          }
+        },
+        {
+          "file": "src/data/projects.ts",
+          "declaration": "works",
+          "where": {
+            "field": "title",
+            "value": "Dreamsea"
+          },
+          "pick": [
+            "title",
+            "tag",
+            "sourceStatus"
+          ],
+          "equals": {
+            "title": "Dreamsea",
+            "tag": "AI iOS app",
+            "sourceStatus": "local-primary"
+          }
+        }
+      ],
+      "boundaries": [
+        {
+          "file": "ai-ramin-section/canonical/projects/dreamsea.md",
+          "required": [
+            "cloud",
+            "device"
+          ]
+        }
+      ],
+      "publicLinks": [
+        "https://apps.apple.com/us/app/dreamsea/id6761101193"
+      ],
+      "checkedScope": "local-reconciliation",
+      "lastChecked": "2026-10-22",
+      "reviewAfter": "2026-12-21"
+    },
+    {
+      "id": "project-qadam",
+      "entity": "Qadam",
+      "kind": "project",
+      "scope": "Paper-only research and guarded decisions. Quantum/classical review remains experimental; source configuration counts and historical cockpit snapshots are separate from fresh coverage.",
+      "period": "Current portfolio status is paper-only; cockpit counts refer to 27 June 2026. No returns measurement window is claimed.",
+      "attribution": "Ramin’s independent product/workspace/tool work; external provider and collaborator roles remain acknowledged in the case.",
+      "publication": {
+        "status": "existing-public-safe-copy",
+        "basis": "Existing reconciled public case, brief and canonical text; does not grant access to private products, accounts or source data.",
+        "exclusions": [
+          "No live capital, validated returns, demonstrated trading edge or quantum advantage",
+          "No access grant implied by a public dashboard URL"
+        ]
+      },
+      "implementationStatus": "paper-only-operating-system",
+      "evidenceStatus": "bounded-paper-experiment-and-recordings",
+      "cadenceDays": 60,
+      "source": {
+        "sourceCheckedOn": null,
+        "note": "Local reconciliation of the described implementation and evidence limits. No external product or repository refresh is claimed by this date.",
+        "files": [
+          "ai-ramin-section/canonical/projects/qadam.md",
+          "src/data/projectBriefs.ts",
+          "src/data/projects.ts"
+        ]
+      },
+      "surfaceRefs": [
+        {
+          "file": "src/sections/Projects/index.tsx",
+          "symbol": "CaseStudyGrid"
+        },
+        {
+          "file": "src/sections/Projects/CaseStudyOverlay.tsx",
+          "symbol": "CaseStudyOverlay"
+        },
+        {
+          "file": "src/sections/Projects/ProjectBrief.tsx",
+          "symbol": "ProjectBrief"
+        }
+      ],
+      "bindings": [
+        {
+          "file": "src/data/projectBriefs.ts",
+          "declaration": "projectBriefs",
+          "path": [
+            "Qadam"
+          ],
+          "pick": [
+            "owned",
+            "current",
+            "evidence",
+            "links"
+          ],
+          "equals": {
+            "owned": "Research workflow, decision records and guarded paper operations, informed by trader feedback.",
+            "current": "Operating paper-only research system. No live capital; cockpit access may require approval.",
+            "evidence": "Workflow screenshots and decision records. These do not establish a trading edge, validated returns or quantum advantage.",
+            "links": [
+              {
+                "label": "Qadam",
+                "href": "https://qadam.trade/dashboard"
+              }
+            ]
+          }
+        },
+        {
+          "file": "src/data/projects.ts",
+          "declaration": "works",
+          "where": {
+            "field": "title",
+            "value": "Qadam"
+          },
+          "pick": [
+            "title",
+            "tag",
+            "sourceStatus"
+          ],
+          "equals": {
+            "title": "Qadam",
+            "tag": "Trading intelligence",
+            "sourceStatus": "local-primary"
+          }
+        }
+      ],
+      "boundaries": [
+        {
+          "file": "ai-ramin-section/canonical/projects/qadam.md",
+          "required": [
+            "paper.only",
+            "experimental",
+            "historical snapshot values",
+            "not current",
+            "No financial return or demonstrated trading edge"
+          ],
+          "forbidden": [
+            "live capital (?:is )?enabled",
+            "we (?:achieved|validated) (?:a |an )?(?:trading edge|quantum advantage)"
+          ]
+        }
+      ],
+      "publicLinks": [
+        "https://qadam.trade/dashboard"
+      ],
+      "checkedScope": "local-reconciliation",
+      "lastChecked": "2026-10-22",
+      "reviewAfter": "2026-12-21"
+    },
+    {
+      "id": "project-24seven-concierge",
+      "entity": "24Seven Concierge",
+      "kind": "project",
+      "scope": "Ramin owns the AI concierge enhancement in a client’s existing app and catalogue. Human concierge confirms bookings; parsing and prompting do not establish catalogue safety.",
+      "period": "Current described implementation snapshot; no fabricated adoption or commercial measurement period.",
+      "attribution": "Client AI enhancement, not original-app authorship.",
+      "publication": {
+        "status": "existing-public-safe-copy",
+        "basis": "Existing reconciled public case, brief and canonical text; does not grant access to private products, accounts or source data.",
+        "exclusions": [
+          "No ownership of the original client app",
+          "No published revenue/conversion lift or formal AI-quality result",
+          "Proposed eval suite and deterministic handle validation remain planned"
+        ]
+      },
+      "implementationStatus": "released-client-ai-enhancement",
+      "evidenceStatus": "repository-listing-and-author-recordings-not-outcome-audit",
+      "cadenceDays": 60,
+      "source": {
+        "sourceCheckedOn": null,
+        "note": "Local reconciliation of the described implementation and evidence limits. No external product or repository refresh is claimed by this date.",
+        "files": [
+          "ai-ramin-section/canonical/projects/24seven-concierge.md",
+          "src/data/projectBriefs.ts",
+          "src/data/projects.ts"
+        ]
+      },
+      "surfaceRefs": [
+        {
+          "file": "src/sections/Projects/index.tsx",
+          "symbol": "CaseStudyGrid"
+        },
+        {
+          "file": "src/sections/Projects/CaseStudyOverlay.tsx",
+          "symbol": "CaseStudyOverlay"
+        },
+        {
+          "file": "src/sections/Projects/ProjectBrief.tsx",
+          "symbol": "ProjectBrief"
+        }
+      ],
+      "bindings": [
+        {
+          "file": "src/data/projectBriefs.ts",
+          "declaration": "projectBriefs",
+          "path": [
+            "24Seven Concierge"
+          ],
+          "pick": [
+            "owned",
+            "current",
+            "evidence",
+            "links"
+          ],
+          "equals": {
+            "owned": "The AI concierge enhancement inside the client’s existing app and Shopify catalogue—not the original app.",
+            "current": "AI planning feature in a released client app, ending in a WhatsApp concierge handoff.",
+            "evidence": "App Store listing and feature recording. Booking conversion, revenue lift and formal AI-quality results are not published here.",
+            "links": [
+              {
+                "label": "App Store",
+                "href": "https://apps.apple.com/us/app/24seven-concierge/id6663954162"
+              }
+            ]
+          }
+        },
+        {
+          "file": "src/data/projects.ts",
+          "declaration": "works",
+          "where": {
+            "field": "title",
+            "value": "24Seven Concierge"
+          },
+          "pick": [
+            "title",
+            "tag",
+            "sourceStatus"
+          ],
+          "equals": {
+            "title": "24Seven Concierge",
+            "tag": "Luxury AI concierge",
+            "sourceStatus": "local-primary"
+          }
+        }
+      ],
+      "boundaries": [
+        {
+          "file": "ai-ramin-section/canonical/projects/24seven-concierge.md",
+          "required": [
+            "human concierge confirms",
+            "remain planned",
+            "prompt instructions alone do not prove"
+          ]
+        }
+      ],
+      "publicLinks": [
+        "https://apps.apple.com/us/app/24seven-concierge/id6663954162"
+      ],
+      "checkedScope": "local-reconciliation",
+      "lastChecked": "2026-10-22",
+      "reviewAfter": "2026-12-21"
+    },
+    {
+      "id": "project-razinflix",
+      "entity": "RazinFlix",
+      "kind": "project",
+      "scope": "Curated personal library with existing browsing, trailers, Add Film/admin editing, and AI-assisted ingestion. Human curation remains responsible.",
+      "period": "Current described implementation snapshot; no fabricated adoption or commercial measurement period.",
+      "attribution": "Ramin’s independent product/workspace/tool work; external provider and collaborator roles remain acknowledged in the case.",
+      "publication": {
+        "status": "existing-public-safe-copy",
+        "basis": "Existing reconciled public case, brief and canonical text; does not grant access to private products, accounts or source data.",
+        "exclusions": [
+          "No fabricated audience growth",
+          "No runtime frontend LLM inferred from AI-assisted ingestion",
+          "Catalogue totals are dated snapshots"
+        ]
+      },
+      "implementationStatus": "live-personal-library",
+      "evidenceStatus": "repository-listing-and-author-recordings-not-outcome-audit",
+      "cadenceDays": 60,
+      "source": {
+        "sourceCheckedOn": null,
+        "note": "Local reconciliation of the described implementation and evidence limits. No external product or repository refresh is claimed by this date.",
+        "files": [
+          "ai-ramin-section/canonical/projects/razinflix.md",
+          "src/data/projectBriefs.ts",
+          "src/data/projects.ts"
+        ]
+      },
+      "surfaceRefs": [
+        {
+          "file": "src/sections/Projects/index.tsx",
+          "symbol": "CaseStudyGrid"
+        },
+        {
+          "file": "src/sections/Projects/CaseStudyOverlay.tsx",
+          "symbol": "CaseStudyOverlay"
+        },
+        {
+          "file": "src/sections/Projects/ProjectBrief.tsx",
+          "symbol": "ProjectBrief"
+        }
+      ],
+      "bindings": [
+        {
+          "file": "src/data/projectBriefs.ts",
+          "declaration": "projectBriefs",
+          "path": [
+            "RazinFlix"
+          ],
+          "pick": [
+            "owned",
+            "current",
+            "evidence",
+            "links"
+          ],
+          "equals": {
+            "owned": "Curated collection, enrichment workflow and the browsing interface.",
+            "current": "Live film-discovery library with browsing, trailers and curator tools.",
+            "evidence": "Live catalogue and recorded workflow. A working personal library is the result; audience growth is not claimed.",
+            "links": [
+              {
+                "label": "Live library",
+                "href": "https://nsso.me/film/razinflix"
+              }
+            ]
+          }
+        },
+        {
+          "file": "src/data/projects.ts",
+          "declaration": "works",
+          "where": {
+            "field": "title",
+            "value": "RazinFlix"
+          },
+          "pick": [
+            "title",
+            "tag",
+            "sourceStatus"
+          ],
+          "equals": {
+            "title": "RazinFlix",
+            "tag": "Personal film canon",
+            "sourceStatus": "local-primary"
+          }
+        }
+      ],
+      "boundaries": [
+        {
+          "file": "ai-ramin-section/canonical/projects/razinflix.md",
+          "required": [
+            "already exist"
+          ]
+        }
+      ],
+      "publicLinks": [
+        "https://nsso.me/film/razinflix"
+      ],
+      "checkedScope": "local-reconciliation",
+      "lastChecked": "2026-10-22",
+      "reviewAfter": "2026-12-21"
+    },
+    {
+      "id": "project-ai-native-product-os",
+      "entity": "AI-Native Product Manager OS",
+      "kind": "project",
+      "scope": "Separate installable workspace for AI coding assistants. Framework, teaching material and workspace packaging are different evidence classes.",
+      "period": "Current described implementation snapshot; no fabricated adoption or commercial measurement period.",
+      "attribution": "Ramin’s independent product/workspace/tool work; external provider and collaborator roles remain acknowledged in the case.",
+      "publication": {
+        "status": "existing-public-safe-copy",
+        "basis": "Existing reconciled public case, brief and canonical text; does not grant access to private products, accounts or source data.",
+        "exclusions": [
+          "No demonstrated organisation-wide adoption or independently measured productivity gain",
+          "Structural validators do not establish runtime compatibility",
+          "Connected-tool integrations depend on the user’s setup"
+        ]
+      },
+      "implementationStatus": "installable-local-workspace",
+      "evidenceStatus": "repository-listing-and-author-recordings-not-outcome-audit",
+      "cadenceDays": 60,
+      "source": {
+        "sourceCheckedOn": null,
+        "note": "Local reconciliation of the described implementation and evidence limits. No external product or repository refresh is claimed by this date.",
+        "files": [
+          "ai-ramin-section/canonical/projects/ai-native-product-os.md",
+          "src/data/projectBriefs.ts",
+          "src/data/projects.ts"
+        ]
+      },
+      "surfaceRefs": [
+        {
+          "file": "src/sections/Projects/index.tsx",
+          "symbol": "CaseStudyGrid"
+        },
+        {
+          "file": "src/sections/Projects/ThesisDeepDive.tsx",
+          "symbol": "ThesisDeepDive"
+        },
+        {
+          "file": "src/sections/Projects/ProjectBrief.tsx",
+          "symbol": "ProjectBrief"
+        }
+      ],
+      "bindings": [
+        {
+          "file": "src/data/projectBriefs.ts",
+          "declaration": "projectBriefs",
+          "path": [
+            "AI-Native Product Manager OS"
+          ],
+          "pick": [
+            "owned",
+            "current",
+            "evidence",
+            "links"
+          ],
+          "equals": {
+            "owned": "The operating framework and installable workspace of context, workflows and templates.",
+            "current": "Public, installable local workspace; integrations depend on the user’s connected tools.",
+            "evidence": "Repository, setup instructions and workflow materials. Team productivity gains are not independently measured here.",
+            "links": [
+              {
+                "label": "GitHub",
+                "href": "https://github.com/raminhoodeh/AI-Native-Product-OS"
+              }
+            ]
+          }
+        },
+        {
+          "file": "src/data/projects.ts",
+          "declaration": "works",
+          "where": {
+            "field": "title",
+            "value": "AI-Native Product Manager OS"
+          },
+          "pick": [
+            "title",
+            "tag",
+            "sourceStatus"
+          ],
+          "equals": {
+            "title": "AI-Native Product Manager OS",
+            "tag": "Installable PM operating system",
+            "sourceStatus": "local-primary"
+          }
+        }
+      ],
+      "boundaries": [],
+      "publicLinks": [
+        "https://github.com/raminhoodeh/AI-Native-Product-OS"
+      ],
+      "checkedScope": "local-reconciliation",
+      "lastChecked": "2026-10-22",
+      "reviewAfter": "2026-12-21"
+    },
+    {
+      "id": "project-mass-social-wisdom-agent",
+      "entity": "Mass Social Wisdom Agent",
+      "kind": "project",
+      "scope": "A staged extraction/export workflow. Portfolio requests use live quota-bound APIs; repository prepared-result replay is a separate mode. Model self-scores are uncalibrated.",
+      "period": "Current described implementation snapshot; no fabricated adoption or commercial measurement period.",
+      "attribution": "Ramin’s independent product/workspace/tool work; external provider and collaborator roles remain acknowledged in the case.",
+      "publication": {
+        "status": "existing-public-safe-copy",
+        "basis": "Existing reconciled public case, brief and canonical text; does not grant access to private products, accounts or source data.",
+        "exclusions": [
+          "No 60–70% measured speedup",
+          "No independently measured accuracy inferred from model self-score",
+          "No deployed RAG/Notion integration inferred from export compatibility"
+        ]
+      },
+      "implementationStatus": "staged-extraction-and-bounded-demo",
+      "evidenceStatus": "repository-listing-and-author-recordings-not-outcome-audit",
+      "cadenceDays": 60,
+      "source": {
+        "sourceCheckedOn": null,
+        "note": "Local reconciliation of the described implementation and evidence limits. No external product or repository refresh is claimed by this date.",
+        "files": [
+          "ai-ramin-section/canonical/projects/mass-social-wisdom-agent.md",
+          "src/data/projectBriefs.ts",
+          "src/data/projects.ts"
+        ]
+      },
+      "surfaceRefs": [
+        {
+          "file": "src/sections/Projects/index.tsx",
+          "symbol": "CaseStudyGrid"
+        },
+        {
+          "file": "src/sections/Projects/CaseStudyOverlay.tsx",
+          "symbol": "CaseStudyOverlay"
+        },
+        {
+          "file": "src/sections/Projects/ProjectBrief.tsx",
+          "symbol": "ProjectBrief"
+        }
+      ],
+      "bindings": [
+        {
+          "file": "src/data/projectBriefs.ts",
+          "declaration": "projectBriefs",
+          "path": [
+            "Mass Social Wisdom Agent"
+          ],
+          "pick": [
+            "owned",
+            "current",
+            "evidence",
+            "links"
+          ],
+          "equals": {
+            "owned": "Source ingestion, extraction, categorisation and document-export workflow.",
+            "current": "Public repository and a quota-limited live portfolio demo.",
+            "evidence": "Runnable workflow and document output. Extraction fidelity and self-score calibration still need labelled evaluation.",
+            "links": [
+              {
+                "label": "GitHub",
+                "href": "https://github.com/raminhoodeh/mass-social-wisdom-agent"
+              }
+            ]
+          }
+        },
+        {
+          "file": "src/data/projects.ts",
+          "declaration": "works",
+          "where": {
+            "field": "title",
+            "value": "Mass Social Wisdom Agent"
+          },
+          "pick": [
+            "title",
+            "tag",
+            "sourceStatus"
+          ],
+          "equals": {
+            "title": "Mass Social Wisdom Agent",
+            "tag": "Staged extraction workflow",
+            "sourceStatus": "local-primary"
+          }
+        }
+      ],
+      "boundaries": [
+        {
+          "file": "ai-ramin-section/canonical/projects/mass-social-wisdom-agent.md",
+          "required": [
+            "uncalibrated",
+            "live API requests",
+            "replay"
+          ]
+        }
+      ],
+      "publicLinks": [
+        "https://github.com/raminhoodeh/mass-social-wisdom-agent"
+      ],
+      "checkedScope": "local-reconciliation",
+      "lastChecked": "2026-10-22",
+      "reviewAfter": "2026-12-21"
+    },
+    {
+      "id": "project-ai-costs-dashboard",
+      "entity": "AI Costs Dashboard",
+      "kind": "project",
+      "scope": "Standalone metering/routing package and dashboard. Demo product names, usage and evaluation scores are seeded; below-threshold and missing-score fallback behaviour is explicit.",
+      "period": "Current described implementation snapshot; no fabricated adoption or commercial measurement period.",
+      "attribution": "Ramin’s independent product/workspace/tool work; external provider and collaborator roles remain acknowledged in the case.",
+      "publication": {
+        "status": "existing-public-safe-copy",
+        "basis": "Existing reconciled public case, brief and canonical text; does not grant access to private products, accounts or source data.",
+        "exclusions": [
+          "No live cross-app telemetry or proven cost savings",
+          "No hard evaluation gate where fallback selects below-threshold candidates",
+          "No implemented anomaly detector implied by a dashboard"
+        ]
+      },
+      "implementationStatus": "standalone-library-and-seeded-demo",
+      "evidenceStatus": "repository-listing-and-author-recordings-not-outcome-audit",
+      "cadenceDays": 60,
+      "source": {
+        "sourceCheckedOn": null,
+        "note": "Local reconciliation of the described implementation and evidence limits. No external product or repository refresh is claimed by this date.",
+        "files": [
+          "ai-ramin-section/canonical/projects/ai-costs-dashboard.md",
+          "src/data/projectBriefs.ts",
+          "src/data/projects.ts"
+        ]
+      },
+      "surfaceRefs": [
+        {
+          "file": "src/sections/Projects/index.tsx",
+          "symbol": "CaseStudyGrid"
+        },
+        {
+          "file": "src/sections/Projects/CaseStudyOverlay.tsx",
+          "symbol": "CaseStudyOverlay"
+        },
+        {
+          "file": "src/sections/Projects/ProjectBrief.tsx",
+          "symbol": "ProjectBrief"
+        }
+      ],
+      "bindings": [
+        {
+          "file": "src/data/projectBriefs.ts",
+          "declaration": "projectBriefs",
+          "path": [
+            "AI Costs Dashboard"
+          ],
+          "pick": [
+            "owned",
+            "current",
+            "evidence",
+            "links"
+          ],
+          "equals": {
+            "owned": "Standalone metering, cached-eval routing and dashboard library.",
+            "current": "Public library and seeded demo; illustrative product usage is not live telemetry from my apps.",
+            "evidence": "Repository, tests and demo. Real product savings, production latency and cross-app deployment are not established here.",
+            "links": [
+              {
+                "label": "GitHub",
+                "href": "https://github.com/raminhoodeh/ai-costs-dashboard"
+              }
+            ]
+          }
+        },
+        {
+          "file": "src/data/projects.ts",
+          "declaration": "works",
+          "where": {
+            "field": "title",
+            "value": "AI Costs Dashboard"
+          },
+          "pick": [
+            "title",
+            "tag",
+            "sourceStatus"
+          ],
+          "equals": {
+            "title": "AI Costs Dashboard",
+            "tag": "AI cost governance",
+            "sourceStatus": "public-proof"
+          }
+        }
+      ],
+      "boundaries": [
+        {
+          "file": "ai-ramin-section/canonical/projects/ai-costs-dashboard.md",
+          "required": [
+            "standalone",
+            "seeded",
+            "fallback"
+          ]
+        }
+      ],
+      "publicLinks": [
+        "https://github.com/raminhoodeh/ai-costs-dashboard"
+      ],
+      "checkedScope": "local-reconciliation",
+      "lastChecked": "2026-10-22",
+      "reviewAfter": "2026-12-21"
+    },
+    {
+      "id": "project-rag-pipeline",
+      "entity": "RAG Pipeline",
+      "kind": "project",
+      "scope": "Standalone ingestion, chunking, embeddings, namespace-scoped vector retrieval and context packing. Reranking remains planned; source tags do not verify truth.",
+      "period": "Current described implementation snapshot; no fabricated adoption or commercial measurement period.",
+      "attribution": "Ramin’s independent product/workspace/tool work; external provider and collaborator roles remain acknowledged in the case.",
+      "publication": {
+        "status": "existing-public-safe-copy",
+        "basis": "Existing reconciled public case, brief and canonical text; does not grant access to private products, accounts or source data.",
+        "exclusions": [
+          "No deployed private-app integration inferred from a package",
+          "No semantic-quality result inferred from deterministic tests",
+          "No implemented reranking/hybrid retrieval guarantee"
+        ]
+      },
+      "implementationStatus": "standalone-package-and-offline-demo",
+      "evidenceStatus": "repository-listing-and-author-recordings-not-outcome-audit",
+      "cadenceDays": 60,
+      "source": {
+        "sourceCheckedOn": null,
+        "note": "Local reconciliation of the described implementation and evidence limits. No external product or repository refresh is claimed by this date.",
+        "files": [
+          "ai-ramin-section/canonical/projects/rag-pipeline.md",
+          "src/data/projectBriefs.ts",
+          "src/data/projects.ts"
+        ]
+      },
+      "surfaceRefs": [
+        {
+          "file": "src/sections/Projects/index.tsx",
+          "symbol": "CaseStudyGrid"
+        },
+        {
+          "file": "src/sections/Projects/CaseStudyOverlay.tsx",
+          "symbol": "CaseStudyOverlay"
+        },
+        {
+          "file": "src/sections/Projects/ProjectBrief.tsx",
+          "symbol": "ProjectBrief"
+        }
+      ],
+      "bindings": [
+        {
+          "file": "src/data/projectBriefs.ts",
+          "declaration": "projectBriefs",
+          "path": [
+            "RAG Pipeline"
+          ],
+          "pick": [
+            "owned",
+            "current",
+            "evidence",
+            "links"
+          ],
+          "equals": {
+            "owned": "Standalone ingestion, chunking, embedding, retrieval and context-packing package.",
+            "current": "Public package with an offline demo and provider/store adapters. Reranking remains planned.",
+            "evidence": "Repository and deterministic tests. Semantic retrieval quality and private-app deployment are not established here.",
+            "links": [
+              {
+                "label": "GitHub",
+                "href": "https://github.com/raminhoodeh/unified-rag-pipeline"
+              }
+            ]
+          }
+        },
+        {
+          "file": "src/data/projects.ts",
+          "declaration": "works",
+          "where": {
+            "field": "title",
+            "value": "RAG Pipeline"
+          },
+          "pick": [
+            "title",
+            "tag",
+            "sourceStatus"
+          ],
+          "equals": {
+            "title": "RAG Pipeline",
+            "tag": "Reusable context infrastructure",
+            "sourceStatus": "public-proof"
+          }
+        }
+      ],
+      "boundaries": [
+        {
+          "file": "ai-ramin-section/canonical/projects/rag-pipeline.md",
+          "required": [
+            "standalone",
+            "reranking",
+            "not implemented|planned"
+          ]
+        }
+      ],
+      "publicLinks": [
+        "https://github.com/raminhoodeh/unified-rag-pipeline"
+      ],
+      "checkedScope": "local-reconciliation",
+      "lastChecked": "2026-10-22",
+      "reviewAfter": "2026-12-21"
+    },
+    {
+      "id": "work-bayut",
+      "entity": "Bayut",
+      "kind": "work",
+      "scope": "Public-safe AI PM remit in property search, recommendations and conversational AI. No private incident, product metric, roadmap or adoption claim is authorised by this registry.",
+      "period": "Jan 2026 - Present; Present is date-sensitive and must be rechecked.",
+      "attribution": "Ramin’s public-safe remit; company marketing establishes company context only, not personal delivery or outcome verification.",
+      "publication": {
+        "status": "existing-public-safe-copy-with-exclusions",
+        "basis": "Existing approved public-safe remit/story copy. This records the portfolio publishing boundary, not a separate legal/employer permission grant.",
+        "exclusions": [
+          "No private architecture, partner details, model choices or unreleased work",
+          "Framework introduction is not independently measured team adoption"
+        ]
+      },
+      "implementationStatus": "public-safe-current-remit",
+      "evidenceStatus": "public-remit-confidentiality-boundary",
+      "source": {
+        "sourceCheckedOn": null,
+        "note": "Canonical record and supplied-CV-derived public story; original internal dashboards and measurement samples are not public. lastChecked is local review only.",
+        "files": [
+          "ai-ramin-section/canonical/work-experiences/bayut-ai-product-manager.md",
+          "docs/ramin-hoodeh-exp-context.md",
+          "src/data/content.ts"
+        ]
+      },
+      "surfaceRefs": [
+        {
+          "file": "src/sections/ExperienceEducation.tsx",
+          "symbol": "ExperienceEducationSection"
+        }
+      ],
+      "bindings": [
+        {
+          "file": "src/data/content.ts",
+          "declaration": "workExperienceData",
+          "where": {
+            "field": "companyName",
+            "value": "Bayut"
+          },
+          "pick": [
+            "companyName",
+            "jobTitle",
+            "monthYearRangeWorked",
+            "productsWorkedOn",
+            "mainAchievements"
+          ],
+          "equals": {
+            "companyName": "Bayut",
+            "jobTitle": "AI Product Manager",
+            "monthYearRangeWorked": "Jan 2026 - Present",
+            "productsWorkedOn": [
+              "Bayut web",
+              "Bayut App",
+              "Profolio app"
+            ],
+            "mainAchievements": [
+              "[Confidential]"
+            ]
+          }
+        }
+      ],
+      "boundaries": [
+        {
+          "file": "ai-ramin-section/canonical/work-experiences/bayut-ai-product-manager.md",
+          "required": [
+            "confidential",
+            "Do not disclose",
+            "public.safe"
+          ]
+        }
+      ],
+      "publicLinks": [
+        "https://www.bayut.com/"
+      ],
+      "checkedScope": "local-reconciliation",
+      "lastChecked": "2026-10-22",
+      "cadenceDays": 90,
+      "reviewAfter": "2027-01-20"
+    },
+    {
+      "id": "work-side",
+      "entity": "SIDE",
+      "kind": "work",
+      "scope": "Targeted build-versus-buy and AI-assisted internal reporting with Finance retaining posting approval. 20% ERP cost reduction has a four-month window; 30% reporting and 90% delivery figures have no separate public window.",
+      "period": "Mar 2025 - Aug 2025; 20% over four months only; other metric windows unspecified.",
+      "attribution": "Ramin’s product decisions within cross-functional employer delivery. Numbers originate in the supplied CV and reconciled career sources; company homepages do not validate them.",
+      "publication": {
+        "status": "existing-public-safe-copy-with-exclusions",
+        "basis": "Existing approved public-safe remit/story copy. This records the portfolio publishing boundary, not a separate legal/employer permission grant.",
+        "exclusions": [
+          "CV-reported outcomes, not independently audited",
+          "No claim of owning a replacement core financial ledger",
+          "Do not attach the four-month window to every SIDE figure"
+        ]
+      },
+      "implementationStatus": "reported-employer-outcomes",
+      "evidenceStatus": "self-reported-employer-outcomes",
+      "source": {
+        "sourceCheckedOn": null,
+        "note": "Canonical record and supplied-CV-derived public story; original internal dashboards and measurement samples are not public. lastChecked is local review only.",
+        "files": [
+          "ai-ramin-section/canonical/work-experiences/side-ai-erp.md",
+          "docs/ramin-hoodeh-exp-context.md",
+          "src/data/content.ts",
+          "src/data/professionalStories.ts",
+          "src/data/homepage.ts"
+        ]
+      },
+      "surfaceRefs": [
+        {
+          "file": "src/sections/ExperienceEducation.tsx",
+          "symbol": "ExperienceEducationSection"
+        },
+        {
+          "file": "src/sections/ProfessionalStories.tsx",
+          "symbol": "ProfessionalStories"
+        },
+        {
+          "file": "src/sections/HomeHighlights.tsx",
+          "symbol": "homepageOutcomes"
+        }
+      ],
+      "bindings": [
+        {
+          "file": "src/data/content.ts",
+          "declaration": "workExperienceData",
+          "where": {
+            "field": "companyName",
+            "value": "SIDE"
+          },
+          "pick": [
+            "companyName",
+            "jobTitle",
+            "monthYearRangeWorked",
+            "productsWorkedOn",
+            "mainAchievements"
+          ],
+          "equals": {
+            "companyName": "SIDE",
+            "jobTitle": "Senior Product Manager",
+            "monthYearRangeWorked": "Mar 2025 - Aug 2025",
+            "productsWorkedOn": [
+              "AI-engineered in-house ERP alternatives",
+              "Windsurf integration",
+              "Microsoft Enterprise Copilot with core ERP"
+            ],
+            "mainAchievements": [
+              "Reduced ERP operational costs by 20% over 4 months.",
+              "Decreased idea-to-feature time by 90% for internal process improvement.",
+              "Shifted engineering resources from 60% Maintenance / 40% Innovation to 40% Maintenance / 60% Innovation.",
+              "Eliminated 30% of manual reporting overhead through Microsoft Enterprise Copilot and ERP integration."
+            ]
+          }
+        },
+        {
+          "file": "src/data/professionalStories.ts",
+          "declaration": "professionalStories",
+          "where": {
+            "field": "slug",
+            "value": "side"
+          },
+          "pick": [
+            "period",
+            "ownership",
+            "decision",
+            "results",
+            "limitations"
+          ],
+          "equals": {
+            "period": "Mar – Aug 2025",
+            "ownership": "I owned product work on internal ERP alternatives and AI-assisted reporting, working across Engineering, Finance, Operations and Sales. This was a cross-functional delivery effort, rather than a claim that I built or operated every financial component myself.",
+            "decision": [
+              "Replace selected third-party modules with Windsurf-assisted internal reporting and reconciliation applications, rather than rebuilding the entire financial system. The ERP remained the system of record.",
+              "Use Microsoft Enterprise Copilot for aggregation and exception triage across commercial deals, bookings and ledger data. Finance retained approval over postings: AI could help prepare the work without acquiring accounting authority."
+            ],
+            "results": [
+              "ERP operating costs reduced by 20% within four months.",
+              "Manual financial reporting reduced by 30% during the Mar–Aug 2025 engagement.",
+              "Reported idea-to-feature time fell 90%, with engineering capacity allocated to innovation increasing from 40% to 60%."
+            ],
+            "limitations": "These are employer-work outcomes reported in my CV, not independently audited measurements. Internal dashboards, cost baselines and the underlying before/after samples are not public. The 30% reporting and 90% delivery figures do not have separate measurement windows in the public record; the four-month window applies to ERP operating costs."
+          }
+        },
+        {
+          "file": "src/data/homepage.ts",
+          "declaration": "homepageOutcomes",
+          "where": {
+            "field": "id",
+            "value": "side-erp-cost"
+          },
+          "pick": [
+            "metric",
+            "rolePeriod",
+            "measurementPeriod",
+            "responsibility",
+            "href"
+          ],
+          "equals": {
+            "metric": "20%",
+            "rolePeriod": "Mar–Aug 2025",
+            "measurementPeriod": "Over four months",
+            "responsibility": "I led the replacement of third-party ERP modules with AI-assisted internal tools.",
+            "href": "/work/side"
+          }
+        }
+      ],
+      "boundaries": [
+        {
+          "file": "ai-ramin-section/canonical/work-experiences/side-ai-erp.md",
+          "required": [
+            "four months",
+            "Do not attach that window",
+            "not public or independently audited"
+          ]
+        }
+      ],
+      "publicLinks": [
+        "/work/side"
+      ],
+      "checkedScope": "local-reconciliation",
+      "lastChecked": "2026-10-22",
+      "cadenceDays": 90,
+      "reviewAfter": "2027-01-20"
+    },
+    {
+      "id": "work-vivup",
+      "entity": "Vivup / Work&Life Partners",
+      "kind": "work",
+      "scope": "Checkout Order Guidance and benefit-savings monetisation were separate initiatives. Abandonment reduced one third within 30 days; customer lifetime value rose 19% over five months.",
+      "period": "Jan 2023 - Nov 2024; checkout first 30 days; lifetime value five months; app-rating deltas three months.",
+      "attribution": "Ramin’s product decisions within cross-functional employer delivery. Numbers originate in the supplied CV and reconciled career sources; company homepages do not validate them.",
+      "publication": {
+        "status": "existing-public-safe-copy-with-exclusions",
+        "basis": "Existing approved public-safe remit/story copy. This records the portfolio publishing boundary, not a separate legal/employer permission grant.",
+        "exclusions": [
+          "CV-reported outcomes, not independently audited",
+          "Do not combine separate initiatives into one experiment or causal claim",
+          "No invented cohorts, sample sizes or baselines"
+        ]
+      },
+      "implementationStatus": "reported-employer-outcomes",
+      "evidenceStatus": "self-reported-employer-outcomes",
+      "source": {
+        "sourceCheckedOn": null,
+        "note": "Canonical record and supplied-CV-derived public story; original internal dashboards and measurement samples are not public. lastChecked is local review only.",
+        "files": [
+          "ai-ramin-section/canonical/work-experiences/perkbox-vivup.md",
+          "docs/ramin-hoodeh-exp-context.md",
+          "src/data/content.ts",
+          "src/data/professionalStories.ts",
+          "src/data/homepage.ts"
+        ]
+      },
+      "surfaceRefs": [
+        {
+          "file": "src/sections/ExperienceEducation.tsx",
+          "symbol": "ExperienceEducationSection"
+        },
+        {
+          "file": "src/sections/ProfessionalStories.tsx",
+          "symbol": "ProfessionalStories"
+        },
+        {
+          "file": "src/sections/HomeHighlights.tsx",
+          "symbol": "homepageOutcomes"
+        }
+      ],
+      "bindings": [
+        {
+          "file": "src/data/content.ts",
+          "declaration": "workExperienceData",
+          "where": {
+            "field": "companyName",
+            "value": "Perkbox Vivup"
+          },
+          "pick": [
+            "companyName",
+            "jobTitle",
+            "monthYearRangeWorked",
+            "productsWorkedOn",
+            "mainAchievements"
+          ],
+          "equals": {
+            "companyName": "Perkbox Vivup",
+            "jobTitle": "Senior Product Manager",
+            "monthYearRangeWorked": "Jan 2023 - Nov 2024",
+            "productsWorkedOn": [
+              "Highfive Recognition App",
+              "FamilyCare"
+            ],
+            "mainAchievements": [
+              "Improved the App gateway experience through qualitative user research and UX iteration.",
+              "Increased the Google Play Store rating by 0.6 points and the iPhone App Store rating by 1.2 points (out of 5) within 3 months.",
+              "Grew product customer lifetime value by 19% over 5 months.",
+              "Decreased order form and checkout abandonment rate by 1/3 within the first month of delivery."
+            ]
+          }
+        },
+        {
+          "file": "src/data/professionalStories.ts",
+          "declaration": "professionalStories",
+          "where": {
+            "field": "slug",
+            "value": "vivup"
+          },
+          "pick": [
+            "period",
+            "ownership",
+            "decision",
+            "results",
+            "limitations"
+          ],
+          "equals": {
+            "period": "Jan 2023 – Nov 2024",
+            "ownership": "I analysed user-interview findings, aligned stakeholders around Order Guidance and owned product decisions across checkout and monetisation. I defined the platform-margin model for capturing a share of employee benefit savings.",
+            "decision": [
+              "Make the purchase journey easier to understand: replace separate benefit forms with unified checkout guidance across supported payroll deductions, cards and reward balances.",
+              "Treat monetisation as a product decision alongside experience quality. Introduce a take rate on benefit savings while maintaining checkout conversion and user satisfaction, rather than treating revenue as an isolated pricing change."
+            ],
+            "results": [
+              "Order-form and checkout abandonment reduced by one third within 30 days of delivery.",
+              "Customer lifetime value increased 19% over five months after the benefit-savings monetisation change."
+            ],
+            "limitations": "These are employer-work outcomes reported in my CV, not independently audited measurements. Checkout guidance and monetisation were separate initiatives in the same role; the figures should not be combined into one experiment or a single causal claim. Cohort definitions, sample sizes and internal analytics are not public."
+          }
+        },
+        {
+          "file": "src/data/homepage.ts",
+          "declaration": "homepageOutcomes",
+          "where": {
+            "field": "id",
+            "value": "vivup-checkout"
+          },
+          "pick": [
+            "metric",
+            "rolePeriod",
+            "measurementPeriod",
+            "responsibility",
+            "href"
+          ],
+          "equals": {
+            "metric": "1/3",
+            "rolePeriod": "Jan 2023–Nov 2024",
+            "measurementPeriod": "First month after delivery",
+            "responsibility": "I aligned stakeholders around Order Guidance and a simpler checkout journey.",
+            "href": "/work/vivup"
+          }
+        },
+        {
+          "file": "src/data/homepage.ts",
+          "declaration": "homepageOutcomes",
+          "where": {
+            "field": "id",
+            "value": "vivup-customer-value"
+          },
+          "pick": [
+            "metric",
+            "rolePeriod",
+            "measurementPeriod",
+            "responsibility",
+            "href"
+          ],
+          "equals": {
+            "metric": "19%",
+            "rolePeriod": "Jan 2023–Nov 2024",
+            "measurementPeriod": "Over five months",
+            "responsibility": "I introduced a take rate on benefit savings, balancing platform margin with user satisfaction.",
+            "href": "/work/vivup"
+          }
+        }
+      ],
+      "boundaries": [
+        {
+          "file": "ai-ramin-section/canonical/work-experiences/perkbox-vivup.md",
+          "required": [
+            "separates two initiatives",
+            "one.third",
+            "five months",
+            "not public"
+          ]
+        }
+      ],
+      "publicLinks": [
+        "/work/vivup"
+      ],
+      "checkedScope": "local-reconciliation",
+      "lastChecked": "2026-10-22",
+      "cadenceDays": 90,
+      "reviewAfter": "2027-01-20"
+    },
+    {
+      "id": "framework-product-os",
+      "entity": "AI-Native Product OS · Stack and Loop",
+      "kind": "framework",
+      "scope": "Authored responsibility model and iterative product method, distinct from the installable workspace and from outcome evidence.",
+      "period": "Authored framework and current teaching materials; no adoption or productivity measurement period.",
+      "attribution": "Ramin’s authored framework; examples illustrate applications rather than universal validation.",
+      "publication": {
+        "status": "author-published-framework",
+        "basis": "Current Product Method/Thesis pages and authored course/talk material.",
+        "exclusions": [
+          "No universal framework adoption or product-outcome assertion",
+          "Do not erase conventional discovery/security/release gates",
+          "Framework links do not prove workspace runtime compatibility"
+        ]
+      },
+      "implementationStatus": "authored-framework",
+      "evidenceStatus": "authored-material-and-teaching",
+      "cadenceDays": 180,
+      "source": {
+        "sourceCheckedOn": null,
+        "note": "Local source reconciliation, not an independent efficacy/adoption study.",
+        "files": [
+          "ai-ramin-section/canonical/projects/ai-native-product-os.md",
+          "src/data/disxTalk.ts"
+        ]
+      },
+      "surfaceRefs": [
+        {
+          "file": "src/sections/ProductMethodSummary.tsx",
+          "symbol": "ProductMethodSummary"
+        },
+        {
+          "file": "src/sections/Projects/ThesisDeepDive.tsx",
+          "symbol": "ThesisDeepDive"
+        }
+      ],
+      "bindings": [
+        {
+          "file": "src/data/disxTalk.ts",
+          "declaration": "productMethodResponsibilities",
+          "equals": [
+            {
+              "name": "Model",
+              "question": "What can it do?",
+              "detail": "Choose capabilities against task quality, privacy, latency and cost."
+            },
+            {
+              "name": "Context",
+              "question": "What should it know?",
+              "detail": "Choose relevant knowledge, its provenance, access and permitted use."
+            },
+            {
+              "name": "Orchestration",
+              "question": "What can it act on?",
+              "detail": "Define tool access, sequence, retries and the limits of each action."
+            },
+            {
+              "name": "Governance",
+              "question": "What must hold?",
+              "detail": "Test acceptance criteria, enforce limits and observe failures."
+            },
+            {
+              "name": "Human",
+              "question": "Who is accountable?",
+              "detail": "Set direction, weigh trade-offs and decide when a person must intervene."
+            }
+          ]
+        },
+        {
+          "file": "src/data/disxTalk.ts",
+          "declaration": "productMethodLoop",
+          "equals": [
+            {
+              "name": "Talk",
+              "detail": "Understand the problem with the people who experience it."
+            },
+            {
+              "name": "Decide",
+              "detail": "Agree scope, success criteria, authority and stop conditions."
+            },
+            {
+              "name": "Build",
+              "detail": "Make a small, testable version inside those boundaries."
+            },
+            {
+              "name": "Observe",
+              "detail": "Inspect user feedback, outputs, failures and evaluation results."
+            },
+            {
+              "name": "Iterate",
+              "detail": "Change the system and rerun the relevant checks."
+            }
+          ]
+        }
+      ],
+      "boundaries": [
+        {
+          "file": "ai-ramin-section/canonical/projects/ai-native-product-os.md",
+          "required": [
+            "not universal validation",
+            "structural tests do not prove runtime compatibility",
+            "Conventional discovery"
+          ]
+        }
+      ],
+      "publicLinks": [
+        "/product-method",
+        "/product-thesis"
+      ],
+      "checkedScope": "local-reconciliation",
+      "lastChecked": "2026-10-22",
+      "reviewAfter": "2027-04-20"
+    },
+    {
+      "id": "framework-metacognition",
+      "entity": "Framework of Metacognition",
+      "kind": "framework",
+      "scope": "Authored hierarchy for organising thought and explaining judgment; personal/philosophical scaffolding is not a validated business intervention.",
+      "period": "Authored essay; no measured organisational adoption or causal-result period.",
+      "attribution": "Ramin’s framework and essay, with quoted authors credited in the reader.",
+      "publication": {
+        "status": "author-published-framework",
+        "basis": "Existing authored essay and canonical teaching/writing entry.",
+        "exclusions": [
+          "No independently demonstrated outcome/adoption claim",
+          "Do not convert philosophy into measured product evidence"
+        ]
+      },
+      "implementationStatus": "authored-essay-and-diagram",
+      "evidenceStatus": "author-supplied-writing",
+      "cadenceDays": 180,
+      "source": {
+        "sourceCheckedOn": null,
+        "note": "Local review of authored hierarchy and its public presentation.",
+        "files": [
+          "ai-ramin-section/canonical/talks-writing-courses.md",
+          "thoughts-section/case-study-write-ups/Framework of Metacognition.md",
+          "src/data/teaching.ts"
+        ]
+      },
+      "surfaceRefs": [
+        {
+          "file": "src/sections/TeachingWriting/MetacognitionDeepDive.tsx",
+          "symbol": "MetacognitionDeepDive"
+        }
+      ],
+      "bindings": [
+        {
+          "file": "src/data/teaching.ts",
+          "declaration": "teachingWritingItems",
+          "where": {
+            "field": "title",
+            "value": "Framework of Metacognition"
+          },
+          "pick": [
+            "title",
+            "proof"
+          ],
+          "equals": {
+            "title": "Framework of Metacognition",
+            "proof": "Local write-up defines a hierarchy for thinking and presenting information: Experience, Who, Why, How, What."
+          }
+        }
+      ],
+      "publicLinks": [
+        "/thoughts/framework-of-metacognition"
+      ],
+      "checkedScope": "local-reconciliation",
+      "lastChecked": "2026-10-22",
+      "reviewAfter": "2027-04-20"
+    },
+    {
+      "id": "framework-pip",
+      "entity": "Product Innovation Process",
+      "kind": "framework",
+      "scope": "Authored process document and course framework for discovery, design, Alpha, Beta and Live. A faster-team proposition is not a measured productivity claim.",
+      "period": "Authored process and current course; no independently measured adoption period.",
+      "attribution": "Ramin’s authored process distilled from product practice; course availability and case applications are separate evidence.",
+      "publication": {
+        "status": "author-published-framework",
+        "basis": "Existing process document, current course data and public course link.",
+        "exclusions": [
+          "No universal process adoption",
+          "No causal productivity gain inferred from stage names or course enrolment"
+        ]
+      },
+      "implementationStatus": "authored-process-and-course",
+      "evidenceStatus": "authored-process-material",
+      "cadenceDays": 180,
+      "source": {
+        "sourceCheckedOn": null,
+        "note": "Local source reconciliation, not independent outcome validation.",
+        "files": [
+          "thoughts-section/courses/course-description-product-innovation-process.md",
+          "ai-ramin-section/canonical/talks-writing-courses.md",
+          "src/data/content.ts"
+        ]
+      },
+      "surfaceRefs": [
+        {
+          "file": "src/sections/TeachingWriting/ThoughtsOverview.tsx",
+          "symbol": "ThoughtsOverview"
+        }
+      ],
+      "bindings": [
+        {
+          "file": "src/data/content.ts",
+          "declaration": "thoughtCourses",
+          "where": {
+            "field": "courseLink",
+            "value": "https://www.udemy.com/course/the-fastest-way-to-become-a-product-manager/"
+          },
+          "pick": [
+            "framework"
+          ],
+          "equals": {
+            "framework": {
+              "name": "Product Innovation Process",
+              "loop": [
+                "Discovery",
+                "Product Design",
+                "Alpha",
+                "Beta",
+                "Live"
+              ],
+              "stack": [
+                "Vision",
+                "Mission",
+                "Strategy",
+                "Tactics",
+                "Products and services"
+              ],
+              "durableClaim": "Teams move faster when everyone can see the same product story, decision history, responsibilities, and next stage-gate."
+            }
+          }
+        }
+      ],
+      "publicLinks": [
+        "https://www.udemy.com/course/the-fastest-way-to-become-a-product-manager/"
+      ],
+      "checkedScope": "local-reconciliation",
+      "lastChecked": "2026-10-22",
+      "reviewAfter": "2027-04-20"
+    },
+    {
+      "id": "talk-disx",
+      "entity": "DISx Dubai · 15 October 2026",
+      "kind": "talk",
+      "scope": "Delivered speaking appearance and author-supplied script. USD 4.2 billion is an explicitly hypothetical payment in a simulated bank, with an illustrative sanctions-match failure and proposed eval/escalation.",
+      "period": "Appearance: 15 October 2026. Hypothetical example has no real transaction or production measurement period.",
+      "attribution": "Ramin delivered the talk; organiser posts corroborate the same appearance. Script is not a recording-verified transcript.",
+      "publication": {
+        "status": "public-talk-and-author-supplied-script",
+        "basis": "Reconciled organiser links plus the supplied authored script.",
+        "exclusions": [
+          "No executed $4.2bn transfer",
+          "No deployed treasury/sanctions system or measured control result",
+          "Two organiser posts are not two institutional endorsements"
+        ]
+      },
+      "implementationStatus": "delivered-talk-with-hypothetical-example",
+      "evidenceStatus": "organiser-links-and-author-script",
+      "cadenceDays": 180,
+      "source": {
+        "sourceCheckedOn": null,
+        "note": "Local reconciliation of existing speaker evidence and supplied script; no new external announcement/recording check.",
+        "files": [
+          "ai-ramin-section/canonical/talks-writing-courses.md",
+          "src/data/teachingEvidence.ts",
+          "src/data/disxTalk.ts"
+        ]
+      },
+      "surfaceRefs": [
+        {
+          "file": "src/sections/DisxTalkPage.tsx",
+          "symbol": "DisxTalkPage"
+        },
+        {
+          "file": "src/sections/HomeHighlights.tsx",
+          "symbol": "homepageRecognition"
+        }
+      ],
+      "bindings": [
+        {
+          "file": "src/data/teachingEvidence.ts",
+          "declaration": "disxTalkEvidence",
+          "equals": {
+            "title": "AI Made Execution Cheap. High-Stakes Decisions Are Still Expensive.",
+            "event": "Data Innovation Summit MEA 2026",
+            "date": "2026-10-15",
+            "dateLabel": "15 October 2026",
+            "location": "Dubai",
+            "stage": "M4 · Machine Learning, Generative & Agentic AI",
+            "summary": "I presented the AI-Native Product OS, then applied its Stack and Loop to a hypothetical $4.2 billion cross-border payment in a simulated bank workflow. The example shows why an ambiguous sanctions match needs an evaluation case and a system-enforced escalation rule, regardless of the model’s confidence.",
+            "sources": [
+              {
+                "label": "Organiser’s session announcement",
+                "href": "https://www.linkedin.com/posts/disummitmea2030-share-7516413326176804866-Om0V/"
+              },
+              {
+                "label": "Organiser’s speaker introduction",
+                "href": "https://www.linkedin.com/feed/update/urn:li:activity:7507738452071890944/"
+              }
+            ]
+          }
+        },
+        {
+          "file": "src/data/disxTalk.ts",
+          "declaration": "disxTalk",
+          "pick": [
+            "takeaways",
+            "workedExample"
+          ],
+          "equals": {
+            "takeaways": [
+              "The Stack helps locate a decision or failure across model, context, orchestration, governance and human responsibility.",
+              "The Loop makes scope, acceptance criteria and observations part of development, rather than treating a convincing output as enough.",
+              "A model’s confidence does not authorise a payment. Approval requirements and escalation rules belong in the surrounding system."
+            ],
+            "workedExample": [
+              {
+                "phase": "Talk",
+                "title": "Find the bottleneck before choosing the automation",
+                "body": "A hypothetical Dubai treasury team needs to prepare a $4.2 billion cross-border payment. The team first asks whether documents, conflicting information, liquidity or approvals are causing the delay.",
+                "artifact": "A clearly framed preparation problem."
+              },
+              {
+                "phase": "Decide",
+                "title": "Scope the assistant to an evidence-backed recommendation",
+                "body": "The proposed assistant reads the supplied evidence and drafts a recommendation brief, with a simulated handoff into the workflow. It does not gain independent authority to move funds.",
+                "artifact": "A bounded task and agreed acceptance criteria."
+              },
+              {
+                "phase": "Build · Governance + Human",
+                "title": "Define who can authorise and what must stop the workflow",
+                "body": "The scenario puts transaction limits, mandatory checks and required approvals outside the model. The workflow preserves transaction references for safe retries and records evidence, actions and approvals.",
+                "artifact": "System-enforced authority and stop conditions."
+              },
+              {
+                "phase": "Observe",
+                "title": "Expose the ambiguous sanctions match",
+                "body": "In the teaching scenario, the model confidently treats a partial counterparty-name match as a different organisation. The proposed workflow lacks an escalation rule for that ambiguity, so confidence is allowed to stand in for a control.",
+                "artifact": "A specific failure case, rather than a vague concern about AI."
+              },
+              {
+                "phase": "Iterate · Evaluation",
+                "title": "Turn the failure into an evaluation case",
+                "body": "The talk proposes a set of known ambiguous sanctions cases whose expected behaviour is escalation. This defines a testable requirement; it is not a published dataset or a measured pass rate.",
+                "artifact": "Expected behaviour: escalate the ambiguous case."
+              },
+              {
+                "phase": "Iterate · Governance",
+                "title": "Enforce escalation independently of confidence",
+                "body": "The proposed rule routes a partial match above a defined similarity threshold to a human compliance officer. The model may still read, synthesise and draft; it cannot override the escalation rule.",
+                "artifact": "An escalation rule enforced outside the model."
+              },
+              {
+                "phase": "Observe again",
+                "title": "Rerun the scenario against the revised control",
+                "body": "The script describes replaying the same hypothetical case with escalation before approval. In a real product, the team would need recorded test results, wider failure coverage and release criteria before relying on that control.",
+                "artifact": "An illustrative rerun, with real validation still required."
+              }
+            ]
+          }
+        }
+      ],
+      "boundaries": [
+        {
+          "file": "ai-ramin-section/canonical/talks-writing-courses.md",
+          "required": [
+            "explicitly hypothetical USD 4\\.2 billion",
+            "not a claim that Ramin executed",
+            "same conference appearance"
+          ]
+        }
+      ],
+      "publicLinks": [
+        "https://www.linkedin.com/posts/disummitmea2030-share-7516413326176804866-Om0V/",
+        "https://www.linkedin.com/feed/update/urn:li:activity:7507738452071890944/"
+      ],
+      "checkedScope": "local-reconciliation",
+      "lastChecked": "2026-10-22",
+      "reviewAfter": "2027-04-20"
+    },
+    {
+      "id": "book-proposition",
+      "entity": "The Proposition",
+      "kind": "book",
+      "scope": "Public display title The Proposition; the existing Amazon destination uses Purpose in its URL. Title variants are not separate books or independently verified new editions.",
+      "period": "Authored writing and current link map; no current sales/rating/reach claim.",
+      "attribution": "Ramin’s authored fiction/metaphysical companion; creative work supports communication evidence, not product deployment proof.",
+      "publication": {
+        "status": "author-published-links",
+        "basis": "Existing author-provided book materials and current portfolio destinations. Access/availability is not refreshed by local reconciliation.",
+        "exclusions": [
+          "No invented sales, current ratings or bestseller status",
+          "No new book inferred from a title variant",
+          "Do not present a Drive destination as a verified retail listing"
+        ]
+      },
+      "implementationStatus": "authored-writing-with-public-destinations",
+      "evidenceStatus": "author-source-and-existing-destination-map",
+      "source": {
+        "sourceCheckedOn": null,
+        "note": "Local title/destination reconciliation. No fresh Amazon, author-site or Drive access verification.",
+        "files": [
+          "thoughts-section/books/The-Proposition-Book-info.md",
+          "ai-ramin-section/canonical/talks-writing-courses.md",
+          "src/data/content.ts"
+        ]
+      },
+      "surfaceRefs": [
+        {
+          "file": "src/sections/TeachingWriting/ThoughtsOverview.tsx",
+          "symbol": "ThoughtsOverview"
+        },
+        {
+          "file": "src/sections/TeachingWriting/Books.tsx",
+          "symbol": "BooksShelf"
+        }
+      ],
+      "bindings": [
+        {
+          "file": "src/data/content.ts",
+          "declaration": "thoughtBooks",
+          "where": {
+            "field": "bookName",
+            "value": "The Proposition"
+          },
+          "pick": [
+            "bookName",
+            "bookType",
+            "purchaseLink",
+            "previewLink",
+            "fullText"
+          ],
+          "equals": {
+            "bookName": "The Proposition",
+            "bookType": "Spiritual fiction",
+            "purchaseLink": "https://www.amazon.co.uk/Purpose-Ramin-Hoodeh/dp/1527286185",
+            "previewLink": "https://author.vision/",
+            "fullText": "https://docs.google.com/document/d/1zibHuBmxwThGVPb82qCtJOY5wJFXyQTq/preview?usp=drive_link&ouid=110264933146795409149&rtpof=true&sd=true"
+          }
+        }
+      ],
+      "publicLinks": [
+        "https://www.amazon.co.uk/Purpose-Ramin-Hoodeh/dp/1527286185",
+        "https://author.vision/",
+        "https://docs.google.com/document/d/1zibHuBmxwThGVPb82qCtJOY5wJFXyQTq/preview?usp=drive_link&ouid=110264933146795409149&rtpof=true&sd=true"
+      ],
+      "checkedScope": "local-reconciliation",
+      "lastChecked": "2026-10-22",
+      "cadenceDays": 90,
+      "reviewAfter": "2027-01-20"
+    },
+    {
+      "id": "book-meaning-of-life",
+      "entity": "The Meaning of Life",
+      "kind": "book",
+      "scope": "Public display title The Meaning of Life. The Untold Story of Adam and Eve is a marketing/working-title hook in the source, not an additional book or separate publication assertion.",
+      "period": "Authored writing and current link map; no current sales/rating/reach claim.",
+      "attribution": "Ramin’s authored fiction/metaphysical companion; creative work supports communication evidence, not product deployment proof.",
+      "publication": {
+        "status": "author-published-links",
+        "basis": "Existing author-provided book materials and current portfolio destinations. Access/availability is not refreshed by local reconciliation.",
+        "exclusions": [
+          "No invented sales, current ratings or bestseller status",
+          "No new book inferred from a title variant",
+          "Do not present a Drive destination as a verified retail listing"
+        ]
+      },
+      "implementationStatus": "authored-writing-with-public-destinations",
+      "evidenceStatus": "author-source-and-existing-destination-map",
+      "source": {
+        "sourceCheckedOn": null,
+        "note": "Local title/destination reconciliation. No fresh Amazon, author-site or Drive access verification.",
+        "files": [
+          "thoughts-section/books/the-meaning-of-life-book-info.md",
+          "ai-ramin-section/canonical/talks-writing-courses.md",
+          "src/data/content.ts"
+        ]
+      },
+      "surfaceRefs": [
+        {
+          "file": "src/sections/TeachingWriting/ThoughtsOverview.tsx",
+          "symbol": "ThoughtsOverview"
+        },
+        {
+          "file": "src/sections/TeachingWriting/Books.tsx",
+          "symbol": "BooksShelf"
+        }
+      ],
+      "bindings": [
+        {
+          "file": "src/data/content.ts",
+          "declaration": "thoughtBooks",
+          "where": {
+            "field": "bookName",
+            "value": "The Meaning of Life"
+          },
+          "pick": [
+            "bookName",
+            "bookType",
+            "purchaseLink",
+            "previewLink",
+            "summaryLink",
+            "fullText"
+          ],
+          "equals": {
+            "bookName": "The Meaning of Life",
+            "bookType": "Metaphysical companion",
+            "purchaseLink": "https://author.vision/",
+            "previewLink": "https://drive.google.com/drive/folders/1Vgbf3l5pmJeGYLzYOWP1mcn7aED9zOPD?usp=sharing",
+            "summaryLink": "https://drive.google.com/file/d/10Rzdgz9dFOHOgjUiP-tKUoxCPuRCRsN7/view?usp=sharing",
+            "fullText": "https://drive.google.com/drive/folders/1Vgbf3l5pmJeGYLzYOWP1mcn7aED9zOPD?usp=sharing"
+          }
+        }
+      ],
+      "publicLinks": [
+        "https://author.vision/",
+        "https://drive.google.com/drive/folders/1Vgbf3l5pmJeGYLzYOWP1mcn7aED9zOPD?usp=sharing",
+        "https://drive.google.com/file/d/10Rzdgz9dFOHOgjUiP-tKUoxCPuRCRsN7/view?usp=sharing"
+      ],
+      "checkedScope": "local-reconciliation",
+      "lastChecked": "2026-10-22",
+      "cadenceDays": 90,
+      "reviewAfter": "2027-01-20"
+    },
+    {
+      "id": "ai-ramin",
+      "entity": "AI Ramin",
+      "kind": "assistant",
+      "scope": "Source-grounded portfolio assistant using curated local evidence, source boundaries and uncertainty. Offline routing/retrieval checks are not a live-answer quality benchmark. Feedback contains user-provided context and is not proof of improved model quality.",
+      "period": "Current portfolio implementation and source policy; no production accuracy/conversion/reliability baseline claimed.",
+      "attribution": "Ramin’s portfolio implementation, curated author evidence and third-party generation services. Inferred role fit remains inference.",
+      "publication": {
+        "status": "public-assistant-with-confidentiality-boundaries",
+        "basis": "Existing UI, source policy and API routes. Public-safety labels do not turn raw/private source material into publishable evidence.",
+        "exclusions": [
+          "No invented metrics, inflated scope or confidential employer details",
+          "No guarantee that generated answers are accurate",
+          "No claim of no data storage, no training or provider retention guarantees without separate evidence",
+          "Do not equate saved feedback/offline checks with measured production quality"
+        ]
+      },
+      "implementationStatus": "source-grounded-portfolio-assistant",
+      "evidenceStatus": "implementation-and-offline-contract-evidence",
+      "cadenceDays": 30,
+      "source": {
+        "sourceCheckedOn": null,
+        "note": "Local review of curated source/policy declarations and visible assistant code. No Gemini calls, account inspection, production-quality scoring or retention audit.",
+        "files": [
+          "ai-ramin-section/policies/source-priority.md",
+          "ai-ramin-section/policies/privacy-confidentiality.md",
+          "ai-ramin-section/evaluation/README.md",
+          "scripts/build-ai-ramin-corpus.mjs",
+          "api/ai-ramin.mjs",
+          "api/ai-ramin/feedback.mjs",
+          "src/data/ai-ramin.ts"
+        ]
+      },
+      "surfaceRefs": [
+        {
+          "file": "src/sections/AiRamin.tsx",
+          "symbol": "AiRaminSection"
+        },
+        {
+          "file": "src/data/ai-ramin.ts",
+          "symbol": "aiRaminPrototype"
+        }
+      ],
+      "bindings": [
+        {
+          "file": "src/data/ai-ramin.ts",
+          "declaration": "aiRaminPrototype",
+          "pick": [
+            "status",
+            "description",
+            "disallowedClaims",
+            "sourceBoundaries"
+          ],
+          "equals": {
+            "status": "Source-grounded portfolio chat",
+            "description": "AI Ramin answers from curated portfolio sources, separates supported evidence from inference, and makes the boundary clear when the context is not enough.",
+            "disallowedClaims": [
+              "No invented metrics",
+              "No inflated job scope",
+              "No confidential Bayut or Side.inc detail",
+              "No unverified public proof",
+              "No pretending to know what the verified corpus does not confirm",
+              "No raw scrape dumps as voice"
+            ],
+            "sourceBoundaries": [
+              "Use curated local portfolio files as memory.",
+              "Treat public pages as proof and asset leads, not personality or voice.",
+              "Prefer saying \"not enough evidence\" over making a confident claim.",
+              "Separate verified proof, inferred fit, and next questions in every answer."
+            ]
+          }
+        }
+      ],
+      "boundaries": [
+        {
+          "file": "ai-ramin-section/policies/source-priority.md",
+          "required": [
+            "qualify the metric or avoid it"
+          ]
+        },
+        {
+          "file": "ai-ramin-section/evaluation/README.md",
+          "required": [
+            "not subjective model copy quality",
+            "does not call Gemini"
+          ]
+        }
+      ],
+      "publicLinks": [
+        "/ai-ramin"
+      ],
+      "checkedScope": "local-reconciliation",
+      "lastChecked": "2026-10-22",
+      "reviewAfter": "2026-11-21"
+    }
+  ],
+  "maintenanceTimeZone": "Asia/Dubai"
+}

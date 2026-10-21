@@ -3,6 +3,7 @@ import react from '@vitejs/plugin-react';
 import { fileURLToPath, URL } from 'node:url';
 import { handleAiRaminFeedbackRequest, handleAiRaminRequest } from './server/aiRaminHandler.mjs';
 import { handleMassSocialWisdomRequest } from './server/massSocialWisdomHandler.mjs';
+import { handleVisitorJourneyRequest } from './server/visitorJourneyHandler.mjs';
 
 const decoderAssetFileName = (assetInfo) => {
   const names = [
@@ -29,6 +30,12 @@ export default defineConfig({
     {
       name: 'ai-ramin-api',
       configureServer(server) {
+        server.middlewares.use('/api/visitor-journey', (req, res) => {
+          void handleVisitorJourneyRequest(req, res).catch(() => {
+            res.statusCode = 500;
+            res.end('Measurement unavailable.');
+          });
+        });
         server.middlewares.use('/api/mass-social-wisdom', (req, res) => {
           void handleMassSocialWisdomRequest(req, res).catch((error) => {
             console.error(error);

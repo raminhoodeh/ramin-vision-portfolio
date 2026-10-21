@@ -3,6 +3,8 @@ import gsap from 'gsap';
 import { portfolioContent } from '../data/portfolio';
 import { GlassImprintCta } from '../components/GlassImprintCta';
 import { isPlaceholderValue } from '../lib/placeholder';
+import { JourneyPrivacy } from '../components/JourneyPrivacy';
+import { recordJourneyEvent } from '../lib/visitorJourney';
 
 export function Contact() {
   const { contactCta } = portfolioContent;
@@ -51,6 +53,7 @@ export function Contact() {
       if (!didCopy) throw new Error('Unable to copy email address.');
 
       setEmailCopied(true);
+      recordJourneyEvent('contact_open', 'email_copy');
       if (copyResetTimeoutRef.current) window.clearTimeout(copyResetTimeoutRef.current);
       copyResetTimeoutRef.current = window.setTimeout(() => setEmailCopied(false), 1800);
     } catch {
@@ -263,6 +266,7 @@ export function Contact() {
             {emailCopied ? `${emailAddress} copied to clipboard` : ''}
           </span>
         </div>
+        <JourneyPrivacy />
       </div>
     </section>
   );

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, useId } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, useId, useSyncExternalStore } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
 import { aiRaminPrototype, portfolioContent } from '../data/portfolio';
 import type {
@@ -13,6 +13,8 @@ import { SectionKicker, sectionMarkerMeta } from '../components/SectionHeader';
 import profileImageUrl from '../assets/ramin-profile-nav.webp';
 import { useDialogFocus } from '../lib/useDialogFocus';
 import { prefersReducedMotion } from '../lib/dialogFocus';
+import { AI_RAMIN_SESSION_LIMITS, createAiRaminConversation } from '../lib/aiRaminConversation';
+import { recordJourneyEvent } from '../lib/visitorJourney';
 
 type AiRaminMessageRole = 'assistant' | 'user';
 type AiRaminEvidenceCard = {
@@ -316,6 +318,18 @@ type AiRaminMessage = {
   isIntro?: boolean;
   response?: AiRaminStructuredResponse;
 };
+// This module stays cached across SPA routes; the conversation never enters
+// browser storage and is reset by refresh or the visitor's Clear chat action.
+const aiRaminConversation = createAiRaminConversation<AiRaminMessage, AiRaminHiringModeId, AiRaminRequestType>({
+  messages: [{
+    id: 'assistant-intro', role: 'assistant',
+    content: `${aiRaminPrototype.headline}\n\n${aiRaminPrototype.description}`, isIntro: true,
+  }],
+  selectedMode: 'hiring-manager',
+  selectedRequestType: 'general_chat',
+  isSuggestionsOpen: typeof window === 'undefined' || window.innerWidth > 767,
+});
+
 type AiRaminMarkdownBlock =
   | { type: 'heading'; level: number; content: string }
   | { type: 'paragraph'; content: string }
@@ -1200,6 +1214,7 @@ function AiRaminAnswerFeedback({
   const [note, setNote] = useState('');
   const [status, setStatus] = useState<AiRaminFeedbackStatus>('idle');
   const [isNoteOpen, setIsNoteOpen] = useState(false);
+  const disclosureId = `ai-ramin-feedback-disclosure-${useId().replace(/:/g, '')}`;
 
   const submitFeedback = useCallback(
     async (feedback: AiRaminFeedbackValue, feedbackNote = '') => {
@@ -1261,11 +1276,13 @@ function AiRaminAnswerFeedback({
 
   return (
     <div className="ai-ramin-answer-feedback" aria-label="Answer feedback">
+      <p id={disclosureId} className="m-0 text-[10px] leading-4 text-slate-500">Sending feedback shares this question and answer, plus any note you add.</p>
       <div className="ai-ramin-answer-feedback-row">
         <span>{status === 'saved' ? 'Feedback saved' : status === 'failed' ? 'Feedback did not save' : 'Was this useful?'}</span>
         <button
           type="button"
           className={selectedFeedback === 'helpful' ? 'is-active' : ''}
+          aria-describedby={disclosureId}
           onClick={() => void submitFeedback('helpful')}
           disabled={disabled || status === 'submitting'}
         >
@@ -1283,6 +1300,7 @@ function AiRaminAnswerFeedback({
       {isNoteOpen ? (
         <div className="ai-ramin-answer-feedback-note">
           <textarea
+            aria-label="Optional feedback note"
             value={note}
             onChange={(event) => setNote(event.target.value)}
             placeholder="What was missing or off?"
@@ -1291,6 +1309,7 @@ function AiRaminAnswerFeedback({
           />
           <button
             type="button"
+            aria-describedby={disclosureId}
             onClick={() => void submitFeedback('needs_review', note)}
             disabled={disabled || status === 'submitting'}
           >
@@ -2000,23 +2019,10 @@ function AiRaminContextPanel({
 
 export function AiRaminSection({ onOpenMenu }: { onOpenMenu?: () => void }) {
   const chatbot = portfolioContent.aiRaminChatbot;
-  const [prompt, setPrompt] = useState('');
-  const [isSuggestionsOpen, setIsSuggestionsOpen] = useState(
-    () => typeof window === 'undefined' || window.innerWidth > 767,
-  );
-  const [selectedMode, setSelectedMode] = useState<AiRaminHiringModeId>('hiring-manager');
-  const [selectedRequestType, setSelectedRequestType] = useState<AiRaminRequestType>('general_chat');
-  const [messages, setMessages] = useState<AiRaminMessage[]>(() => [
-    {
-      id: 'assistant-intro',
-      role: 'assistant',
-      content: `${aiRaminPrototype.headline}\n\n${aiRaminPrototype.description}`,
-      isIntro: true,
-    },
-  ]);
-  const [isSending, setIsSending] = useState(false);
+  const { prompt, isSuggestionsOpen, selectedMode, selectedRequestType, messages, isSending, chatError } =
+    useSyncExternalStore(aiRaminConversation.subscribe, aiRaminConversation.getSnapshot, aiRaminConversation.getSnapshot);
+  const { setPrompt, setIsSuggestionsOpen, setSelectedMode, setSelectedRequestType, setChatError } = aiRaminConversation;
   const [loadingMessageIndex, setLoadingMessageIndex] = useState(0);
-  const [chatError, setChatError] = useState<string | null>(null);
   const [isConsiderationsOpen, setIsConsiderationsOpen] = useState(false);
   const [isContextPanelOpen, setIsContextPanelOpen] = useState(false);
   const promptInputRef = useRef<HTMLTextAreaElement | null>(null);
@@ -2068,7 +2074,11 @@ export function AiRaminSection({ onOpenMenu }: { onOpenMenu?: () => void }) {
       if (!title) return;
       const sb = section.getBoundingClientRect();
       const tb = title.getBoundingClientRect();
-      if (sb.width < 1 || tb.width < 1) return;
+      if (sb.width < 1 || tb.width < 1 || tb.height < 1) {
+        section.style.removeProperty('--ai-ramin-title-mask');
+        section.removeAttribute('data-cutout');
+        return;
+      }
       const cs = window.getComputedStyle(title);
       const fontSize = parseFloat(cs.fontSize) || 44;
       const weight = cs.fontWeight || '800';
@@ -2123,7 +2133,7 @@ export function AiRaminSection({ onOpenMenu }: { onOpenMenu?: () => void }) {
   const sendMessage = useCallback(
     async (messageOverride?: string, options?: AiRaminSendMessageOptions) => {
       const messageText = (messageOverride ?? prompt).trim();
-      if (!messageText || isSending) return;
+      if (!messageText || aiRaminConversation.getSnapshot().isSending) return;
       const requestMode = options?.hiringMode ?? selectedMode;
       const requestType = options?.requestType ?? selectedRequestType;
 
@@ -2149,15 +2159,11 @@ export function AiRaminSection({ onOpenMenu }: { onOpenMenu?: () => void }) {
         content: messageText,
       };
 
-      setMessages((currentMessages) => [...currentMessages, userMessage]);
-      setPrompt('');
-      setChatError(null);
-      setIsSuggestionsOpen(false);
-      setIsSending(true);
-
-      try {
+      const pendingRequest = aiRaminConversation.runRequest(userMessage, async (signal) => {
+        recordJourneyEvent('ai_request', requestType, 'ai');
         const response = await fetch('/api/ai-ramin', {
           method: 'POST',
+          signal,
           headers: {
             'Content-Type': 'application/json',
           },
@@ -2177,8 +2183,6 @@ export function AiRaminSection({ onOpenMenu }: { onOpenMenu?: () => void }) {
           throw new Error(responsePayload?.error || 'AI Ramin could not answer that yet.');
         }
 
-        if (responsePayload?.mode) setSelectedMode(responsePayload.mode);
-        if (responsePayload?.requestType) setSelectedRequestType(responsePayload.requestType);
         const responseIntent =
           responsePayload?.sourceMetadata?.intentRoute?.intent ||
           responsePayload?.sourceMetadata?.routing?.intentRoute?.intent;
@@ -2188,28 +2192,21 @@ export function AiRaminSection({ onOpenMenu }: { onOpenMenu?: () => void }) {
           responsePayload?.sourceMetadata?.answerShape?.primaryQuestionType ||
           responsePayload?.sourceMetadata?.debugTrace?.intent?.primaryQuestionType;
 
-        setMessages((currentMessages) => [
-          ...currentMessages,
-          {
+        return {
+          message: {
             id: createAiRaminMessageId('assistant'),
-            role: 'assistant',
+            role: 'assistant' as const,
             content: String(responsePayload?.answer || '').trim(),
             response: responsePayload ?? undefined,
           },
-        ]);
-        if (
-          responseIntent === 'casual_chat' ||
-          responseIntent === 'clarification_needed' ||
-          responseQuestionType === 'conversation_open' ||
-          responseQuestionType === 'clarification_needed'
-        ) {
-          setIsSuggestionsOpen(true);
-        }
-      } catch (error) {
-        setChatError(error instanceof Error ? error.message : 'AI Ramin could not answer that yet.');
-      } finally {
-        setIsSending(false);
-      }
+          selectedMode: responsePayload?.mode,
+          selectedRequestType: responsePayload?.requestType,
+          isSuggestionsOpen: responseIntent === 'casual_chat' || responseIntent === 'clarification_needed' ||
+            responseQuestionType === 'conversation_open' || responseQuestionType === 'clarification_needed',
+        };
+      });
+      const outcome = await pendingRequest;
+      if (outcome === 'success' || outcome === 'unavailable') recordJourneyEvent('ai_result', outcome, 'ai');
     },
     [isSending, messages, prompt, selectedMode, selectedRequestType],
   );
@@ -2595,14 +2592,17 @@ export function AiRaminSection({ onOpenMenu }: { onOpenMenu?: () => void }) {
                     isOpen={isContextPanelOpen}
                     onOpen={() => setIsContextPanelOpen((current) => !current)}
                   />
-                </div>
-                <form
-                  className="ai-ramin-composer"
-                  onSubmit={(event) => {
-                    event.preventDefault();
-                    void sendMessage();
-                  }}
-                >
+                  <button
+                    type="button"
+                    className="ai-ramin-composer-lens"
+                    aria-label="Clear conversation and draft"
+                    title="Clear chat and draft from this tab"
+                    disabled={!hasChatStarted && !prompt && !isSending}
+                    onClick={() => {
+                      aiRaminConversation.clear();
+                      window.requestAnimationFrame(() => promptInputRef.current?.focus());
+                    }}
+                  ><span>Clear chat</span></button>
                   {!isStructuredRequest ? (
                     <button
                       type="button"
@@ -2616,6 +2616,14 @@ export function AiRaminSection({ onOpenMenu }: { onOpenMenu?: () => void }) {
                       <span>{isSuggestionsOpen ? 'Hide suggestions' : 'Suggestions'}</span>
                     </button>
                   ) : null}
+                </div>
+                <form
+                  className="ai-ramin-composer"
+                  onSubmit={(event) => {
+                    event.preventDefault();
+                    void sendMessage();
+                  }}
+                >
                   <label htmlFor="ai-ramin-page-prompt" className="sr-only">
                     {chatbot.textarea.label}
                   </label>
@@ -2633,6 +2641,7 @@ export function AiRaminSection({ onOpenMenu }: { onOpenMenu?: () => void }) {
                     placeholder="Message AI Ramin"
                     className="ai-ramin-composer-input"
                     autoComplete="off"
+                    maxLength={AI_RAMIN_SESSION_LIMITS.draftChars}
                     rows={1}
                   />
                   <button
@@ -2647,6 +2656,7 @@ export function AiRaminSection({ onOpenMenu }: { onOpenMenu?: () => void }) {
                     </svg>
                   </button>
                 </form>
+                <p className="m-0 text-center text-[10px] leading-4 text-slate-500">Recent chat and draft stay in this tab while you explore. Refresh or clear to reset.</p>
               </div>
             </div>
           </div>

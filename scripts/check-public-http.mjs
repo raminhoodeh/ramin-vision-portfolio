@@ -18,9 +18,9 @@ const request = (route, options = {}) => new Promise((resolve, reject) => {
   const outgoing = http.request(base + route, { method: options.method ?? 'GET', headers: options.headers ?? {} }, (incoming) => {
     const chunks = [];
     incoming.on('data', (chunk) => chunks.push(chunk));
-    incoming.on('end', () => resolve(new Response(Buffer.concat(chunks), { status: incoming.statusCode, headers: incoming.headers })));
+    incoming.on('end', () => resolve(new Response([204, 205, 304].includes(incoming.statusCode) ? null : Buffer.concat(chunks), { status: incoming.statusCode, headers: incoming.headers })));
   });
-  outgoing.on('error', reject); outgoing.end();
+  outgoing.on('error', reject); outgoing.end(options.body);
 });
 try {
   for (let attempt = 0; attempt < 100 && !logs.includes('Portfolio server running'); attempt++) {
@@ -98,6 +98,11 @@ try {
   }
   const api = await request('/api/not-a-real-endpoint'); assert.equal(api.status, 404); assert.ok(!(await api.text()).includes('<html'));
   const apiMethod = await request('/api/ai-ramin', { headers: { host: 'ramin.vision' } }); assert.equal(apiMethod.status, 405); assert.ok(!(await apiMethod.text()).includes('<html'));
+  const journeyMethod = await request('/api/visitor-journey'); assert.equal(journeyMethod.status, 405);
+  const journeyPayload = { schemaVersion: 1, event: 'cv_open', surface: 'home', target: 'cv', audience: 'qa' };
+  const journeyOptions = { method: 'POST', headers: { origin: CANONICAL_ORIGIN, 'content-type': 'application/json' }, body: JSON.stringify(journeyPayload) };
+  assert.equal((await request('/api/visitor-journey', journeyOptions)).status, 204, 'measurement endpoint wired into Node hosting');
+  assert.equal((await request('/api/visitor-journey', { ...journeyOptions, body: JSON.stringify({ ...journeyPayload, prompt: 'rejected-fixture' }) })).status, 400, 'extra text rejected over HTTP');
   const config = JSON.parse(await readFile('vercel.json', 'utf8'));
   for (const route of ['/cv', '/cv/', '/presentation', '/presentation/']) {
     const response = await request(route, { headers: { host: 'ramin.vision' } }); assert.equal(response.status, 307, route);
