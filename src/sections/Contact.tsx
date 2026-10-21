@@ -167,7 +167,7 @@ export function Contact() {
 
       <div className="contact-content relative z-10 mx-auto flex max-w-5xl flex-col items-center">
         {/* Section label rendered globally via <SectionMarker> */}
-        <p className="translate-y-16 text-xs uppercase tracking-[0.3em] text-muted md:translate-y-20">{contactCta.hook}</p>
+        <p className="contact-hook text-xs uppercase tracking-[0.3em] text-muted">{contactCta.hook}</p>
         <h2 className="sr-only">{contactCta.headline}</h2>
         <div className="contact-headline-cutout-spacer" aria-hidden="true" />
 
