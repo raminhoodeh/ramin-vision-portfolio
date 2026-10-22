@@ -64,10 +64,47 @@ const contactHtml = renderToStaticMarkup(React.createElement(Contact));
 assert.ok(contactHtml.includes(`href="mailto:${data.resourceContact.email}"`), 'Email composition is a native link');
 assert.ok(contactHtml.includes('>Copy email</button>'), 'Copy is a separate button');
 assert.ok(contactHtml.includes(`>${data.resourceContact.email}</p>`), 'The address is visible/selectable');
-for (const href of ['/cv', '/resources', data.resourceContact.linkedin]) assert.ok(contactHtml.includes(`href="${href}"`), `Contact exposes ${href}`);
+for (const href of ['/resources', data.resourceContact.linkedin]) assert.ok(contactHtml.includes(`href="${href}"`), `Contact exposes ${href}`);
+assert.ok(!contactHtml.includes('href="/cv"'), 'Contact does not expose a CV download');
 assert.ok(contactHtml.includes('problem, team and timeline'), 'Contact explains what to send');
 assert.ok(contactHtml.includes(data.resourceContact.timezoneLabel));
 assert.ok(!/available (now|immediately)|response within|book a free/i.test(contactHtml), 'No invented availability or consultation entitlement');
+
+// CV access is removed from the portfolio itself, including the ordinary site
+// and its first HTML, independently of any temporary maintenance response.
+function assertNoCvLinks(html, label) {
+  for (const [, href] of html.matchAll(/\bhref="([^"]+)"/g)) {
+    const pathname = new URL(href.replaceAll('&amp;', '&'), 'https://www.ramin.vision').pathname;
+    assert.ok(!/^\/cv\/?$/i.test(pathname), `${label}: CV links must stay absent`);
+  }
+}
+assertNoCvLinks(contactHtml, 'Contact');
+const { Hero } = load('src/sections/Hero.tsx');
+assertNoCvLinks(renderToStaticMarkup(React.createElement(Hero, { ready: true, onOpenThesis() {} })), 'Hero');
+const { ProfessionalStories } = load('src/sections/ProfessionalStories.tsx');
+const { professionalStories } = load('src/data/professionalStories.ts');
+for (const story of professionalStories) {
+  assertNoCvLinks(renderToStaticMarkup(React.createElement(ProfessionalStories, { activeSlug: story.slug })), `${story.company} story`);
+  assert.ok(story.sourceRefs.some((source) => source.includes('CV')), 'Removing the CTA must retain career provenance');
+}
+const initialSource = fs.readFileSync(path.join(root, 'src/seo/InitialDocument.tsx'), 'utf8');
+const initialAst = ts.createSourceFile('InitialDocument.tsx', initialSource, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX);
+const initialFunctions = ['Body', 'InitialDocument'].map((name) => {
+  const declaration = initialAst.statements.find((node) => ts.isFunctionDeclaration(node) && node.name?.text === name);
+  assert.ok(declaration, `First HTML ${name}`);
+  return declaration.getText(initialAst).replace(/^export\s+/, '');
+});
+const initialModule = { exports: {} };
+vm.runInNewContext(compile(`${initialFunctions.join('\n')}\nmodule.exports = { InitialDocument };`), {
+  module: initialModule, exports: initialModule.exports, require,
+  portfolioContent: { contactCta: { headline: 'Contact Ramin', hook: 'Let’s talk.' }, teachingSpeakingWriting: {} },
+  resourceContact: data.resourceContact,
+  portfolioDestinations: load('src/data/nav.ts').portfolioDestinations,
+  NotFoundPage: () => React.createElement('h1', null, 'Page not found'),
+});
+for (const page of [null, { kind: 'contact' }]) {
+  assertNoCvLinks(renderToStaticMarkup(React.createElement(initialModule.exports.InitialDocument, { page })), 'First HTML navigation, contact and footer');
+}
 
 const { BonusSection } = load('src/sections/Bonus.tsx');
 const locked = renderToStaticMarkup(React.createElement(BonusSection, { rockClicks: 0, preloadStatus: 'idle', onRockClick() {} }));
@@ -126,4 +163,4 @@ assert.equal(failure.restored, true);
 assert.equal(failure.inserted, failure.removed, 'Failed fallback still cleans up and restores focus');
 assert.equal(failure.events.length, 0, 'Failed copying is not reported as a completed contact action');
 
-console.log('Contact/resources checks passed: no-browser direct resource render; starter/course links; four safe shared offers; pre-click resources access; compose/copy/CV/LinkedIn; clipboard success/fallback/failure and focus cleanup. Live offer eligibility and booking availability are not claimed.');
+console.log('Contact/resources checks passed: no-browser direct resource render; starter/course links; four safe shared offers; pre-click resources access; compose/copy/LinkedIn and no public CV action; clipboard success/fallback/failure and focus cleanup. Live offer eligibility and booking availability are not claimed.');

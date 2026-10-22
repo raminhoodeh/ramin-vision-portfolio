@@ -196,7 +196,6 @@ export function Contact() {
           {emailCopied ? `${emailAddress} copied to clipboard` : copyFailed ? 'Could not copy automatically. You can select the address above.' : ''}
         </div>
         <nav className="contact-professional-links" aria-label="Contact and professional links">
-          <a href="/cv">View CV</a>
           <a href={resourceContact.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a>
           {whatsAppHref ? <a href={whatsAppHref} target="_blank" rel="noopener noreferrer">WhatsApp</a> : null}
           <a href="/resources">Resources</a>

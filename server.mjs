@@ -7,12 +7,11 @@ import { handleAiRaminFeedbackRequest, handleAiRaminRequest } from './server/aiR
 import { handleMassSocialWisdomRequest } from './server/massSocialWisdomHandler.mjs';
 import { handleVisitorJourneyRequest } from './server/visitorJourneyHandler.mjs';
 import { CANONICAL_ORIGIN, getPublicPage, normalizePublicPath, routeAliases } from './src/seo/routes.mjs';
+import { blockWhileMaintenance } from './server/siteMaintenance.mjs';
 
 const ROOT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const DIST_DIR = path.join(ROOT_DIR, 'dist');
 const PORT = Number(process.env.PORT || 4182);
-const CV_REDIRECT_URL =
-  'https://drive.google.com/file/d/1t6y6uCX5D0CxaQCbM4iGrNv8FJUctah3/view?usp=sharing';
 const PRESENTATION_REDIRECT_URL =
   'https://docs.google.com/presentation/d/1wCDf9rzm3g7lAoDkFw7UWSeDc9PHgUW-/edit?usp=sharing&ouid=110264933146795409149&rtpof=true&sd=true';
 
@@ -116,6 +115,7 @@ async function serveStatic(req, res) {
 }
 
 const server = http.createServer((req, res) => {
+  if (blockWhileMaintenance(req, res)) return;
   const requestUrl = new URL(req.url || '/', `http://${req.headers.host || 'localhost'}`);
 
   if (requestUrl.pathname === '/presentation' || requestUrl.pathname === '/presentation/') {
@@ -124,7 +124,8 @@ const server = http.createServer((req, res) => {
   }
 
   if (requestUrl.pathname === '/cv' || requestUrl.pathname === '/cv/') {
-    redirect(res, CV_REDIRECT_URL);
+    res.setHeader('X-Robots-Tag', 'noindex');
+    sendText(res, 410, 'The CV is no longer available on this website.');
     return;
   }
 
@@ -174,5 +175,5 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(PORT, '127.0.0.1', () => {
-  console.log(`Portfolio server running at http://127.0.0.1:${PORT}`);
+  console.log(`Portfolio server running at http://127.0.0.1:${server.address().port}`);
 });

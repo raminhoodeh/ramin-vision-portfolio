@@ -1,0 +1,632 @@
+{
+  "framework": "vite",
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "functions": {
+    "api/**/*.mjs": {
+      "maxDuration": 300
+    }
+  },
+  "redirects": [
+    {
+      "source": "/presentation",
+      "destination": "https://docs.google.com/presentation/d/1wCDf9rzm3g7lAoDkFw7UWSeDc9PHgUW-/edit?usp=sharing&ouid=110264933146795409149&rtpof=true&sd=true",
+      "permanent": false
+    },
+    {
+      "source": "/presentation/",
+      "destination": "https://docs.google.com/presentation/d/1wCDf9rzm3g7lAoDkFw7UWSeDc9PHgUW-/edit?usp=sharing&ouid=110264933146795409149&rtpof=true&sd=true",
+      "permanent": false
+    },
+    {
+      "source": "/:path((?!api/).*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "ramin.vision"
+        }
+      ],
+      "destination": "https://www.ramin.vision/:path",
+      "permanent": true
+    },
+    {
+      "source": "/home",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/hero",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/intro",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/work",
+      "destination": "/experience-education",
+      "permanent": true
+    },
+    {
+      "source": "/experience",
+      "destination": "/experience-education",
+      "permanent": true
+    },
+    {
+      "source": "/method",
+      "destination": "/product-method",
+      "permanent": true
+    },
+    {
+      "source": "/disx",
+      "destination": "/talks/disx-dubai",
+      "permanent": true
+    },
+    {
+      "source": "/thesis",
+      "destination": "/product-thesis",
+      "permanent": true
+    },
+    {
+      "source": "/my-product-thesis",
+      "destination": "/product-thesis",
+      "permanent": true
+    },
+    {
+      "source": "/projects/ai-native-product-os",
+      "destination": "/product-thesis",
+      "permanent": true
+    },
+    {
+      "source": "/projects/product-thesis",
+      "destination": "/product-thesis",
+      "permanent": true
+    },
+    {
+      "source": "/thoughts/ai-native-product-os",
+      "destination": "/product-thesis",
+      "permanent": true
+    },
+    {
+      "source": "/thoughts/product-thesis",
+      "destination": "/product-thesis",
+      "permanent": true
+    },
+    {
+      "source": "/thoughts/thesis",
+      "destination": "/product-thesis",
+      "permanent": true
+    },
+    {
+      "source": "/teaching-speaking-writing",
+      "destination": "/thoughts",
+      "permanent": true
+    },
+    {
+      "source": "/ai",
+      "destination": "/ai-ramin",
+      "permanent": true
+    },
+    {
+      "source": "/projects-featured",
+      "destination": "/projects/featured",
+      "permanent": true
+    },
+    {
+      "source": "/projects-selfware",
+      "destination": "/projects/selfware",
+      "permanent": true
+    },
+    {
+      "source": "/projects-selfware-stack",
+      "destination": "/projects/selfware",
+      "permanent": true
+    },
+    {
+      "source": "/projects-tools",
+      "destination": "/projects/tools",
+      "permanent": true
+    },
+    {
+      "source": "/projects-architecture",
+      "destination": "/projects/architecture",
+      "permanent": true
+    },
+    {
+      "source": "/thoughts-foundations",
+      "destination": "/thoughts/foundations",
+      "permanent": true
+    },
+    {
+      "source": "/thoughts-act-method-values",
+      "destination": "/thoughts/method-values",
+      "permanent": true
+    },
+    {
+      "source": "/thoughts-talks",
+      "destination": "/thoughts/talks",
+      "permanent": true
+    },
+    {
+      "source": "/thoughts-passions",
+      "destination": "/thoughts/passions",
+      "permanent": true
+    },
+    {
+      "source": "/thoughts-act-formation",
+      "destination": "/thoughts/formation",
+      "permanent": true
+    },
+    {
+      "source": "/thoughts-books",
+      "destination": "/thoughts/books",
+      "permanent": true
+    },
+    {
+      "source": "/thoughts-integration",
+      "destination": "/thoughts/integration",
+      "permanent": true
+    },
+    {
+      "source": "/thoughts-courses",
+      "destination": "/thoughts/courses",
+      "permanent": true
+    },
+    {
+      "source": "/thoughts-act-integration-proof",
+      "destination": "/thoughts/integration-proof",
+      "permanent": true
+    },
+    {
+      "source": "/thoughts-os",
+      "destination": "/thoughts/os",
+      "permanent": true
+    },
+    {
+      "source": "/thoughts-architecture-bridge",
+      "destination": "/thoughts/architecture",
+      "permanent": true
+    },
+    {
+      "source": "/thoughts-work-narrative",
+      "destination": "/thoughts/work-narrative",
+      "permanent": true
+    },
+    {
+      "source": "/thoughts-case-studies",
+      "destination": "/thoughts/case-studies",
+      "permanent": true
+    },
+    {
+      "source": "/thoughts/nsso",
+      "destination": "/projects/nsso",
+      "permanent": true
+    },
+    {
+      "source": "/nsso",
+      "destination": "/projects/nsso",
+      "permanent": true
+    },
+    {
+      "source": "/case-studies/project-nsso",
+      "destination": "/projects/nsso",
+      "permanent": true
+    },
+    {
+      "source": "/case-studies/writeup-nsso",
+      "destination": "/projects/nsso",
+      "permanent": true
+    },
+    {
+      "source": "/thoughts/dreamsea",
+      "destination": "/projects/dreamsea",
+      "permanent": true
+    },
+    {
+      "source": "/dreamsea",
+      "destination": "/projects/dreamsea",
+      "permanent": true
+    },
+    {
+      "source": "/case-studies/project-dreamsea",
+      "destination": "/projects/dreamsea",
+      "permanent": true
+    },
+    {
+      "source": "/case-studies/writeup-dreamsea",
+      "destination": "/projects/dreamsea",
+      "permanent": true
+    },
+    {
+      "source": "/thoughts/qadam",
+      "destination": "/projects/qadam",
+      "permanent": true
+    },
+    {
+      "source": "/qadam",
+      "destination": "/projects/qadam",
+      "permanent": true
+    },
+    {
+      "source": "/case-studies/project-qadam",
+      "destination": "/projects/qadam",
+      "permanent": true
+    },
+    {
+      "source": "/case-studies/writeup-qadam",
+      "destination": "/projects/qadam",
+      "permanent": true
+    },
+    {
+      "source": "/thoughts/24seven-concierge",
+      "destination": "/projects/24seven-concierge",
+      "permanent": true
+    },
+    {
+      "source": "/24seven-concierge",
+      "destination": "/projects/24seven-concierge",
+      "permanent": true
+    },
+    {
+      "source": "/case-studies/project-24seven-concierge",
+      "destination": "/projects/24seven-concierge",
+      "permanent": true
+    },
+    {
+      "source": "/case-studies/writeup-24seven-concierge",
+      "destination": "/projects/24seven-concierge",
+      "permanent": true
+    },
+    {
+      "source": "/thoughts/razinflix",
+      "destination": "/projects/razinflix",
+      "permanent": true
+    },
+    {
+      "source": "/razinflix",
+      "destination": "/projects/razinflix",
+      "permanent": true
+    },
+    {
+      "source": "/case-studies/project-razinflix",
+      "destination": "/projects/razinflix",
+      "permanent": true
+    },
+    {
+      "source": "/case-studies/writeup-razinflix",
+      "destination": "/projects/razinflix",
+      "permanent": true
+    },
+    {
+      "source": "/thoughts/ai-native-product-manager-os",
+      "destination": "/projects/ai-native-product-manager-os",
+      "permanent": true
+    },
+    {
+      "source": "/ai-native-product-manager-os",
+      "destination": "/projects/ai-native-product-manager-os",
+      "permanent": true
+    },
+    {
+      "source": "/case-studies/project-ai-native-product-manager-os",
+      "destination": "/projects/ai-native-product-manager-os",
+      "permanent": true
+    },
+    {
+      "source": "/case-studies/writeup-ai-native-product-manager-os",
+      "destination": "/projects/ai-native-product-manager-os",
+      "permanent": true
+    },
+    {
+      "source": "/thoughts/mass-social-wisdom-agent",
+      "destination": "/projects/mass-social-wisdom-agent",
+      "permanent": true
+    },
+    {
+      "source": "/mass-social-wisdom-agent",
+      "destination": "/projects/mass-social-wisdom-agent",
+      "permanent": true
+    },
+    {
+      "source": "/case-studies/project-mass-social-wisdom-agent",
+      "destination": "/projects/mass-social-wisdom-agent",
+      "permanent": true
+    },
+    {
+      "source": "/case-studies/writeup-mass-social-wisdom-agent",
+      "destination": "/projects/mass-social-wisdom-agent",
+      "permanent": true
+    },
+    {
+      "source": "/thoughts/ai-costs-dashboard",
+      "destination": "/projects/ai-costs-dashboard",
+      "permanent": true
+    },
+    {
+      "source": "/ai-costs-dashboard",
+      "destination": "/projects/ai-costs-dashboard",
+      "permanent": true
+    },
+    {
+      "source": "/case-studies/project-ai-costs-dashboard",
+      "destination": "/projects/ai-costs-dashboard",
+      "permanent": true
+    },
+    {
+      "source": "/case-studies/writeup-ai-costs-dashboard",
+      "destination": "/projects/ai-costs-dashboard",
+      "permanent": true
+    },
+    {
+      "source": "/thoughts/rag-pipeline",
+      "destination": "/projects/rag-pipeline",
+      "permanent": true
+    },
+    {
+      "source": "/rag-pipeline",
+      "destination": "/projects/rag-pipeline",
+      "permanent": true
+    },
+    {
+      "source": "/case-studies/project-rag-pipeline",
+      "destination": "/projects/rag-pipeline",
+      "permanent": true
+    },
+    {
+      "source": "/case-studies/writeup-rag-pipeline",
+      "destination": "/projects/rag-pipeline",
+      "permanent": true
+    },
+    {
+      "source": "/ai-native-product-os",
+      "destination": "/product-thesis",
+      "permanent": true
+    },
+    {
+      "source": "/case-studies/writeup-ai-native-product-os",
+      "destination": "/product-thesis",
+      "permanent": true
+    },
+    {
+      "source": "/case-studies/metacognition-deep-dive",
+      "destination": "/thoughts/framework-of-metacognition",
+      "permanent": true
+    },
+    {
+      "source": "/product-experience",
+      "destination": "/experience-education",
+      "permanent": true
+    },
+    {
+      "source": "/thoughts/product-experience",
+      "destination": "/experience-education",
+      "permanent": true
+    },
+    {
+      "source": "/projects/product-experience",
+      "destination": "/experience-education",
+      "permanent": true
+    },
+    {
+      "source": "/case-studies/writeup-product-experience",
+      "destination": "/experience-education",
+      "permanent": true
+    },
+    {
+      "source": "/selected-builds",
+      "destination": "/projects",
+      "permanent": true
+    },
+    {
+      "source": "/thoughts/selected-builds",
+      "destination": "/projects",
+      "permanent": true
+    },
+    {
+      "source": "/projects/selected-builds",
+      "destination": "/projects",
+      "permanent": true
+    },
+    {
+      "source": "/case-studies/writeup-selected-builds",
+      "destination": "/projects",
+      "permanent": true
+    },
+    {
+      "source": "/tools-systems",
+      "destination": "/projects",
+      "permanent": true
+    },
+    {
+      "source": "/thoughts/tools-systems",
+      "destination": "/projects",
+      "permanent": true
+    },
+    {
+      "source": "/projects/tools-systems",
+      "destination": "/projects",
+      "permanent": true
+    },
+    {
+      "source": "/case-studies/writeup-tools-systems",
+      "destination": "/projects",
+      "permanent": true
+    },
+    {
+      "source": "/credential-stack",
+      "destination": "/experience-education",
+      "permanent": true
+    },
+    {
+      "source": "/thoughts/credential-stack",
+      "destination": "/experience-education",
+      "permanent": true
+    },
+    {
+      "source": "/projects/credential-stack",
+      "destination": "/experience-education",
+      "permanent": true
+    },
+    {
+      "source": "/case-studies/writeup-credential-stack",
+      "destination": "/experience-education",
+      "permanent": true
+    },
+    {
+      "source": "/teaching-writing",
+      "destination": "/thoughts",
+      "permanent": true
+    },
+    {
+      "source": "/thoughts/teaching-writing",
+      "destination": "/thoughts",
+      "permanent": true
+    },
+    {
+      "source": "/projects/teaching-writing",
+      "destination": "/thoughts",
+      "permanent": true
+    },
+    {
+      "source": "/case-studies/writeup-teaching-writing",
+      "destination": "/thoughts",
+      "permanent": true
+    },
+    {
+      "source": "/thoughts/ai-ramin",
+      "destination": "/ai-ramin",
+      "permanent": true
+    },
+    {
+      "source": "/projects/ai-ramin",
+      "destination": "/ai-ramin",
+      "permanent": true
+    },
+    {
+      "source": "/case-studies/writeup-ai-ramin",
+      "destination": "/ai-ramin",
+      "permanent": true
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/projects/featured",
+      "destination": "/projects"
+    },
+    {
+      "source": "/projects/product",
+      "destination": "/projects"
+    },
+    {
+      "source": "/projects/products",
+      "destination": "/projects"
+    },
+    {
+      "source": "/projects/selfware",
+      "destination": "/projects"
+    },
+    {
+      "source": "/projects/apps",
+      "destination": "/projects"
+    },
+    {
+      "source": "/projects/tools",
+      "destination": "/projects"
+    },
+    {
+      "source": "/projects/systems",
+      "destination": "/projects"
+    },
+    {
+      "source": "/projects/architecture",
+      "destination": "/projects"
+    },
+    {
+      "source": "/projects/thesis",
+      "destination": "/projects"
+    },
+    {
+      "source": "/thoughts/foundations",
+      "destination": "/thoughts"
+    },
+    {
+      "source": "/thoughts/clarity",
+      "destination": "/thoughts"
+    },
+    {
+      "source": "/thoughts/think",
+      "destination": "/thoughts"
+    },
+    {
+      "source": "/thoughts/method",
+      "destination": "/thoughts"
+    },
+    {
+      "source": "/thoughts/method-values",
+      "destination": "/thoughts"
+    },
+    {
+      "source": "/thoughts/values",
+      "destination": "/thoughts"
+    },
+    {
+      "source": "/thoughts/passions",
+      "destination": "/thoughts"
+    },
+    {
+      "source": "/thoughts/formation",
+      "destination": "/thoughts"
+    },
+    {
+      "source": "/thoughts/storycraft",
+      "destination": "/thoughts"
+    },
+    {
+      "source": "/thoughts/express",
+      "destination": "/thoughts"
+    },
+    {
+      "source": "/thoughts/integration",
+      "destination": "/thoughts"
+    },
+    {
+      "source": "/thoughts/systems",
+      "destination": "/thoughts"
+    },
+    {
+      "source": "/thoughts/build",
+      "destination": "/thoughts"
+    },
+    {
+      "source": "/thoughts/proof",
+      "destination": "/thoughts"
+    },
+    {
+      "source": "/thoughts/integration-proof",
+      "destination": "/thoughts"
+    },
+    {
+      "source": "/thoughts/os",
+      "destination": "/thoughts"
+    },
+    {
+      "source": "/thoughts/architecture",
+      "destination": "/thoughts"
+    },
+    {
+      "source": "/thoughts/work",
+      "destination": "/thoughts"
+    },
+    {
+      "source": "/thoughts/work-narrative",
+      "destination": "/thoughts"
+    },
+    {
+      "source": "/thoughts/case-studies",
+      "destination": "/thoughts"
+    }
+  ],
+  "cleanUrls": true
+}

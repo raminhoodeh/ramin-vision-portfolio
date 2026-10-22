@@ -6,6 +6,12 @@ import http from 'node:http';
 import { readFile } from 'node:fs/promises';
 import sharp from 'sharp';
 import { CANONICAL_ORIGIN, getPageMetadata, getStructuredData, serializeStructuredData, publicPages, routeAliases, sectionPathAliases } from '../src/seo/routes.mjs';
+import { maintenanceEnabled } from '../site/maintenance.mjs';
+
+if (maintenanceEnabled) {
+  await import('./check-maintenance.mjs');
+  process.exit(0);
+}
 
 const probe = net.createServer();
 probe.listen(0, '127.0.0.1'); await once(probe, 'listening');
@@ -107,7 +113,13 @@ try {
   assert.equal((await request('/api/visitor-journey', journeyOptions)).status, 204, 'measurement endpoint wired into Node hosting');
   assert.equal((await request('/api/visitor-journey', { ...journeyOptions, body: JSON.stringify({ ...journeyPayload, prompt: 'rejected-fixture' }) })).status, 400, 'extra text rejected over HTTP');
   const config = JSON.parse(await readFile('vercel.json', 'utf8'));
-  for (const route of ['/cv', '/cv/', '/presentation', '/presentation/']) {
+  for (const route of ['/cv', '/cv/']) {
+    const response = await request(route, { headers: { host: 'ramin.vision' } });
+    assert.equal(response.status, 410, 'CV stays removed after reopening');
+    assert.equal(response.headers.get('location'), null);
+    assert.ok(!config.redirects.some((rule) => rule.source === route));
+  }
+  for (const route of ['/presentation', '/presentation/']) {
     const response = await request(route, { headers: { host: 'ramin.vision' } }); assert.equal(response.status, 307, route);
     assert.equal(response.headers.get('location'), config.redirects.find((rule) => rule.source === route).destination);
   }
@@ -121,6 +133,6 @@ try {
     assert.ok((await response.text()).includes(`href="${CANONICAL_ORIGIN}${target}"`));
     assert.ok(config.rewrites.some((rule) => rule.source === alias && rule.destination === target));
   }
-  assert.equal(config.cleanUrls, true); assert.ok(!Object.hasOwn(config, 'trailingSlash'), 'Global slash redirects must not override the explicit CV/presentation 307s'); assert.ok(config.rewrites.every((rule) => rule.source in sectionPathAliases));
+  assert.equal(config.cleanUrls, true); assert.ok(!Object.hasOwn(config, 'trailingSlash'), 'Global slash redirects must not override the explicit presentation 307s'); assert.ok(config.rewrites.every((rule) => rule.source in sectionPathAliases));
   console.log(`Public HTTP checks passed: ${publicPages.length} readable routes, previews, canonical metadata, discovery, aliases, preserved 307s, apex 308 and real 404s.`);
 } finally { child.kill('SIGTERM'); }

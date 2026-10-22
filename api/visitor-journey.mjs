@@ -1,2 +1,7 @@
 import { handleVisitorJourneyRequest } from '../server/visitorJourneyHandler.mjs';
-export default handleVisitorJourneyRequest;
+import { blockWhileMaintenance } from '../server/siteMaintenance.mjs';
+
+export default function handler(req, res) {
+  if (blockWhileMaintenance(req, res)) return;
+  return handleVisitorJourneyRequest(req, res);
+}

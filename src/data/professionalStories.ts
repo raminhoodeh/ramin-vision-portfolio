@@ -38,7 +38,6 @@ export const professionalStories = [
     limitations: 'These are employer-work outcomes reported in my CV, not independently audited measurements. Internal dashboards, cost baselines and the underlying before/after samples are not public. The 30% reporting and 90% delivery figures do not have separate measurement windows in the public record; the four-month window applies to ERP operating costs.',
     links: [
       { label: 'SIDE company context', href: 'https://www.side.inc/' },
-      { label: 'Read my CV', href: '/cv' },
     ],
     sourceRefs: [
       'ai-ramin-section/canonical/work-experiences/side-ai-erp.md',
@@ -66,7 +65,6 @@ export const professionalStories = [
     limitations: 'These are employer-work outcomes reported in my CV, not independently audited measurements. Checkout guidance and monetisation were separate initiatives in the same role; the figures should not be combined into one experiment or a single causal claim. Cohort definitions, sample sizes and internal analytics are not public.',
     links: [
       { label: 'Perkbox company context', href: 'https://www.perkbox.com/' },
-      { label: 'Read my CV', href: '/cv' },
     ],
     sourceRefs: [
       'ai-ramin-section/canonical/work-experiences/perkbox-vivup.md',

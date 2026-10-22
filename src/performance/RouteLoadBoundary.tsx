@@ -14,7 +14,7 @@ function LoadFailure({ onClose }: { onClose?: () => void }) {
     <p>The connection may have interrupted a download. You can reload the page to try again.</p>
     <button type="button" data-dialog-initial onClick={() => window.location.reload()}>Reload page</button>
     {onClose ? <button type="button" onClick={onClose}>Return to the portfolio</button> : null}
-    <p><a href="/">Selected work</a> · <a href="/contact">Contact Ramin</a> · <a href="/cv">View CV</a></p>
+    <p><a href="/">Selected work</a> · <a href="/contact">Contact Ramin</a></p>
     <PortfolioAppReady />
   </section>;
 }

@@ -109,7 +109,6 @@ export function Hero({ ready }: { ready: boolean; onOpenThesis: () => void }) {
         </div>
         <nav className="homepage-hero__actions homepage-hero__reveal" aria-label="Explore Ramin’s work">
           <GlassImprintCta label="View selected work" href="/experience-education" className="homepage-hero__primary" />
-          <a href="/cv">CV</a>
           <a href="/contact">Contact</a>
           <a href="/product-thesis">Product thesis</a>
         </nav>
