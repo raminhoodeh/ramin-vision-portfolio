@@ -5,6 +5,7 @@ export const maintenanceEnabled = true;
 // The only files exposed while the portfolio is locked. These are reviewed,
 // decorative homepage assets; no application entry, router or API is emitted.
 export const maintenanceAssets = Object.freeze({
+  '/_maintenance/proofs.js': { file: '_maintenance/proofs.js', contentType: 'text/javascript; charset=utf-8' },
   '/_maintenance/background.js': { file: '_maintenance/background.js', contentType: 'text/javascript; charset=utf-8' },
   '/_maintenance/inter-latin.woff2': { file: '_maintenance/inter-latin.woff2', contentType: 'font/woff2' },
   '/_maintenance/instrument-serif-italic-latin.woff2': { file: '_maintenance/instrument-serif-italic-latin.woff2', contentType: 'font/woff2' },

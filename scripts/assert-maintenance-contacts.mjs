@@ -22,27 +22,56 @@ const visibleText = (html) => html
   .replace(/<[^>]*>/g, ' ')
   .replace(/\s+/g, ' ');
 
-export function assertMaintenanceContacts(html, { requireVisual = false, expectedIntegrity } = {}) {
+const fontUrls = new Set(['/_maintenance/inter-latin.woff2', '/_maintenance/instrument-serif-italic-latin.woff2']);
+
+function assertExactAttributes(attributes, values, booleans = []) {
+  let rest = attributes;
+  for (const [name, expected] of Object.entries(values)) {
+    const pattern = new RegExp(`(?:^|\\s)${name}\\s*=\\s*(["'])(.*?)\\1`, 'gi');
+    const matches = [...attributes.matchAll(pattern)];
+    assert.equal(matches.length, 1, `Exactly one explicit ${name} is required`);
+    assert.equal(matches[0][2], expected, `Only the reviewed ${name} is allowed`);
+    rest = rest.replace(pattern, ' ');
+  }
+  for (const name of booleans) {
+    const pattern = new RegExp(`(?:^|\\s)${name}(?=\\s|$)`, 'gi');
+    assert.equal([...rest.matchAll(pattern)].length, 1, `Exactly one boolean ${name} is required`);
+    rest = rest.replace(pattern, ' ');
+  }
+  assert.equal(rest.trim(), '', 'No unexpected resource or executable attributes are allowed');
+}
+
+export function assertMaintenanceContacts(html, { requireVisual = false, expectedIntegrity, expectedProofIntegrity } = {}) {
   const scripts = [...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script\s*>/gi)];
-  assert.equal([...html.matchAll(/<script\b/gi)].length, scripts.length, 'Every decorative script must be explicitly closed');
-  assert.ok(scripts.length <= 1, 'Only one isolated decorative script is allowed');
-  if (requireVisual) assert.equal(scripts.length, 1, 'Built maintenance restores the original decorative shader');
-  for (const [, attributes, content] of scripts) {
+  assert.equal([...html.matchAll(/<script\b/gi)].length, scripts.length, 'Every reviewed script must be explicitly closed');
+  assert.equal([...html.matchAll(/<\/script\s*>/gi)].length, scripts.length, 'Every script closing tag belongs to a reviewed entry');
+  assert.ok(scripts.length === 0 || scripts.length === 2, 'Only the two independent reviewed scripts are allowed together');
+  if (requireVisual) assert.equal(scripts.length, 2, 'Built maintenance contains independent proof and visual entries');
+  for (const [index, [, attributes, content]] of scripts.entries()) {
     assert.equal(content.trim(), '', 'Inline JavaScript is not allowed');
     const src = attributes.match(/\bsrc\s*=\s*(["'])(.*?)\1/i)?.[2];
-    assert.equal(src, '/_maintenance/background.js', 'Only the reviewed decorative entry is allowed');
+    const proof = index === 0;
+    assert.equal(src, proof ? '/_maintenance/proofs.js' : '/_maintenance/background.js', 'Small proof controller is first and independent of the asynchronous background');
     const integrity = attributes.match(/\bintegrity\s*=\s*(["'])(.*?)\1/i)?.[2];
-    assert.match(integrity ?? '', /^sha384-[A-Za-z0-9+/]{64}$/, 'Decorative script requires SHA-384 integrity');
-    if (expectedIntegrity) assert.equal(integrity, expectedIntegrity, 'Script integrity matches the emitted decorative bundle');
-    assert.match(attributes, /\sdefer(?:\s|$)/i, 'The decorative entry must defer until the page is parsed');
-    assert.match(attributes, /\bcrossorigin\s*=\s*(["'])anonymous\1/i, 'Decorative script uses anonymous SRI loading');
-    const rest = attributes
-      .replace(/\s+(?:src|integrity|crossorigin)\s*=\s*(["'])(.*?)\1/gi, '')
-      .replace(/\s+defer\b/gi, '').trim();
-    assert.equal(rest, '', 'No executable or unexpected script attributes are allowed');
-    for (const name of ['src', 'integrity', 'crossorigin', 'defer']) assert.equal([...attributes.matchAll(new RegExp(`(?:^|\\s)${name}(?=\\s|=|$)`, 'gi'))].length, 1, `Single ${name} attribute`);
+    assert.match(integrity ?? '', /^sha384-[A-Za-z0-9+/]{64}$/, 'Both scripts require SHA-384 integrity');
+    const expected = proof ? expectedProofIntegrity : expectedIntegrity;
+    if (expected) assert.equal(integrity, expected, 'Script integrity matches its emitted independent bundle');
+    assertExactAttributes(attributes, { src, integrity, crossorigin: 'anonymous', ...(proof ? {} : { fetchpriority: 'low' }) }, [proof ? 'defer' : 'async']);
   }
   const withoutScript = html.replace(/<script\b[^>]*>[\s\S]*?<\/script\s*>/gi, '');
+  const preloads = [...withoutScript.matchAll(/<link\b([^>]*)>/gi)];
+  assert.ok(preloads.length === 0 || preloads.length === 2, 'Only the two reviewed font preloads are allowed together');
+  if (requireVisual) assert.equal(preloads.length, 2, 'Original typography is discovered immediately from the initial HTML');
+  const preloadedFonts = [];
+  for (const [, rawAttributes] of preloads) {
+    const attributes = rawAttributes.replace(/\/\s*$/, '');
+    const href = attributes.match(/\bhref\s*=\s*(["'])(.*?)\1/i)?.[2];
+    assert.ok(fontUrls.has(href), 'Only original first-party fonts may be preloaded');
+    assertExactAttributes(attributes, { rel: 'preload', href, as: 'font', type: 'font/woff2', crossorigin: 'anonymous' });
+    preloadedFonts.push(href);
+  }
+  if (preloads.length) assert.deepEqual(preloadedFonts.sort(), [...fontUrls].sort(), 'Each original font is preloaded exactly once');
+  const withoutPreloads = withoutScript.replace(/<link\b[^>]*>/gi, '');
   const buttons = [...withoutScript.matchAll(/<button\b([^>]*)>([\s\S]*?)<\/button\s*>/gi)];
   assert.equal([...withoutScript.matchAll(/<button\b/gi)].length, buttons.length, 'Every proof motion button must be explicitly closed');
   assert.equal([...withoutScript.matchAll(/<\/button\s*>/gi)].length, buttons.length, 'Every motion control closing tag belongs to the reviewed button');
@@ -68,7 +97,7 @@ export function assertMaintenanceContacts(html, { requireVisual = false, expecte
     assert.doesNotMatch(content, /<(?:a|button)\b/i, 'The motion control cannot contain other interactive elements');
     assert.match(content, /<svg\b/i, 'The approved motion control retains its local SVG icon');
   }
-  assert.doesNotMatch(withoutScript, /<(?:iframe|form|input|select|textarea|option|fieldset|nav|img|image|object|embed|link|base|audio|video|source|track|foreignObject|animate|animateMotion|animateTransform|set|use)\b/i,
+  assert.doesNotMatch(withoutPreloads, /<(?:iframe|form|input|select|textarea|option|fieldset|nav|img|image|object|embed|link|base|audio|video|source|track|foreignObject|animate|animateMotion|animateTransform|set|use)\b/i,
     'Maintenance cannot load application code, media, embeds, forms or portfolio navigation');
   assert.doesNotMatch(withoutScript, /\b(?:src|srcset|xlink:href)\s*=|\son[a-z]+\s*=/i,
     'Only the reviewed decorative script may have a resource source; no executable event attributes');
@@ -76,7 +105,6 @@ export function assertMaintenanceContacts(html, { requireVisual = false, expecte
     'Maintenance cannot expose CV or document access');
   assert.doesNotMatch(html, /@import\b|expression\s*\(/i,
     'Maintenance styles cannot import external styles or expressions');
-  const fontUrls = new Set(['/_maintenance/inter-latin.woff2', '/_maintenance/instrument-serif-italic-latin.woff2']);
   const foundFonts = new Set();
   for (const match of html.matchAll(/\burl\s*\(\s*([^)]*)\)/gi)) {
     const reference = match[1].trim().replace(/^(['"])([\s\S]*)\1$/, '$2');
@@ -88,7 +116,7 @@ export function assertMaintenanceContacts(html, { requireVisual = false, expecte
   const anchors = [...html.matchAll(/<a\b([^>]*)>([\s\S]*?)<\/a\s*>/gi)];
   assert.equal([...html.matchAll(/<a\b/gi)].length, destinations.length, 'Exactly three contacts and five approved external proof anchors are allowed');
   assert.equal(anchors.length, destinations.length, 'Every approved anchor must be well-formed and closed');
-  assert.equal([...html.matchAll(/\bhref\s*=/gi)].length, destinations.length, 'No href is allowed outside the eight approved anchors');
+  assert.equal([...withoutPreloads.matchAll(/\bhref\s*=/gi)].length, destinations.length, 'No href is allowed outside the eight approved anchors and two reviewed preloads');
   const found = [];
   for (const [, attributes, content] of anchors) {
     const hrefs = [...attributes.matchAll(/\bhref\s*=\s*(["'])(.*?)\1/gi)];
@@ -126,9 +154,11 @@ export function checkMaintenanceContactPolicy() {
     <a href="https://www.coursera.org/learn/ai-product-management/" target="_blank" rel="noopener noreferrer">Coursera</a>
     <a href="https://www.udemy.com/course/from-product-manager-to-ai-product-manager/" target="_blank" rel="noopener noreferrer">Udemy</a></main>`;
   assertMaintenanceContacts(fixture);
-  const visualFixture = fixture.replace('</style>', '@font-face{font-family:Inter;src:url("/_maintenance/inter-latin.woff2")}@font-face{font-family:Instrument;src:url("/_maintenance/instrument-serif-italic-latin.woff2")}</style>')
+  const visualFixture = [...fontUrls].map((href) => `<link rel="preload" href="${href}" as="font" type="font/woff2" crossorigin="anonymous" />`).join('')
+    + fixture.replace('</style>', '@font-face{font-family:Inter;src:url("/_maintenance/inter-latin.woff2")}@font-face{font-family:Instrument;src:url("/_maintenance/instrument-serif-italic-latin.woff2")}</style>')
     + '<button type="button" class="homepage-proof-motion" data-proof-motion="" aria-label="Pause proof rotation" aria-pressed="false" title="Pause proof rotation"><svg aria-hidden="true" viewBox="0 0 16 16"><path d="M4 3v10M12 3v10" /></svg></button>'
-    + `<script defer src="/_maintenance/background.js" integrity="sha384-${'A'.repeat(64)}" crossorigin="anonymous"></script>`;
+    + `<script defer src="/_maintenance/proofs.js" integrity="sha384-${'A'.repeat(64)}" crossorigin="anonymous"></script>`
+    + `<script async src="/_maintenance/background.js" integrity="sha384-${'A'.repeat(64)}" crossorigin="anonymous" fetchpriority="low"></script>`;
   assertMaintenanceContacts(visualFixture, { requireVisual: true });
   const rejected = [
     ['internal page', fixture.replace('https://wa.link/7g31wi', '/projects')],
@@ -183,6 +213,23 @@ export function checkMaintenanceContactPolicy() {
     ['invalid SRI', visualFixture.replace('sha384-', 'sha256-')],
     ['script event handler', visualFixture.replace(' defer ', ' defer onload="alert(1)" ')],
     ['module application entry', visualFixture.replace(' defer ', ' defer type="module" ')],
+    ['blocking proof entry', visualFixture.replace(' defer ', ' ')],
+    ['background blocks proof discovery', visualFixture.replace(' async ', ' defer ')],
+    ['background elevated priority', visualFixture.replace('fetchpriority="low"', 'fetchpriority="high"')],
+    ['coupled proof/background entry', visualFixture.replace('src="/_maintenance/proofs.js"', 'src="/_maintenance/background.js"')],
+    ['missing independent proof entry', visualFixture.replace(/<script defer[^>]*><\/script>/, '')],
+    ['proof integrity mismatch', visualFixture, { expectedProofIntegrity: `sha384-${'B'.repeat(64)}` }],
+    ['visual integrity mismatch', visualFixture, { expectedIntegrity: `sha384-${'B'.repeat(64)}` }],
+    ['font preload missing', visualFixture.replace(/<link\b[^>]*>/, '')],
+    ['font preload duplicated', visualFixture.replace('/_maintenance/instrument-serif-italic-latin.woff2', '/_maintenance/inter-latin.woff2')],
+    ['extra font preload', visualFixture + '<link rel="preload" href="/_maintenance/inter-latin.woff2" as="font" type="font/woff2" crossorigin="anonymous" />'],
+    ['external font preload', visualFixture.replace('/_maintenance/inter-latin.woff2', 'https://example.com/font.woff2')],
+    ['stylesheet disguised as preload', visualFixture.replace('rel="preload"', 'rel="stylesheet"')],
+    ['font preload as script', visualFixture.replace('as="font"', 'as="script"')],
+    ['wrong font preload content type', visualFixture.replace('type="font/woff2"', 'type="text/javascript"')],
+    ['font preload event', visualFixture.replace('rel="preload"', 'rel="preload" onload="alert(1)"')],
+    ['font preload duplicate href', visualFixture.replace('rel="preload"', 'rel="preload" href="/_maintenance/inter-latin.woff2"')],
+    ['font preload missing crossorigin', visualFixture.replace(' crossorigin="anonymous"', '')],
     ['unexpected local font', visualFixture.replace('/_maintenance/inter-latin.woff2', '/fonts/other.woff2')],
     ['external font', visualFixture.replace('/_maintenance/inter-latin.woff2', 'https://example.com/font.woff2')],
   ];

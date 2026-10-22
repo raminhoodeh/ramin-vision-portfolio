@@ -11,6 +11,8 @@ const expectedAssets = Object.fromEntries(await Promise.all(Object.entries(maint
   return [pathname, { ...asset, sha384: createHash('sha384').update(bytes).digest('base64'), bytes: bytes.length }];
 })));
 const visualIntegrity = `sha384-${expectedAssets['/_maintenance/background.js'].sha384}`;
+const proofIntegrity = `sha384-${expectedAssets['/_maintenance/proofs.js'].sha384}`;
+assert.ok(expectedAssets['/_maintenance/proofs.js'].bytes < 10_000, 'Reviewed DOM-only proof controller stays independent and lightweight');
 
 const { values } = parseArgs({ options: { output: { type: 'string' } } });
 const paths = [...new Set([
@@ -22,6 +24,7 @@ const paths = [...new Set([
   '/_maintenance/', '/_maintenance/background.js.map', '/_maintenance/other.js', '/_maintenance/main.js',
   '/_maintenance/inter-latin.woff2/extra', '/_maintenance/hdr/city.hdr', '/_maintenance/backgroundXjs',
   '/_maintenance/%6fther.js', '/_maintenance/BACKGROUND.js',
+  '/_maintenance/proofs.js.map', '/_maintenance/PROOFS.js', '/_maintenance/proofsXjs', '/_maintenance/proofs.js/extra',
 ])];
 const jobs = [];
 for (const host of ['https://ramin.vision', 'https://www.ramin.vision']) {
@@ -50,7 +53,7 @@ async function worker() {
       // Vercel denies this absent source-map path before the terminal page
       // route. Accept only the observed blank text denial for this exact URL;
       // a 403 elsewhere or any source-map/body content still fails validation.
-      const platformSourceMapDenial = job.path === '/_maintenance/background.js.map'
+      const platformSourceMapDenial = ['/_maintenance/background.js.map', '/_maintenance/proofs.js.map'].includes(job.path)
         && response.status === 403 && bytes.length <= 1 && body.trim() === ''
         && response.headers.get('content-type') === 'text/plain';
       if (!platformPreflight && !platformSourceMapDenial && response.status !== job.status) failures.push(`status ${response.status} expected ${job.status}`);
@@ -71,7 +74,7 @@ async function worker() {
         if (body !== 'User-agent: *\nDisallow: /\n') failures.push('robots');
       } else {
         if (!body.includes('Under construction') || !body.includes('Ramin Hoodeh')) failures.push('missing maintenance content');
-        try { assertMaintenanceContacts(body, { requireVisual: true, expectedIntegrity: visualIntegrity }); }
+        try { assertMaintenanceContacts(body, { requireVisual: true, expectedIntegrity: visualIntegrity, expectedProofIntegrity: proofIntegrity }); }
         catch (error) { failures.push(`Maintenance contact/proof/payload policy: ${error.message}`); }
       }
       results.push({ url: job.host + job.path, method: job.method ?? 'GET', status: response.status, platformPreflight, platformSourceMapDenial, failures });

@@ -59,7 +59,7 @@ ${hero.slice(hero.indexOf('@media (max-width: 640px)'))}
 .hero-thesis-glass-button:focus-visible{outline:2px solid #2a5f84;outline-offset:4px}
 @media(min-width:640px){.maintenance-shell{padding:20px}.portfolio-stage{border-radius:34px}.homepage-hero{min-height:calc(100dvh - 42px)}.section-marker{left:32px}}
 @media(min-width:768px){.section-marker{left:48px;top:40px}}
-@media(min-width:1024px){.maintenance-shell{padding:16px}.homepage-hero{min-height:calc(100dvh - 34px)}.section-marker{left:64px}}
+@media(min-width:1024px){.maintenance-shell{padding:16px}.homepage-hero{min-height:calc(100dvh - 34px)}.section-marker{left:max(64px,calc((100vw - 1426px)/2 + 48px))}}
 @media(max-width:640px){.homepage-hero{padding:40px 20px 28px}.notice{margin-top:24px;padding:20px 0 0}.notice p{font-size:.90625rem}.contact-links{max-width:280px;gap:12px;margin:auto}.contact-links .hero-thesis-glass-button{width:100%}.homepage-hero__experience{max-width:26rem}.email-address{margin-top:16px}}
 @media(prefers-reduced-motion:reduce){.shader-gradient-surface,.hero-thesis-glass-button{transition:none}.hero-thesis-glass-button:hover,.hero-thesis-glass-button:active{transform:none}}
 @media(forced-colors:active){.hero-thesis-glass-button{border:1px solid ButtonText}.hero-thesis-glass-lens{display:none}.hero-name-cutout-surface{fill:CanvasText}}

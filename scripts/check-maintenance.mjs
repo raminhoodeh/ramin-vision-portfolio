@@ -22,7 +22,10 @@ assert.match(html, />Under construction<|>Under construction<\/h2>|<\/span>Under
 const rejectedContactFixtures = checkMaintenanceContactPolicy();
 const visualBundle = await readFile(path.join(root, 'dist/_maintenance/background.js'));
 const visualIntegrity = `sha384-${createHash('sha384').update(visualBundle).digest('base64')}`;
-assertMaintenanceContacts(html, { requireVisual: true, expectedIntegrity: visualIntegrity });
+const proofBundle = await readFile(path.join(root, 'dist/_maintenance/proofs.js'));
+const proofIntegrity = `sha384-${createHash('sha384').update(proofBundle).digest('base64')}`;
+assert.ok(proofBundle.length > 0 && proofBundle.length < 10_000, 'DOM-only proof interactions remain independent of the large React/WebGL bundle');
+assertMaintenanceContacts(html, { requireVisual: true, expectedIntegrity: visualIntegrity, expectedProofIntegrity: proofIntegrity });
 assert.match(html, /noindex, nofollow, noarchive, nosnippet/);
 assert.ok(html.includes('<meta name="portfolio-availability" content="maintenance" />'), 'A built page identifies itself as the reviewed maintenance document');
 const expectedFiles = ['index.html', 'robots.txt', ...Object.values(maintenanceAssets).map(({ file }) => file)].sort();
@@ -89,7 +92,7 @@ server.listen(0, '127.0.0.1', () => console.log('http://127.0.0.1:' + server.add
         if (match) { clearTimeout(timeout); resolve(match[0]); }
       });
     });
-    for (const pathname of ['/', '/cv', '/api/ai-ramin', '/_maintenance/background.js']) {
+    for (const pathname of ['/', '/cv', '/api/ai-ramin', '/_maintenance/background.js', '/_maintenance/proofs.js']) {
       const response = await fetch(origin + pathname);
       assert.equal(response.status, pathname === '/' ? 200 : 503, `${label}: ${pathname} stays closed`);
       const body = await response.text();
@@ -115,6 +118,7 @@ const paths = [...new Set([
   '/_maintenance/', '/_maintenance/background.js.map', '/_maintenance/other.js', '/_maintenance/main.js',
   '/_maintenance/inter-latin.woff2/extra', '/_maintenance/hdr/city.hdr', '/_maintenance/backgroundXjs',
   '/_maintenance/%6fther.js', '/_maintenance/BACKGROUND.js',
+  '/_maintenance/proofs.js.map', '/_maintenance/PROOFS.js', '/_maintenance/proofsXjs', '/_maintenance/proofs.js/extra',
 ])];
 for (const pathname of paths) {
   const route = config.routes.find((route) => (!route.methods || route.methods.includes('GET')) && new RegExp(route.src).test(new URL(pathname, 'https://example.com').pathname));
@@ -180,5 +184,5 @@ try {
     assert.equal(response.status, 503, `API blocked for ${method}`);
     if (method === 'HEAD') assert.equal(await response.text(), '');
   }
-  console.log(`Maintenance passed: homepage plus exact three decorative artifacts, matching SRI, original local fonts, exact three-contact plus five-external-proof-link allowlist, ${rejectedContactFixtures} rejected contact/proof/payload fixtures, stale artifact removal and two fresh-process stale-document denial regressions, ${paths.length} edge/server blocked paths, read-only assets and missing-file denial, all API methods, no CV/internal portfolio navigation/application payload.`);
+  console.log(`Maintenance passed: homepage plus exact four reviewed artifacts, matching dual SRI, independent proof controller under 10KB, two original preloaded fonts, exact three-contact plus five-external-proof-link allowlist, ${rejectedContactFixtures} rejected contact/proof/payload fixtures, stale artifact removal and two fresh-process stale-document denial regressions, ${paths.length} edge/server blocked paths, read-only assets and missing-file denial, all API methods, no CV/internal portfolio navigation/application payload.`);
 } finally { child.kill('SIGTERM'); }

@@ -10,7 +10,7 @@ if (maintenanceEnabled) {
   for (const route of config.routes.filter(({ dest, status }) => dest && !status)) assert.equal(route.caseSensitive, true, `Read allowlist is case-sensitive: ${route.src}`);
   for (const key of ['redirects', 'rewrites', 'cleanUrls', 'trailingSlash', 'functions']) assert.ok(!(key in config), `Maintenance routing cannot retain ${key}`);
   assert.ok(readFileSync(new URL('../.vercelignore', import.meta.url), 'utf8').split('\n').includes('api/'), 'Source deployments must not discover API functions while locked');
-  assert.equal(Object.keys(maintenanceAssets).length, 3, 'Only the shader bundle and two fonts are exposed');
+  assert.deepEqual(Object.keys(maintenanceAssets).sort(), ['/_maintenance/background.js', '/_maintenance/proofs.js', '/_maintenance/inter-latin.woff2', '/_maintenance/instrument-serif-italic-latin.woff2'].sort(), 'Only the original shader, independent proof controller and two fonts are exposed');
   for (const [pathname, asset] of Object.entries(maintenanceAssets)) {
     const route = config.routes.find((entry) => new RegExp(entry.src).test(pathname));
     assert.deepEqual(route.methods, ['GET', 'HEAD']);
@@ -21,7 +21,7 @@ if (maintenanceEnabled) {
   assert.match(maintenanceHeaders['Content-Security-Policy'], /connect-src 'none'/);
   assert.match(maintenanceHeaders['Content-Security-Policy'], /font-src 'self'/);
   assert.doesNotMatch(maintenanceHeaders['Content-Security-Policy'], /unsafe-eval|https:/);
-  console.log('Maintenance configuration passed: root page, exact three decorative assets, terminal 503 catchall, no document redirects or API build inputs.');
+  console.log('Maintenance configuration passed: root page, exact four reviewed assets, terminal 503 catchall, no document redirects or API build inputs.');
 } else {
   const { spawnSync } = await import('node:child_process');
   const result = spawnSync('npm', ['run', 'check:portfolio-claims'], { stdio: 'inherit' });

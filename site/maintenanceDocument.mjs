@@ -24,7 +24,7 @@ export function homepageBio(root) {
 
 // The enhanced markup comes from the original Hero/GlassImprintCta at build
 // time. A missing build still produces a useful closed maintenance response.
-export function maintenanceDocument(bio, { heroName, contacts, proofs, styles = '', visualIntegrity } = {}) {
+export function maintenanceDocument(bio, { heroName, contacts, proofs, styles = '', visualIntegrity, proofIntegrity } = {}) {
   const fallbackName = `<div class="homepage-hero__name fallback-name" aria-hidden="true">${escape(bio.name)}</div>`;
   const fallbackContacts = `<div class="contact-links" role="group" aria-label="Contact options">
     <a class="hero-thesis-glass-button" href="mailto:raminhoodeh@gmail.com">Email</a>
@@ -41,8 +41,11 @@ export function maintenanceDocument(bio, { heroName, contacts, proofs, styles = 
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet" />
   <meta name="color-scheme" content="light" />
   <meta name="portfolio-availability" content="maintenance" />
+  ${visualIntegrity ? `<link rel="preload" href="/_maintenance/inter-latin.woff2" as="font" type="font/woff2" crossorigin="anonymous" />
+  <link rel="preload" href="/_maintenance/instrument-serif-italic-latin.woff2" as="font" type="font/woff2" crossorigin="anonymous" />` : ''}
   <style>${styles || `body{margin:0;background:#acbbc4;color:#23364a;font-family:Arial,sans-serif}main{padding:40px;max-width:900px;margin:auto}.fallback-name{font-size:3rem;font-style:italic}a{display:inline-block;padding:16px;color:inherit}`}</style>
-  ${visualIntegrity ? `<script defer src="/_maintenance/background.js" integrity="${escape(visualIntegrity)}" crossorigin="anonymous"></script>` : ''}
+  ${proofIntegrity ? `<script defer src="/_maintenance/proofs.js" integrity="${escape(proofIntegrity)}" crossorigin="anonymous"></script>` : ''}
+  ${visualIntegrity ? `<script async src="/_maintenance/background.js" integrity="${escape(visualIntegrity)}" crossorigin="anonymous" fetchpriority="low"></script>` : ''}
 </head>
 <body>
   <div class="fixed inset-0 z-0 shader-gradient-surface" aria-hidden="true"></div>

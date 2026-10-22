@@ -43,6 +43,27 @@
       }
     },
     {
+      "src": "^/_maintenance/proofs\\.js$",
+      "caseSensitive": true,
+      "methods": [
+        "GET",
+        "HEAD"
+      ],
+      "dest": "/_maintenance/proofs.js",
+      "headers": {
+        "Cache-Control": "no-store, max-age=0, must-revalidate",
+        "CDN-Cache-Control": "no-store",
+        "Vercel-CDN-Cache-Control": "no-store",
+        "X-Robots-Tag": "noindex, nofollow, noarchive, nosnippet",
+        "X-Content-Type-Options": "nosniff",
+        "X-Frame-Options": "DENY",
+        "Referrer-Policy": "no-referrer",
+        "Content-Security-Policy": "default-src 'none'; script-src 'self'; connect-src 'none'; style-src 'unsafe-inline'; font-src 'self'; img-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'",
+        "X-Portfolio-Availability": "maintenance",
+        "Content-Type": "text/javascript; charset=utf-8"
+      }
+    },
+    {
       "src": "^/_maintenance/background\\.js$",
       "caseSensitive": true,
       "methods": [
