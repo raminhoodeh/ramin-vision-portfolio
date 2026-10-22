@@ -14,7 +14,7 @@ export function homepageBio(root) {
   while (value && (ts.isAsExpression(value) || ts.isSatisfiesExpression(value) || ts.isParenthesizedExpression(value))) value = value.expression;
   if (!value || !ts.isObjectLiteralExpression(value)) throw new Error('Cannot read the approved homepage bio.');
   const bio = {};
-  for (const field of ['name', 'role', 'intro', 'experience']) {
+  for (const field of ['name', 'role', 'specialism', 'moneyMovement', 'intro', 'experience', 'strengthCommercial', 'strengthBuilding', 'strengthTeaching']) {
     const property = value.properties.find((entry) => ts.isPropertyAssignment(entry) && entry.name.getText(source) === field);
     if (!property || !ts.isStringLiteralLike(property.initializer)) throw new Error(`Homepage ${field} must remain an explicit reviewed string.`);
     bio[field] = property.initializer.text;
@@ -36,8 +36,8 @@ export function maintenanceDocument(bio, { heroName, contacts, styles = '', visu
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>${escape(bio.name)} — Under construction</title>
-  <meta name="description" content="${escape(bio.name)} — ${escape(bio.role)}. Website under construction." />
+  <title>${escape(bio.name)} | Under construction</title>
+  <meta name="description" content="${escape(bio.name)}, ${escape(bio.role)} | ${escape(bio.specialism)}. Website under construction." />
   <meta name="robots" content="noindex, nofollow, noarchive, nosnippet" />
   <meta name="color-scheme" content="light" />
   <meta name="portfolio-availability" content="maintenance" />
@@ -55,9 +55,15 @@ export function maintenanceDocument(bio, { heroName, contacts, styles = '', visu
           <section id="hero" class="homepage-hero">
             <div class="homepage-hero__content">
               ${heroName || fallbackName}
-              <h1 class="homepage-hero__role"><span class="sr-only">${escape(bio.name)}, </span>${escape(bio.role)}</h1>
+              <h1 class="homepage-hero__role"><span class="sr-only">${escape(bio.name)}, </span><span>${escape(bio.role)}</span><span class="homepage-hero__specialism"><span aria-hidden="true">| </span><span class="sr-only">, </span>${escape(bio.specialism)}</span></h1>
+              <p class="homepage-hero__money">${escape(bio.moneyMovement)}</p>
               <h2 class="homepage-hero__intro">${escape(bio.intro)}</h2>
               <p class="homepage-hero__experience">${escape(bio.experience)}</p>
+              <dl class="homepage-hero__strengths" aria-label="Three connected strengths">
+                <div><dt>Commercial judgment</dt><dd>${escape(bio.strengthCommercial)}</dd></div>
+                <div><dt>Hands-on AI building</dt><dd>${escape(bio.strengthBuilding)}</dd></div>
+                <div><dt>A method I teach</dt><dd>${escape(bio.strengthTeaching)}</dd></div>
+              </dl>
               <section class="notice" aria-labelledby="construction-notice">
                 <h2 id="construction-notice"><span class="notice-dot" aria-hidden="true"></span>Under construction</h2>
                 <p>Following the recent PHP security disclosures, I’ve temporarily locked down my website as a precaution.</p>

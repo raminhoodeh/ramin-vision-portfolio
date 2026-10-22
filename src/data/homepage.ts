@@ -3,9 +3,14 @@ import { aiProductCourseEvidence, disxTalkEvidence } from './teachingEvidence';
 export const homepagePositioning = {
   name: 'Ramin Hoodeh',
   role: 'AI Product Manager',
-  intro: 'I turn complex customer problems into useful AI products.',
+  specialism: 'Payments & Embedded Finance',
+  moneyMovement: 'Moving money where it hasn’t moved before.',
+  intro: 'I build AI products proven to grow revenue, and teach the judgment behind them.',
   experience:
-    'Eight-plus years of product delivery across payments, marketplaces and financial data, with hands-on AI development.',
+    'Eight-plus years delivering commercial products across payments, marketplaces and financial data.',
+  strengthCommercial: 'Product decisions that grow revenue, improve conversion and reduce operating costs.',
+  strengthBuilding: 'AI products I build hands-on, from the customer experience to context, workflows and evals.',
+  strengthTeaching: 'My AI-Native Product OS, taught on Coursera and Udemy and presented at DISx Dubai.',
   recognition: [
     { label: 'Creator of the AI-Native Product OS', href: '/product-thesis' },
     { label: 'Coursera & Udemy instructor', href: '/thoughts/courses' },
