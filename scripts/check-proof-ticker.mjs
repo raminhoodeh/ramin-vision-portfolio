@@ -15,6 +15,24 @@ const compiled = ts.transpileModule(source, {
 });
 assert.equal(compiled.diagnostics?.filter(({ category }) => category === ts.DiagnosticCategory.Error).length, 0);
 
+// Read the current published collection without executing its module. The full
+// cycle scenario must follow the real collection as proof records are added.
+const proofData = ts.createSourceFile('homepageProofs.ts', await readFile(new URL('../src/data/homepageProofs.ts', import.meta.url), 'utf8'), ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
+assert.equal(proofData.parseDiagnostics.length, 0, 'Published proof data parses');
+let proofRecords = proofData.statements.filter(ts.isVariableStatement).flatMap((statement) => [...statement.declarationList.declarations])
+  .find((declaration) => ts.isIdentifier(declaration.name) && declaration.name.text === 'commercialProofs')?.initializer;
+while (proofRecords && (ts.isAsExpression(proofRecords) || ts.isSatisfiesExpression(proofRecords) || ts.isParenthesizedExpression(proofRecords))) proofRecords = proofRecords.expression;
+assert.ok(proofRecords && ts.isArrayLiteralExpression(proofRecords), 'Published commercial proofs are a literal collection');
+const publishedProofCount = proofRecords.elements.length;
+assert.ok(publishedProofCount > 1, 'Published commercial proofs contain a complete rotation');
+const publishedProofIds = proofRecords.elements.map((record) => {
+  assert.ok(ts.isObjectLiteralExpression(record), 'Each published commercial proof is a concrete record');
+  const id = record.properties.find((property) => ts.isPropertyAssignment(property) && (ts.isIdentifier(property.name) || ts.isStringLiteralLike(property.name)) && property.name.text === 'id')?.initializer;
+  assert.ok(id && ts.isStringLiteralLike(id) && id.text.trim(), 'Each published commercial proof has a stable ID');
+  return id.text;
+});
+assert.equal(new Set(publishedProofIds).size, publishedProofCount, 'Published proof IDs are unique');
+
 class TrackedEvents extends EventTarget {
   listeners = new Map();
   addEventListener(type, listener, options) {
@@ -188,15 +206,15 @@ check('control-free autoplay wraps and drives surface cycles with accessible ina
   assertClean(f);
 });
 
-check('all fourteen commercial proofs appear once in order before wrapping at three-second intervals', () => {
-  const f = fixture({ slideCount: 14 });
+check('all published commercial proofs appear once in order before wrapping at three-second intervals', () => {
+  const f = fixture({ slideCount: publishedProofCount });
   const stop = f.start();
-  for (let index = 0; index < 14; index += 1) {
+  for (let index = 0; index < publishedProofCount; index += 1) {
     assertSlide(f.commercial, index);
     f.clock.tick(2999);
     assertSlide(f.commercial, index);
     f.clock.tick(1);
-    assertSlide(f.commercial, (index + 1) % 14);
+    assertSlide(f.commercial, (index + 1) % publishedProofCount);
     assert.equal(f.clock.tasks.size, 1, 'Longer proof collections retain a single scheduler');
   }
   assert.equal(f.persistentSummary.getAttribute('aria-hidden'), null, 'Teaching evidence remains continuously available throughout a full commercial cycle');
@@ -352,4 +370,4 @@ check('incomplete static proof markup safely remains unenhanced', () => {
   }
 });
 
-console.log(`Proof ticker passed: ${checks.length} deterministic behavior scenarios (${checks.join('; ')}).`);
+console.log(`Proof ticker passed: ${checks.length} deterministic behavior scenarios across ${publishedProofCount} published commercial proofs (${checks.join('; ')}).`);
