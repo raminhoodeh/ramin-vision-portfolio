@@ -14,7 +14,7 @@ export function homepageBio(root) {
   while (value && (ts.isAsExpression(value) || ts.isSatisfiesExpression(value) || ts.isParenthesizedExpression(value))) value = value.expression;
   if (!value || !ts.isObjectLiteralExpression(value)) throw new Error('Cannot read the approved homepage bio.');
   const bio = {};
-  for (const field of ['name', 'role', 'specialism', 'moneyMovement', 'intro', 'experience', 'strengthCommercial', 'strengthBuilding', 'strengthTeaching']) {
+  for (const field of ['name', 'role', 'specialism', 'moneyMovement', 'intro', 'experience', 'strengthCommercial', 'strengthCommercialDetail', 'strengthBuilding', 'strengthBuildingDetail', 'strengthTeaching', 'strengthTeachingDetail']) {
     const property = value.properties.find((entry) => ts.isPropertyAssignment(entry) && entry.name.getText(source) === field);
     if (!property || !ts.isStringLiteralLike(property.initializer)) throw new Error(`Homepage ${field} must remain an explicit reviewed string.`);
     bio[field] = property.initializer.text;
@@ -56,21 +56,18 @@ export function maintenanceDocument(bio, { heroName, contacts, styles = '', visu
             <div class="homepage-hero__content">
               ${heroName || fallbackName}
               <h1 class="homepage-hero__role"><span class="sr-only">${escape(bio.name)}, </span><span>${escape(bio.role)}</span><span class="homepage-hero__specialism"><span aria-hidden="true">| </span><span class="sr-only">, </span>${escape(bio.specialism)}</span></h1>
-              <p class="homepage-hero__money">${escape(bio.moneyMovement)}</p>
-              <h2 class="homepage-hero__intro">${escape(bio.intro)}</h2>
-              <p class="homepage-hero__experience">${escape(bio.experience)}</p>
+              <h2 class="homepage-hero__money">${escape(bio.moneyMovement)}</h2>
+              <p class="homepage-hero__intro">${escape(bio.intro)}</p>
               <dl class="homepage-hero__strengths" aria-label="Three connected strengths">
-                <div><dt>Commercial judgment</dt><dd>${escape(bio.strengthCommercial)}</dd></div>
-                <div><dt>Hands-on AI building</dt><dd>${escape(bio.strengthBuilding)}</dd></div>
-                <div><dt>A method I teach</dt><dd>${escape(bio.strengthTeaching)}</dd></div>
+                <div><dt><span class="sr-only">Commercial judgment: </span>${escape(bio.strengthCommercial)}</dt><dd>${escape(bio.strengthCommercialDetail)}</dd></div>
+                <div><dt><span class="sr-only">Hands-on AI building: </span>${escape(bio.strengthBuilding)}</dt><dd>${escape(bio.strengthBuildingDetail)}</dd></div>
+                <div><dt><span class="sr-only">A method I teach: </span>${escape(bio.strengthTeaching)}</dt><dd>${escape(bio.strengthTeachingDetail)}</dd></div>
               </dl>
               <section class="notice" aria-labelledby="construction-notice">
                 <h2 id="construction-notice"><span class="notice-dot" aria-hidden="true"></span>Under construction</h2>
-                <p>Following the recent PHP security disclosures, I’ve temporarily locked down my website as a precaution.</p>
-                <p>I’m preparing to restore it on more secure infrastructure, with particular care around the advanced AI features built into the site. Access will return once that work is complete.</p>
+                <p>Temporarily closed as a precaution following the recent PHP security disclosures. I’m preparing more secure infrastructure for the site and its embedded AI features.</p>
               </section>
               <section class="contact" aria-label="Contact Ramin Hoodeh">
-                <p class="contact-heading">You can still reach me.</p>
                 ${contacts || fallbackContacts}
                 <p class="email-address">raminhoodeh@gmail.com</p>
               </section>

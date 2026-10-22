@@ -46,21 +46,21 @@ ${hero.slice(hero.indexOf('@media (max-width: 640px)'))}
 .portfolio-frame{position:relative;width:100%;max-width:1426px;height:100%;margin:auto}
 .portfolio-stage{position:relative;width:100%;height:100%;overflow-x:hidden;overflow-y:auto;border-radius:24px;background-color:rgba(247,251,255,.72);scrollbar-width:thin;scrollbar-color:#637e9355 transparent}
 #portfolio-main{position:relative;z-index:10;min-height:100%;outline:none}
-.homepage-hero{min-height:calc(100dvh - 26px);padding-block:48px 36px}
+.homepage-hero{min-height:calc(100dvh - 26px);padding-block:24px}
 .section-marker{position:fixed;top:36px;left:24px;z-index:30;pointer-events:none;color:#7c8999;font-size:12px;font-weight:400;letter-spacing:.34em;text-transform:uppercase}
-.notice{max-width:640px;margin:30px auto 0;padding:24px 16px 0;border-top:1px solid #ffffff80}
-.notice h2{display:inline-flex;align-items:center;gap:10px;color:#42566d;font-size:.78rem;font-weight:600;line-height:1.4;letter-spacing:.04em}
+.notice{max-width:720px;margin:24px auto 0;padding:18px 16px 0;border-top:1px solid #ffffff80}
+.notice h2{display:inline-flex;align-items:center;gap:10px;color:#42566d;font-size:.875rem;font-weight:600;line-height:1.4;letter-spacing:.04em}
 .notice-dot{width:6px;height:6px;border-radius:50%;background:#987349;box-shadow:0 0 0 4px #98734914}
-.notice p{max-width:600px;margin:13px auto 0;color:#42566d;font-size:.875rem;line-height:1.7;text-wrap:pretty}
-.contact{margin:24px auto 0}.contact-heading{margin-bottom:15px;color:#52667b;font-size:.76rem;line-height:1.5}
+.notice p{max-width:680px;margin:10px auto 0;color:#42566d;font-size:.90625rem;line-height:1.55;text-wrap:pretty}
+.contact{margin:18px auto 0}.contact-heading{margin-bottom:15px;color:#52667b;font-size:.76rem;line-height:1.5}
 .contact-links{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:14px}
 .contact-links .hero-thesis-glass-button{width:180px;height:56px;flex:none}
-.email-address{margin:16px 0 0;color:#52667b;font-size:.75rem;line-height:1.5;overflow-wrap:anywhere}
+.email-address{margin:14px 0 0;color:#52667b;font-size:.875rem;line-height:1.5;overflow-wrap:anywhere}
 .hero-thesis-glass-button:focus-visible{outline:2px solid #2a5f84;outline-offset:4px}
 @media(min-width:640px){.maintenance-shell{padding:20px}.portfolio-stage{border-radius:34px}.homepage-hero{min-height:calc(100dvh - 42px)}.section-marker{left:32px}}
 @media(min-width:768px){.section-marker{left:48px;top:40px}}
 @media(min-width:1024px){.maintenance-shell{padding:16px}.homepage-hero{min-height:calc(100dvh - 34px)}.section-marker{left:64px}}
-@media(max-width:640px){.homepage-hero{padding:48px 20px 32px}.notice{margin-top:24px;padding:22px 0 0}.notice p{font-size:.84rem}.contact-links{max-width:280px;gap:12px;margin:auto}.contact-links .hero-thesis-glass-button{width:100%}.homepage-hero__experience{max-width:26rem}.email-address{margin-top:16px}}
+@media(max-width:640px){.homepage-hero{padding:40px 20px 28px}.notice{margin-top:24px;padding:20px 0 0}.notice p{font-size:.90625rem}.contact-links{max-width:280px;gap:12px;margin:auto}.contact-links .hero-thesis-glass-button{width:100%}.homepage-hero__experience{max-width:26rem}.email-address{margin-top:16px}}
 @media(prefers-reduced-motion:reduce){.shader-gradient-surface,.hero-thesis-glass-button{transition:none}.hero-thesis-glass-button:hover,.hero-thesis-glass-button:active{transform:none}}
 @media(forced-colors:active){.hero-thesis-glass-button{border:1px solid ButtonText}.hero-thesis-glass-lens{display:none}.hero-name-cutout-surface{fill:CanvasText}}
 `;

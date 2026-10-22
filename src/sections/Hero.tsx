@@ -102,17 +102,13 @@ export function Hero({ ready }: { ready: boolean; onOpenThesis: () => void }) {
       </svg>
       </div>
         <h1 className="homepage-hero__role homepage-hero__reveal"><span className="sr-only">{hero.name}, </span><span>{hero.role}</span><span className="homepage-hero__specialism"><span aria-hidden="true">| </span><span className="sr-only">, </span>{hero.specialism}</span></h1>
-        <p className="homepage-hero__money homepage-hero__reveal">{hero.moneyMovement}</p>
-        <h2 className="homepage-hero__intro homepage-hero__reveal">{hero.intro}</h2>
-        <p className="homepage-hero__experience homepage-hero__reveal">{hero.experience}</p>
+        <h2 className="homepage-hero__money homepage-hero__reveal">{hero.moneyMovement}</h2>
+        <p className="homepage-hero__intro homepage-hero__reveal">{hero.intro}</p>
         <dl className="homepage-hero__strengths homepage-hero__reveal" aria-label="Three connected strengths">
-          <div><dt>Commercial judgment</dt><dd>{hero.strengthCommercial}</dd></div>
-          <div><dt>Hands-on AI building</dt><dd>{hero.strengthBuilding}</dd></div>
-          <div><dt>A method I teach</dt><dd>{hero.strengthTeaching}</dd></div>
+          <div><dt><span className="sr-only">Commercial judgment: </span>{hero.strengthCommercial}</dt><dd>{hero.strengthCommercialDetail}</dd></div>
+          <div><dt><span className="sr-only">Hands-on AI building: </span>{hero.strengthBuilding}</dt><dd>{hero.strengthBuildingDetail}</dd></div>
+          <div><dt><span className="sr-only">A method I teach: </span>{hero.strengthTeaching}</dt><dd>{hero.strengthTeachingDetail}</dd></div>
         </dl>
-        <div className="homepage-hero__recognition homepage-hero__reveal">
-          {hero.recognition.map((item) => <a href={item.href} key={item.label}>{item.label}</a>)}
-        </div>
         <nav className="homepage-hero__actions homepage-hero__reveal" aria-label="Explore Ramin’s work">
           <GlassImprintCta label="View selected work" href="/experience-education" className="homepage-hero__primary" />
           <a href="/contact">Contact</a>

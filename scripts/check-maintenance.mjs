@@ -16,7 +16,8 @@ assert.equal(maintenanceEnabled, true, 'This verification is for the locked publ
 const bio = homepageBio(root);
 const html = await readFile(path.join(root, 'dist/index.html'), 'utf8');
 assert.ok(html.indexOf(bio.name) < html.indexOf('id="construction-notice"'));
-assert.ok(html.indexOf(bio.experience) < html.indexOf('id="construction-notice"'), 'Notice is beneath the name and existing bio');
+assert.ok(html.includes(bio.moneyMovement), 'Approved hiring proposition is rendered');
+assert.ok(html.indexOf(bio.moneyMovement) < html.indexOf('id="construction-notice"'), 'Notice is beneath the main positioning');
 assert.match(html, />Under construction<|>Under construction<\/h2>|<\/span>Under construction<\/h2>/);
 const rejectedContactFixtures = checkMaintenanceContactPolicy();
 const visualBundle = await readFile(path.join(root, 'dist/_maintenance/background.js'));
