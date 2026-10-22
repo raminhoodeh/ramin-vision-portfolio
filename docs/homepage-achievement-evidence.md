@@ -8,19 +8,21 @@ The primary career document is the master CV supplied by Ramin in this conversat
 
 `/Users/raminhoodeh/Downloads/Claude for Product Managers/PM & CAREER/Ramin Hoodeh - Payments & Embedded Finance CV - 20 3d36fe2ecf37816cb418e0acc4285e80.md`
 
-The line references below refer to that exact local Markdown file, inspected on 22 October 2026. These figures are present in the supplied master itself. The tailored application CV and generated CV output files are derivative material, not additional corroboration. Assistant-generated illustrative or synthetic CV samples are excluded from the evidence for these achievements.
+The line references below refer to that exact local Markdown file, inspected on 22 October 2026. Figures attributed to that master are present in the master itself. The later GBP 23 million Vivup purchase volume and GBP 4.2 million SIDE voice-actor-fee volume instead originate in Ramin's explicit 22 October 2026 message; they are not attributed to the CV. The tailored application CV and generated CV output files are derivative material, not additional corroboration. Assistant-generated illustrative or synthetic CV samples are excluded from the evidence for these achievements.
 
 Ramin's new first-person descriptions in this conversation are a separate primary personal source. They establish what he says about his work; they do not independently establish comparative market rankings or make him the sole cause of a company's acquisition.
 
 Existing repository career records provide consistency checks. A company homepage or product page supplies organisational context. An employer announcement of an acquisition can corroborate the transaction; a dated employer sales announcement can corroborate its stated platform total. Neither validates Ramin's individual contribution, his CV-reported performance figures or any claim that he remained at the business until the acquisition or sales milestone. No underlying employer analytics, invoices or cohort samples were inspected for this review.
 
-## Fourteen homepage records
+## Sixteen homepage records
 
 The public wording is bound by stable `id` to the literal records in `src/data/homepageProofs.ts` through `docs/portfolio-claims.json`.
 
 | Record id | Primary fact and source | Publication scope |
 | --- | --- | --- |
 | `vivup-lifetime-value` | Master line 67: customer lifetime value increased 19% over five months after introducing a take rate on benefit savings. | Vivup monetisation. This was separate from Order Guidance; do not label it an AI-generated result. |
+| `vivup-purchase-volume` | Ramin's explicit first-person update on 22 October 2026 reports GBP 23 million in purchases processed through Vivup's employee-benefits marketplace. | Purchase volume, not company revenue, personally processed funds, custody or licensed payment-service ownership. No measurement period is provided; do not annualise it, attach the five-month CLV window or claim AI caused the volume. |
+| `side-voice-fees` | Ramin's explicit first-person update on 22 October 2026 reports GBP 4.2 million in voice actor fees transacted at SIDE.inc. | Voice-talent transaction volume, not company revenue, funds custody, licensed payment-service ownership or a sole-person processing claim. No measurement period is provided; do not borrow the four-month ERP or six-month delivery window, annualise it or claim AI caused the volume. |
 | `urgentem-api-revenue` | Master line 106: GBP 3.8 million annual recurring revenue across 14 partner platforms from transaction carbon-enrichment APIs. | Urgentem API/licensing revenue. No financial year is specified. USD 2.4 billion on the same line is annual transaction volume enriched, not revenue or payments Ramin processed. |
 | `urgentem-acquisition` | Master lines 100 and 110: Urgentem was acquired by Intercontinental Exchange; Ramin co-led Element6's launch. Ramin now says the business was pre-seed when he worked there. | Product Manager contribution at an early stage; company acquisition occurred later. Do not imply a personal sale, deal ownership or employment through the acquisition. |
 | `wlp-acquisition` | Master line 64: Family Pay launched at Work&Life Partners. Line 68: product and checkout integration from Work&Life Partners into Vivup. Ramin now says it started with him from nothing and was acquired by Vivup. | Zero-to-one product work and subsequent company acquisition. Do not invent a founder/CEO title, ownership percentage, exit proceeds or a separate formal employment chronology. |
@@ -52,6 +54,8 @@ Ramin subsequently identified the Manheim Express platform as Germany/continenta
 
 Older local interview notes (`ai-ramin-section/PM Experience & Interview Prep 2a86fe2ecf3780d68f85f0edd9085933.md`, lines 170–172) mention approximately 4,000 cars per month, without a measurement date or defined market. That undated number is not published on the homepage and is not used to extrapolate revenue, yearly sales or an all-time ranking.
 
+Ramin's later 22 October 2026 instruction explicitly adds two further achievement cards: GBP 23 million in purchases processed at Vivup and GBP 4.2 million in voice actor fees transacted at SIDE.inc. This is direct first-person career evidence and explicit authorization to display those figures. Neither amount has a supplied measurement period or independent employer-source verification. They are transaction-volume claims, not company revenue or proof of sole personal processing, funds custody, payment licensing or AI causation.
+
 ## Retained exclusions
 
 - Do not publish a 20% climate-risk reduction or a saving estimate for Urgentem: the existing canonical record does not define the measure, baseline, attribution or calculation.
@@ -59,6 +63,7 @@ Older local interview notes (`ai-ramin-section/PM Experience & Interview Prep 2a
 - Do not turn payment-related data enrichment into payment processing or AI/LLM revenue.
 - Keep Family Pay as the current supplied product name; earlier FamilyCare wording does not establish two products or a verified rebrand.
 - Preserve confidential implementation boundaries and the distinction between reported employer outcomes and independently verified evidence.
+- Do not attach existing CLV, ERP-cost, launch or delivery measurement windows to the newly supplied GBP 23 million and GBP 4.2 million transaction volumes. No measurement period was provided for either, and neither is stated as annual volume.
 
 ## Employer corroboration
 

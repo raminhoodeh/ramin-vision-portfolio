@@ -1315,23 +1315,26 @@
       "id": "work-side",
       "entity": "SIDE",
       "kind": "work",
-      "scope": "Targeted build-versus-buy and AI-assisted internal reporting with Finance retaining posting approval. 20% ERP cost reduction has a four-month window; 30% reporting and 90% delivery figures have no separate public window. The homepage binds the 20% operating-cost result to its four-month window; no other SIDE figure inherits that window.",
+      "scope": "Targeted build-versus-buy and AI-assisted internal reporting with Finance retaining posting approval. 20% ERP cost reduction has a four-month window; 30% reporting and 90% delivery figures have no separate public window. The homepage binds the 20% operating-cost result to its four-month window; no other SIDE figure inherits that window. Ramin’s explicit 22 October 2026 first-person update adds GBP 4.2m in voice actor fees transacted at SIDE.inc. No measurement period was supplied; this is voice-talent transaction volume rather than company revenue or an AI-caused outcome.",
       "period": "Mar 2025 - Aug 2025; 20% over four months only; other metric windows unspecified.",
-      "attribution": "Ramin’s product decisions within cross-functional employer delivery. Numbers originate in the supplied CV and reconciled career sources; company homepages do not validate them.",
+      "attribution": "Ramin’s product decisions within cross-functional employer delivery. Numbers originate in the supplied CV and reconciled career sources; company homepages do not validate them. The newly added transaction-volume figure is Ramin’s first-person career account; no sole personal processing, funds-custody or licensing ownership is implied.",
       "publication": {
         "status": "existing-public-safe-copy-with-exclusions",
-        "basis": "Existing approved public-safe remit/story copy. This records the portfolio publishing boundary, not a separate legal/employer permission grant. The 22 October 2026 user instruction authorizes the homepage achievement expansion from the supplied master CV and first-person context; this records a publishing decision, not independent employer verification.",
+        "basis": "Existing approved public-safe remit/story copy. This records the portfolio publishing boundary, not a separate legal/employer permission grant. The 22 October 2026 user instruction authorizes the homepage achievement expansion from the supplied master CV and first-person context; this records a publishing decision, not independent employer verification. Ramin’s later 22 October 2026 instruction explicitly authorizes this additional transaction-volume card, using the figure in his latest message rather than an external employer verification or a master-CV metric.",
         "exclusions": [
           "CV-reported outcomes, not independently audited",
           "No claim of owning a replacement core financial ledger",
-          "Do not attach the four-month window to every SIDE figure"
+          "Do not attach the four-month window to every SIDE figure",
+          "Do not attach the four-month ERP-cost or six-month delivery window, or any other existing measurement period, to the GBP 4.2m voice-actor-fee volume.",
+          "Do not annualise the new volume, treat it as company revenue or claim AI caused it",
+          "No sole personal processing, funds-custody or payment-licensing claim from the new volume"
         ]
       },
       "implementationStatus": "reported-employer-outcomes",
       "evidenceStatus": "self-reported-employer-outcomes",
       "source": {
         "sourceCheckedOn": null,
-        "note": "Canonical record and supplied-CV-derived public story; original internal dashboards and measurement samples are not public. lastChecked is local review only. Homepage source excerpts and the distinction between reported metrics, first-person contribution and employer-event corroboration are recorded in docs/homepage-achievement-evidence.md. sourceCheckedOn remains null for performance measurements; employer-event observations are dated separately in the ledger.",
+        "note": "Canonical record and supplied-CV-derived public story; original internal dashboards and measurement samples are not public. lastChecked is local review only. Homepage source excerpts and the distinction between reported metrics, first-person contribution and employer-event corroboration are recorded in docs/homepage-achievement-evidence.md. sourceCheckedOn remains null for performance measurements; employer-event observations are dated separately in the ledger. The new transaction-volume figure comes directly from Ramin’s later 22 October 2026 message. No measurement period or independent employer verification was provided; sourceCheckedOn remains null for this first-person claim.",
         "files": [
           "ai-ramin-section/canonical/work-experiences/side-ai-erp.md",
           "docs/ramin-hoodeh-exp-context.md",
@@ -1340,6 +1343,14 @@
           "src/data/homepage.ts",
           "docs/homepage-achievement-evidence.md",
           "src/data/homepageProofs.ts"
+        ],
+        "observations": [
+          {
+            "kind": "user-first-person-update",
+            "receivedOn": "2026-10-22",
+            "supports": "Ramin’s explicit 22 October 2026 first-person update adds GBP 4.2m in voice actor fees transacted at SIDE.inc. No measurement period was supplied; this is voice-talent transaction volume rather than company revenue or an AI-caused outcome.",
+            "limits": "Do not attach the four-month ERP-cost or six-month delivery window, or any other existing measurement period, to the GBP 4.2m voice-actor-fee volume. No independent employer-source verification, company-revenue, custody, payment-licensing, sole-person processing or AI-causation claim."
+          }
         ]
       },
       "surfaceRefs": [
@@ -1460,6 +1471,24 @@
             "title": "20% lower ERP operating costs",
             "detail": "SIDE · AI-assisted tooling · four months"
           }
+        },
+        {
+          "file": "src/data/homepageProofs.ts",
+          "declaration": "commercialProofs",
+          "where": {
+            "field": "id",
+            "value": "side-voice-fees"
+          },
+          "pick": [
+            "id",
+            "title",
+            "detail"
+          ],
+          "equals": {
+            "id": "side-voice-fees",
+            "title": "£4.2m in voice actor fees transacted",
+            "detail": "SIDE.inc · voice talent payments"
+          }
         }
       ],
       "boundaries": [
@@ -1476,6 +1505,22 @@
           "required": [
             "side-erp-cost"
           ]
+        },
+        {
+          "file": "ai-ramin-section/canonical/work-experiences/side-ai-erp.md",
+          "required": [
+            "GBP 4\\.2 million in voice actor fees transacted",
+            "No measurement period was provided",
+            "not the master CV",
+            "Do not annualise"
+          ]
+        },
+        {
+          "file": "docs/homepage-achievement-evidence.md",
+          "required": [
+            "side-voice-fees",
+            "Sixteen homepage records"
+          ]
         }
       ],
       "publicLinks": [
@@ -1490,23 +1535,26 @@
       "id": "work-vivup",
       "entity": "Vivup / Work&Life Partners",
       "kind": "work",
-      "scope": "Checkout Order Guidance and benefit-savings monetisation were separate initiatives. Abandonment reduced one third within 30 days; customer lifetime value rose 19% over five months. Family Pay enabled eligibility-dependent 30–40%+ customer childcare savings in the supplied master. The zero-to-one product contribution is supported by Ramin’s latest first-person account; an issuer announcement dates Work&Life Partners’ acquisition by Vivup to 2024. No founder title, ownership stake or personal exit proceeds are asserted.",
+      "scope": "Checkout Order Guidance and benefit-savings monetisation were separate initiatives. Abandonment reduced one third within 30 days; customer lifetime value rose 19% over five months. Family Pay enabled eligibility-dependent 30–40%+ customer childcare savings in the supplied master. The zero-to-one product contribution is supported by Ramin’s latest first-person account; an issuer announcement dates Work&Life Partners’ acquisition by Vivup to 2024. No founder title, ownership stake or personal exit proceeds are asserted. Ramin’s explicit 22 October 2026 first-person update adds GBP 23m in purchases processed through the employee-benefits marketplace. No measurement period was supplied; this is purchase volume rather than company revenue or an AI-caused outcome.",
       "period": "Jan 2023 - Nov 2024; checkout first 30 days; lifetime value five months; app-rating deltas three months.",
-      "attribution": "Ramin’s product decisions within cross-functional employer delivery. Numbers originate in the supplied CV and reconciled career sources; company homepages do not validate them.",
+      "attribution": "Ramin’s product decisions within cross-functional employer delivery. Numbers originate in the supplied CV and reconciled career sources; company homepages do not validate them. The newly added transaction-volume figure is Ramin’s first-person career account; no sole personal processing, funds-custody or licensing ownership is implied.",
       "publication": {
         "status": "existing-public-safe-copy-with-exclusions",
-        "basis": "Existing approved public-safe remit/story copy. This records the portfolio publishing boundary, not a separate legal/employer permission grant. The 22 October 2026 user instruction authorizes the homepage achievement expansion from the supplied master CV and first-person context; this records a publishing decision, not independent employer verification.",
+        "basis": "Existing approved public-safe remit/story copy. This records the portfolio publishing boundary, not a separate legal/employer permission grant. The 22 October 2026 user instruction authorizes the homepage achievement expansion from the supplied master CV and first-person context; this records a publishing decision, not independent employer verification. Ramin’s later 22 October 2026 instruction explicitly authorizes this additional transaction-volume card, using the figure in his latest message rather than an external employer verification or a master-CV metric.",
         "exclusions": [
           "CV-reported outcomes, not independently audited",
           "Do not combine separate initiatives into one experiment or causal claim",
-          "No invented cohorts, sample sizes or baselines"
+          "No invented cohorts, sample sizes or baselines",
+          "Do not attach the separate five-month CLV window or any other existing measurement period to the GBP 23m purchase volume.",
+          "Do not annualise the new volume, treat it as company revenue or claim AI caused it",
+          "No sole personal processing, funds-custody or payment-licensing claim from the new volume"
         ]
       },
       "implementationStatus": "reported-employer-outcomes",
       "evidenceStatus": "self-reported-employer-outcomes",
       "source": {
         "sourceCheckedOn": null,
-        "note": "Canonical record and supplied-CV-derived public story; original internal dashboards and measurement samples are not public. lastChecked is local review only. The latest supplied Payments & Embedded Finance CV uses Family Pay; earlier FamilyCare copy is superseded for public naming, without asserting a rebrand. Homepage source excerpts and the distinction between reported metrics, first-person contribution and employer-event corroboration are recorded in docs/homepage-achievement-evidence.md. sourceCheckedOn remains null for performance measurements; employer-event observations are dated separately in the ledger.",
+        "note": "Canonical record and supplied-CV-derived public story; original internal dashboards and measurement samples are not public. lastChecked is local review only. The latest supplied Payments & Embedded Finance CV uses Family Pay; earlier FamilyCare copy is superseded for public naming, without asserting a rebrand. Homepage source excerpts and the distinction between reported metrics, first-person contribution and employer-event corroboration are recorded in docs/homepage-achievement-evidence.md. sourceCheckedOn remains null for performance measurements; employer-event observations are dated separately in the ledger. The new transaction-volume figure comes directly from Ramin’s later 22 October 2026 message. No measurement period or independent employer verification was provided; sourceCheckedOn remains null for this first-person claim.",
         "files": [
           "ai-ramin-section/canonical/work-experiences/perkbox-vivup.md",
           "docs/ramin-hoodeh-exp-context.md",
@@ -1515,6 +1563,14 @@
           "src/data/homepage.ts",
           "docs/homepage-achievement-evidence.md",
           "src/data/homepageProofs.ts"
+        ],
+        "observations": [
+          {
+            "kind": "user-first-person-update",
+            "receivedOn": "2026-10-22",
+            "supports": "Ramin’s explicit 22 October 2026 first-person update adds GBP 23m in purchases processed through the employee-benefits marketplace. No measurement period was supplied; this is purchase volume rather than company revenue or an AI-caused outcome.",
+            "limits": "Do not attach the separate five-month CLV window or any other existing measurement period to the GBP 23m purchase volume. No independent employer-source verification, company-revenue, custody, payment-licensing, sole-person processing or AI-causation claim."
+          }
         ]
       },
       "surfaceRefs": [
@@ -1709,6 +1765,24 @@
             "title": "One-third less checkout abandonment",
             "detail": "Vivup · Order Guidance · 30 days"
           }
+        },
+        {
+          "file": "src/data/homepageProofs.ts",
+          "declaration": "commercialProofs",
+          "where": {
+            "field": "id",
+            "value": "vivup-purchase-volume"
+          },
+          "pick": [
+            "id",
+            "title",
+            "detail"
+          ],
+          "equals": {
+            "id": "vivup-purchase-volume",
+            "title": "£23m in purchases processed",
+            "detail": "Vivup · employee benefits marketplace"
+          }
         }
       ],
       "boundaries": [
@@ -1736,6 +1810,22 @@
             "30[–-]40%\\+",
             "acquisition by Vivup in 2024",
             "does not invent a founder"
+          ]
+        },
+        {
+          "file": "ai-ramin-section/canonical/work-experiences/perkbox-vivup.md",
+          "required": [
+            "GBP 23 million in purchases processed",
+            "No measurement period was provided",
+            "not the master CV",
+            "Do not annualise"
+          ]
+        },
+        {
+          "file": "docs/homepage-achievement-evidence.md",
+          "required": [
+            "vivup-purchase-volume",
+            "Sixteen homepage records"
           ]
         }
       ],

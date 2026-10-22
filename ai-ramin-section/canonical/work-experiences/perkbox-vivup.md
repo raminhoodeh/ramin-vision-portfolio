@@ -50,6 +50,12 @@ Ramin owned product decisions and stakeholder alignment; these outcomes involved
 
 The latest supplied Payments & Embedded Finance CV uses Family Pay for the Work&Life Partners nursery salary-sacrifice payment journey. Earlier portfolio exports use FamilyCare. Use the latest CV name or describe the childcare payment journey generically; do not claim two distinct products or a verified rebrand.
 
+## Marketplace Purchase Volume, 22 October 2026
+
+Ramin's explicit first-person update on 22 October 2026 reports GBP 23 million in purchases processed through Vivup's employee-benefits marketplace. This figure comes from his latest message, not the master CV or an independently verified employer publication. Public wording keeps it as purchase volume rather than company revenue.
+
+No measurement period was provided. Do not annualise the amount or attach the separate five-month customer-lifetime-value window, checkout window or role dates to it. Do not interpret this as sole personal processing, funds custody, payment-service licensing or an AI-caused outcome. See `docs/homepage-achievement-evidence.md` for the source distinction and exact homepage record.
+
 ## Family Pay and Work&Life Partners, 22 October 2026
 
 The supplied Payments & Embedded Finance master CV, line 64, reports a Family Pay launch at Work&Life Partners that enabled eligible parents to save 30–40%+ on childcare through a nursery salary-sacrifice payment journey. These are eligibility-dependent customer savings, not a universal saving, platform revenue or a separately measured AI outcome. The underlying employer analytics are not independently audited here.

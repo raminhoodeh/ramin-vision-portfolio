@@ -3,6 +3,8 @@
 // CV metrics are reconciled in docs/homepage-achievement-evidence.md.
 export const commercialProofs = [
   { id: 'vivup-lifetime-value', title: '+19% customer lifetime value', detail: 'Vivup · monetisation · five months' },
+  { id: 'vivup-purchase-volume', title: '£23m in purchases processed', detail: 'Vivup · employee benefits marketplace' },
+  { id: 'side-voice-fees', title: '£4.2m in voice actor fees transacted', detail: 'SIDE.inc · voice talent payments' },
   { id: 'urgentem-api-revenue', title: '£3.8m annual recurring revenue', detail: 'Urgentem · transaction APIs · 14 partner platforms' },
   { id: 'urgentem-acquisition', title: 'Pre-seed startup, later acquired by ICE', detail: 'Urgentem · co-launched Element6 · acquired in 2022' },
   { id: 'wlp-acquisition', title: 'Zero-to-one Family Pay launch', detail: 'Work&Life Partners · company acquired by Vivup in 2024' },

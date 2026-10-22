@@ -12,6 +12,7 @@ source_paths:
   - "ramin-hoodeh-exp-context.md"
   - "src/data/portfolio.ts"
   - "src/data/professionalStories.ts"
+  - "docs/homepage-achievement-evidence.md"
 public_links:
   - "https://www.ramin.vision/work/side"
 verification_status: metric_review_needed
@@ -44,6 +45,12 @@ These metrics should be reviewed before public chatbot usage.
 The public story describes a targeted build-versus-buy decision: retire selected third-party modules and build Windsurf-assisted reporting and reconciliation tools, rather than claim ownership of a replacement core financial system. Enterprise Copilot supported aggregation and exception triage; Finance retained approval over postings. Ramin owned product decisions with Engineering, Finance, Operations, and Sales.
 
 The supplied Payments & Embedded Finance CV dates the 20 percent ERP operating-cost reduction to four months. Do not attach that window automatically to the 30 percent reporting or 90 percent delivery figures. These remain self-reported employer-work outcomes; internal baselines, samples, and dashboards are not public or independently audited.
+
+## Voice-Talent Payment Volume, 22 October 2026
+
+Ramin's explicit first-person update on 22 October 2026 reports GBP 4.2 million in voice actor fees transacted at SIDE.inc. The homepage attributes this to SIDE.inc voice-talent payments. This figure comes from his latest message, not the master CV or an independently verified employer publication.
+
+No measurement period was provided. Do not annualise the amount or attach the four-month ERP-cost window, six-month product-delivery window or the role's dates as its measurement window. It is transaction volume in voice-actor fees, not company revenue, Ramin's personal processing volume, funds custody or a payment-licensing claim. Do not attribute the amount to AI causation. See `docs/homepage-achievement-evidence.md` for the separate first-person source and publication scope.
 
 ## What This Proves
 
