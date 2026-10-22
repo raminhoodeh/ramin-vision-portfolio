@@ -153,7 +153,7 @@
 }
 
 .homepage-proof-detail p { margin: 0; }
-.homepage-proof-ticker { display: grid; min-width: 0; }
+.homepage-proof-ticker { display: grid; align-items: center; min-width: 0; }
 .homepage-proof-slide {
   grid-area: 1 / 1;
   min-width: 0;
