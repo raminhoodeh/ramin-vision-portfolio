@@ -17,6 +17,7 @@ date_ranges:
 source_paths:
   - "ramin-hoodeh-exp-context.md"
   - "ai-ramin-context/PM Experience & Interview Prep 2a86fe2ecf3780d68f85f0edd9085933.md"
+  - "docs/homepage-achievement-evidence.md"
 verification_status: metric_review_needed
 ---
 
@@ -39,7 +40,7 @@ Local sources say Ramin:
 - identified satellite data use cases to detect copper mines at risk of leaking waste into waterways
 - improved partner RepRisk's product offering revenue by 10 percent over 6 months, according to local resume source
 
-The revenue metric should be reviewed before public use.
+The 22 October 2026 homepage review reconciled this figure with line 119 of the supplied Payments & Embedded Finance master CV. Public wording states that Ramin contributed to 10% product revenue growth over six months at partner RepRisk through satellite-data use cases. This describes RepRisk's product revenue, not ERM's revenue or sole causation. It remains a supplied employer-work claim, without independently audited attribution. See `docs/homepage-achievement-evidence.md` for the source ledger.
 
 ## Tesla Summary
 

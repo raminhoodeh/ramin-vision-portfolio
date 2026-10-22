@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-10-22T10:00:09.162Z",
+  "generated_at": "2026-10-22T12:50:02.744Z",
   "source_directories": [
     "ai-ramin-section/canonical",
     "ai-ramin-section/inferred",
@@ -12,11 +12,11 @@
     "source_files_discovered": 82,
     "source_files_ingested": 78,
     "source_files_skipped": 4,
-    "chunks": 110,
+    "chunks": 112,
     "chunks_by_role": {
       "policy": 16,
       "canonical": 14,
-      "work": 11,
+      "work": 13,
       "project": 16,
       "story": 13,
       "inferred": 15,
@@ -1141,7 +1141,8 @@
       "source_paths": [
         "ramin-hoodeh-exp-context.md",
         "ai-ramin-context/PM Experience & Interview Prep 2a86fe2ecf3780d68f85f0edd9085933.md",
-        "src/data/portfolio.ts"
+        "src/data/portfolio.ts",
+        "docs/homepage-achievement-evidence.md"
       ],
       "question_intents": [],
       "entities": [],
@@ -1182,7 +1183,73 @@
       "text": "# GroupM - Media Carbon Calculator\n\n## Summary\n\nRamin worked at GroupM as Product Manager from Jan 2022 to Dec 2022.\n\nThis is one of the strongest public-facing proof stories for Ramin's portfolio because it combines product management, sustainability, data methodology, stakeholder alignment, and market-scale product impact.\n\n## Product Work\n\nRamin helped manage the product division of GroupM's Global Innovation Group and translated carbon emissions methodology into product specifications for a media Carbon Calculator.\n\nLocal sources say the product measured the environmental impact of more than GBP 1 billion of media investment in 2022 and became widely used in the media sector.\n\nThe source also says Ramin worked with EY consultants, overseas development teams, stakeholders, clients, MarTech experts, and wider corporate teams.\n\n## Market Evolution\n\nThe PM Experience source describes the product's market evolution in four stages:\n\n1. Measurement: reporting emissions was initially enough.\n2. Comparison: UX shifted toward kgCO2 per viewer and calculation output reports.\n3. Transparency: tooltips, educational wikis, explanations, and visible figures became important.\n4. Programmatic ad-level CO2: partnership with Scope3 became more important.\n\n## What This Proves\n\n- Translating technical methodology into product requirements.\n- Building a sustainability data product for enterprise clients.\n- Working across external consultants, clients, engineering teams, and internal leadership.\n- Turning carbon data into a product surface that supported business development.\n- Using product education and transparency to build trust in a complex methodology.\n\n## Useful Story Hooks\n\n- Proud accomplishment story.\n- Product impact story.\n- Sustainability product story.\n- Enterprise stakeholder story.\n- Product education and trust story.\n\n## Retrieval Guidance\n\nUse this file for questions about climate/sustainability product experience, enterprise product management, carbon measurement, cross-functional leadership, product education, or strongest product accomplishments.\n\nDo not overstate public usage or financial impact beyond the reviewed source wording."
     },
     {
-      "chunk_id": "airamin_6d42005714407e3c",
+      "chunk_id": "airamin_55b45c6c5890f93c",
+      "file_path": "ai-ramin-section/canonical/work-experiences/groupm-carbon-calculator.md",
+      "title": "GroupM - Media Carbon Calculator",
+      "heading_path": [
+        "GroupM - Media Carbon Calculator",
+        "Homepage Scale Boundary, 22 October 2026"
+      ],
+      "chunk_index": 1,
+      "source_type": "work_experience",
+      "source_role": "work",
+      "trust_level": "canonical_candidate",
+      "visibility": "public_portfolio_safe",
+      "retrieval_priority": "highest",
+      "answer_permission": "factual_answer",
+      "claim_status": "verified_or_user_confirmed",
+      "source_kind": "work",
+      "based_on": [],
+      "forbidden_use": [],
+      "public_links": [
+        "https://www.mi-3.com.au/20-07-2022/carbon-footprint-different-media-distribution-options-will-increasingly-influence-where"
+      ],
+      "source_paths": [
+        "ramin-hoodeh-exp-context.md",
+        "ai-ramin-context/PM Experience & Interview Prep 2a86fe2ecf3780d68f85f0edd9085933.md",
+        "src/data/portfolio.ts",
+        "docs/homepage-achievement-evidence.md"
+      ],
+      "question_intents": [],
+      "entities": [],
+      "public_safe": true,
+      "can_answer_from": true,
+      "can_support_inference": false,
+      "requires_contact_fallback": false,
+      "contains_metric": true,
+      "metric_verification_status": "metric_review_needed",
+      "verification_status": "metric_review_needed",
+      "token_estimate": 186,
+      "keywords": [
+        "the",
+        "calculator",
+        "carbon",
+        "homepage",
+        "media",
+        "scale",
+        "2026",
+        "assessed",
+        "boundary",
+        "groupm",
+        "investment",
+        "october",
+        "product",
+        "ranking",
+        "supplied",
+        "usage",
+        "2022",
+        "and",
+        "announcements",
+        "asserts",
+        "assessed-investment",
+        "billion",
+        "claim",
+        "comparative"
+      ],
+      "text": "## Homepage Scale Boundary, 22 October 2026\n\nThe supplied Payments & Embedded Finance master CV, line 76, reports GBP 1 billion+ of media investment assessed by the Carbon Calculator in 2022. This is spending assessed by the product, not revenue Ramin generated or investment he personally managed. Public employer product announcements corroborate the calculator's existence and industry context; the numerical scale remains a supplied CV claim.\n\nRamin's latest first-person description asserts a sector-wide usage ranking. The local record contains no comparative usage dataset establishing that ranking, so the homepage uses the documented assessed-investment figure. See `docs/homepage-achievement-evidence.md` for the source distinction."
+    },
+    {
+      "chunk_id": "airamin_899940fd5669b4e1",
       "file_path": "ai-ramin-section/canonical/work-experiences/urgentem-element6.md",
       "title": "Urgentem - Element6 Climate Risk Analytics",
       "heading_path": [
@@ -1205,7 +1272,8 @@
       "source_paths": [
         "ramin-hoodeh-exp-context.md",
         "ai-ramin-context/PM Experience & Interview Prep 2a86fe2ecf3780d68f85f0edd9085933.md",
-        "src/data/portfolio.ts"
+        "src/data/portfolio.ts",
+        "docs/homepage-achievement-evidence.md"
       ],
       "question_intents": [],
       "entities": [],
@@ -1216,42 +1284,42 @@
       "contains_metric": true,
       "metric_verification_status": "metric_conflict_review_needed",
       "verification_status": "metric_conflict_review_needed",
-      "token_estimate": 559,
+      "token_estimate": 556,
       "keywords": [
         "the",
+        "and",
         "climate",
         "analytics",
         "risk",
-        "and",
-        "data",
         "element6",
         "for",
-        "carbon",
         "not",
+        "carbon",
         "product",
         "urgentem",
-        "development",
+        "data",
         "percent",
         "public",
+        "supplied",
         "was",
+        "2026",
         "analysis",
         "are",
         "attribution",
-        "feature",
-        "features",
-        "finance",
-        "financial",
-        "gbp"
+        "audited",
+        "career",
+        "churn",
+        "conversion"
       ],
-      "text": "# Urgentem - Element6 Climate Risk Analytics\n\n## Summary\n\nRamin worked at Urgentem as a contract Product Manager for a climate data platform from Oct 2019 to Nov 2020.\n\nThe product was Element6, an award-winning financial climate risk analytics platform that was later acquired.\n\nThis is one of the clearest supporting examples for climate data, ESG, financial risk analytics, and B2B product management.\n\n## Product Work\n\nLocal sources describe Ramin as co-managing the development and launch of Element6 and working with a cross-functional team including:\n\n- CTO\n- Head of Climate Risk\n- Carbon Data Analysts\n- finance consultants\n- developers\n- VC investors\n- UX/design contributors\n\n## Features Built\n\nThe PM Experience source lists:\n\n- Carbon Footprinting\n- Paris Alignment\n- Abatement analysis\n- Target Setting\n- Stranded Asset Analysis\n- Carbon Tax and Carbon Pricing scenarios\n- Avoided Emissions\n- Temperature Metric\n- SASB Blue Tick for verified companies\n- SASB-formatted exports\n\n## Metrics and Review Notes\n\nThe latest supplied Payments & Embedded Finance CV (2026) reports GBP 900 million in client-portfolio AUM. Use that supplied career context, with explicit attribution: these are clients’ portfolios, not assets Ramin managed. The older interview draft’s GBP 600 million figure is superseded for public summaries. The underlying portfolio records are not independently audited here.\n\nDo not quote a climate-risk reduction percentage or a saving estimate: the public material does not define the measure, baseline, attribution or calculation needed to interpret it.\n\nOther local source claims:\n\n- Demo-to-Buy conversion rate improved by 30 percent over 4 months.\n- quarterly churn reduced by 25 percent.\n- Google Analytics was used to measure feature uptake.\n- three under-utilised features were cut, increasing the ratio of story point development to feature usage by 25 percent over 8 months.\n\nThese require review before public chatbot use.\n\n## Tradeoff Example\n\nInternal roadmap prioritised Scope 3 data as a differentiator, but a key client needed Scope 1 data for a specific company.\n\nRamin initiated bi-weekly meetings with key users to align development with customer needs while managing internal priorities."
+      "text": "# Urgentem - Element6 Climate Risk Analytics\n\n## Summary\n\nRamin worked at Urgentem as a contract Product Manager for a climate data platform from Oct 2019 to Nov 2020.\n\nThe product was Element6, an award-winning financial climate risk analytics platform that was later acquired.\n\nThis is one of the clearest supporting examples for climate data, ESG, financial risk analytics, and B2B product management.\n\n## Product Work\n\nLocal sources describe Ramin as co-managing the development and launch of Element6 and working with a cross-functional team including:\n\n- CTO\n- Head of Climate Risk\n- Carbon Data Analysts\n- finance consultants\n- developers\n- VC investors\n- UX/design contributors\n\n## Features Built\n\nThe PM Experience source lists:\n\n- Carbon Footprinting\n- Paris Alignment\n- Abatement analysis\n- Target Setting\n- Stranded Asset Analysis\n- Carbon Tax and Carbon Pricing scenarios\n- Avoided Emissions\n- Temperature Metric\n- SASB Blue Tick for verified companies\n- SASB-formatted exports\n\n## Metrics and Review Notes\n\nThe latest supplied Payments & Embedded Finance CV (2026) reports GBP 900 million in client-portfolio AUM. Use that supplied career context, with explicit attribution: these are clients’ portfolios, not assets Ramin managed. The older interview draft’s GBP 600 million figure is superseded for public summaries. The underlying portfolio records are not independently audited here.\n\nDo not quote a climate-risk reduction percentage or a saving estimate: the public material does not define the measure, baseline, attribution or calculation needed to interpret it.\n\nOther local source claims:\n\n- Demo-to-Buy conversion rate improved by 30 percent over 4 months.\n- quarterly churn reduced by 25 percent.\n- Google Analytics was used to measure feature uptake.\n- three under-utilised features were cut, increasing the ratio of story point development to feature usage by 25 percent over 8 months.\n\nThe 22 October 2026 homepage review reconciled the demo-to-buy conversion and quarterly churn figures with the supplied master CV for public career summaries. They remain CV-reported employer outcomes, not independently audited measurements. The other metric and story cautions in this record remain in force."
     },
     {
-      "chunk_id": "airamin_55426d8a059ce0ea",
+      "chunk_id": "airamin_47dbeab9c9c9d8f4",
       "file_path": "ai-ramin-section/canonical/work-experiences/urgentem-element6.md",
       "title": "Urgentem - Element6 Climate Risk Analytics",
       "heading_path": [
         "Urgentem - Element6 Climate Risk Analytics",
-        "Pricing Story"
+        "Homepage Career Context, 22 October 2026"
       ],
       "chunk_index": 1,
       "source_type": "work_experience",
@@ -1270,7 +1338,8 @@
       "source_paths": [
         "ramin-hoodeh-exp-context.md",
         "ai-ramin-context/PM Experience & Interview Prep 2a86fe2ecf3780d68f85f0edd9085933.md",
-        "src/data/portfolio.ts"
+        "src/data/portfolio.ts",
+        "docs/homepage-achievement-evidence.md"
       ],
       "question_intents": [],
       "entities": [],
@@ -1281,34 +1350,34 @@
       "contains_metric": true,
       "metric_verification_status": "metric_conflict_review_needed",
       "verification_status": "metric_conflict_review_needed",
-      "token_estimate": 251,
+      "token_estimate": 620,
       "keywords": [
-        "pricing",
-        "product",
-        "and",
-        "data",
-        "climate",
-        "risk",
         "the",
-        "story",
-        "tiered",
-        "use",
-        "analytics",
-        "b2b",
-        "conflict",
+        "and",
+        "product",
+        "data",
+        "pricing",
+        "not",
+        "climate",
+        "revenue",
+        "risk",
+        "acquisition",
+        "career",
+        "company",
+        "describes",
         "element6",
-        "esg",
         "for",
-        "stakeholder",
+        "homepage",
+        "october",
+        "tiered",
         "urgentem",
-        "500",
+        "use",
+        "2022",
+        "2026",
         "across",
-        "alignment",
-        "answering",
-        "argued",
-        "been"
+        "analytics"
       ],
-      "text": "## Pricing Story\n\nThe interview draft describes a conflict over usage-based pricing versus tiered pricing.\n\nRamin argued for tiered pricing because unrestricted exploration inside a tier would produce better product usage data and encourage clients to discover more of the platform's value.\n\nThe team landed on a tiered model with a higher initial limit of 500 companies.\n\nUse this as a behavioural story only after verification and rewriting.\n\n## What This Proves\n\n- Climate data and ESG product experience.\n- Financial-sector B2B product work.\n- Complex data product requirements.\n- Stakeholder alignment across sales, risk, data, and engineering.\n- Product tradeoffs between roadmap differentiation and client-specific needs.\n- Pricing strategy reasoning.\n\n## Retrieval Guidance\n\nUse this file for ESG, climate data, financial risk, product pricing, B2B SaaS, stakeholder conflict, and product tradeoff questions.\n\nWhen answering with metrics, use uncertainty if the metric has not yet been verified."
+      "text": "## Homepage Career Context, 22 October 2026\n\nThe supplied Payments & Embedded Finance master CV, line 106, reports GBP 3.8 million annual recurring revenue across 14 partner platforms from transaction carbon-enrichment APIs. This is supplied career evidence, not an independently audited revenue measurement; the source does not specify a financial year. Do not relabel enrichment as payment processing, describe the USD 2.4 billion enriched transaction volume as revenue, or call this AI/LLM revenue.\n\nRamin now describes Urgentem as pre-seed when he worked there. His documented contribution is co-leading Element6's development and launch during the October 2019–November 2020 Product Manager engagement. ICE's employer announcements corroborate a later company acquisition in June 2022, announced in July 2022. The homepage's acquisition detail describes a later company milestone, not a personal exit, sole ownership of the sale or employment through the acquisition.\n\nThe source excerpts, employer announcement links and exact publication limits are recorded in `docs/homepage-achievement-evidence.md`. The existing exclusion of an undefined climate-risk-reduction percentage remains unchanged.\n\n## Tradeoff Example\n\nInternal roadmap prioritised Scope 3 data as a differentiator, but a key client needed Scope 1 data for a specific company.\n\nRamin initiated bi-weekly meetings with key users to align development with customer needs while managing internal priorities.\n\n## Pricing Story\n\nThe interview draft describes a conflict over usage-based pricing versus tiered pricing.\n\nRamin argued for tiered pricing because unrestricted exploration inside a tier would produce better product usage data and encourage clients to discover more of the platform's value.\n\nThe team landed on a tiered model with a higher initial limit of 500 companies.\n\nUse this as a behavioural story only after verification and rewriting.\n\n## What This Proves\n\n- Climate data and ESG product experience.\n- Financial-sector B2B product work.\n- Complex data product requirements.\n- Stakeholder alignment across sales, risk, data, and engineering.\n- Product tradeoffs between roadmap differentiation and client-specific needs.\n- Pricing strategy reasoning.\n\n## Retrieval Guidance\n\nUse this file for ESG, climate data, financial risk, product pricing, B2B SaaS, stakeholder conflict, and product tradeoff questions.\n\nWhen answering with metrics, use uncertainty if the metric has not yet been verified."
     },
     {
       "chunk_id": "airamin_0abce836cbf5547c",
@@ -2000,7 +2069,7 @@
       "text": "# Qualifications\n\n## AI Credentials\n\n- IBM AI Engineering Professional Certificate, 2026.\n- Google AI School Professional Machine Learning Engineer, 2026.\n- Google AI School Generative AI Leader Certification, 2026.\n- Anthropic Academy MCP Protocols: Advanced Topics, 2026.\n\n## Leadership\n\n- MBTi Leadership Development Programme, 2024.\n\n## Fitness And Human Performance\n\n- Level 3 Personal Training qualification.\n- This should be used as verified user-confirmed domain context for fitness, gym, coaching, health-behaviour, and human-performance product questions, while certificate screenshots or verification links remain a future proof asset.\n\n## Formal Education\n\n- MSc Environmental Technology with Distinction, Imperial College London, 2017.\n- BA Business and Marketing with 1st Class Honours, University of Northampton, 2016.\n\n## How AI Ramin Should Use This\n\nUse qualifications as supporting proof, not as the main argument. Ramin's strongest evidence is product work. Qualifications are useful when answering questions about technical literacy, climate/sustainability grounding, formal education, leadership development, or health, fitness, gym, wellbeing, and personal-training product domains.\n\nFor product-judgement questions about fitness, coaching, gym apps, health behaviour, or human performance, AI Ramin should treat the Level 3 Personal Training qualification as relevant domain context and then combine it with Ramin's product discovery, AI product, and creative/user-context evidence. Do not imply that Ramin has operated a fitness business unless retrieved context explicitly supports that.\n\n## Missing Verification Assets\n\nPhase 2 creates this canonical file, but the following should be added later:\n\n- certificate verification links or screenshots\n- final certificate names exactly as issued\n- any Nuclio PM qualification confirmation if still intended for the portfolio\n- Personal Training Level 3 certificate verification link or screenshot"
     },
     {
-      "chunk_id": "airamin_cca9d3a6c450f205",
+      "chunk_id": "airamin_89d1faee5315707c",
       "file_path": "ai-ramin-section/canonical/talks-writing-courses.md",
       "title": "Teaching, Speaking, Writing, and Courses",
       "heading_path": [
@@ -2045,37 +2114,37 @@
       "contains_metric": false,
       "metric_verification_status": "none",
       "verification_status": "public_listings_checked_2026_10_22",
-      "token_estimate": 446,
+      "token_estimate": 539,
       "keywords": [
         "course",
         "the",
         "and",
-        "product",
-        "udemy",
         "instructor",
-        "process",
-        "counters",
+        "udemy",
+        "product",
         "courses",
         "foundation",
+        "process",
         "public",
         "source",
+        "550",
+        "com",
+        "counters",
+        "during",
+        "https",
+        "not",
+        "ratings",
         "speaking",
         "teaching",
         "writing",
+        "www",
         "2026",
-        "align",
-        "are",
-        "badge",
-        "bestseller",
-        "checked",
-        "com",
-        "coursera",
-        "development"
+        "807"
       ],
-      "text": "# Teaching, Speaking, Writing, and Courses\n\n## Udemy Instructor Reach\n\nRamin's public Udemy instructor profile displayed 6,801 total learners and 549 reviews when checked on 22 October 2026. These are the platform's instructor-level counters, separate from the current counters on the two individual course pages. Source: https://www.udemy.com/user/ramin-hoodeh/\n\nThe individual course listings showed 6,811 summed course enrolments and 550 summed ratings during the same review. Counters can refresh at different times; use the instructor figures above for the instructor summary rather than silently mixing or replacing them with a course sum. Neither count establishes unique people across platforms. Do not add Coursera's learners to a unique-student total or transfer the AI course's Bestseller and Highest Rated badges to the instructor, foundation course, or Coursera edition.\n\n## Product Innovation Process Course\n\nRamin created the Product Innovation Process, a structured product development process intended to reduce noise, align teams, clarify product language, and track a product from discovery through launch.\n\nThe foundation course is public on Udemy as \"The Fastest Path to Product Management.\"\n\nLocal sources describe it as:\n\n- a full product development lifecycle course\n- a practical PM process\n- a way to align teams around one source of truth\n- a course whose public Udemy listing showed 4.8 out of 5, 162 ratings, and 4,881 enrolled students when checked on 22 October 2026\n\nSource: https://www.udemy.com/course/the-fastest-way-to-become-a-product-manager/\n\nThese are dated figures for this course only. No Highest Rated or Bestseller badge was confirmed on its listing during that check. Do not transfer a badge from the AI course to this foundation course."
+      "text": "# Teaching, Speaking, Writing, and Courses\n\n## Udemy Instructor Reach\n\nRamin's public Udemy instructor profile displayed 6,807 total learners and 550 reviews when checked on 22 October 2026. These are the platform's instructor-level counters, separate from the current counters on the two individual course pages. Source: https://www.udemy.com/user/ramin-hoodeh/\n\nThe public instructor widget on Ramin's foundation course independently displayed 4.6 Instructor Rating, 550 Reviews, 6,807 Students and 2 Courses during the same review. The 4.6 is Udemy's published instructor score, not an average calculated from the rounded course ratings. Source: https://www.udemy.com/course/the-fastest-way-to-become-a-product-manager/#instructor-1\n\nThe individual course listings showed 6,817 summed course enrolments and 550 summed ratings during the same review. Counters can refresh at different times; use the instructor figures above for the instructor summary rather than silently mixing or replacing them with a course sum. Neither count establishes unique people across platforms. Do not add Coursera's learners to a unique-student total or transfer the AI course's Bestseller and Highest Rated badges to the instructor, foundation course, or Coursera edition.\n\n## Product Innovation Process Course\n\nRamin created the Product Innovation Process, a structured product development process intended to reduce noise, align teams, clarify product language, and track a product from discovery through launch.\n\nThe foundation course is public on Udemy as \"The Fastest Path to Product Management.\"\n\nLocal sources describe it as:\n\n- a full product development lifecycle course\n- a practical PM process\n- a way to align teams around one source of truth\n- a course whose public Udemy listing showed 4.8 out of 5, 162 ratings, and 4,881 enrolled students when checked on 22 October 2026\n\nSource: https://www.udemy.com/course/the-fastest-way-to-become-a-product-manager/\n\nThese are dated figures for this course only. No Highest Rated or Bestseller badge was confirmed on its listing during that check. Do not transfer a badge from the AI course to this foundation course."
     },
     {
-      "chunk_id": "airamin_55d0f8364141369a",
+      "chunk_id": "airamin_0997e9f52b6e3986",
       "file_path": "ai-ramin-section/canonical/talks-writing-courses.md",
       "title": "Teaching, Speaking, Writing, and Courses",
       "heading_path": [
@@ -2148,7 +2217,7 @@
         "instructor",
         "its"
       ],
-      "text": "## AI Product Manager Course\n\nThe AI Product Manager course packages the AI-Native Product OS into an educational format.\n\nIt teaches product managers to shift from traditional product delivery into AI-native product leadership using:\n\n- the 5-Layer Stack\n- the AI-native loop\n- model/context/orchestration/governance/human framing\n- practical AI product build patterns\n\nThe AI course is available now on both Udemy and Coursera; it is not a future release.\n\nOn Udemy its exact title is \"Transition from Product Manager to AI Product Manager.\" The public listing checked on 22 October 2026 showed 1,930 enrolled students, 388 ratings, and 4.6 out of 5. It displayed both Bestseller and Highest Rated badges. Source: https://www.udemy.com/course/from-product-manager-to-ai-product-manager/\n\nOn Coursera its exact title is \"From Product Manager to AI Product Manager.\" Ramin Hoodeh is listed as an instructor and LearnKartS is the course provider. The edition has 10 modules and 10 assignments. Availability, title, instructor, and provider were checked on 22 October 2026. Source: https://www.coursera.org/learn/ai-product-management/\n\nThe platform editions have different structures. Keep Udemy ratings and enrolment attached to Udemy, and do not present them as Coursera figures. Coursera availability does not imply employment by Coursera, university accreditation, or independent validation of production AI quality. Course enrolments do not establish a count of unique people across courses or platforms. Speaking audiences are not course students.\n\nCurrent teaching material includes a 50-case nsso Intros evaluation example, failure taxonomy, and release-blocking controls. This is evidence of teaching evaluation practice, not proof that all nsso or other production paths pass that suite.\n\nDo not present older 220-student, 70-rating, 4.9-score, or undated combined 5,000-student snapshots as current course statistics. Use the per-platform figures above with their checked date, and explain that they can change."
+      "text": "## AI Product Manager Course\n\nThe AI Product Manager course packages the AI-Native Product OS into an educational format.\n\nIt teaches product managers to shift from traditional product delivery into AI-native product leadership using:\n\n- the 5-Layer Stack\n- the AI-native loop\n- model/context/orchestration/governance/human framing\n- practical AI product build patterns\n\nThe AI course is available now on both Udemy and Coursera; it is not a future release.\n\nOn Udemy its exact title is \"Transition from Product Manager to AI Product Manager.\" The public listing checked on 22 October 2026 showed 1,936 enrolled students, 388 ratings, and 4.6 out of 5. It displayed both Bestseller and Highest Rated badges. Source: https://www.udemy.com/course/from-product-manager-to-ai-product-manager/\n\nOn Coursera its exact title is \"From Product Manager to AI Product Manager.\" Ramin Hoodeh is listed as an instructor and LearnKartS is the course provider. The edition has 10 modules and 10 assignments. Availability, title, instructor, and provider were checked on 22 October 2026. Source: https://www.coursera.org/learn/ai-product-management/\n\nThe platform editions have different structures. Keep Udemy ratings and enrolment attached to Udemy, and do not present them as Coursera figures. Coursera availability does not imply employment by Coursera, university accreditation, or independent validation of production AI quality. Course enrolments do not establish a count of unique people across courses or platforms. Speaking audiences are not course students.\n\nCurrent teaching material includes a 50-case nsso Intros evaluation example, failure taxonomy, and release-blocking controls. This is evidence of teaching evaluation practice, not proof that all nsso or other production paths pass that suite.\n\nDo not present older 220-student, 70-rating, 4.9-score, or undated combined 5,000-student snapshots as current course statistics. Use the per-platform figures above with their checked date, and explain that they can change."
     },
     {
       "chunk_id": "airamin_90d81d95da02760e",
@@ -2490,7 +2559,7 @@
       "text": "# Ordnance Survey - Geospatial API\n\n## Summary\n\nRamin worked at Ordnance Survey as Product Manager for a Geospatial API from Dec 2020 to Sept 2021.\n\nThis role is important evidence for geospatial data, sustainability applications, government/public-sector product work, Microsoft Power Platform, and formal stakeholder engagement.\n\n## Product Work\n\nLocal sources say Ramin led twelve discovery workshops with the Propositions and Innovation team and client stakeholders to discover sustainability applications of geospatial data.\n\nLocal career sources report three product concepts validated for further investment and Ramin's contribution to defining and launching the OS Places connector on Microsoft Power Platform. Microsoft's public documentation names it Ordnance Survey Places (Preview) and describes address search through the OS Places API. The documentation supports the connector's existence and scope; it does not establish a first-in-market claim or attribute its authorship to Ramin.\n\nLocal source claims include:\n\n- improved energy clients' ability to forecast carbon impacts on asset valuations by 25 percent within 6 months\n- increased geospatial data utilisation by 30 percent across two key accounts by Q3 2021\n\nThese metrics should be reviewed before public chatbot use.\n\n## Features Built\n\nThe PM Experience source lists features including:\n\n- postcode search\n- free text address search\n- viewing results on a map\n- UX enhancements for map view and scrolling behaviour\n- saving text-search results\n- saving map hotspots into text search\n\n## Tradeoff Example\n\nRamin said no to a feature that would let users request that a missing address be added.\n\nReason:\n\n- developers said data-sending functionality would take significant time\n- product stability was a priority after a Microsoft partnership\n- validation would require a chain of communication with the AddressBase Premium team\n- the timeframe was not feasible\n\n## What This Proves\n\n- Discovery with enterprise/public-sector stakeholders.\n- Geospatial API product thinking.\n- Sustainability applications of location data.\n- Saying no when stability and operational feasibility matter.\n- Ability to work inside formal, documentation-heavy environments.\n\n## Retrieval Guidance\n\nUse this file for questions about geospatial data, government or public-sector product work, stakeholder workshops, sustainability applications, Microsoft Power Platform, or tradeoff decisions."
     },
     {
-      "chunk_id": "airamin_6aaf8ef7b5f46c09",
+      "chunk_id": "airamin_afd8595c25b1085a",
       "file_path": "ai-ramin-section/canonical/work-experiences/perkbox-vivup.md",
       "title": "Perkbox Vivup - Senior Product Manager",
       "heading_path": [
@@ -2514,7 +2583,8 @@
         "ramin-hoodeh-exp-context.md",
         "ai-ramin-context/PM Experience & Interview Prep 2a86fe2ecf3780d68f85f0edd9085933.md",
         "src/data/portfolio.ts",
-        "src/data/professionalStories.ts"
+        "src/data/professionalStories.ts",
+        "docs/homepage-achievement-evidence.md"
       ],
       "question_intents": [],
       "entities": [],
@@ -2525,21 +2595,20 @@
       "contains_metric": true,
       "metric_verification_status": "metric_review_needed",
       "verification_status": "metric_review_needed",
-      "token_estimate": 590,
+      "token_estimate": 524,
       "keywords": [
         "the",
-        "and",
         "product",
+        "and",
         "vivup",
-        "app",
         "guidance",
         "manager",
         "perkbox",
         "public",
         "senior",
         "user",
+        "app",
         "checkout",
-        "for",
         "months",
         "not",
         "order",
@@ -2547,20 +2616,21 @@
         "within",
         "abandonment",
         "around",
-        "benefits",
         "customer",
         "decision",
-        "delivery"
+        "delivery",
+        "describe",
+        "for"
       ],
-      "text": "# Perkbox Vivup - Senior Product Manager\n\n## Summary\n\nRamin worked at Perkbox Vivup as Senior Product Manager from Jan 2023 to Nov 2024.\n\nThe role is strongest evidence for product judgement around employee benefits, app UX, checkout guidance, monetisation, user interview analysis, and larger-company collaboration.\n\n## Product Work\n\nLocal sources describe three main outcomes:\n\n- Analysed qualitative user interview data to streamline the Vivup app gateway UX.\n- Improved Google Play Store rating by 0.6 and iPhone App Store rating by 1.2 within 3 months.\n- Introduced monetisation to an existing feature by capturing a margin of user savings while maintaining user satisfaction.\n- Grew customer lifetime value by 19 percent over 5 months.\n- Aligned stakeholders around a new Order Guidance Wizard.\n- Decreased order form and checkout abandonment rate by one third within the first month of delivery.\n\nThese metrics should be reviewed before public chatbot usage.\n\n## Public Decision Story\n\nThe public story separates two initiatives. Order Guidance replaced fragmented benefit forms with unified checkout guidance across supported payroll deductions, cards, and reward balances. The supplied CV reports one-third lower abandonment within 30 days. A separate benefit-savings take-rate decision defined platform margin; the supplied CV reports 19 percent higher customer lifetime value over five months while maintaining conversion and satisfaction.\n\nRamin owned product decisions and stakeholder alignment; these outcomes involved cross-functional delivery. Do not combine the initiatives into a single experiment or imply that their causal attribution has been independently audited. Cohort definitions, sample sizes, and internal analytics are not public.\n\n## Product Naming\n\nThe latest supplied Payments & Embedded Finance CV uses Family Pay for the Work&Life Partners nursery salary-sacrifice payment journey. Earlier portfolio exports use FamilyCare. Use the latest CV name or describe the childcare payment journey generically; do not claim two distinct products or a verified rebrand.\n\n## Market Context\n\nThe PM Experience source says Vivup responded to market pressure from competitors offering more for free and better UX that displayed all benefits in one place. Ramin's response was to update pricing and help move toward a unified app experience."
+      "text": "# Perkbox Vivup - Senior Product Manager\n\n## Summary\n\nRamin worked at Perkbox Vivup as Senior Product Manager from Jan 2023 to Nov 2024.\n\nThe role is strongest evidence for product judgement around employee benefits, app UX, checkout guidance, monetisation, user interview analysis, and larger-company collaboration.\n\n## Product Work\n\nLocal sources describe three main outcomes:\n\n- Analysed qualitative user interview data to streamline the Vivup app gateway UX.\n- Improved Google Play Store rating by 0.6 and iPhone App Store rating by 1.2 within 3 months.\n- Introduced monetisation to an existing feature by capturing a margin of user savings while maintaining user satisfaction.\n- Grew customer lifetime value by 19 percent over 5 months.\n- Aligned stakeholders around a new Order Guidance Wizard.\n- Decreased order form and checkout abandonment rate by one third within the first month of delivery.\n\nThese metrics should be reviewed before public chatbot usage.\n\n## Public Decision Story\n\nThe public story separates two initiatives. Order Guidance replaced fragmented benefit forms with unified checkout guidance across supported payroll deductions, cards, and reward balances. The supplied CV reports one-third lower abandonment within 30 days. A separate benefit-savings take-rate decision defined platform margin; the supplied CV reports 19 percent higher customer lifetime value over five months while maintaining conversion and satisfaction.\n\nRamin owned product decisions and stakeholder alignment; these outcomes involved cross-functional delivery. Do not combine the initiatives into a single experiment or imply that their causal attribution has been independently audited. Cohort definitions, sample sizes, and internal analytics are not public.\n\n## Product Naming\n\nThe latest supplied Payments & Embedded Finance CV uses Family Pay for the Work&Life Partners nursery salary-sacrifice payment journey. Earlier portfolio exports use FamilyCare. Use the latest CV name or describe the childcare payment journey generically; do not claim two distinct products or a verified rebrand."
     },
     {
-      "chunk_id": "airamin_e84073c485e96146",
+      "chunk_id": "airamin_e44265bc66fb332f",
       "file_path": "ai-ramin-section/canonical/work-experiences/perkbox-vivup.md",
       "title": "Perkbox Vivup - Senior Product Manager",
       "heading_path": [
         "Perkbox Vivup - Senior Product Manager",
-        "What This Proves"
+        "Family Pay and Work&Life Partners, 22 October 2026"
       ],
       "chunk_index": 1,
       "source_type": "work_experience",
@@ -2580,7 +2650,8 @@
         "ramin-hoodeh-exp-context.md",
         "ai-ramin-context/PM Experience & Interview Prep 2a86fe2ecf3780d68f85f0edd9085933.md",
         "src/data/portfolio.ts",
-        "src/data/professionalStories.ts"
+        "src/data/professionalStories.ts",
+        "docs/homepage-achievement-evidence.md"
       ],
       "question_intents": [],
       "entities": [],
@@ -2588,37 +2659,37 @@
       "can_answer_from": true,
       "can_support_inference": false,
       "requires_contact_fallback": false,
-      "contains_metric": false,
-      "metric_verification_status": "none",
+      "contains_metric": true,
+      "metric_verification_status": "metric_review_needed",
       "verification_status": "metric_review_needed",
-      "token_estimate": 179,
+      "token_estimate": 575,
       "keywords": [
-        "product",
         "and",
+        "the",
+        "product",
+        "vivup",
+        "work",
+        "life",
+        "partners",
+        "family",
+        "for",
+        "not",
+        "pay",
+        "perkbox",
+        "2024",
+        "acquisition",
+        "checkout",
+        "employer",
         "monetisation",
         "user",
+        "2026",
         "alignment",
-        "boundaries",
-        "checkout",
-        "corporate",
-        "judgement",
-        "larger",
-        "manager",
-        "perkbox",
-        "proves",
-        "satisfaction",
-        "senior",
-        "stakeholder",
-        "vivup",
-        "adapt",
+        "announcement",
         "app",
-        "balancing",
-        "benefits",
-        "building",
-        "clearer",
-        "collaboration"
+        "are",
+        "benefits"
       ],
-      "text": "## What This Proves\n\n- User interview synthesis.\n- Checkout and conversion product judgement.\n- Monetisation without losing user satisfaction.\n- Stakeholder alignment in a larger company.\n- Transition from startup-style ownership into more defined corporate product boundaries.\n\n## Useful Story Hooks\n\n- Learning to adapt from entrepreneurial startup habits into a larger organisation.\n- Building trust through clearer role boundaries and collaboration.\n- Balancing user satisfaction and product monetisation.\n\n## Retrieval Guidance\n\nUse this file for questions about app UX, employee benefits, monetisation, checkout optimisation, stakeholder alignment, feedback, or product judgement in a corporate environment."
+      "text": "## Family Pay and Work&Life Partners, 22 October 2026\n\nThe supplied Payments & Embedded Finance master CV, line 64, reports a Family Pay launch at Work&Life Partners that enabled eligible parents to save 30–40%+ on childcare through a nursery salary-sacrifice payment journey. These are eligibility-dependent customer savings, not a universal saving, platform revenue or a separately measured AI outcome. The underlying employer analytics are not independently audited here.\n\nRamin now states that Work&Life Partners started with him from nothing and was later acquired by Vivup. Public homepage wording describes zero-to-one Family Pay product work; it does not invent a founder/CEO title, ownership stake, exit value or a separate formal employment chronology. The 15 March 2024 Vivup/Perkbox issuer announcement corroborates Work&Life Partners' acquisition by Vivup in 2024. Use 2024 for the event; an older career-evidence summary's 2023 acquisition date is superseded by the employer announcement.\n\nThe supplied master, line 68, also describes product and checkout integration from Work&Life Partners into Vivup and through the later Perkbox Vivup merger. Employer acquisition context does not independently verify Ramin's personal contribution. See `docs/homepage-achievement-evidence.md` for the source ledger.\n\n## Market Context\n\nThe PM Experience source says Vivup responded to market pressure from competitors offering more for free and better UX that displayed all benefits in one place. Ramin's response was to update pricing and help move toward a unified app experience.\n\n## What This Proves\n\n- User interview synthesis.\n- Checkout and conversion product judgement.\n- Monetisation without losing user satisfaction.\n- Stakeholder alignment in a larger company.\n- Transition from startup-style ownership into more defined corporate product boundaries.\n\n## Useful Story Hooks\n\n- Learning to adapt from entrepreneurial startup habits into a larger organisation.\n- Building trust through clearer role boundaries and collaboration.\n- Balancing user satisfaction and product monetisation.\n\n## Retrieval Guidance\n\nUse this file for questions about app UX, employee benefits, monetisation, checkout optimisation, stakeholder alignment, feedback, or product judgement in a corporate environment."
     },
     {
       "chunk_id": "airamin_1d9bffe6b52a0635",
@@ -5674,7 +5745,7 @@
       "text": "# Tradeoffs\n\nUse this file to shape tradeoff answers. Do not use it as evidence about Ramin.\n\n## Tradeoff Answer Shape\n\n1. State the decision.\n2. Name the options.\n3. Explain the upside of each option.\n4. Explain the downside and opportunity cost.\n5. State the decision principle.\n6. Choose a path.\n7. Define test, metric, guardrail, or review point.\n\n## What Good Tradeoff Answers Include\n\n- why the chosen option beats the next-best option\n- what was deliberately not done\n- who benefits and who may lose out\n- what risk remains\n- what evidence would change the decision\n\n## Common Product Tradeoffs\n\n- speed vs quality\n- standardisation vs customisation\n- breadth vs depth\n- automation vs human review\n- personalisation vs privacy\n- model quality vs latency\n- model quality vs cost\n- full context vs focused retrieval\n- launch speed vs safety assurance\n- short-term conversion vs long-term trust\n\n## AI-Specific Tradeoffs\n\nFor AI products, make tradeoffs explicit:\n\n- More context can improve relevance but increase latency, cost, and privacy risk.\n- More automation can improve speed but reduce user control.\n- More guardrails can reduce harm but increase over-refusal.\n- Stronger models can improve quality but may damage margin.\n- Open-ended chat can feel powerful but may create scope, abuse, and expectation issues.\n\n## Ramin Evidence Pointers\n\nUse with story-bank files such as:\n\n- `product-judgement/nsso-review-mode-ai-governance.md`\n- `product-judgement/dreamsea-privacy-vs-depth.md`\n- `product-judgement/24seven-catalog-injection-vs-rag.md`\n- `product-judgement/saying-no-ordnance-survey-address-request.md`\n- `product-judgement/urgentem-scope3-vs-scope1-tradeoff.md`\n\nRetrieve those files before making any personal claim."
     },
     {
-      "chunk_id": "airamin_a52d3ba34590c515",
+      "chunk_id": "airamin_339a025bb5a16690",
       "file_path": "ai-ramin-section/canonical/work-experiences/cox-automotive-auction-platform.md",
       "title": "Cox Automotive - Auction Platform",
       "heading_path": [
@@ -5695,7 +5766,8 @@
       "source_paths": [
         "ramin-hoodeh-exp-context.md",
         "ai-ramin-context/PM Experience & Interview Prep 2a86fe2ecf3780d68f85f0edd9085933.md",
-        "src/data/portfolio.ts"
+        "src/data/portfolio.ts",
+        "docs/homepage-achievement-evidence.md"
       ],
       "question_intents": [],
       "entities": [],
@@ -5703,40 +5775,40 @@
       "can_answer_from": true,
       "can_support_inference": false,
       "requires_contact_fallback": false,
-      "contains_metric": false,
-      "metric_verification_status": "none",
+      "contains_metric": true,
+      "metric_verification_status": "metric_review_needed",
       "verification_status": "metric_review_needed",
-      "token_estimate": 266,
+      "token_estimate": 592,
       "keywords": [
+        "the",
+        "and",
         "automotive",
         "cox",
-        "and",
-        "auction",
         "product",
+        "auction",
+        "for",
+        "launch",
+        "not",
         "platform",
+        "settlement",
+        "2021",
         "backlog",
         "feature",
-        "for",
+        "owner",
         "scoring",
+        "source",
         "stakeholder",
-        "2021",
+        "supplied",
+        "use",
         "context",
         "contract",
         "created",
-        "features",
-        "feedback",
-        "large",
-        "local",
-        "prioritisation",
-        "roadmap",
-        "source",
-        "the",
-        "use"
+        "express"
       ],
-      "text": "# Cox Automotive - Auction Platform\n\n## Summary\n\nRamin worked as a contract Product Owner on an auction platform at Cox Automotive from Sept 2021 to Dec 2021.\n\n## Product Work\n\nLocal sources say he created a Feature Scoring Framework to prioritise a large backlog of features for a new auction product for car manufacturers.\n\nThe local source claims this halved stakeholder feedback cycles and created a more user-centric roadmap.\n\nThe PM Experience source describes Cox Automotive as a hybrid product-led and sales-led product context, using differentiating VIN-scanning features and existing Cox Automotive accounts.\n\n## What This Proves\n\n- Feature scoring and prioritisation.\n- Stakeholder alignment around a large backlog.\n- Automotive marketplace tooling.\n- Product judgement in a contract context.\n- Ability to use qualitative and data-driven inputs to create roadmap clarity.\n\n## Retrieval Guidance\n\nUse this file for questions about backlog prioritisation, automotive marketplaces, feature scoring, stakeholder feedback loops, or product-owner execution."
+      "text": "# Cox Automotive - Auction Platform\n\n## Summary\n\nRamin worked as a contract Product Owner on an auction platform at Cox Automotive from Sept 2021 to Dec 2021.\n\n## Product Work\n\nLocal sources say he created a Feature Scoring Framework to prioritise a large backlog of features for a new auction product for car manufacturers.\n\nThe local source claims this halved stakeholder feedback cycles and created a more user-centric roadmap.\n\nThe PM Experience source describes Cox Automotive as a hybrid product-led and sales-led product context, using differentiating VIN-scanning features and existing Cox Automotive accounts.\n\n## Manheim Express Homepage Scope, 22 October 2026\n\nThe supplied Payments & Embedded Finance master CV, line 85, reports dealer settlement reduced from 5–7 business days to T+1 after vehicle handover. The condition after vehicle handover is essential; do not describe this as settlement within one day of the auction. Line 86 reports 40% fewer settlement reconciliation breaks through allocation and trade-desk workflows. These are supplied employer-work outcomes, not independently audited measurements; no separate measurement window or public baseline is specified for the 40% figure.\n\nRamin now says he prepared Manheim Express for launch. The particular launch or release is not identified. Cox's retrospective places the original German launch on 15 June 2020, before his September–December 2021 Product Owner engagement. Do not attribute that original launch to him or invent a later market/release. Use the narrower first-person launch-preparation account alongside the documented Product Owner remit.\n\nThe source record does not establish an all-time ranking against other B2B vehicle-auction platforms. The homepage therefore uses launch preparation and specific reported settlement outcomes. See `docs/homepage-achievement-evidence.md` for the supplied master excerpts and employer chronology.\n\n## What This Proves\n\n- Feature scoring and prioritisation.\n- Stakeholder alignment around a large backlog.\n- Automotive marketplace tooling.\n- Product judgement in a contract context.\n- Ability to use qualitative and data-driven inputs to create roadmap clarity.\n\n## Retrieval Guidance\n\nUse this file for questions about backlog prioritisation, automotive marketplaces, feature scoring, stakeholder feedback loops, or product-owner execution."
     },
     {
-      "chunk_id": "airamin_06fb1e0ac591445e",
+      "chunk_id": "airamin_2e700a33a050d9bd",
       "file_path": "ai-ramin-section/canonical/work-experiences/erm-tesla.md",
       "title": "ERM and Tesla - Sustainability, LCA, Energy, and EVs",
       "heading_path": [
@@ -5756,7 +5828,8 @@
       "public_links": [],
       "source_paths": [
         "ramin-hoodeh-exp-context.md",
-        "ai-ramin-context/PM Experience & Interview Prep 2a86fe2ecf3780d68f85f0edd9085933.md"
+        "ai-ramin-context/PM Experience & Interview Prep 2a86fe2ecf3780d68f85f0edd9085933.md",
+        "docs/homepage-achievement-evidence.md"
       ],
       "question_intents": [],
       "entities": [
@@ -5770,34 +5843,98 @@
       "contains_metric": true,
       "metric_verification_status": "metric_review_needed",
       "verification_status": "metric_review_needed",
-      "token_estimate": 557,
+      "token_estimate": 620,
       "keywords": [
-        "tesla",
         "and",
+        "tesla",
         "product",
-        "energy",
         "erm",
-        "sustainability",
-        "worked",
-        "evs",
-        "for",
         "the",
+        "worked",
+        "energy",
+        "for",
+        "sustainability",
         "2018",
-        "environmental",
-        "lca",
-        "use",
+        "evs",
+        "revenue",
         "communication",
         "customer",
+        "environmental",
+        "lca",
         "lifecycle",
         "local",
-        "management",
         "market",
+        "reprisk",
         "research",
         "strategy",
-        "2017",
-        "advisory"
+        "use",
+        "2017"
       ],
-      "text": "# ERM and Tesla - Sustainability, LCA, Energy, and EVs\n\n## ERM Summary\n\nRamin worked at Environmental Resources Management as a Product Stewardship Consultant from Dec 2018 to Oct 2019.\n\nThis role is evidence for lifecycle assessment, sustainability consulting, ESG risk advisory, climate/environmental data, and technical research.\n\n## ERM Work\n\nLocal sources say Ramin:\n\n- worked on data-driven lifecycle assessments to calculate carbon impact of client products\n- worked on the European Commission DISC solar panels research project\n- co-authored a European Commission research paper on lifecycle assessment of double-sided solar panels\n- worked on ESG-risk advisory for banks in developing regions\n- identified satellite data use cases to detect copper mines at risk of leaking waste into waterways\n- improved partner RepRisk's product offering revenue by 10 percent over 6 months, according to local resume source\n\nThe revenue metric should be reviewed before public use.\n\n## Tesla Summary\n\nRamin worked at Tesla as Product Specialist, then Senior Product Specialist, from Apr 2017 to Sept 2018.\n\nThis role is evidence for EVs, energy products, customer communication, sales performance, and early exposure to product/market strategy.\n\n## Tesla Work\n\nLocal sources say Ramin:\n\n- worked on UK market entry strategy for Tesla Powerwall\n- sold the first Tesla Powerwall to a residential customer in the UK\n- averaged 120 percent performance on Tesla Model S sales target from Q3 2017 to Q2 2018\n- initiated a Tesla / SpaceX marketing campaign through direct communication with the CEO, more than doubling attendance at Owners Orientation events in Q1 to Q3 2018\n\nThese metrics should be reviewed before public use.\n\n## What This Proves\n\n- Sustainability grounding before product management.\n- Technical climate and product stewardship knowledge.\n- Energy, EV, and climate-related customer communication.\n- Ability to connect environmental concerns with product and market strategy.\n- Commercial experience before formal PM roles.\n\n## Retrieval Guidance\n\nUse this file for questions about Ramin's sustainability background, environmental technology degree, LCA, ESG, Tesla, energy, EVs, or how he moved into product management."
+      "text": "# ERM and Tesla - Sustainability, LCA, Energy, and EVs\n\n## ERM Summary\n\nRamin worked at Environmental Resources Management as a Product Stewardship Consultant from Dec 2018 to Oct 2019.\n\nThis role is evidence for lifecycle assessment, sustainability consulting, ESG risk advisory, climate/environmental data, and technical research.\n\n## ERM Work\n\nLocal sources say Ramin:\n\n- worked on data-driven lifecycle assessments to calculate carbon impact of client products\n- worked on the European Commission DISC solar panels research project\n- co-authored a European Commission research paper on lifecycle assessment of double-sided solar panels\n- worked on ESG-risk advisory for banks in developing regions\n- identified satellite data use cases to detect copper mines at risk of leaking waste into waterways\n- improved partner RepRisk's product offering revenue by 10 percent over 6 months, according to local resume source\n\nThe 22 October 2026 homepage review reconciled this figure with line 119 of the supplied Payments & Embedded Finance master CV. Public wording states that Ramin contributed to 10% product revenue growth over six months at partner RepRisk through satellite-data use cases. This describes RepRisk's product revenue, not ERM's revenue or sole causation. It remains a supplied employer-work claim, without independently audited attribution. See `docs/homepage-achievement-evidence.md` for the source ledger.\n\n## Tesla Summary\n\nRamin worked at Tesla as Product Specialist, then Senior Product Specialist, from Apr 2017 to Sept 2018.\n\nThis role is evidence for EVs, energy products, customer communication, sales performance, and early exposure to product/market strategy.\n\n## Tesla Work\n\nLocal sources say Ramin:\n\n- worked on UK market entry strategy for Tesla Powerwall\n- sold the first Tesla Powerwall to a residential customer in the UK\n- averaged 120 percent performance on Tesla Model S sales target from Q3 2017 to Q2 2018\n- initiated a Tesla / SpaceX marketing campaign through direct communication with the CEO, more than doubling attendance at Owners Orientation events in Q1 to Q3 2018\n\nThese metrics should be reviewed before public use.\n\n## What This Proves\n\n- Sustainability grounding before product management.\n- Technical climate and product stewardship knowledge.\n- Energy, EV, and climate-related customer communication.\n- Ability to connect environmental concerns with product and market strategy.\n- Commercial experience before formal PM roles."
+    },
+    {
+      "chunk_id": "airamin_1f294fb54581add5",
+      "file_path": "ai-ramin-section/canonical/work-experiences/erm-tesla.md",
+      "title": "ERM and Tesla - Sustainability, LCA, Energy, and EVs",
+      "heading_path": [
+        "ERM and Tesla - Sustainability, LCA, Energy, and EVs",
+        "Retrieval Guidance"
+      ],
+      "chunk_index": 1,
+      "source_type": "work_experience",
+      "source_role": "work",
+      "trust_level": "canonical_candidate",
+      "visibility": "public_portfolio_safe",
+      "retrieval_priority": "medium",
+      "answer_permission": "factual_answer",
+      "claim_status": "verified_or_user_confirmed",
+      "source_kind": "work",
+      "based_on": [],
+      "forbidden_use": [],
+      "public_links": [],
+      "source_paths": [
+        "ramin-hoodeh-exp-context.md",
+        "ai-ramin-context/PM Experience & Interview Prep 2a86fe2ecf3780d68f85f0edd9085933.md",
+        "docs/homepage-achievement-evidence.md"
+      ],
+      "question_intents": [],
+      "entities": [
+        "ERM",
+        "Tesla"
+      ],
+      "public_safe": true,
+      "can_answer_from": true,
+      "can_support_inference": false,
+      "requires_contact_fallback": false,
+      "contains_metric": false,
+      "metric_verification_status": "none",
+      "verification_status": "metric_review_needed",
+      "token_estimate": 49,
+      "keywords": [
+        "and",
+        "tesla",
+        "energy",
+        "erm",
+        "evs",
+        "lca",
+        "sustainability",
+        "guidance",
+        "retrieval",
+        "background",
+        "degree",
+        "environmental",
+        "esg",
+        "file",
+        "for",
+        "how",
+        "management",
+        "moved",
+        "product",
+        "questions",
+        "technology",
+        "use"
+      ],
+      "text": "## Retrieval Guidance\n\nUse this file for questions about Ramin's sustainability background, environmental technology degree, LCA, ESG, Tesla, energy, EVs, or how he moved into product management."
     },
     {
       "chunk_id": "airamin_73f69d5a6d8b1496",

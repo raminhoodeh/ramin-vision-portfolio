@@ -13,6 +13,7 @@ source_paths:
   - "ai-ramin-context/PM Experience & Interview Prep 2a86fe2ecf3780d68f85f0edd9085933.md"
   - "src/data/portfolio.ts"
   - "src/data/professionalStories.ts"
+  - "docs/homepage-achievement-evidence.md"
 public_links:
   - "https://www.ramin.vision/work/vivup"
 verification_status: metric_review_needed
@@ -48,6 +49,14 @@ Ramin owned product decisions and stakeholder alignment; these outcomes involved
 ## Product Naming
 
 The latest supplied Payments & Embedded Finance CV uses Family Pay for the Work&Life Partners nursery salary-sacrifice payment journey. Earlier portfolio exports use FamilyCare. Use the latest CV name or describe the childcare payment journey generically; do not claim two distinct products or a verified rebrand.
+
+## Family Pay and Work&Life Partners, 22 October 2026
+
+The supplied Payments & Embedded Finance master CV, line 64, reports a Family Pay launch at Work&Life Partners that enabled eligible parents to save 30–40%+ on childcare through a nursery salary-sacrifice payment journey. These are eligibility-dependent customer savings, not a universal saving, platform revenue or a separately measured AI outcome. The underlying employer analytics are not independently audited here.
+
+Ramin now states that Work&Life Partners started with him from nothing and was later acquired by Vivup. Public homepage wording describes zero-to-one Family Pay product work; it does not invent a founder/CEO title, ownership stake, exit value or a separate formal employment chronology. The 15 March 2024 Vivup/Perkbox issuer announcement corroborates Work&Life Partners' acquisition by Vivup in 2024. Use 2024 for the event; an older career-evidence summary's 2023 acquisition date is superseded by the employer announcement.
+
+The supplied master, line 68, also describes product and checkout integration from Work&Life Partners into Vivup and through the later Perkbox Vivup merger. Employer acquisition context does not independently verify Ramin's personal contribution. See `docs/homepage-achievement-evidence.md` for the source ledger.
 
 ## Market Context
 

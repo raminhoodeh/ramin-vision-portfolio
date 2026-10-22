@@ -148,8 +148,17 @@ export function assertHomepageFirstRender(html, expected) {
     assert.equal(matches.length, 1, `${label} occurs once as initial text`);
     assertVisible(matches[0], label);
   };
-  assertText(summary, `${expected.learners} Udemy learners`, 'Udemy instructor learner total');
+  assertText(summary, `${expected.learners} Learners`, 'Instructor learner total with the approved short label');
+  assertText(summary, `${expected.rating}/5`, 'Published instructor rating score and denominator');
   assertText(summary, `${expected.reviews} reviews`, 'Udemy instructor review total');
+  const summaryVisibleText = normalize(nodes.filter((node) => {
+    if (node.tag !== '#text' || !inside(summary, node)) return false;
+    try { assertVisible(node, 'Teaching summary text'); return true; } catch { return false; }
+  }).map((node) => node.text).join(' '));
+  assert.doesNotMatch(summaryVisibleText, /\bUdemy\s+learners\b/i, 'Visible learner label stays concise without the platform prefix');
+  const scopeLabels = nodes.filter((node) => inside(summary, node)).flatMap((node) => [node.attributes?.title ?? '', node.attributes?.['aria-label'] ?? '']).join(' ');
+  assert.match(scopeLabels, /\bUdemy\b/i, 'The simplified learner label retains its platform scope in accessible text or a tooltip');
+  assert.match(scopeLabels, /\binstructor\b/i, 'The score and counters retain instructor-level scope');
   for (const badge of expected.badges) assertText(summary, badge, `AI-course ${badge} badge`);
 
   const anchors = nodes.filter((node) => node.tag === 'a');
@@ -184,7 +193,10 @@ export function assertHomepageFirstRender(html, expected) {
 }
 
 function regressionFixtures(expected) {
-  const summary = `<div data-teaching-summary="" class="homepage-proof-summary homepage-proof-detail"><p>${expected.learners} Udemy learners · ${expected.reviews} reviews</p>${expected.badges.map((badge) => `<span>${badge}</span>`).join('')}</div>`;
+  const learnerText = `${expected.learners} Learners`;
+  const ratingText = `${expected.rating}/5`;
+  const reviewText = `${expected.reviews} reviews`;
+  const summary = `<div data-teaching-summary="" class="homepage-proof-summary homepage-proof-detail" title="Udemy instructor rating and totals"><p>${learnerText}</p><p>${ratingText} · ${reviewText}</p>${expected.badges.map((badge) => `<span>${badge}</span>`).join('')}</div>`;
   const intro = `<p class="homepage-hero__intro">${keptIntro}</p>`;
   const links = destinations.map((href, index) => `<a href="${href}">Link ${index + 1}</a>`);
   const fixture = `<!doctype html><html><head>${fonts.map((href) => `<link rel="preload" as="font" href="${href}" type="font/woff2" crossorigin="anonymous">`).join('')}<style>.example::after{content:"<a hidden>"}</style><script defer src="/_maintenance/proofs.js"></script><script async src="/_maintenance/background.js"></script></head><body data-note="a > b"><main>${intro}<section data-proof-ticker="commercial"><div data-proof-slide="" data-active="true"><h3>${expected.commercial}</h3></div><div data-proof-slide="" data-active="false" aria-hidden="true" inert>Other result</div></section>${summary}${links.join('')}</main></body></html>`;
@@ -208,7 +220,20 @@ function regressionFixtures(expected) {
     ['inert summary ancestor', fixture.replace(summary, `<div inert>${summary}</div>`)],
     ['aria-hidden summary ancestor', fixture.replace(summary, `<div aria-hidden="true">${summary}</div>`)],
     ['inline hidden summary ancestor', fixture.replace(summary, `<div style="display:none">${summary}</div>`)],
-    ['hidden learner text', fixture.replace(`${expected.learners} Udemy learners`, `<span hidden>${expected.learners} Udemy learners</span>`)],
+    ['hidden learner text', fixture.replace(learnerText, `<span hidden>${learnerText}</span>`)],
+    ['obsolete platform-prefixed learner label', fixture.replace(learnerText, `${expected.learners} Udemy learners`)],
+    ['visible platform-prefixed learner label repeated', fixture.replace(learnerText, `${learnerText}<span>${expected.learners} Udemy learners</span>`)],
+    ['missing instructor rating', fixture.replace(ratingText, '')],
+    ['hidden instructor rating', fixture.replace(ratingText, `<span hidden>${ratingText}</span>`)],
+    ['inert instructor rating', fixture.replace(ratingText, `<span inert>${ratingText}</span>`)],
+    ['aria-hidden instructor rating', fixture.replace(ratingText, `<span aria-hidden="true">${ratingText}</span>`)],
+    ['incorrect instructor rating', fixture.replace(ratingText, '5.0/5')],
+    ['incorrect rating denominator', fixture.replace(ratingText, `${expected.rating}/10`)],
+    ['missing review total', fixture.replace(reviewText, '')],
+    ['hidden review total', fixture.replace(reviewText, `<span hidden>${reviewText}</span>`)],
+    ['incorrect review total', fixture.replace(reviewText, '999,999 reviews')],
+    ['missing platform scope', fixture.replace('Udemy instructor rating and totals', 'Instructor rating and totals')],
+    ['missing instructor scope', fixture.replace('Udemy instructor rating and totals', 'Udemy rating and totals')],
     ['hidden course badge', fixture.replace(`<span>${expected.badges[0]}</span>`, `<span aria-hidden="true">${expected.badges[0]}</span>`)],
     ['inactive first commercial result', fixture.replace('data-active="true"', 'data-active="false"')],
     ['missing original font preload', fixture.replace(/<link\b[^>]*>/, '')],
@@ -221,14 +246,15 @@ function regressionFixtures(expected) {
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  const [learners, reviews, badges, commercial] = await Promise.all([
+  const [learners, rating, reviews, badges, commercial] = await Promise.all([
     reviewedLiteral('src/data/teachingEvidence.ts', 'instructorTeachingEvidence', ['totalLearners']),
+    reviewedLiteral('src/data/teachingEvidence.ts', 'instructorTeachingEvidence', ['rating']),
     reviewedLiteral('src/data/teachingEvidence.ts', 'instructorTeachingEvidence', ['reviews']),
     reviewedLiteral('src/data/teachingEvidence.ts', 'aiProductCourseEvidence', ['udemy', 'badges']),
     reviewedLiteral('src/data/homepage.ts', 'homepagePositioning', ['strengthCommercial']),
   ]);
-  const expected = { learners, reviews, badges, commercial };
+  const expected = { learners, rating, reviews, badges, commercial };
   const rejected = regressionFixtures(expected);
   if (!process.argv.includes('--self-test')) assertHomepageFirstRender(await readFile(path.join(root, 'dist/index.html'), 'utf8'), expected);
-  console.log(`Homepage first HTML ${process.argv.includes('--self-test') ? 'fixtures' : 'visibility'} passed: persistent instructor totals and AI-course badges, eight visible native anchors, visible first commercial proof, approved 8+ years subtitle exactly once, removed money proposition and pause/play controls, font preloads, independent script order; ${rejected} rejected visibility/loading regressions. This is a static markup check, not a browser timing measurement.`);
+  console.log(`Homepage first HTML ${process.argv.includes('--self-test') ? 'fixtures' : 'visibility'} passed: persistent Learners, published instructor score/reviews with platform scope and AI-course badges, eight visible native anchors, visible first commercial proof, approved 8+ years subtitle exactly once, removed money proposition and pause/play controls, font preloads, independent script order; ${rejected} rejected visibility/loading regressions. This is a static markup check, not a browser timing measurement.`);
 }

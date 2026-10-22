@@ -42,7 +42,7 @@ export function startProofTickers(root: HTMLElement) {
     timeout = setTimeout(() => {
       advance();
       schedule();
-    }, 6500);
+    }, 3000);
   }
 
   function advance() {

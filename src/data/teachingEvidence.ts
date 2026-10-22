@@ -3,8 +3,10 @@
 export const instructorTeachingEvidence = {
   platform: 'Udemy',
   href: 'https://www.udemy.com/user/ramin-hoodeh/',
-  totalLearners: '6,801',
-  reviews: '549',
+  totalLearners: '6,807',
+  reviews: '550',
+  rating: '4.6',
+  ratingHref: 'https://www.udemy.com/course/the-fastest-way-to-become-a-product-manager/#instructor-1',
   checkedOn: '2026-10-22',
   checkedLabel: 'Checked 22 October 2026',
 } as const;
@@ -30,7 +32,7 @@ export const aiProductCourseEvidence = {
     checkedLabel: 'Checked 22 October 2026',
     rating: '4.6',
     ratings: '388',
-    students: '1,930',
+    students: '1,936',
     badges: ['Bestseller', 'Highest Rated'],
   },
   coursera: {

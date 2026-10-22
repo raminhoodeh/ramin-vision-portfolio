@@ -12,6 +12,7 @@ source_paths:
   - "ramin-hoodeh-exp-context.md"
   - "ai-ramin-context/PM Experience & Interview Prep 2a86fe2ecf3780d68f85f0edd9085933.md"
   - "src/data/portfolio.ts"
+  - "docs/homepage-achievement-evidence.md"
 verification_status: metric_review_needed
 ---
 
@@ -28,6 +29,14 @@ Local sources say he created a Feature Scoring Framework to prioritise a large b
 The local source claims this halved stakeholder feedback cycles and created a more user-centric roadmap.
 
 The PM Experience source describes Cox Automotive as a hybrid product-led and sales-led product context, using differentiating VIN-scanning features and existing Cox Automotive accounts.
+
+## Manheim Express Homepage Scope, 22 October 2026
+
+The supplied Payments & Embedded Finance master CV, line 85, reports dealer settlement reduced from 5–7 business days to T+1 after vehicle handover. The condition after vehicle handover is essential; do not describe this as settlement within one day of the auction. Line 86 reports 40% fewer settlement reconciliation breaks through allocation and trade-desk workflows. These are supplied employer-work outcomes, not independently audited measurements; no separate measurement window or public baseline is specified for the 40% figure.
+
+Ramin now says he prepared Manheim Express for launch. The particular launch or release is not identified. Cox's retrospective places the original German launch on 15 June 2020, before his September–December 2021 Product Owner engagement. Do not attribute that original launch to him or invent a later market/release. Use the narrower first-person launch-preparation account alongside the documented Product Owner remit.
+
+The source record does not establish an all-time ranking against other B2B vehicle-auction platforms. The homepage therefore uses launch preparation and specific reported settlement outcomes. See `docs/homepage-achievement-evidence.md` for the supplied master excerpts and employer chronology.
 
 ## What This Proves
 

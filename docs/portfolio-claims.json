@@ -12,16 +12,17 @@
       "id": "instructor-udemy",
       "entity": "Ramin Hoodeh · Udemy instructor",
       "kind": "instructor",
-      "scope": "Udemy instructor-level total learners and reviews, quoted as displayed by Udemy. These are not a cross-platform unique audience or the sum of independently refreshed course counters.",
-      "period": "Instructor profile snapshot checked 22 October 2026; time-sensitive figures.",
+      "scope": "Udemy instructor-level total learners, reviews and published Instructor Rating. These are not a cross-platform unique audience or an aggregate calculated from independently refreshed course counters.",
+      "period": "Instructor profile and public course instructor-widget snapshot checked 22 October 2026; time-sensitive figures.",
       "attribution": "Ramin is the named Udemy instructor. The AI course badges belong to that course, not the instructor aggregate or Coursera edition.",
       "publication": {
         "status": "public-platform-facts",
-        "basis": "Live public Udemy instructor profile reviewed on 22 October 2026.",
+        "basis": "Live public Udemy instructor profile and foundation-course instructor widget reviewed on 22 October 2026.",
         "exclusions": [
           "No cross-platform unique-student total",
           "No replacement of instructor counters with a sum of course counters",
-          "No course badges transferred to the instructor aggregate or Coursera"
+          "No course badges transferred to the instructor aggregate or Coursera",
+          "No calculated instructor score from rounded individual-course averages"
         ]
       },
       "implementationStatus": "public-instructor-profile",
@@ -29,7 +30,7 @@
       "cadenceDays": 30,
       "source": {
         "sourceCheckedOn": "2026-10-22",
-        "note": "Instructor profile directly displayed 6,801 total learners and 549 reviews. Individual course counters were slightly ahead at 6,811 enrolments and 550 ratings; keep their scopes separate.",
+        "note": "Instructor profile and foundation-course instructor widget directly displayed 6,807 learners and 550 reviews. The instructor widget also explicitly displayed 4.6 Instructor Rating. Individual courses summed to 6,817 enrolments and 550 ratings; keep the instructor scope separate.",
         "files": [
           "ai-ramin-section/canonical/talks-writing-courses.md",
           "src/data/teachingEvidence.ts"
@@ -49,10 +50,12 @@
           "equals": {
             "platform": "Udemy",
             "href": "https://www.udemy.com/user/ramin-hoodeh/",
-            "totalLearners": "6,801",
-            "reviews": "549",
+            "totalLearners": "6,807",
+            "reviews": "550",
             "checkedOn": "2026-10-22",
-            "checkedLabel": "Checked 22 October 2026"
+            "checkedLabel": "Checked 22 October 2026",
+            "rating": "4.6",
+            "ratingHref": "https://www.udemy.com/course/the-fastest-way-to-become-a-product-manager/#instructor-1"
           }
         }
       ],
@@ -60,14 +63,17 @@
         {
           "file": "ai-ramin-section/canonical/talks-writing-courses.md",
           "required": [
-            "6,801 total learners and 549 reviews",
+            "6,807 total learners and 550 reviews",
             "Counters can refresh at different times",
-            "Neither count establishes unique people across platforms"
+            "Neither count establishes unique people across platforms",
+            "4\\.6 Instructor Rating, 550 Reviews, 6,807 Students and 2 Courses",
+            "not an average calculated from the rounded course ratings"
           ]
         }
       ],
       "publicLinks": [
-        "https://www.udemy.com/user/ramin-hoodeh/"
+        "https://www.udemy.com/user/ramin-hoodeh/",
+        "https://www.udemy.com/course/the-fastest-way-to-become-a-product-manager/#instructor-1"
       ],
       "checkedScope": "local-reconciliation",
       "lastChecked": "2026-10-22",
@@ -204,7 +210,7 @@
             "checkedLabel": "Checked 22 October 2026",
             "rating": "4.6",
             "ratings": "388",
-            "students": "1,930",
+            "students": "1,936",
             "badges": [
               "Bestseller",
               "Highest Rated"
@@ -216,7 +222,7 @@
         {
           "file": "ai-ramin-section/canonical/talks-writing-courses.md",
           "required": [
-            "1,930 enrolled students, 388 ratings, and 4\\.6",
+            "1,936 enrolled students, 388 ratings, and 4\\.6",
             "both Bestseller and Highest Rated badges"
           ]
         }
@@ -1309,12 +1315,12 @@
       "id": "work-side",
       "entity": "SIDE",
       "kind": "work",
-      "scope": "Targeted build-versus-buy and AI-assisted internal reporting with Finance retaining posting approval. 20% ERP cost reduction has a four-month window; 30% reporting and 90% delivery figures have no separate public window.",
+      "scope": "Targeted build-versus-buy and AI-assisted internal reporting with Finance retaining posting approval. 20% ERP cost reduction has a four-month window; 30% reporting and 90% delivery figures have no separate public window. The homepage binds the 20% operating-cost result to its four-month window; no other SIDE figure inherits that window.",
       "period": "Mar 2025 - Aug 2025; 20% over four months only; other metric windows unspecified.",
       "attribution": "Ramin’s product decisions within cross-functional employer delivery. Numbers originate in the supplied CV and reconciled career sources; company homepages do not validate them.",
       "publication": {
         "status": "existing-public-safe-copy-with-exclusions",
-        "basis": "Existing approved public-safe remit/story copy. This records the portfolio publishing boundary, not a separate legal/employer permission grant.",
+        "basis": "Existing approved public-safe remit/story copy. This records the portfolio publishing boundary, not a separate legal/employer permission grant. The 22 October 2026 user instruction authorizes the homepage achievement expansion from the supplied master CV and first-person context; this records a publishing decision, not independent employer verification.",
         "exclusions": [
           "CV-reported outcomes, not independently audited",
           "No claim of owning a replacement core financial ledger",
@@ -1325,13 +1331,15 @@
       "evidenceStatus": "self-reported-employer-outcomes",
       "source": {
         "sourceCheckedOn": null,
-        "note": "Canonical record and supplied-CV-derived public story; original internal dashboards and measurement samples are not public. lastChecked is local review only.",
+        "note": "Canonical record and supplied-CV-derived public story; original internal dashboards and measurement samples are not public. lastChecked is local review only. Homepage source excerpts and the distinction between reported metrics, first-person contribution and employer-event corroboration are recorded in docs/homepage-achievement-evidence.md. sourceCheckedOn remains null for performance measurements; employer-event observations are dated separately in the ledger.",
         "files": [
           "ai-ramin-section/canonical/work-experiences/side-ai-erp.md",
           "docs/ramin-hoodeh-exp-context.md",
           "src/data/content.ts",
           "src/data/professionalStories.ts",
-          "src/data/homepage.ts"
+          "src/data/homepage.ts",
+          "docs/homepage-achievement-evidence.md",
+          "src/data/homepageProofs.ts"
         ]
       },
       "surfaceRefs": [
@@ -1346,6 +1354,10 @@
         {
           "file": "src/sections/HomeHighlights.tsx",
           "symbol": "homepageOutcomes"
+        },
+        {
+          "file": "src/components/HomepageProofs.tsx",
+          "symbol": "commercialProofs"
         }
       ],
       "bindings": [
@@ -1430,6 +1442,24 @@
             "responsibility": "I led the replacement of third-party ERP modules with AI-assisted internal tools.",
             "href": "/work/side"
           }
+        },
+        {
+          "file": "src/data/homepageProofs.ts",
+          "declaration": "commercialProofs",
+          "where": {
+            "field": "id",
+            "value": "side-erp-cost"
+          },
+          "pick": [
+            "id",
+            "title",
+            "detail"
+          ],
+          "equals": {
+            "id": "side-erp-cost",
+            "title": "20% lower ERP operating costs",
+            "detail": "SIDE · AI-assisted tooling · four months"
+          }
         }
       ],
       "boundaries": [
@@ -1439,6 +1469,12 @@
             "four months",
             "Do not attach that window",
             "not public or independently audited"
+          ]
+        },
+        {
+          "file": "docs/homepage-achievement-evidence.md",
+          "required": [
+            "side-erp-cost"
           ]
         }
       ],
@@ -1454,12 +1490,12 @@
       "id": "work-vivup",
       "entity": "Vivup / Work&Life Partners",
       "kind": "work",
-      "scope": "Checkout Order Guidance and benefit-savings monetisation were separate initiatives. Abandonment reduced one third within 30 days; customer lifetime value rose 19% over five months.",
+      "scope": "Checkout Order Guidance and benefit-savings monetisation were separate initiatives. Abandonment reduced one third within 30 days; customer lifetime value rose 19% over five months. Family Pay enabled eligibility-dependent 30–40%+ customer childcare savings in the supplied master. The zero-to-one product contribution is supported by Ramin’s latest first-person account; an issuer announcement dates Work&Life Partners’ acquisition by Vivup to 2024. No founder title, ownership stake or personal exit proceeds are asserted.",
       "period": "Jan 2023 - Nov 2024; checkout first 30 days; lifetime value five months; app-rating deltas three months.",
       "attribution": "Ramin’s product decisions within cross-functional employer delivery. Numbers originate in the supplied CV and reconciled career sources; company homepages do not validate them.",
       "publication": {
         "status": "existing-public-safe-copy-with-exclusions",
-        "basis": "Existing approved public-safe remit/story copy. This records the portfolio publishing boundary, not a separate legal/employer permission grant.",
+        "basis": "Existing approved public-safe remit/story copy. This records the portfolio publishing boundary, not a separate legal/employer permission grant. The 22 October 2026 user instruction authorizes the homepage achievement expansion from the supplied master CV and first-person context; this records a publishing decision, not independent employer verification.",
         "exclusions": [
           "CV-reported outcomes, not independently audited",
           "Do not combine separate initiatives into one experiment or causal claim",
@@ -1470,13 +1506,15 @@
       "evidenceStatus": "self-reported-employer-outcomes",
       "source": {
         "sourceCheckedOn": null,
-        "note": "Canonical record and supplied-CV-derived public story; original internal dashboards and measurement samples are not public. lastChecked is local review only. The latest supplied Payments & Embedded Finance CV uses Family Pay; earlier FamilyCare copy is superseded for public naming, without asserting a rebrand.",
+        "note": "Canonical record and supplied-CV-derived public story; original internal dashboards and measurement samples are not public. lastChecked is local review only. The latest supplied Payments & Embedded Finance CV uses Family Pay; earlier FamilyCare copy is superseded for public naming, without asserting a rebrand. Homepage source excerpts and the distinction between reported metrics, first-person contribution and employer-event corroboration are recorded in docs/homepage-achievement-evidence.md. sourceCheckedOn remains null for performance measurements; employer-event observations are dated separately in the ledger.",
         "files": [
           "ai-ramin-section/canonical/work-experiences/perkbox-vivup.md",
           "docs/ramin-hoodeh-exp-context.md",
           "src/data/content.ts",
           "src/data/professionalStories.ts",
-          "src/data/homepage.ts"
+          "src/data/homepage.ts",
+          "docs/homepage-achievement-evidence.md",
+          "src/data/homepageProofs.ts"
         ]
       },
       "surfaceRefs": [
@@ -1491,6 +1529,10 @@
         {
           "file": "src/sections/HomeHighlights.tsx",
           "symbol": "homepageOutcomes"
+        },
+        {
+          "file": "src/components/HomepageProofs.tsx",
+          "symbol": "commercialProofs"
         }
       ],
       "bindings": [
@@ -1595,6 +1637,78 @@
             "responsibility": "I introduced a take rate on benefit savings, balancing platform margin with user satisfaction.",
             "href": "/work/vivup"
           }
+        },
+        {
+          "file": "src/data/homepageProofs.ts",
+          "declaration": "commercialProofs",
+          "where": {
+            "field": "id",
+            "value": "vivup-lifetime-value"
+          },
+          "pick": [
+            "id",
+            "title",
+            "detail"
+          ],
+          "equals": {
+            "id": "vivup-lifetime-value",
+            "title": "+19% customer lifetime value",
+            "detail": "Vivup · monetisation · five months"
+          }
+        },
+        {
+          "file": "src/data/homepageProofs.ts",
+          "declaration": "commercialProofs",
+          "where": {
+            "field": "id",
+            "value": "wlp-acquisition"
+          },
+          "pick": [
+            "id",
+            "title",
+            "detail"
+          ],
+          "equals": {
+            "id": "wlp-acquisition",
+            "title": "Zero-to-one Family Pay launch",
+            "detail": "Work&Life Partners · company acquired by Vivup in 2024"
+          }
+        },
+        {
+          "file": "src/data/homepageProofs.ts",
+          "declaration": "commercialProofs",
+          "where": {
+            "field": "id",
+            "value": "wlp-childcare-savings"
+          },
+          "pick": [
+            "id",
+            "title",
+            "detail"
+          ],
+          "equals": {
+            "id": "wlp-childcare-savings",
+            "title": "30–40%+ childcare savings",
+            "detail": "Family Pay · Work&Life Partners · eligible parents"
+          }
+        },
+        {
+          "file": "src/data/homepageProofs.ts",
+          "declaration": "commercialProofs",
+          "where": {
+            "field": "id",
+            "value": "vivup-checkout"
+          },
+          "pick": [
+            "id",
+            "title",
+            "detail"
+          ],
+          "equals": {
+            "id": "vivup-checkout",
+            "title": "One-third less checkout abandonment",
+            "detail": "Vivup · Order Guidance · 30 days"
+          }
         }
       ],
       "boundaries": [
@@ -1606,10 +1720,28 @@
             "five months",
             "not public"
           ]
+        },
+        {
+          "file": "docs/homepage-achievement-evidence.md",
+          "required": [
+            "vivup-lifetime-value",
+            "wlp-acquisition",
+            "wlp-childcare-savings",
+            "vivup-checkout"
+          ]
+        },
+        {
+          "file": "ai-ramin-section/canonical/work-experiences/perkbox-vivup.md",
+          "required": [
+            "30[–-]40%\\+",
+            "acquisition by Vivup in 2024",
+            "does not invent a founder"
+          ]
         }
       ],
       "publicLinks": [
-        "/work/vivup"
+        "/work/vivup",
+        "https://www.businesswire.com/news/home/20240312984071/en/Vivup-and-Perkbox-to-Combine-Creating-a-World-Class-All-in-One-Employee-Wellbeing-Benefits-and-Engagement-Platform"
       ],
       "checkedScope": "local-reconciliation",
       "lastChecked": "2026-10-22",
@@ -2244,16 +2376,17 @@
       "id": "work-groupm",
       "entity": "GroupM",
       "kind": "work",
-      "scope": "GroupM is the role-era name for the 2022 engagement. The reported £1bn+ describes media investment assessed by the calculator in 2022; it is a product-usage context, with no independently audited personal revenue attribution.",
+      "scope": "GroupM is the role-era name for the 2022 engagement. The reported £1bn+ describes media investment assessed by the calculator in 2022; it is a product-usage context, with no independently audited personal revenue attribution. The homepage uses assessed media investment rather than an unverified sector-wide usage ranking.",
       "period": "Jan 2022 - Dec 2022",
       "attribution": "Translated carbon methodology into product specifications for a media Carbon Calculator.",
       "publication": {
         "status": "public-safe-career-summary",
-        "basis": "Existing public career material and supplied 2026 CV, reconciled with canonical source and explicit scope limits.",
+        "basis": "Existing public career material and supplied 2026 CV, reconciled with canonical source and explicit scope limits. The 22 October 2026 user instruction authorizes the homepage achievement expansion from the supplied master CV and first-person context; this records a publishing decision, not independent employer verification.",
         "exclusions": [
           "No employer-sensitive implementation details",
           "No independently audited or sole-causal attribution",
-          "No invented metric definitions or software ownership"
+          "No invented metric definitions or software ownership",
+          "No unsupported sector-wide usage ranking"
         ]
       },
       "implementationStatus": "historical-professional-work",
@@ -2261,10 +2394,12 @@
       "cadenceDays": 180,
       "source": {
         "sourceCheckedOn": null,
-        "note": "Local reconciliation of the supplied 2026 career record and approved canonical account; underlying employer analytics were not independently audited.",
+        "note": "Local reconciliation of the supplied 2026 career record and approved canonical account; underlying employer analytics were not independently audited. Homepage source excerpts and the distinction between reported metrics, first-person contribution and employer-event corroboration are recorded in docs/homepage-achievement-evidence.md. sourceCheckedOn remains null for performance measurements; employer-event observations are dated separately in the ledger.",
         "files": [
           "src/data/workEvidence.ts",
-          "ai-ramin-section/canonical/work-experiences/groupm-carbon-calculator.md"
+          "ai-ramin-section/canonical/work-experiences/groupm-carbon-calculator.md",
+          "docs/homepage-achievement-evidence.md",
+          "src/data/homepageProofs.ts"
         ]
       },
       "surfaceRefs": [
@@ -2275,6 +2410,10 @@
         {
           "file": "src/seo/InitialDocument.tsx",
           "symbol": "getWorkEvidence"
+        },
+        {
+          "file": "src/components/HomepageProofs.tsx",
+          "symbol": "commercialProofs"
         }
       ],
       "bindings": [
@@ -2317,27 +2456,66 @@
             "summary": "Translated carbon methodology into product specifications for a media Carbon Calculator.",
             "scopeNote": "GroupM is the role-era name for the 2022 engagement. The reported £1bn+ describes media investment assessed by the calculator in 2022; it is a product-usage context, with no independently audited personal revenue attribution."
           }
+        },
+        {
+          "file": "src/data/homepageProofs.ts",
+          "declaration": "commercialProofs",
+          "where": {
+            "field": "id",
+            "value": "groupm-carbon-scale"
+          },
+          "pick": [
+            "id",
+            "title",
+            "detail"
+          ],
+          "equals": {
+            "id": "groupm-carbon-scale",
+            "title": "£1bn+ media investment assessed",
+            "detail": "GroupM · Carbon Calculator · 2022"
+          }
         }
       ],
-      "publicLinks": [],
+      "publicLinks": [
+        "https://www.wppmedia.com/news/global-framework-media-decarbonization",
+        "https://www.wppmedia.com/news/updating-carbon-calculator-omnichannel"
+      ],
       "checkedScope": "local-reconciliation",
       "lastChecked": "2026-10-22",
-      "reviewAfter": "2027-04-20"
+      "reviewAfter": "2027-04-20",
+      "boundaries": [
+        {
+          "file": "docs/homepage-achievement-evidence.md",
+          "required": [
+            "groupm-carbon-scale"
+          ]
+        },
+        {
+          "file": "ai-ramin-section/canonical/work-experiences/groupm-carbon-calculator.md",
+          "required": [
+            "GBP 1 billion\\+",
+            "not revenue Ramin generated",
+            "no comparative usage dataset"
+          ]
+        }
+      ]
     },
     {
       "id": "work-cox",
       "entity": "Cox Automotive",
       "kind": "work",
-      "scope": "This was a contract Product Owner role. The reported halving of stakeholder feedback cycles has no defined baseline or measurement window in the public record; manufacturer-specific roadmap details remain private.",
+      "scope": "This was a contract Product Owner role. The reported halving of stakeholder feedback cycles has no defined baseline or measurement window in the public record; manufacturer-specific roadmap details remain private. The supplied master reports settlement changing from 5–7 business days to T+1 after vehicle handover and 40% fewer reconciliation breaks. Launch preparation is Ramin’s latest first-person account; its specific release is unidentified. Cox dates the original German launch to June 2020, before this role, so that original launch and any all-time success ranking are excluded.",
       "period": "Sept 2021 - Dec 2021",
       "attribution": "Turned an ambiguous auction-platform backlog into a ranked roadmap with a Feature Scoring Framework.",
       "publication": {
         "status": "public-safe-career-summary",
-        "basis": "Existing public career material and supplied 2026 CV, reconciled with canonical source and explicit scope limits.",
+        "basis": "Existing public career material and supplied 2026 CV, reconciled with canonical source and explicit scope limits. The 22 October 2026 user instruction authorizes the homepage achievement expansion from the supplied master CV and first-person context; this records a publishing decision, not independent employer verification.",
         "exclusions": [
           "No employer-sensitive implementation details",
           "No independently audited or sole-causal attribution",
-          "No invented metric definitions or software ownership"
+          "No invented metric definitions or software ownership",
+          "No attribution of the original June 2020 German launch to the later 2021 contract",
+          "No unsupported all-time success ranking"
         ]
       },
       "implementationStatus": "historical-professional-work",
@@ -2345,10 +2523,12 @@
       "cadenceDays": 180,
       "source": {
         "sourceCheckedOn": null,
-        "note": "Local reconciliation of the supplied 2026 career record and approved canonical account; underlying employer analytics were not independently audited.",
+        "note": "Local reconciliation of the supplied 2026 career record and approved canonical account; underlying employer analytics were not independently audited. Homepage source excerpts and the distinction between reported metrics, first-person contribution and employer-event corroboration are recorded in docs/homepage-achievement-evidence.md. sourceCheckedOn remains null for performance measurements; employer-event observations are dated separately in the ledger.",
         "files": [
           "src/data/workEvidence.ts",
-          "ai-ramin-section/canonical/work-experiences/cox-automotive-auction-platform.md"
+          "ai-ramin-section/canonical/work-experiences/cox-automotive-auction-platform.md",
+          "docs/homepage-achievement-evidence.md",
+          "src/data/homepageProofs.ts"
         ]
       },
       "surfaceRefs": [
@@ -2359,6 +2539,10 @@
         {
           "file": "src/seo/InitialDocument.tsx",
           "symbol": "getWorkEvidence"
+        },
+        {
+          "file": "src/components/HomepageProofs.tsx",
+          "symbol": "commercialProofs"
         }
       ],
       "bindings": [
@@ -2401,12 +2585,87 @@
             "summary": "Turned an ambiguous auction-platform backlog into a ranked roadmap with a Feature Scoring Framework.",
             "scopeNote": "This was a contract Product Owner role. The reported halving of stakeholder feedback cycles has no defined baseline or measurement window in the public record; manufacturer-specific roadmap details remain private."
           }
+        },
+        {
+          "file": "src/data/homepageProofs.ts",
+          "declaration": "commercialProofs",
+          "where": {
+            "field": "id",
+            "value": "manheim-launch"
+          },
+          "pick": [
+            "id",
+            "title",
+            "detail"
+          ],
+          "equals": {
+            "id": "manheim-launch",
+            "title": "Prepared Manheim Express for launch",
+            "detail": "Cox Automotive · B2B vehicle auctions"
+          }
+        },
+        {
+          "file": "src/data/homepageProofs.ts",
+          "declaration": "commercialProofs",
+          "where": {
+            "field": "id",
+            "value": "manheim-settlement"
+          },
+          "pick": [
+            "id",
+            "title",
+            "detail"
+          ],
+          "equals": {
+            "id": "manheim-settlement",
+            "title": "Settlement: 5–7 days to T+1",
+            "detail": "Manheim Express · after vehicle handover"
+          }
+        },
+        {
+          "file": "src/data/homepageProofs.ts",
+          "declaration": "commercialProofs",
+          "where": {
+            "field": "id",
+            "value": "manheim-reconciliation"
+          },
+          "pick": [
+            "id",
+            "title",
+            "detail"
+          ],
+          "equals": {
+            "id": "manheim-reconciliation",
+            "title": "40% fewer reconciliation breaks",
+            "detail": "Manheim Express · Cox Automotive"
+          }
         }
       ],
-      "publicLinks": [],
+      "publicLinks": [
+        "https://www.coxautoinc.eu/news-insights/manheim-express-a-year-on-7-lessons-learnt-from-running-a-start-up/"
+      ],
       "checkedScope": "local-reconciliation",
       "lastChecked": "2026-10-22",
-      "reviewAfter": "2027-04-20"
+      "reviewAfter": "2027-04-20",
+      "boundaries": [
+        {
+          "file": "docs/homepage-achievement-evidence.md",
+          "required": [
+            "manheim-launch",
+            "manheim-settlement",
+            "manheim-reconciliation"
+          ]
+        },
+        {
+          "file": "ai-ramin-section/canonical/work-experiences/cox-automotive-auction-platform.md",
+          "required": [
+            "T\\+1 after vehicle handover",
+            "40% fewer",
+            "15 June 2020",
+            "particular launch or release is not identified"
+          ]
+        }
+      ]
     },
     {
       "id": "work-ordnance-survey",
@@ -2518,16 +2777,19 @@
       "id": "work-urgentem",
       "entity": "Urgentem",
       "kind": "work",
-      "scope": "The latest supplied CV reports £900m in client-portfolio AUM; this describes clients’ portfolios, rather than assets Ramin managed. The separate climate-risk reduction lacks a defined measure. Outcomes remain supplied employer claims, with shared cross-functional ownership.",
+      "scope": "The latest supplied CV reports £900m in client-portfolio AUM; this describes clients’ portfolios, rather than assets Ramin managed. The separate climate-risk reduction lacks a defined measure. Outcomes remain supplied employer claims, with shared cross-functional ownership. The supplied master additionally reports GBP 3.8m API annual recurring revenue across 14 partner platforms. Pre-seed timing is Ramin’s latest first-person account; ICE’s employer announcements corroborate the later June 2022 company acquisition. Do not equate enrichment volume with processed payments or revenue, label API revenue as AI/LLM revenue, or imply personal ownership of the acquisition.",
       "period": "Oct 2019 - Nov 2020",
       "attribution": "Co-managed Element6’s launch; reported demo-to-buy conversion rose 30% over four months.",
       "publication": {
         "status": "public-safe-career-summary",
-        "basis": "Existing public career material and supplied 2026 CV, reconciled with canonical source and explicit scope limits.",
+        "basis": "Existing public career material and supplied 2026 CV, reconciled with canonical source and explicit scope limits. The 22 October 2026 user instruction authorizes the homepage achievement expansion from the supplied master CV and first-person context; this records a publishing decision, not independent employer verification.",
         "exclusions": [
           "No employer-sensitive implementation details",
           "No independently audited or sole-causal attribution",
-          "No invented metric definitions or software ownership"
+          "No invented metric definitions or software ownership",
+          "No personal acquisition, ownership or employment-through-exit claim",
+          "No undefined climate-risk-reduction percentage",
+          "Transaction enrichment is not payment processing or AI/LLM revenue"
         ]
       },
       "implementationStatus": "historical-professional-work",
@@ -2535,10 +2797,12 @@
       "cadenceDays": 180,
       "source": {
         "sourceCheckedOn": null,
-        "note": "Local reconciliation of the supplied 2026 career record and approved canonical account; underlying employer analytics were not independently audited.",
+        "note": "Local reconciliation of the supplied 2026 career record and approved canonical account; underlying employer analytics were not independently audited. Homepage source excerpts and the distinction between reported metrics, first-person contribution and employer-event corroboration are recorded in docs/homepage-achievement-evidence.md. sourceCheckedOn remains null for performance measurements; employer-event observations are dated separately in the ledger.",
         "files": [
           "src/data/workEvidence.ts",
-          "ai-ramin-section/canonical/work-experiences/urgentem-element6.md"
+          "ai-ramin-section/canonical/work-experiences/urgentem-element6.md",
+          "docs/homepage-achievement-evidence.md",
+          "src/data/homepageProofs.ts"
         ]
       },
       "surfaceRefs": [
@@ -2549,6 +2813,10 @@
         {
           "file": "src/seo/InitialDocument.tsx",
           "symbol": "getWorkEvidence"
+        },
+        {
+          "file": "src/components/HomepageProofs.tsx",
+          "symbol": "commercialProofs"
         }
       ],
       "bindings": [
@@ -2593,12 +2861,107 @@
             "summary": "Co-managed Element6’s launch; reported demo-to-buy conversion rose 30% over four months.",
             "scopeNote": "The latest supplied CV reports £900m in client-portfolio AUM; this describes clients’ portfolios, rather than assets Ramin managed. The separate climate-risk reduction lacks a defined measure. Outcomes remain supplied employer claims, with shared cross-functional ownership."
           }
+        },
+        {
+          "file": "src/data/homepageProofs.ts",
+          "declaration": "commercialProofs",
+          "where": {
+            "field": "id",
+            "value": "urgentem-api-revenue"
+          },
+          "pick": [
+            "id",
+            "title",
+            "detail"
+          ],
+          "equals": {
+            "id": "urgentem-api-revenue",
+            "title": "£3.8m annual recurring revenue",
+            "detail": "Urgentem · transaction APIs · 14 partner platforms"
+          }
+        },
+        {
+          "file": "src/data/homepageProofs.ts",
+          "declaration": "commercialProofs",
+          "where": {
+            "field": "id",
+            "value": "urgentem-acquisition"
+          },
+          "pick": [
+            "id",
+            "title",
+            "detail"
+          ],
+          "equals": {
+            "id": "urgentem-acquisition",
+            "title": "Pre-seed startup, later acquired by ICE",
+            "detail": "Urgentem · co-launched Element6 · acquired in 2022"
+          }
+        },
+        {
+          "file": "src/data/homepageProofs.ts",
+          "declaration": "commercialProofs",
+          "where": {
+            "field": "id",
+            "value": "urgentem-conversion"
+          },
+          "pick": [
+            "id",
+            "title",
+            "detail"
+          ],
+          "equals": {
+            "id": "urgentem-conversion",
+            "title": "+30% demo-to-buy conversion",
+            "detail": "Urgentem · Element6 · four months"
+          }
+        },
+        {
+          "file": "src/data/homepageProofs.ts",
+          "declaration": "commercialProofs",
+          "where": {
+            "field": "id",
+            "value": "urgentem-churn"
+          },
+          "pick": [
+            "id",
+            "title",
+            "detail"
+          ],
+          "equals": {
+            "id": "urgentem-churn",
+            "title": "25% lower quarterly churn",
+            "detail": "Urgentem · Element6"
+          }
         }
       ],
-      "publicLinks": [],
+      "publicLinks": [
+        "https://ir.theice.com/press/news-details/2022/ICE-Extends-Climate-Risk-Management-Offering-With-Acquisition-of-Urgentem/default.aspx",
+        "https://ir.theice.com/press/news-details/2023/ICE-Expands-ESG-Company-Data-in-the-Asia-Pacific-Region/default.aspx"
+      ],
       "checkedScope": "local-reconciliation",
       "lastChecked": "2026-10-22",
-      "reviewAfter": "2027-04-20"
+      "reviewAfter": "2027-04-20",
+      "boundaries": [
+        {
+          "file": "docs/homepage-achievement-evidence.md",
+          "required": [
+            "urgentem-api-revenue",
+            "urgentem-acquisition",
+            "urgentem-conversion",
+            "urgentem-churn"
+          ]
+        },
+        {
+          "file": "ai-ramin-section/canonical/work-experiences/urgentem-element6.md",
+          "required": [
+            "GBP 3\\.8 million annual recurring revenue",
+            "14 partner platforms",
+            "June 2022",
+            "Do not quote a climate-risk reduction percentage"
+          ]
+        }
+      ]
     },
     {
       "id": "work-deity",
@@ -2688,12 +3051,12 @@
       "id": "work-erm",
       "entity": "ERM",
       "kind": "work",
-      "scope": "The reported 10% product revenue growth over six months concerns partner RepRisk. Ramin contributed use cases; the underlying commercial attribution is not public or independently audited.",
+      "scope": "The reported 10% product revenue growth over six months concerns partner RepRisk. Ramin contributed use cases; the underlying commercial attribution is not public or independently audited. The homepage keeps the attribution as a contribution to partner RepRisk’s product revenue over six months, not ERM revenue or sole causation.",
       "period": "Dec 2018 - Oct 2019",
       "attribution": "Co-authored lifecycle research and identified environmental-risk uses for satellite data.",
       "publication": {
         "status": "public-safe-career-summary",
-        "basis": "Existing public career material and supplied 2026 CV, reconciled with canonical source and explicit scope limits.",
+        "basis": "Existing public career material and supplied 2026 CV, reconciled with canonical source and explicit scope limits. The 22 October 2026 user instruction authorizes the homepage achievement expansion from the supplied master CV and first-person context; this records a publishing decision, not independent employer verification.",
         "exclusions": [
           "No employer-sensitive implementation details",
           "No independently audited or sole-causal attribution",
@@ -2705,10 +3068,12 @@
       "cadenceDays": 180,
       "source": {
         "sourceCheckedOn": null,
-        "note": "Local reconciliation of the supplied 2026 career record and approved canonical account; underlying employer analytics were not independently audited.",
+        "note": "Local reconciliation of the supplied 2026 career record and approved canonical account; underlying employer analytics were not independently audited. Homepage source excerpts and the distinction between reported metrics, first-person contribution and employer-event corroboration are recorded in docs/homepage-achievement-evidence.md. sourceCheckedOn remains null for performance measurements; employer-event observations are dated separately in the ledger.",
         "files": [
           "src/data/workEvidence.ts",
-          "ai-ramin-section/canonical/work-experiences/erm-tesla.md"
+          "ai-ramin-section/canonical/work-experiences/erm-tesla.md",
+          "docs/homepage-achievement-evidence.md",
+          "src/data/homepageProofs.ts"
         ]
       },
       "surfaceRefs": [
@@ -2719,6 +3084,10 @@
         {
           "file": "src/seo/InitialDocument.tsx",
           "symbol": "getWorkEvidence"
+        },
+        {
+          "file": "src/components/HomepageProofs.tsx",
+          "symbol": "commercialProofs"
         }
       ],
       "bindings": [
@@ -2762,12 +3131,45 @@
             "summary": "Co-authored lifecycle research and identified environmental-risk uses for satellite data.",
             "scopeNote": "The reported 10% product revenue growth over six months concerns partner RepRisk. Ramin contributed use cases; the underlying commercial attribution is not public or independently audited."
           }
+        },
+        {
+          "file": "src/data/homepageProofs.ts",
+          "declaration": "commercialProofs",
+          "where": {
+            "field": "id",
+            "value": "erm-revenue"
+          },
+          "pick": [
+            "id",
+            "title",
+            "detail"
+          ],
+          "equals": {
+            "id": "erm-revenue",
+            "title": "Contributed to 10% revenue growth",
+            "detail": "ERM · RepRisk product · six months"
+          }
         }
       ],
       "publicLinks": [],
       "checkedScope": "local-reconciliation",
       "lastChecked": "2026-10-22",
-      "reviewAfter": "2027-04-20"
+      "reviewAfter": "2027-04-20",
+      "boundaries": [
+        {
+          "file": "docs/homepage-achievement-evidence.md",
+          "required": [
+            "erm-revenue"
+          ]
+        },
+        {
+          "file": "ai-ramin-section/canonical/work-experiences/erm-tesla.md",
+          "required": [
+            "contributed to 10% product revenue growth",
+            "not ERM"
+          ]
+        }
+      ]
     },
     {
       "id": "work-tesla",

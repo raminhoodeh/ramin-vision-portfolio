@@ -30,9 +30,11 @@ last_checked: "2026-10-22"
 
 ## Udemy Instructor Reach
 
-Ramin's public Udemy instructor profile displayed 6,801 total learners and 549 reviews when checked on 22 October 2026. These are the platform's instructor-level counters, separate from the current counters on the two individual course pages. Source: https://www.udemy.com/user/ramin-hoodeh/
+Ramin's public Udemy instructor profile displayed 6,807 total learners and 550 reviews when checked on 22 October 2026. These are the platform's instructor-level counters, separate from the current counters on the two individual course pages. Source: https://www.udemy.com/user/ramin-hoodeh/
 
-The individual course listings showed 6,811 summed course enrolments and 550 summed ratings during the same review. Counters can refresh at different times; use the instructor figures above for the instructor summary rather than silently mixing or replacing them with a course sum. Neither count establishes unique people across platforms. Do not add Coursera's learners to a unique-student total or transfer the AI course's Bestseller and Highest Rated badges to the instructor, foundation course, or Coursera edition.
+The public instructor widget on Ramin's foundation course independently displayed 4.6 Instructor Rating, 550 Reviews, 6,807 Students and 2 Courses during the same review. The 4.6 is Udemy's published instructor score, not an average calculated from the rounded course ratings. Source: https://www.udemy.com/course/the-fastest-way-to-become-a-product-manager/#instructor-1
+
+The individual course listings showed 6,817 summed course enrolments and 550 summed ratings during the same review. Counters can refresh at different times; use the instructor figures above for the instructor summary rather than silently mixing or replacing them with a course sum. Neither count establishes unique people across platforms. Do not add Coursera's learners to a unique-student total or transfer the AI course's Bestseller and Highest Rated badges to the instructor, foundation course, or Coursera edition.
 
 ## Product Innovation Process Course
 
@@ -64,7 +66,7 @@ It teaches product managers to shift from traditional product delivery into AI-n
 
 The AI course is available now on both Udemy and Coursera; it is not a future release.
 
-On Udemy its exact title is "Transition from Product Manager to AI Product Manager." The public listing checked on 22 October 2026 showed 1,930 enrolled students, 388 ratings, and 4.6 out of 5. It displayed both Bestseller and Highest Rated badges. Source: https://www.udemy.com/course/from-product-manager-to-ai-product-manager/
+On Udemy its exact title is "Transition from Product Manager to AI Product Manager." The public listing checked on 22 October 2026 showed 1,936 enrolled students, 388 ratings, and 4.6 out of 5. It displayed both Bestseller and Highest Rated badges. Source: https://www.udemy.com/course/from-product-manager-to-ai-product-manager/
 
 On Coursera its exact title is "From Product Manager to AI Product Manager." Ramin Hoodeh is listed as an instructor and LearnKartS is the course provider. The edition has 10 modules and 10 assignments. Availability, title, instructor, and provider were checked on 22 October 2026. Source: https://www.coursera.org/learn/ai-product-management/
 
