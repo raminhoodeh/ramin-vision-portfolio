@@ -103,7 +103,6 @@ export function Hero({ ready }: { ready: boolean; onOpenThesis: () => void }) {
       </svg>
       </div>
         <h1 className="homepage-hero__role homepage-hero__reveal"><span className="sr-only">{hero.name}, </span><span>{hero.role}</span><span className="homepage-hero__specialism"><span aria-hidden="true">| </span><span className="sr-only">, </span>{hero.specialism}</span></h1>
-        <h2 className="homepage-hero__money homepage-hero__reveal">{hero.moneyMovement}</h2>
         <p className="homepage-hero__intro homepage-hero__reveal">{hero.intro}</p>
         <HomepageProofs />
         <nav className="homepage-hero__actions homepage-hero__reveal" aria-label="Explore Ramin’s work">
