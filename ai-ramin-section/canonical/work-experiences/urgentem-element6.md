@@ -12,6 +12,7 @@ source_paths:
   - "ramin-hoodeh-exp-context.md"
   - "ai-ramin-context/PM Experience & Interview Prep 2a86fe2ecf3780d68f85f0edd9085933.md"
   - "src/data/portfolio.ts"
+  - "docs/homepage-achievement-evidence.md"
 public_links:
   - "https://www.ft.com/content/7b734848-1287-4106-b866-7d07bc9d7eb8"
 verification_status: metric_conflict_review_needed
@@ -67,7 +68,15 @@ Other local source claims:
 - Google Analytics was used to measure feature uptake.
 - three under-utilised features were cut, increasing the ratio of story point development to feature usage by 25 percent over 8 months.
 
-These require review before public chatbot use.
+The 22 October 2026 homepage review reconciled the demo-to-buy conversion and quarterly churn figures with the supplied master CV for public career summaries. They remain CV-reported employer outcomes, not independently audited measurements. The other metric and story cautions in this record remain in force.
+
+## Homepage Career Context, 22 October 2026
+
+The supplied Payments & Embedded Finance master CV, line 106, reports GBP 3.8 million annual recurring revenue across 14 partner platforms from transaction carbon-enrichment APIs. This is supplied career evidence, not an independently audited revenue measurement; the source does not specify a financial year. Do not relabel enrichment as payment processing, describe the USD 2.4 billion enriched transaction volume as revenue, or call this AI/LLM revenue.
+
+Ramin now describes Urgentem as pre-seed when he worked there. His documented contribution is co-leading Element6's development and launch during the October 2019–November 2020 Product Manager engagement. ICE's employer announcements corroborate a later company acquisition in June 2022, announced in July 2022. The homepage's acquisition detail describes a later company milestone, not a personal exit, sole ownership of the sale or employment through the acquisition.
+
+The source excerpts, employer announcement links and exact publication limits are recorded in `docs/homepage-achievement-evidence.md`. The existing exclusion of an undefined climate-risk-reduction percentage remains unchanged.
 
 ## Tradeoff Example
 

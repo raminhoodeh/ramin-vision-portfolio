@@ -12,6 +12,7 @@ source_paths:
   - "ramin-hoodeh-exp-context.md"
   - "ai-ramin-context/PM Experience & Interview Prep 2a86fe2ecf3780d68f85f0edd9085933.md"
   - "src/data/portfolio.ts"
+  - "docs/homepage-achievement-evidence.md"
 public_links:
   - "https://www.mi-3.com.au/20-07-2022/carbon-footprint-different-media-distribution-options-will-increasingly-influence-where"
 verification_status: metric_review_needed
@@ -63,3 +64,9 @@ The PM Experience source describes the product's market evolution in four stages
 Use this file for questions about climate/sustainability product experience, enterprise product management, carbon measurement, cross-functional leadership, product education, or strongest product accomplishments.
 
 Do not overstate public usage or financial impact beyond the reviewed source wording.
+
+## Homepage Scale Boundary, 22 October 2026
+
+The supplied Payments & Embedded Finance master CV, line 76, reports GBP 1 billion+ of media investment assessed by the Carbon Calculator in 2022. This is spending assessed by the product, not revenue Ramin generated or investment he personally managed. Public employer product announcements corroborate the calculator's existence and industry context; the numerical scale remains a supplied CV claim.
+
+Ramin's latest first-person description asserts a sector-wide usage ranking. The local record contains no comparative usage dataset establishing that ranking, so the homepage uses the documented assessed-investment figure. See `docs/homepage-achievement-evidence.md` for the source distinction.

@@ -1,0 +1,68 @@
+# Homepage achievement evidence
+
+Local publication review: 22 October 2026. This ledger records the provenance and limits of the rotating commercial-achievement card. It is an internal maintenance source, not an employer audit, a downloadable CV or a public navigation destination.
+
+## Source hierarchy
+
+The primary career document is the master CV supplied by Ramin in this conversation:
+
+`/Users/raminhoodeh/Downloads/Claude for Product Managers/PM & CAREER/Ramin Hoodeh - Payments & Embedded Finance CV - 20 3d36fe2ecf37816cb418e0acc4285e80.md`
+
+The line references below refer to that exact local Markdown file, inspected on 22 October 2026. These figures are present in the supplied master itself. The tailored application CV and generated CV output files are derivative material, not additional corroboration. Assistant-generated illustrative or synthetic CV samples are excluded from the evidence for these achievements.
+
+Ramin's new first-person descriptions in this conversation are a separate primary personal source. They establish what he says about his work; they do not independently establish comparative market rankings or make him the sole cause of a company's acquisition.
+
+Existing repository career records provide consistency checks. A company homepage or product page supplies organisational context. An employer announcement of an acquisition can corroborate the transaction, but it does not validate Ramin's individual contribution, the reported revenue, the performance figures or any claim that he remained at the business until the acquisition. No underlying employer analytics, invoices or cohort samples were inspected for this review.
+
+## Fourteen homepage records
+
+The public wording is bound by stable `id` to the literal records in `src/data/homepageProofs.ts` through `docs/portfolio-claims.json`.
+
+| Record id | Primary fact and source | Publication scope |
+| --- | --- | --- |
+| `vivup-lifetime-value` | Master line 67: customer lifetime value increased 19% over five months after introducing a take rate on benefit savings. | Vivup monetisation. This was separate from Order Guidance; do not label it an AI-generated result. |
+| `urgentem-api-revenue` | Master line 106: GBP 3.8 million annual recurring revenue across 14 partner platforms from transaction carbon-enrichment APIs. | Urgentem API/licensing revenue. No financial year is specified. USD 2.4 billion on the same line is annual transaction volume enriched, not revenue or payments Ramin processed. |
+| `urgentem-acquisition` | Master lines 100 and 110: Urgentem was acquired by Intercontinental Exchange; Ramin co-led Element6's launch. Ramin now says the business was pre-seed when he worked there. | Product Manager contribution at an early stage; company acquisition occurred later. Do not imply a personal sale, deal ownership or employment through the acquisition. |
+| `wlp-acquisition` | Master line 64: Family Pay launched at Work&Life Partners. Line 68: product and checkout integration from Work&Life Partners into Vivup. Ramin now says it started with him from nothing and was acquired by Vivup. | Zero-to-one product work and subsequent company acquisition. Do not invent a founder/CEO title, ownership percentage, exit proceeds or a separate formal employment chronology. |
+| `groupm-carbon-scale` | Master line 76: Carbon Calculator assessed GBP 1 billion+ of media investment in 2022, productising EY's 300+ variable methodology. | Investment assessed by the product, not revenue generated, assets managed or spending personally controlled. GroupM is the role-era name. |
+| `manheim-launch` | Ramin's latest first-person statement says he prepared Manheim Express for launch. Master lines 79–87 record his Product Owner remit, post-auction payments and backlog prioritisation. | The specific launch or release is not identified. Cox's own chronology dates the original German launch to 15 June 2020, before Ramin's September–December 2021 engagement. Do not claim he prepared that original launch or invent a later country/release. |
+| `manheim-settlement` | Master line 85: dealer settlement fell from 5–7 business days to T+1 after vehicle handover. | Manheim Express / Cox Automotive. The clock starts after vehicle handover; do not shorten this to payment or settlement within one day of auction. |
+| `wlp-childcare-savings` | Master line 64: eligible parents could save 30–40%+ on childcare through Family Pay's salary-sacrifice payment journey. | Eligibility-dependent customer savings, not a universal saving, platform revenue or an AI outcome. |
+| `urgentem-conversion` | Master line 110: client-led improvements increased demo-to-buy conversion 30% within four months. Existing `src/data/experience.ts` reports the same result. | Conversion-rate improvement, not a 30-percentage-point increase. Shared employer-work contribution. |
+| `urgentem-churn` | Master line 110: quarterly churn reduced 25%. Existing `src/data/experience.ts` reports the same result. | Relative reduction in quarterly churn. Do not attach the separate four-month conversion window to this figure. |
+| `manheim-reconciliation` | Master line 86: settlement reconciliation breaks reduced 40%. | Manheim Express / Cox Automotive settlement operations. No separate measurement window or public baseline is specified. |
+| `vivup-checkout` | Master line 66: order-form and checkout abandonment reduced one third within 30 days after Order Guidance. | Separate from Vivup's monetisation initiative. Do not convert one third into a one-third percentage-point change. |
+| `side-erp-cost` | Master line 56: ERP operating costs reduced 20% within four months through replacing third-party modules with internal tools. | Targeted AI-assisted reporting and reconciliation tooling; Finance retained posting authority. |
+| `erm-revenue` | Master line 119: Ramin contributed to 10% product revenue growth at partner RepRisk over six months through satellite-data use cases. | Contribution to partner RepRisk's product revenue, not ERM revenue, total company revenue or sole causation. |
+
+## Latest human descriptions
+
+Ramin stated:
+
+- “Urgentem they were a pre-seed start-up that ended up getting acquired by Intercontinental Exchange”.
+- “Work&Life Partners they started with me from nothing and then got acquired by Vivup”.
+- “carbon calculator i made it is the most widely used in the sector”.
+- “Manheim express i prepared the launch for that and it was the most successful b2b car auction platform ever”.
+
+The homepage uses the documented scale of GroupM's Carbon Calculator and the documented Manheim settlement outcomes. The comparative descriptions are not published as established sector-wide rankings: the supplied record contains no comparative usage, revenue or success dataset defining those rankings.
+
+The pre-seed description and zero-to-one Work&Life contribution are attributed to this first-person update. Acquisition context does not imply that Ramin owned the transaction or that the entire exit was caused by one person's product work.
+
+## Retained exclusions
+
+- Do not publish a 20% climate-risk reduction or a saving estimate for Urgentem: the existing canonical record does not define the measure, baseline, attribution or calculation.
+- GBP 900 million AUM refers to clients' portfolios, not assets personally managed by Ramin.
+- Do not turn payment-related data enrichment into payment processing or AI/LLM revenue.
+- Keep Family Pay as the current supplied product name; earlier FamilyCare wording does not establish two products or a verified rebrand.
+- Preserve confidential implementation boundaries and the distinction between reported employer outcomes and independently verified evidence.
+
+## Employer corroboration
+
+Employer announcements are recorded here only for the event they corroborate. They do not independently verify the CV metrics in the table above. Public-source observation dates remain separate from the 22 October local reconciliation date in the claim registry.
+
+- [ICE's 21 July 2022 acquisition announcement](https://ir.theice.com/press/news-details/2022/ICE-Extends-Climate-Risk-Management-Offering-With-Acquisition-of-Urgentem/default.aspx) corroborates ICE's acquisition of Urgentem. [ICE's 2023 company-data announcement](https://ir.theice.com/press/news-details/2023/ICE-Expands-ESG-Company-Data-in-the-Asia-Pacific-Region/default.aspx) states that the acquisition occurred in June 2022. The card says 2022. These announcements do not establish Ramin's personal ownership of the transaction or the GBP 3.8 million API-revenue figure.
+- [Vivup/Perkbox's 15 March 2024 issuer announcement](https://www.businesswire.com/news/home/20240312984071/en/Vivup-and-Perkbox-to-Combine-Creating-a-World-Class-All-in-One-Employee-Wellbeing-Benefits-and-Engagement-Platform) supports Work&Life Partners' acquisition by Vivup in 2024. This event date takes precedence over an older career-evidence summary's 2023 acquisition date. It does not establish that Ramin founded the business or personally owned the exit.
+- [WPP Media's framework announcement](https://www.wppmedia.com/news/global-framework-media-decarbonization) and [Carbon Calculator update](https://www.wppmedia.com/news/updating-carbon-calculator-omnichannel) support product and industry context. They do not independently establish the sector-wide usage ranking described by Ramin. The GBP 1 billion+ scale figure remains attributed to the supplied master CV.
+- [Cox's Manheim Express retrospective](https://www.coxautoinc.eu/news-insights/manheim-express-a-year-on-7-lessons-learnt-from-running-a-start-up/) places the original German launch on 15 June 2020. The homepage's launch-preparation statement is Ramin's own account; its specific later release is unconfirmed. No claim about the original German launch or an all-time success ranking is made.
+
+The public employer sources above were checked by the collaborating research pass on 22 October 2026. The registry keeps separate achievement-level provenance: employer acquisition announcements corroborate company events, while personal contribution and performance remain supplied-CV/first-person claims.

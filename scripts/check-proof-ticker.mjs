@@ -170,20 +170,36 @@ check('control-free autoplay wraps and drives surface cycles with accessible ina
   assert.equal(f.root.listeners.get('click')?.size ?? 0, 0, 'Autoplay creates no click control');
   assert.equal(f.clock.tasks.size, 1);
   assertSlide(f.commercial, 0);
-  f.clock.tick(6499);
+  f.clock.tick(2999);
   assertSlide(f.commercial, 0);
   f.clock.tick(1);
   assertSlide(f.commercial, 1);
   assert.equal(f.root.dataset.proofCycle, '1');
-  f.clock.tick(6500);
+  f.clock.tick(3000);
   assertSlide(f.commercial, 2);
   assert.equal(f.root.dataset.proofCycle, '0');
-  f.clock.tick(6500);
+  f.clock.tick(3000);
   assertSlide(f.commercial, 0);
   assert.equal(f.root.dataset.proofCycle, '1');
   assert.equal(f.persistentSummary.getAttribute('aria-hidden'), null, 'Persistent teaching evidence remains untouched');
   assert.equal(f.persistentSummary.attributes.has('inert'), false);
   assert.equal(f.clock.tasks.size, 1, 'One scheduler remains after repeated rotations');
+  stop();
+  assertClean(f);
+});
+
+check('all fourteen commercial proofs appear once in order before wrapping at three-second intervals', () => {
+  const f = fixture({ slideCount: 14 });
+  const stop = f.start();
+  for (let index = 0; index < 14; index += 1) {
+    assertSlide(f.commercial, index);
+    f.clock.tick(2999);
+    assertSlide(f.commercial, index);
+    f.clock.tick(1);
+    assertSlide(f.commercial, (index + 1) % 14);
+    assert.equal(f.clock.tasks.size, 1, 'Longer proof collections retain a single scheduler');
+  }
+  assert.equal(f.persistentSummary.getAttribute('aria-hidden'), null, 'Teaching evidence remains continuously available throughout a full commercial cycle');
   stop();
   assertClean(f);
 });
@@ -204,7 +220,7 @@ check('hover and keyboard focus pause without rotating a focused card', () => {
   f.root.emit('focusout', { relatedTarget: f.focusTarget });
   assert.equal(f.clock.tasks.size, 0, 'Moving focus inside the proof group stays paused');
   f.root.emit('focusout', { relatedTarget: new FakeNode() });
-  f.clock.tick(6500);
+  f.clock.tick(3000);
   assertSlide(f.commercial, 1);
   f.root.emit('focusin');
   f.root.emit('focusout', { relatedTarget: null });
@@ -222,7 +238,7 @@ check('already-hovered or focused cards are suspended on initialization', () => 
     f.clock.tick(20_000);
     assertSlide(f.commercial, 0);
     f.root.emit(options.initialHovered ? 'pointerleave' : 'focusout', { relatedTarget: null });
-    f.clock.tick(6500);
+    f.clock.tick(3000);
     assertSlide(f.commercial, 1);
     stop();
     assertClean(f);
@@ -242,7 +258,7 @@ check('hidden tabs and offscreen groups suspend work with combined pause reasons
   f.document.emit('visibilitychange');
   assert.equal(f.clock.tasks.size, 0, 'Visibility alone cannot resume an offscreen group');
   f.intersections[0].show(true);
-  f.clock.tick(6500);
+  f.clock.tick(3000);
   assertSlide(f.commercial, 1);
   assert.equal(f.root.dataset.proofMotionState, 'running');
   f.root.emit('pointerenter');
@@ -267,7 +283,7 @@ check('reduced motion stays static and runtime preference changes suspend or res
   f.media.emit('change');
   assertSlide(f.commercial, 0);
   assert.equal(f.root.dataset.proofMotionState, 'running');
-  f.clock.tick(6500);
+  f.clock.tick(3000);
   assertSlide(f.commercial, 1);
   f.media.matches = true;
   f.media.emit('change');
@@ -285,7 +301,7 @@ check('reduced motion stays static and runtime preference changes suspend or res
 check('cleanup is inert, idempotent and safe when observers are unavailable', () => {
   const f = fixture({ observers: false });
   const stop = f.start();
-  f.clock.tick(6500);
+  f.clock.tick(3000);
   assertSlide(f.commercial, 1);
   stop();
   stop();
@@ -303,7 +319,7 @@ check('cleanup is inert, idempotent and safe when observers are unavailable', ()
 check('duplicate initialization replaces the old controller without duplicate rotation', () => {
   const f = fixture();
   const firstStop = f.start();
-  f.clock.tick(6500);
+  f.clock.tick(3000);
   const stop = f.start();
   assertSlide(f.commercial, 0);
   assert.equal(f.clock.tasks.size, 1, 'Replacement has exactly one timer');
@@ -311,7 +327,7 @@ check('duplicate initialization replaces the old controller without duplicate ro
   assert.equal(f.document.listenerCount, 1);
   assert.equal(f.media.listenerCount, 1);
   assert.equal(f.intersections[0].disconnected, true);
-  f.clock.tick(6500);
+  f.clock.tick(3000);
   assertSlide(f.commercial, 1);
   assert.equal(f.root.dataset.proofCycle, '1', 'Replacement advances exactly once');
   // A consumer may retain and call an already-replaced disposer. It must not
