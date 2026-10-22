@@ -32,3 +32,9 @@ The historical maintenance design and its production evidence are retained in `d
 ## Initial verification
 
 22 October 2026: `npm run verify:preview` passed, including 27 readable routes, aliases and section routes; no CV links; Preview noindex in metadata/headers; robots; real 404s; same-origin social images; content/accessibility/claims and offline AI checks. A negative Production-build preflight was rejected as intended. Existing Vite asset/chunk warnings remain. No provider generation or real feedback was submitted.
+
+Hosted Preview: https://portfolio-9qy9p2xt0-ramin-hoodehs-projects.vercel.app/ — READY, Preview target, deployment `dpl_GJYWZ5wpaJsJabL8UZqmEgYuiN6J`, runtime commit `2705e09`.
+
+Vercel sign-in succeeded through the existing Google session. Hosted browser checks passed for Home, Products, project-reader open/close, a cold `/projects/nsso` deep link, Contact, mobile menu navigation at 390×844 without horizontal overflow, Preview robots metadata after navigation, and the unavailable `/cv` address. Anonymous requests were denied on all 35 tested Preview paths, including all 27 pages, assets, APIs and CV paths. The public-site maintenance verifier passed 372/372 checks, and the deployment helper confirmed the production target was unchanged. Temporary browser viewport settings were reset. The public domains were never aliased to this Preview.
+
+Screenshot and machine-readable protection/production checks are in `/Users/raminhoodeh/Desktop/website/verification`. Future refreshes print a new immutable Preview URL; this initial link remains a snapshot of the tested version.
