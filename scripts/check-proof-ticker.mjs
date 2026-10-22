@@ -7,6 +7,8 @@ import ts from 'typescript';
 // waits. Each scenario receives fresh DOM/event/timer globals and actual
 // transpiled controller code, so no mocked implementation drives the result.
 const source = await readFile(new URL('../src/components/proofTicker.ts', import.meta.url), 'utf8');
+assert.ok(Buffer.byteLength(source) < 8000, 'DOM-only controller stays below its 8KB source budget');
+assert.equal(ts.createSourceFile('proofTicker.ts', source, ts.ScriptTarget.Latest, true).statements.filter(ts.isImportDeclaration).length, 0, 'The proof controller has no imports');
 const compiled = ts.transpileModule(source, {
   compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.CommonJS },
   reportDiagnostics: true,
@@ -37,8 +39,10 @@ class FakeNode extends TrackedEvents {
   dataset = {};
   attributes = new Map();
   title = '';
+  hovered = false;
   append(...nodes) { this.children.push(...nodes); return this; }
   contains(node) { return this === node || this.children.some((child) => child.contains(node)); }
+  matches(selector) { assert.equal(selector, ':hover'); return this.hovered; }
   setAttribute(name, value) {
     this.attributes.set(name, String(value));
     if (name.startsWith('data-')) this.dataset[name.slice(5).replace(/-([a-z])/g, (_, letter) => letter.toUpperCase())] = String(value);
@@ -87,16 +91,19 @@ class FakeClock {
   }
 }
 
-function fixture({ reducedMotion = false, observers = true, groups = true, button = true } = {}) {
+function fixture({ reducedMotion = false, observers = true, groups = true, slideCount = 3, initialHovered = false, initialFocused = false } = {}) {
   const clock = new FakeClock();
   const document = new TrackedEvents();
   document.visibilityState = 'visible';
+  document.activeElement = null;
   const media = new TrackedEvents();
   media.matches = reducedMotion;
   const root = new FakeNode();
+  root.hovered = initialHovered;
+  root.setAttribute('data-proof-cycle', '0');
   const makeGroup = (count) => {
     const element = new FakeNode();
-    element.setAttribute('data-proof-ticker', '');
+    element.setAttribute('data-proof-ticker', 'commercial');
     const slides = Array.from({ length: count }, () => {
       const slide = new FakeNode();
       slide.setAttribute('data-proof-slide', '');
@@ -106,10 +113,13 @@ function fixture({ reducedMotion = false, observers = true, groups = true, butto
     root.append(element);
     return { element, slides };
   };
-  const commercial = groups ? makeGroup(3) : null;
-  const teaching = groups ? makeGroup(2) : null;
-  const control = button ? new FakeNode() : null;
-  if (control) { control.setAttribute('data-proof-motion', ''); root.append(control); }
+  const commercial = groups ? makeGroup(slideCount) : null;
+  const focusTarget = new FakeNode();
+  root.append(focusTarget);
+  if (initialFocused) document.activeElement = focusTarget;
+  const persistentSummary = new FakeNode();
+  persistentSummary.setAttribute('data-teaching-summary', '');
+  root.append(persistentSummary);
   const intersections = [];
   class FakeIntersectionObserver {
     disconnected = false;
@@ -128,48 +138,51 @@ function fixture({ reducedMotion = false, observers = true, groups = true, butto
     setTimeout: clock.setTimeout,
     clearTimeout: clock.clearTimeout,
   }, { filename: 'proofTicker.transpiled.js' });
-  return { root, commercial, teaching, control, clock, document, media, intersections, start: () => exports.startProofTickers(root) };
+  return { root, commercial, persistentSummary, focusTarget, clock, document, media, intersections, start: () => exports.startProofTickers(root) };
 }
 
-function assertSlide(group, expected, { manual = false } = {}) {
-  assert.equal(group.element.getAttribute('aria-live'), manual ? 'polite' : 'off', 'Only an explicit next action is announced');
+function assertSlide(group, expected) {
+  assert.equal(group.element.getAttribute('aria-live'), 'off', 'Automatic proof changes do not repeatedly announce themselves');
   group.slides.forEach((slide, index) => {
     assert.equal(slide.dataset.active, String(index === expected), 'Exactly the current proof is visually active');
     assert.equal(slide.getAttribute('aria-hidden'), String(index !== expected), 'Inactive proofs are hidden from assistive technology');
     assert.equal(slide.attributes.has('inert'), index !== expected, 'Inactive proofs cannot receive focus');
   });
 }
-function assertBoth(fixture, commercial, teaching, options) {
-  assertSlide(fixture.commercial, commercial, options);
-  assertSlide(fixture.teaching, teaching, options);
-}
 function assertClean(fixture) {
   assert.equal(fixture.clock.tasks.size, 0, 'Cleanup clears all scheduled work');
-  for (const target of [fixture.root, fixture.control, fixture.media, fixture.document].filter(Boolean)) assert.equal(target.listenerCount, 0, 'Cleanup removes event listeners');
+  for (const target of [fixture.root, fixture.media, fixture.document]) assert.equal(target.listenerCount, 0, 'Cleanup removes event listeners');
   assert.ok(fixture.intersections.every((observer) => observer.disconnected), 'Cleanup disconnects all intersection observers');
   assert.equal(fixture.root.dataset.proofEnhanced, undefined, 'Cleanup removes the enhancement marker');
+  assert.equal(fixture.root.dataset.proofMotionState, undefined, 'Cleanup removes transient motion state');
+  assert.equal(fixture.root.dataset.proofCycle, '0', 'Cleanup restores the static surface cycle');
 }
 
 const checks = [];
 function check(name, run) { run(); checks.push(name); }
 
-check('automatic independent cycles and accessible inactive states', () => {
+check('control-free autoplay wraps and drives surface cycles with accessible inactive states', () => {
   const f = fixture();
   const stop = f.start();
   assert.equal(f.root.dataset.proofEnhanced, 'true');
-  assert.equal(f.control.dataset.motionMode, 'playing');
-  assert.equal(f.control.getAttribute('aria-label'), 'Pause proof rotation');
-  assert.equal(f.control.getAttribute('aria-pressed'), 'false');
+  assert.equal(f.root.dataset.proofMotionState, 'running');
+  assert.equal(f.root.dataset.proofCycle, '0');
+  assert.equal(f.root.listeners.get('click')?.size ?? 0, 0, 'Autoplay creates no click control');
   assert.equal(f.clock.tasks.size, 1);
-  assertBoth(f, 0, 0);
+  assertSlide(f.commercial, 0);
   f.clock.tick(6499);
-  assertBoth(f, 0, 0);
+  assertSlide(f.commercial, 0);
   f.clock.tick(1);
-  assertBoth(f, 1, 1);
+  assertSlide(f.commercial, 1);
+  assert.equal(f.root.dataset.proofCycle, '1');
   f.clock.tick(6500);
-  assertBoth(f, 2, 0);
+  assertSlide(f.commercial, 2);
+  assert.equal(f.root.dataset.proofCycle, '0');
   f.clock.tick(6500);
-  assertBoth(f, 0, 1);
+  assertSlide(f.commercial, 0);
+  assert.equal(f.root.dataset.proofCycle, '1');
+  assert.equal(f.persistentSummary.getAttribute('aria-hidden'), null, 'Persistent teaching evidence remains untouched');
+  assert.equal(f.persistentSummary.attributes.has('inert'), false);
   assert.equal(f.clock.tasks.size, 1, 'One scheduler remains after repeated rotations');
   stop();
   assertClean(f);
@@ -179,23 +192,41 @@ check('hover and keyboard focus pause without rotating a focused card', () => {
   const f = fixture();
   const stop = f.start();
   f.root.emit('pointerenter');
+  assert.equal(f.root.dataset.proofMotionState, 'paused');
   f.clock.tick(20_000);
-  assertBoth(f, 0, 0);
+  assertSlide(f.commercial, 0);
   f.root.emit('pointerleave');
   assert.equal(f.clock.tasks.size, 1);
+  assert.equal(f.root.dataset.proofMotionState, 'running');
   f.root.emit('focusin');
   f.clock.tick(20_000);
-  assertBoth(f, 0, 0);
-  f.root.emit('focusout', { relatedTarget: f.control });
+  assertSlide(f.commercial, 0);
+  f.root.emit('focusout', { relatedTarget: f.focusTarget });
   assert.equal(f.clock.tasks.size, 0, 'Moving focus inside the proof group stays paused');
   f.root.emit('focusout', { relatedTarget: new FakeNode() });
   f.clock.tick(6500);
-  assertBoth(f, 1, 1);
+  assertSlide(f.commercial, 1);
   f.root.emit('focusin');
   f.root.emit('focusout', { relatedTarget: null });
   assert.equal(f.clock.tasks.size, 1, 'Leaving the document also releases focus pause');
   stop();
   assertClean(f);
+});
+
+check('already-hovered or focused cards are suspended on initialization', () => {
+  for (const options of [{ initialHovered: true }, { initialFocused: true }]) {
+    const f = fixture(options);
+    const stop = f.start();
+    assert.equal(f.clock.tasks.size, 0);
+    assert.equal(f.root.dataset.proofMotionState, 'paused');
+    f.clock.tick(20_000);
+    assertSlide(f.commercial, 0);
+    f.root.emit(options.initialHovered ? 'pointerleave' : 'focusout', { relatedTarget: null });
+    f.clock.tick(6500);
+    assertSlide(f.commercial, 1);
+    stop();
+    assertClean(f);
+  }
 });
 
 check('hidden tabs and offscreen groups suspend work with combined pause reasons', () => {
@@ -204,14 +235,16 @@ check('hidden tabs and offscreen groups suspend work with combined pause reasons
   f.document.visibilityState = 'hidden';
   f.document.emit('visibilitychange');
   f.clock.tick(20_000);
-  assertBoth(f, 0, 0);
+  assertSlide(f.commercial, 0);
+  assert.equal(f.root.dataset.proofMotionState, 'paused');
   f.intersections[0].show(false);
   f.document.visibilityState = 'visible';
   f.document.emit('visibilitychange');
   assert.equal(f.clock.tasks.size, 0, 'Visibility alone cannot resume an offscreen group');
   f.intersections[0].show(true);
   f.clock.tick(6500);
-  assertBoth(f, 1, 1);
+  assertSlide(f.commercial, 1);
+  assert.equal(f.root.dataset.proofMotionState, 'running');
   f.root.emit('pointerenter');
   f.intersections[0].show(false);
   f.intersections[0].show(true);
@@ -220,51 +253,31 @@ check('hidden tabs and offscreen groups suspend work with combined pause reasons
   assertClean(f);
 });
 
-check('explicit pause persists across visibility changes and can resume', () => {
-  const f = fixture();
-  const stop = f.start();
-  f.control.emit('click');
-  assert.equal(f.control.dataset.motionMode, 'paused');
-  assert.equal(f.control.getAttribute('aria-label'), 'Resume proof rotation');
-  assert.equal(f.control.getAttribute('aria-pressed'), 'true');
-  f.document.visibilityState = 'hidden';
-  f.document.emit('visibilitychange');
-  f.document.visibilityState = 'visible';
-  f.document.emit('visibilitychange');
-  f.clock.tick(20_000);
-  assertBoth(f, 0, 0);
-  f.control.emit('click');
-  assert.equal(f.control.dataset.motionMode, 'playing');
-  assert.equal(f.control.title, 'Pause proof rotation');
-  f.clock.tick(6500);
-  assertBoth(f, 1, 1);
-  stop();
-  assertClean(f);
-});
-
-check('reduced motion exposes manual next with a polite announcement', () => {
+check('reduced motion stays static and runtime preference changes suspend or resume autoplay', () => {
   const f = fixture({ reducedMotion: true });
   const stop = f.start();
   assert.equal(f.clock.tasks.size, 0);
-  assert.equal(f.control.dataset.motionMode, 'manual');
-  assert.equal(f.control.getAttribute('aria-label'), 'Show next proof');
-  assert.equal(f.control.getAttribute('aria-pressed'), null);
+  assert.equal(f.root.dataset.proofMotionState, 'reduced');
   f.clock.tick(60_000);
-  assertBoth(f, 0, 0);
-  f.control.emit('click');
-  assertBoth(f, 1, 1, { manual: true });
-  f.control.emit('click');
-  assertBoth(f, 2, 0, { manual: true });
-  assert.equal(f.clock.tasks.size, 0, 'Manual navigation never creates autoplay');
+  assertSlide(f.commercial, 0);
+  f.root.emit('click');
+  assertSlide(f.commercial, 0);
+  assert.equal(f.clock.tasks.size, 0, 'Reduced motion has no hidden manual control or autoplay');
   f.media.matches = false;
   f.media.emit('change');
-  assertBoth(f, 2, 0);
-  assert.equal(f.control.dataset.motionMode, 'playing');
+  assertSlide(f.commercial, 0);
+  assert.equal(f.root.dataset.proofMotionState, 'running');
   f.clock.tick(6500);
-  assertBoth(f, 0, 1);
+  assertSlide(f.commercial, 1);
   f.media.matches = true;
   f.media.emit('change');
   assert.equal(f.clock.tasks.size, 0, 'Live preference changes immediately stop autoplay');
+  assert.equal(f.root.dataset.proofMotionState, 'reduced');
+  f.root.emit('pointerenter');
+  f.root.emit('pointerleave');
+  assert.equal(f.root.dataset.proofMotionState, 'reduced', 'Hover changes cannot override reduced motion');
+  f.clock.tick(60_000);
+  assertSlide(f.commercial, 1);
   stop();
   assertClean(f);
 });
@@ -273,17 +286,17 @@ check('cleanup is inert, idempotent and safe when observers are unavailable', ()
   const f = fixture({ observers: false });
   const stop = f.start();
   f.clock.tick(6500);
-  assertBoth(f, 1, 1);
+  assertSlide(f.commercial, 1);
   stop();
   stop();
   assertClean(f);
-  f.control.emit('click');
+  f.root.emit('click');
   f.root.emit('pointerleave');
   f.root.emit('focusout', { relatedTarget: null });
   f.document.emit('visibilitychange');
   f.media.emit('change');
   f.clock.tick(60_000);
-  assertBoth(f, 1, 1);
+  assertSlide(f.commercial, 1);
   assertClean(f);
 });
 
@@ -292,30 +305,28 @@ check('duplicate initialization replaces the old controller without duplicate ro
   const firstStop = f.start();
   f.clock.tick(6500);
   const stop = f.start();
-  assertBoth(f, 0, 0);
+  assertSlide(f.commercial, 0);
   assert.equal(f.clock.tasks.size, 1, 'Replacement has exactly one timer');
-  assert.equal(f.control.listenerCount, 1, 'Replacement has exactly one control listener');
+  assert.equal(f.root.listenerCount, 4, 'Replacement has one set of hover/focus listeners');
   assert.equal(f.document.listenerCount, 1);
   assert.equal(f.media.listenerCount, 1);
   assert.equal(f.intersections[0].disconnected, true);
-  f.control.emit('click');
-  assert.equal(f.control.dataset.motionMode, 'paused', 'One click toggles exactly once');
-  f.control.emit('click');
   f.clock.tick(6500);
-  assertBoth(f, 1, 1);
+  assertSlide(f.commercial, 1);
+  assert.equal(f.root.dataset.proofCycle, '1', 'Replacement advances exactly once');
   // A consumer may retain and call an already-replaced disposer. It must not
   // remove the live controller from the registry or break the next replacement.
   firstStop();
   const finalStop = f.start();
   assert.equal(f.clock.tasks.size, 1, 'A stale disposer cannot orphan the replacement scheduler');
-  assert.equal(f.control.listenerCount, 1, 'A stale disposer cannot orphan control listeners');
+  assert.equal(f.root.listenerCount, 4, 'A stale disposer cannot orphan hover/focus listeners');
   stop();
   finalStop();
   assertClean(f);
 });
 
 check('incomplete static proof markup safely remains unenhanced', () => {
-  for (const options of [{ groups: false }, { button: false }]) {
+  for (const options of [{ groups: false }, { slideCount: 1 }]) {
     const f = fixture(options);
     const stop = f.start();
     assert.equal(typeof stop, 'function');

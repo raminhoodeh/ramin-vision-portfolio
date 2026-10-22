@@ -16,6 +16,8 @@ const destinations = [
   'https://wa.link/7g31wi',
 ];
 const fonts = ['/_maintenance/inter-latin.woff2', '/_maintenance/instrument-serif-italic-latin.woff2'];
+const keptIntro = '8+ years delivering commercial results. I build AI products proven to grow revenue and teach the judgment behind them.';
+const removedProposition = 'I am the AI product manager companies bring in when money needs to move somewhere it has never moved before.';
 const voidTags = new Set('area base br col embed hr img input link meta param source track wbr'.split(' '));
 const normalize = (text) => text.replace(/\s+/g, ' ').trim();
 const decode = (text) => text.replace(/&(?:amp|lt|gt|quot|apos|#39|#\d+|#x[\da-f]+);/gi, (entity) => {
@@ -125,6 +127,16 @@ async function reviewedLiteral(filename, declarationName, fields) {
 
 export function assertHomepageFirstRender(html, expected) {
   const nodes = parseHtml(html);
+  assert.ok(!nodes.some((node) => ['button', 'input', 'select', 'textarea', 'option', 'fieldset'].includes(node.tag)
+    || (node.attributes?.role ?? '').toLowerCase().split(/\s+/).includes('button')
+    || has(node, 'data-proof-motion')), 'No native or substitute pause/play controls are rendered');
+  assert.ok(!nodes.some((node) => (node.attributes?.class ?? '').split(/\s+/).some((name) => /^homepage-proof-(?:motion|pause|play|next)$/.test(name))), 'Removed pause/play icon markup is absent');
+  const visibleBodyText = normalize(nodes.filter((node) => {
+    if (node.tag !== '#text') return false;
+    try { assertVisible(node, 'Visible body text'); return true; } catch { return false; }
+  }).map((node) => node.text).join(' '));
+  assert.equal(visibleBodyText.split(keptIntro).length - 1, 1, 'The approved 8+ years subtitle is visible exactly once');
+  assert.doesNotMatch(visibleBodyText, /I\s+am\s+the\s+AI\s+product\s+manager\s+companies\s+bring\s+in\s+when\s+money\s+needs\s+to\s+move\s+somewhere\s+it\s+has\s+never\s+moved\s+before\b/i, 'The removed money-movement proposition cannot reappear as visible content');
   const summaries = nodes.filter((node) => has(node, 'data-teaching-summary'));
   assert.equal(summaries.length, 1, 'Exactly one persistent teaching summary is emitted');
   const summary = summaries[0];
@@ -173,10 +185,23 @@ export function assertHomepageFirstRender(html, expected) {
 
 function regressionFixtures(expected) {
   const summary = `<div data-teaching-summary="" class="homepage-proof-summary homepage-proof-detail"><p>${expected.learners} Udemy learners · ${expected.reviews} reviews</p>${expected.badges.map((badge) => `<span>${badge}</span>`).join('')}</div>`;
+  const intro = `<p class="homepage-hero__intro">${keptIntro}</p>`;
   const links = destinations.map((href, index) => `<a href="${href}">Link ${index + 1}</a>`);
-  const fixture = `<!doctype html><html><head>${fonts.map((href) => `<link rel="preload" as="font" href="${href}" type="font/woff2" crossorigin="anonymous">`).join('')}<style>.example::after{content:"<a hidden>"}</style><script defer src="/_maintenance/proofs.js"></script><script async src="/_maintenance/background.js"></script></head><body data-note="a > b"><main><section data-proof-ticker="commercial"><div data-proof-slide="" data-active="true"><h3>${expected.commercial}</h3></div><div data-proof-slide="" data-active="false" aria-hidden="true" inert>Other result</div></section>${summary}${links.join('')}</main></body></html>`;
+  const fixture = `<!doctype html><html><head>${fonts.map((href) => `<link rel="preload" as="font" href="${href}" type="font/woff2" crossorigin="anonymous">`).join('')}<style>.example::after{content:"<a hidden>"}</style><script defer src="/_maintenance/proofs.js"></script><script async src="/_maintenance/background.js"></script></head><body data-note="a > b"><main>${intro}<section data-proof-ticker="commercial"><div data-proof-slide="" data-active="true"><h3>${expected.commercial}</h3></div><div data-proof-slide="" data-active="false" aria-hidden="true" inert>Other result</div></section>${summary}${links.join('')}</main></body></html>`;
   assertHomepageFirstRender(fixture, expected);
+  assertHomepageFirstRender(fixture.replace('</main>', `<p hidden>${removedProposition}</p></main>`), expected);
+  assertHomepageFirstRender(fixture.replace(keptIntro, '<span>8&#43; years</span> delivering commercial results. I build AI products proven to grow revenue and teach the judgment behind them.'), expected);
   const rejected = [
+    ['removed money proposition visible', fixture.replace('</main>', `<h2>${removedProposition}</h2></main>`)],
+    ['removed money proposition split and encoded', fixture.replace('</main>', '<h2><span>I am the AI product manager</span> companies bring in when money needs to move somewhere it has <strong>never moved befor&#101;.</strong></h2></main>')],
+    ['missing approved subtitle', fixture.replace(intro, '')],
+    ['hidden approved subtitle', fixture.replace(intro, `<div hidden>${intro}</div>`)],
+    ['duplicate approved subtitle', fixture.replace('</main>', `${intro}</main>`)],
+    ['changed approved subtitle', fixture.replace('AI products proven to grow revenue', 'AI systems that might grow revenue')],
+    ['removed native pause control', fixture.replace('</main>', '<button type="button" aria-label="Pause proof rotation">Pause</button></main>')],
+    ['substitute ARIA pause control', fixture.replace('</main>', '<span role="button" tabindex="0">Pause</span></main>')],
+    ['removed motion control hook', fixture.replace('</main>', '<span data-proof-motion="">Pause</span></main>')],
+    ['removed play icon', fixture.replace('</main>', '<svg class="homepage-proof-play" aria-hidden="true"><path d="m7 4 9 6-9 6z" /></svg></main>')],
     ['summary inside inactive ticker', fixture.replace(summary, `<div data-proof-ticker="teaching"><div data-proof-slide="" data-active="false">${summary}</div></div>`)],
     ['summary inside active ticker', fixture.replace(summary, `<div data-proof-ticker="teaching">${summary}</div>`)],
     ['hidden summary ancestor', fixture.replace(summary, `<div hidden>${summary}</div>`)],
@@ -205,5 +230,5 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
   const expected = { learners, reviews, badges, commercial };
   const rejected = regressionFixtures(expected);
   if (!process.argv.includes('--self-test')) assertHomepageFirstRender(await readFile(path.join(root, 'dist/index.html'), 'utf8'), expected);
-  console.log(`Homepage first HTML ${process.argv.includes('--self-test') ? 'fixtures' : 'visibility'} passed: persistent instructor totals and AI-course badges, eight visible native anchors, visible first commercial proof, font preloads, independent script order; ${rejected} rejected visibility/loading regressions. This is a static markup check, not a browser timing measurement.`);
+  console.log(`Homepage first HTML ${process.argv.includes('--self-test') ? 'fixtures' : 'visibility'} passed: persistent instructor totals and AI-course badges, eight visible native anchors, visible first commercial proof, approved 8+ years subtitle exactly once, removed money proposition and pause/play controls, font preloads, independent script order; ${rejected} rejected visibility/loading regressions. This is a static markup check, not a browser timing measurement.`);
 }

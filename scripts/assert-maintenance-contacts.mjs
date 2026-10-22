@@ -72,31 +72,8 @@ export function assertMaintenanceContacts(html, { requireVisual = false, expecte
   }
   if (preloads.length) assert.deepEqual(preloadedFonts.sort(), [...fontUrls].sort(), 'Each original font is preloaded exactly once');
   const withoutPreloads = withoutScript.replace(/<link\b[^>]*>/gi, '');
-  const buttons = [...withoutScript.matchAll(/<button\b([^>]*)>([\s\S]*?)<\/button\s*>/gi)];
-  assert.equal([...withoutScript.matchAll(/<button\b/gi)].length, buttons.length, 'Every proof motion button must be explicitly closed');
-  assert.equal([...withoutScript.matchAll(/<\/button\s*>/gi)].length, buttons.length, 'Every motion control closing tag belongs to the reviewed button');
-  assert.ok(buttons.length <= 1, 'Only one proof rotation control is allowed');
-  if (requireVisual) assert.equal(buttons.length, 1, 'Animated proof rotation must have its native pause control');
-  const approvedMotionAttributes = {
-    type: 'button',
-    class: 'homepage-proof-motion',
-    'data-proof-motion': '',
-    'aria-label': 'Pause proof rotation',
-    'aria-pressed': 'false',
-    title: 'Pause proof rotation',
-  };
-  for (const [, attributes, content] of buttons) {
-    let rest = attributes;
-    for (const [name, expected] of Object.entries(approvedMotionAttributes)) {
-      const matches = [...attributes.matchAll(new RegExp(`(?:^|\\s)${name}\\s*=\\s*(["'])(.*?)\\1`, 'gi'))];
-      assert.equal(matches.length, 1, `Motion control has exactly one explicit ${name}`);
-      assert.equal(matches[0][2], expected, `Only the reviewed motion control ${name} is allowed`);
-      rest = rest.replace(new RegExp(`(?:^|\\s)${name}\\s*=\\s*(["'])(.*?)\\1`, 'gi'), ' ');
-    }
-    assert.equal(rest.trim(), '', 'No application, submission or executable button attributes are allowed');
-    assert.doesNotMatch(content, /<(?:a|button)\b/i, 'The motion control cannot contain other interactive elements');
-    assert.match(content, /<svg\b/i, 'The approved motion control retains its local SVG icon');
-  }
+  assert.doesNotMatch(withoutScript, /<\/?button\b|\brole\s*=\s*(["'])[^"']*\bbutton\b[^"']*\1|\bdata-proof-motion(?:\s|=|>)/i, 'No pause/play buttons or replacement controls are rendered');
+  assert.doesNotMatch(withoutScript, /\bclass\s*=\s*(["'])[^"']*\bhomepage-proof-(?:motion|pause|play|next)\b[^"']*\1/i, 'Removed pause/play icon markup cannot reappear');
   assert.doesNotMatch(withoutPreloads, /<(?:iframe|form|input|select|textarea|option|fieldset|nav|img|image|object|embed|link|base|audio|video|source|track|foreignObject|animate|animateMotion|animateTransform|set|use)\b/i,
     'Maintenance cannot load application code, media, embeds, forms or portfolio navigation');
   assert.doesNotMatch(withoutScript, /\b(?:src|srcset|xlink:href)\s*=|\son[a-z]+\s*=/i,
@@ -156,7 +133,6 @@ export function checkMaintenanceContactPolicy() {
   assertMaintenanceContacts(fixture);
   const visualFixture = [...fontUrls].map((href) => `<link rel="preload" href="${href}" as="font" type="font/woff2" crossorigin="anonymous" />`).join('')
     + fixture.replace('</style>', '@font-face{font-family:Inter;src:url("/_maintenance/inter-latin.woff2")}@font-face{font-family:Instrument;src:url("/_maintenance/instrument-serif-italic-latin.woff2")}</style>')
-    + '<button type="button" class="homepage-proof-motion" data-proof-motion="" aria-label="Pause proof rotation" aria-pressed="false" title="Pause proof rotation"><svg aria-hidden="true" viewBox="0 0 16 16"><path d="M4 3v10M12 3v10" /></svg></button>'
     + `<script defer src="/_maintenance/proofs.js" integrity="sha384-${'A'.repeat(64)}" crossorigin="anonymous"></script>`
     + `<script async src="/_maintenance/background.js" integrity="sha384-${'A'.repeat(64)}" crossorigin="anonymous" fetchpriority="low"></script>`;
   assertMaintenanceContacts(visualFixture, { requireVisual: true });
@@ -193,18 +169,12 @@ export function checkMaintenanceContactPolicy() {
     ['script payload', fixture.replace('</main>', '<script>console.log(1)</script></main>')],
     ['unapproved button', fixture + '<button type="button">Open portfolio</button>'],
     ['unapproved input', fixture + '<input name="provider-query" />'],
-    ['unclosed button', visualFixture.replace('</button>', '')],
-    ['duplicate motion button', visualFixture + visualFixture.match(/<button\b[\s\S]*?<\/button>/)[0]],
-    ['submission control', visualFixture.replace('type="button"', 'type="submit"')],
-    ['wrong control label', visualFixture.replace('aria-label="Pause proof rotation"', 'aria-label="Open AI assistant"')],
-    ['incorrect initial pause state', visualFixture.replace('aria-pressed="false"', 'aria-pressed="true"')],
-    ['incorrect motion selector', visualFixture.replace('data-proof-motion=""', 'data-ai-provider="gemini"')],
-    ['unexpected control attribute', visualFixture.replace('type="button"', 'type="button" form="provider"')],
-    ['control provider event', visualFixture.replace('type="button"', 'type="button" onclick="fetch(\'/api/ai-ramin\')"')],
-    ['control resource source', visualFixture.replace('<svg aria-hidden="true" viewBox', '<svg src="https://example.com/provider" aria-hidden="true" viewBox')],
-    ['missing motion icon', visualFixture.replace(/<svg aria-hidden="true" viewBox="0 0 16 16">[\s\S]*?<\/svg>/, '')],
-    ['nested interactive control', visualFixture.replace('</button>', '<button type="button">Extra</button></button>')],
-    ['missing required motion control', visualFixture.replace(/<button\b[\s\S]*?<\/button>/, ''), { requireVisual: true }],
+    ['removed native pause control', visualFixture + '<button type="button" class="homepage-proof-motion" data-proof-motion="" aria-label="Pause proof rotation" aria-pressed="false" title="Pause proof rotation"><svg aria-hidden="true"><path d="M4 3v10" /></svg></button>'],
+    ['replacement ARIA pause control', visualFixture + '<span role="button" tabindex="0" aria-label="Pause rotation">Pause</span>'],
+    ['replacement motion control hook', visualFixture + '<span data-proof-motion="">Pause</span>'],
+    ['removed play icon without button', visualFixture + '<svg class="homepage-proof-play" aria-hidden="true"><path d="m7 4 9 6-9 6z" /></svg>'],
+    ['removed pause icon without button', visualFixture + '<svg class="homepage-proof-pause" aria-hidden="true"><path d="M4 3v10" /></svg>'],
+    ['unclosed control', visualFixture + '<button type="button">Pause'],
     ['additional decorative script', visualFixture + `<script defer src="/_maintenance/background.js" integrity="sha384-${'A'.repeat(64)}" crossorigin="anonymous"></script>`],
     ['inline decorative script', visualFixture.replace('</script>', 'alert(1)</script>')],
     ['different script entry', visualFixture.replace('/_maintenance/background.js', '/assets/index.js')],

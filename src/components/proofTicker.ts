@@ -4,25 +4,24 @@ const activeControllers = new WeakMap<HTMLElement, () => void>();
 
 export function startProofTickers(root: HTMLElement) {
   activeControllers.get(root)?.();
-  const groups = [...root.querySelectorAll<HTMLElement>('[data-proof-ticker]')].map((element) => ({
+  const groups = [...root.querySelectorAll<HTMLElement>('[data-proof-ticker]')].filter((element) => element.dataset.proofTicker === 'commercial').map((element) => ({
     element,
     slides: [...element.querySelectorAll<HTMLElement>('[data-proof-slide]')],
     index: 0,
   })).filter(({ slides }) => slides.length > 1);
-  const control = root.querySelector<HTMLButtonElement>('[data-proof-motion]');
-  if (!groups.length || !control) return () => {};
+  if (!groups.length) return () => {};
 
   const media = window.matchMedia('(prefers-reduced-motion: reduce)');
-  let paused = false;
-  let hovered = false;
-  let focused = false;
+  let hovered = root.matches(':hover');
+  let focused = root.contains(document.activeElement);
   let inView = true;
   let disposed = false;
+  let cycle = 0;
   let timeout: ReturnType<typeof setTimeout> | undefined;
 
-  function render(manual = false) {
+  function render() {
     for (const group of groups) {
-      group.element.setAttribute('aria-live', manual ? 'polite' : 'off');
+      group.element.setAttribute('aria-live', 'off');
       group.slides.forEach((slide, index) => {
         const active = index === group.index;
         slide.dataset.active = String(active);
@@ -30,33 +29,27 @@ export function startProofTickers(root: HTMLElement) {
         slide.toggleAttribute('inert', !active);
       });
     }
-    control!.dataset.motionMode = media.matches ? 'manual' : paused ? 'paused' : 'playing';
-    const label = media.matches ? 'Show next proof' : paused ? 'Resume proof rotation' : 'Pause proof rotation';
-    control!.setAttribute('aria-label', label);
-    control!.title = label;
-    if (media.matches) control!.removeAttribute('aria-pressed');
-    else control!.setAttribute('aria-pressed', String(paused));
+    root.dataset.proofCycle = String(cycle);
   }
 
   function schedule() {
     if (timeout !== undefined) clearTimeout(timeout);
     timeout = undefined;
-    if (disposed || paused || hovered || focused || !inView || media.matches || document.visibilityState !== 'visible') return;
+    if (disposed) return;
+    const state = media.matches ? 'reduced' : hovered || focused || !inView || document.visibilityState !== 'visible' ? 'paused' : 'running';
+    root.dataset.proofMotionState = state;
+    if (state !== 'running') return;
     timeout = setTimeout(() => {
-      advance(false);
+      advance();
       schedule();
     }, 6500);
   }
 
-  function advance(manual: boolean) {
+  function advance() {
     for (const group of groups) group.index = (group.index + 1) % group.slides.length;
-    render(manual);
+    cycle = 1 - cycle;
+    render();
   }
-  const click = () => {
-    if (media.matches) advance(true);
-    else { paused = !paused; render(); }
-    schedule();
-  };
   const enter = () => { hovered = true; schedule(); };
   const leave = () => { hovered = false; schedule(); };
   const focusIn = () => { focused = true; schedule(); };
@@ -64,8 +57,7 @@ export function startProofTickers(root: HTMLElement) {
     focused = event.relatedTarget instanceof Node && root.contains(event.relatedTarget);
     schedule();
   };
-  const preference = () => { render(); schedule(); };
-  control.addEventListener('click', click);
+  const preference = () => { schedule(); };
   root.addEventListener('pointerenter', enter);
   root.addEventListener('pointerleave', leave);
   root.addEventListener('focusin', focusIn);
@@ -85,7 +77,6 @@ export function startProofTickers(root: HTMLElement) {
     if (disposed) return;
     disposed = true;
     if (timeout !== undefined) clearTimeout(timeout);
-    control.removeEventListener('click', click);
     root.removeEventListener('pointerenter', enter);
     root.removeEventListener('pointerleave', leave);
     root.removeEventListener('focusin', focusIn);
@@ -94,6 +85,8 @@ export function startProofTickers(root: HTMLElement) {
     media.removeEventListener('change', preference);
     observer?.disconnect();
     delete root.dataset.proofEnhanced;
+    delete root.dataset.proofMotionState;
+    root.dataset.proofCycle = '0';
     if (activeControllers.get(root) === stop) activeControllers.delete(root);
   };
   activeControllers.set(root, stop);

@@ -59,7 +59,6 @@ export function maintenanceDocument(bio, { heroName, contacts, proofs, styles = 
             <div class="homepage-hero__content">
               ${heroName || fallbackName}
               <h1 class="homepage-hero__role"><span class="sr-only">${escape(bio.name)}, </span><span>${escape(bio.role)}</span><span class="homepage-hero__specialism"><span aria-hidden="true">| </span><span class="sr-only">, </span>${escape(bio.specialism)}</span></h1>
-              <h2 class="homepage-hero__money">${escape(bio.moneyMovement)}</h2>
               <p class="homepage-hero__intro">${escape(bio.intro)}</p>
               ${proofs || `<dl class="homepage-hero__strengths" aria-label="Three connected strengths">
                 <div><dt>${escape(bio.strengthCommercial)}</dt><dd>${escape(bio.strengthCommercialDetail)}</dd></div>

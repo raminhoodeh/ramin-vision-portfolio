@@ -37,6 +37,9 @@ ${rule(css, '.shader-gradient-surface')}
 ${range(css, '.hero-name-cutout-layer {', '.hero-thesis-glass-button {')}
 ${range(css, '.hero-thesis-glass-button {', '.hero-thesis-glass-button--thesis .hero-thesis-glass-label {')}
 ${rule(css, '.tahoe-glass-filter-defs')}
+${rule(css, '.tahoe-glass-surface')}
+${rule(css, '.tahoe-glass-surface-content')}
+${range(css, '.tahoe-glass-nav-lens,', '.portfolio-bottom-navigation.is-expanded .tahoe-glass-nav-lens,')}
 ${rule(css, '.portfolio-stage')}
 ${rule(css, '.portfolio-stage::before')}
 ${hero.slice(0, hero.indexOf('.home-highlights,'))}
