@@ -2,6 +2,8 @@
 
 This is the isolated `codex/site-preview` branch, forked from maintenance commit `d618619`. The public `ramin.vision` / `www.ramin.vision` domains stay on their maintenance deployment. This branch opens the full portfolio only in a protected Vercel Preview. CV links and redirects remain removed.
 
+Latest tested preview (22 October 2026): https://portfolio-98cdzpy8x-ramin-hoodehs-projects.vercel.app/ — includes the homepage glass carousel. See `docs/glass-carousel.md` for implementation and verification. Earlier preview URLs below are historical snapshots.
+
 ## Edit and test
 
 Use this checkout, separate from the public-site checkout:
