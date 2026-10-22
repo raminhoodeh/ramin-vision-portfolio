@@ -13,6 +13,7 @@ artifacts/
 docs/*
 !docs/portfolio-claims.json
 !docs/ramin-hoodeh-exp-context.md
+!docs/homepage-achievement-evidence.md
 anthropic-animation-inspiration/
 ai-native-product-os-context/
 Ramin Hoodeh - CV.docx

@@ -161,13 +161,14 @@
   visibility: hidden;
   pointer-events: none;
   transform: translateY(4px);
-  transition: opacity 300ms ease, transform 300ms ease;
+  transition: opacity 300ms ease, transform 300ms ease, visibility 0s linear 300ms;
 }
 .homepage-proof-slide[data-active='true'] {
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
   transform: translateY(0);
+  transition: opacity 300ms ease, transform 300ms ease, visibility 0s;
 }
 .homepage-proof-projects a,
 .homepage-proof-courses a {
@@ -216,6 +217,7 @@
   .homepage-proof-glass .tahoe-glass-nav-lens::after,
   [data-proof-cycle='1'] .homepage-proof-glass .tahoe-glass-nav-lens::after,
   .homepage-proof-slide,
+  .homepage-proof-slide[data-active='true'],
   .homepage-proof-projects a,
   .homepage-proof-courses a { transition: none; transform: none; }
 }
