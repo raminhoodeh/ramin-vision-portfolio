@@ -32,7 +32,7 @@ export function originalMaintenanceStyles(root) {
 *{box-sizing:border-box}html,body{margin:0;width:100%;min-height:100%;font-family:var(--font-body);color:#23364a}html{background:#edf3f7}body{height:100dvh;overflow:hidden;background:#f8fafc}h1,h2,p{margin:0}
 .fixed{position:fixed}.absolute{position:absolute}.inset-0{inset:0}.z-0{z-index:0}.overflow-hidden{overflow:hidden}.bg-black{background-color:#000}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
-#maintenance-background{position:fixed;inset:0;z-index:0;pointer-events:none}
+#maintenance-background{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.32}
 ${rule(css, '.shader-gradient-surface')}
 ${range(css, '.hero-name-cutout-layer {', '.hero-thesis-glass-button {')}
 ${range(css, '.hero-thesis-glass-button {', '.hero-thesis-glass-button--thesis .hero-thesis-glass-label {')}
