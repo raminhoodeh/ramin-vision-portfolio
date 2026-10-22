@@ -1,8 +1,9 @@
 import { Component, useEffect, useState, type ReactNode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { ShaderGradientBackground } from '../src/components/ShaderGradientBackground';
+import { startProofTickers } from '../src/components/proofTicker';
 
-// This entry owns decoration only. It never imports App, navigation, career
+// This entry owns the original decoration and isolated proof text rotation only. It never imports App, navigation, career
 // content, measurement, API clients, credentials or AI provider handlers.
 class VisualBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
   state = { failed: false };
@@ -33,6 +34,8 @@ function OriginalBackground() {
   }, []);
   return active ? <VisualBoundary><ShaderGradientBackground /></VisualBoundary> : null;
 }
+
+document.querySelectorAll<HTMLElement>('[data-homepage-proofs]').forEach((root) => startProofTickers(root));
 
 const mount = document.getElementById('maintenance-background');
 if (mount) createRoot(mount).render(<OriginalBackground />);

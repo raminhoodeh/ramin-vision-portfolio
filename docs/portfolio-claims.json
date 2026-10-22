@@ -9,6 +9,71 @@
   ],
   "claims": [
     {
+      "id": "instructor-udemy",
+      "entity": "Ramin Hoodeh · Udemy instructor",
+      "kind": "instructor",
+      "scope": "Udemy instructor-level total learners and reviews, quoted as displayed by Udemy. These are not a cross-platform unique audience or the sum of independently refreshed course counters.",
+      "period": "Instructor profile snapshot checked 22 October 2026; time-sensitive figures.",
+      "attribution": "Ramin is the named Udemy instructor. The AI course badges belong to that course, not the instructor aggregate or Coursera edition.",
+      "publication": {
+        "status": "public-platform-facts",
+        "basis": "Live public Udemy instructor profile reviewed on 22 October 2026.",
+        "exclusions": [
+          "No cross-platform unique-student total",
+          "No replacement of instructor counters with a sum of course counters",
+          "No course badges transferred to the instructor aggregate or Coursera"
+        ]
+      },
+      "implementationStatus": "public-instructor-profile",
+      "evidenceStatus": "dated-public-listing-observation",
+      "cadenceDays": 30,
+      "source": {
+        "sourceCheckedOn": "2026-10-22",
+        "note": "Instructor profile directly displayed 6,801 total learners and 549 reviews. Individual course counters were slightly ahead at 6,811 enrolments and 550 ratings; keep their scopes separate.",
+        "files": [
+          "ai-ramin-section/canonical/talks-writing-courses.md",
+          "src/data/teachingEvidence.ts"
+        ]
+      },
+      "surfaceRefs": [
+        {
+          "file": "src/data/teachingEvidence.ts",
+          "symbol": "instructorTeachingEvidence"
+        }
+      ],
+      "bindings": [
+        {
+          "file": "src/data/teachingEvidence.ts",
+          "declaration": "instructorTeachingEvidence",
+          "path": [],
+          "equals": {
+            "platform": "Udemy",
+            "href": "https://www.udemy.com/user/ramin-hoodeh/",
+            "totalLearners": "6,801",
+            "reviews": "549",
+            "checkedOn": "2026-10-22",
+            "checkedLabel": "Checked 22 October 2026"
+          }
+        }
+      ],
+      "boundaries": [
+        {
+          "file": "ai-ramin-section/canonical/talks-writing-courses.md",
+          "required": [
+            "6,801 total learners and 549 reviews",
+            "Counters can refresh at different times",
+            "Neither count establishes unique people across platforms"
+          ]
+        }
+      ],
+      "publicLinks": [
+        "https://www.udemy.com/user/ramin-hoodeh/"
+      ],
+      "checkedScope": "local-reconciliation",
+      "lastChecked": "2026-10-22",
+      "reviewAfter": "2026-11-21"
+    },
+    {
       "id": "course-product-udemy",
       "entity": "The Fastest Path to Product Management · Udemy",
       "kind": "course",
@@ -138,8 +203,8 @@
             "checkedOn": "2026-10-22",
             "checkedLabel": "Checked 22 October 2026",
             "rating": "4.6",
-            "ratings": "387",
-            "students": "1,920",
+            "ratings": "388",
+            "students": "1,930",
             "badges": [
               "Bestseller",
               "Highest Rated"
@@ -151,7 +216,7 @@
         {
           "file": "ai-ramin-section/canonical/talks-writing-courses.md",
           "required": [
-            "1,920 enrolled students, 387 ratings, and 4\\.6",
+            "1,930 enrolled students, 388 ratings, and 4\\.6",
             "both Bestseller and Highest Rated badges"
           ]
         }

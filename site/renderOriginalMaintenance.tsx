@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { Hero } from '../src/sections/Hero';
 import { GlassImprintCta } from '../src/components/GlassImprintCta';
+import { HomepageProofs } from '../src/components/HomepageProofs';
 
 /** Render only the approved decorative name and contact controls from their original components. */
 export function renderOriginalMaintenance() {
@@ -45,5 +46,6 @@ export function renderOriginalMaintenance() {
   assert.equal(new Set(filterIds).size, 3, 'Original glass contact filter IDs must remain unique.');
   assert.equal([...contacts.matchAll(/<a\b/g)].length, 3, 'Only the three approved contact anchors may be rendered.');
 
-  return { heroName, contacts };
+  const proofs = renderToStaticMarkup(<HomepageProofs />, { identifierPrefix: 'maintenance-proof-' });
+  return { heroName, contacts, proofs };
 }

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "generated_at": "2026-10-21T22:00:00.208Z",
+  "generated_at": "2026-10-22T10:00:09.162Z",
   "source_directories": [
     "ai-ramin-section/canonical",
     "ai-ramin-section/inferred",
@@ -2000,7 +2000,7 @@
       "text": "# Qualifications\n\n## AI Credentials\n\n- IBM AI Engineering Professional Certificate, 2026.\n- Google AI School Professional Machine Learning Engineer, 2026.\n- Google AI School Generative AI Leader Certification, 2026.\n- Anthropic Academy MCP Protocols: Advanced Topics, 2026.\n\n## Leadership\n\n- MBTi Leadership Development Programme, 2024.\n\n## Fitness And Human Performance\n\n- Level 3 Personal Training qualification.\n- This should be used as verified user-confirmed domain context for fitness, gym, coaching, health-behaviour, and human-performance product questions, while certificate screenshots or verification links remain a future proof asset.\n\n## Formal Education\n\n- MSc Environmental Technology with Distinction, Imperial College London, 2017.\n- BA Business and Marketing with 1st Class Honours, University of Northampton, 2016.\n\n## How AI Ramin Should Use This\n\nUse qualifications as supporting proof, not as the main argument. Ramin's strongest evidence is product work. Qualifications are useful when answering questions about technical literacy, climate/sustainability grounding, formal education, leadership development, or health, fitness, gym, wellbeing, and personal-training product domains.\n\nFor product-judgement questions about fitness, coaching, gym apps, health behaviour, or human performance, AI Ramin should treat the Level 3 Personal Training qualification as relevant domain context and then combine it with Ramin's product discovery, AI product, and creative/user-context evidence. Do not imply that Ramin has operated a fitness business unless retrieved context explicitly supports that.\n\n## Missing Verification Assets\n\nPhase 2 creates this canonical file, but the following should be added later:\n\n- certificate verification links or screenshots\n- final certificate names exactly as issued\n- any Nuclio PM qualification confirmation if still intended for the portfolio\n- Personal Training Level 3 certificate verification link or screenshot"
     },
     {
-      "chunk_id": "airamin_4fbe6a218ea1a0ce",
+      "chunk_id": "airamin_cca9d3a6c450f205",
       "file_path": "ai-ramin-section/canonical/talks-writing-courses.md",
       "title": "Teaching, Speaking, Writing, and Courses",
       "heading_path": [
@@ -2018,6 +2018,7 @@
       "based_on": [],
       "forbidden_use": [],
       "public_links": [
+        "https://www.udemy.com/user/ramin-hoodeh/",
         "https://www.udemy.com/course/from-product-manager-to-ai-product-manager/",
         "https://www.coursera.org/learn/ai-product-management/",
         "https://www.udemy.com/course/the-fastest-way-to-become-a-product-manager/",
@@ -2044,37 +2045,37 @@
       "contains_metric": false,
       "metric_verification_status": "none",
       "verification_status": "public_listings_checked_2026_10_22",
-      "token_estimate": 236,
+      "token_estimate": 446,
       "keywords": [
         "course",
-        "product",
-        "and",
-        "process",
         "the",
-        "courses",
-        "speaking",
-        "teaching",
+        "and",
+        "product",
         "udemy",
-        "writing",
-        "align",
-        "badge",
-        "development",
+        "instructor",
+        "process",
+        "counters",
+        "courses",
         "foundation",
-        "innovation",
-        "listing",
         "public",
         "source",
-        "teams",
-        "162",
+        "speaking",
+        "teaching",
+        "writing",
         "2026",
-        "881",
+        "align",
         "are",
-        "around"
+        "badge",
+        "bestseller",
+        "checked",
+        "com",
+        "coursera",
+        "development"
       ],
-      "text": "# Teaching, Speaking, Writing, and Courses\n\n## Product Innovation Process Course\n\nRamin created the Product Innovation Process, a structured product development process intended to reduce noise, align teams, clarify product language, and track a product from discovery through launch.\n\nThe foundation course is public on Udemy as \"The Fastest Path to Product Management.\"\n\nLocal sources describe it as:\n\n- a full product development lifecycle course\n- a practical PM process\n- a way to align teams around one source of truth\n- a course whose public Udemy listing showed 4.8 out of 5, 162 ratings, and 4,881 enrolled students when checked on 22 October 2026\n\nSource: https://www.udemy.com/course/the-fastest-way-to-become-a-product-manager/\n\nThese are dated figures for this course only. No Highest Rated or Bestseller badge was confirmed on its listing during that check. Do not transfer a badge from the AI course to this foundation course."
+      "text": "# Teaching, Speaking, Writing, and Courses\n\n## Udemy Instructor Reach\n\nRamin's public Udemy instructor profile displayed 6,801 total learners and 549 reviews when checked on 22 October 2026. These are the platform's instructor-level counters, separate from the current counters on the two individual course pages. Source: https://www.udemy.com/user/ramin-hoodeh/\n\nThe individual course listings showed 6,811 summed course enrolments and 550 summed ratings during the same review. Counters can refresh at different times; use the instructor figures above for the instructor summary rather than silently mixing or replacing them with a course sum. Neither count establishes unique people across platforms. Do not add Coursera's learners to a unique-student total or transfer the AI course's Bestseller and Highest Rated badges to the instructor, foundation course, or Coursera edition.\n\n## Product Innovation Process Course\n\nRamin created the Product Innovation Process, a structured product development process intended to reduce noise, align teams, clarify product language, and track a product from discovery through launch.\n\nThe foundation course is public on Udemy as \"The Fastest Path to Product Management.\"\n\nLocal sources describe it as:\n\n- a full product development lifecycle course\n- a practical PM process\n- a way to align teams around one source of truth\n- a course whose public Udemy listing showed 4.8 out of 5, 162 ratings, and 4,881 enrolled students when checked on 22 October 2026\n\nSource: https://www.udemy.com/course/the-fastest-way-to-become-a-product-manager/\n\nThese are dated figures for this course only. No Highest Rated or Bestseller badge was confirmed on its listing during that check. Do not transfer a badge from the AI course to this foundation course."
     },
     {
-      "chunk_id": "airamin_58c2267e51651d68",
+      "chunk_id": "airamin_55d0f8364141369a",
       "file_path": "ai-ramin-section/canonical/talks-writing-courses.md",
       "title": "Teaching, Speaking, Writing, and Courses",
       "heading_path": [
@@ -2093,6 +2094,7 @@
       "based_on": [],
       "forbidden_use": [],
       "public_links": [
+        "https://www.udemy.com/user/ramin-hoodeh/",
         "https://www.udemy.com/course/from-product-manager-to-ai-product-manager/",
         "https://www.coursera.org/learn/ai-product-management/",
         "https://www.udemy.com/course/the-fastest-way-to-become-a-product-manager/",
@@ -2146,7 +2148,7 @@
         "instructor",
         "its"
       ],
-      "text": "## AI Product Manager Course\n\nThe AI Product Manager course packages the AI-Native Product OS into an educational format.\n\nIt teaches product managers to shift from traditional product delivery into AI-native product leadership using:\n\n- the 5-Layer Stack\n- the AI-native loop\n- model/context/orchestration/governance/human framing\n- practical AI product build patterns\n\nThe AI course is available now on both Udemy and Coursera; it is not a future release.\n\nOn Udemy its exact title is \"Transition from Product Manager to AI Product Manager.\" The public listing checked on 22 October 2026 showed 1,920 enrolled students, 387 ratings, and 4.6 out of 5. It displayed both Bestseller and Highest Rated badges. Source: https://www.udemy.com/course/from-product-manager-to-ai-product-manager/\n\nOn Coursera its exact title is \"From Product Manager to AI Product Manager.\" Ramin Hoodeh is listed as an instructor and LearnKartS is the course provider. The edition has 10 modules and 10 assignments. Availability, title, instructor, and provider were checked on 22 October 2026. Source: https://www.coursera.org/learn/ai-product-management/\n\nThe platform editions have different structures. Keep Udemy ratings and enrolment attached to Udemy, and do not present them as Coursera figures. Coursera availability does not imply employment by Coursera, university accreditation, or independent validation of production AI quality. Course enrolments do not establish a count of unique people across courses or platforms. Speaking audiences are not course students.\n\nCurrent teaching material includes a 50-case nsso Intros evaluation example, failure taxonomy, and release-blocking controls. This is evidence of teaching evaluation practice, not proof that all nsso or other production paths pass that suite.\n\nDo not present older 220-student, 70-rating, 4.9-score, or undated combined 5,000-student snapshots as current course statistics. Use the per-platform figures above with their checked date, and explain that they can change."
+      "text": "## AI Product Manager Course\n\nThe AI Product Manager course packages the AI-Native Product OS into an educational format.\n\nIt teaches product managers to shift from traditional product delivery into AI-native product leadership using:\n\n- the 5-Layer Stack\n- the AI-native loop\n- model/context/orchestration/governance/human framing\n- practical AI product build patterns\n\nThe AI course is available now on both Udemy and Coursera; it is not a future release.\n\nOn Udemy its exact title is \"Transition from Product Manager to AI Product Manager.\" The public listing checked on 22 October 2026 showed 1,930 enrolled students, 388 ratings, and 4.6 out of 5. It displayed both Bestseller and Highest Rated badges. Source: https://www.udemy.com/course/from-product-manager-to-ai-product-manager/\n\nOn Coursera its exact title is \"From Product Manager to AI Product Manager.\" Ramin Hoodeh is listed as an instructor and LearnKartS is the course provider. The edition has 10 modules and 10 assignments. Availability, title, instructor, and provider were checked on 22 October 2026. Source: https://www.coursera.org/learn/ai-product-management/\n\nThe platform editions have different structures. Keep Udemy ratings and enrolment attached to Udemy, and do not present them as Coursera figures. Coursera availability does not imply employment by Coursera, university accreditation, or independent validation of production AI quality. Course enrolments do not establish a count of unique people across courses or platforms. Speaking audiences are not course students.\n\nCurrent teaching material includes a 50-case nsso Intros evaluation example, failure taxonomy, and release-blocking controls. This is evidence of teaching evaluation practice, not proof that all nsso or other production paths pass that suite.\n\nDo not present older 220-student, 70-rating, 4.9-score, or undated combined 5,000-student snapshots as current course statistics. Use the per-platform figures above with their checked date, and explain that they can change."
     },
     {
       "chunk_id": "airamin_90d81d95da02760e",
@@ -2168,6 +2170,7 @@
       "based_on": [],
       "forbidden_use": [],
       "public_links": [
+        "https://www.udemy.com/user/ramin-hoodeh/",
         "https://www.udemy.com/course/from-product-manager-to-ai-product-manager/",
         "https://www.coursera.org/learn/ai-product-management/",
         "https://www.udemy.com/course/the-fastest-way-to-become-a-product-manager/",
@@ -2243,6 +2246,7 @@
       "based_on": [],
       "forbidden_use": [],
       "public_links": [
+        "https://www.udemy.com/user/ramin-hoodeh/",
         "https://www.udemy.com/course/from-product-manager-to-ai-product-manager/",
         "https://www.coursera.org/learn/ai-product-management/",
         "https://www.udemy.com/course/the-fastest-way-to-become-a-product-manager/",

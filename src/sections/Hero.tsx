@@ -2,6 +2,7 @@ import { useLayoutEffect, useRef } from 'react';
 import gsap from 'gsap';
 import { homepagePositioning } from '../data/homepage';
 import { GlassImprintCta } from '../components/GlassImprintCta';
+import { HomepageProofs } from '../components/HomepageProofs';
 import './homeHighlights.css';
 
 export function Hero({ ready }: { ready: boolean; onOpenThesis: () => void }) {
@@ -104,11 +105,7 @@ export function Hero({ ready }: { ready: boolean; onOpenThesis: () => void }) {
         <h1 className="homepage-hero__role homepage-hero__reveal"><span className="sr-only">{hero.name}, </span><span>{hero.role}</span><span className="homepage-hero__specialism"><span aria-hidden="true">| </span><span className="sr-only">, </span>{hero.specialism}</span></h1>
         <h2 className="homepage-hero__money homepage-hero__reveal">{hero.moneyMovement}</h2>
         <p className="homepage-hero__intro homepage-hero__reveal">{hero.intro}</p>
-        <dl className="homepage-hero__strengths homepage-hero__reveal" aria-label="Three connected strengths">
-          <div><dt><span className="sr-only">Commercial judgment: </span>{hero.strengthCommercial}</dt><dd>{hero.strengthCommercialDetail}</dd></div>
-          <div><dt><span className="sr-only">Hands-on AI building: </span>{hero.strengthBuilding}</dt><dd>{hero.strengthBuildingDetail}</dd></div>
-          <div><dt><span className="sr-only">A method I teach: </span>{hero.strengthTeaching}</dt><dd>{hero.strengthTeachingDetail}</dd></div>
-        </dl>
+        <HomepageProofs />
         <nav className="homepage-hero__actions homepage-hero__reveal" aria-label="Explore Ramin’s work">
           <GlassImprintCta label="View selected work" href="/experience-education" className="homepage-hero__primary" />
           <a href="/contact">Contact</a>

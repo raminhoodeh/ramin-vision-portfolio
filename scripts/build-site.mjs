@@ -26,7 +26,7 @@ async function originalBackground() {
     },
   });
   const outputs = (Array.isArray(result) ? result : [result]).flatMap((entry) => entry.output);
-  assert.equal(outputs.length, 1, 'The decorative entry must emit exactly one self-contained JavaScript file.');
+  assert.equal(outputs.length, 1, 'The isolated maintenance entry must emit exactly one self-contained JavaScript file.');
   const chunk = outputs[0];
   assert.equal(chunk.type, 'chunk');
   assert.equal(chunk.fileName, '_maintenance/background.js');
@@ -36,8 +36,8 @@ async function originalBackground() {
   const authored = Object.keys(chunk.modules).filter((filename) => filename.startsWith(root + path.sep) && !filename.includes('/node_modules/'));
   assert.ok(authored.some((filename) => filename.endsWith('/src/components/ShaderGradientBackground.tsx')), 'Use the original shader implementation.');
   for (const filename of authored) assert.ok([
-    path.join(root, 'site/maintenanceBackground.tsx'), path.join(root, 'src/components/ShaderGradientBackground.tsx'),
-  ].includes(filename), `Unexpected portfolio dependency in the decorative graph: ${filename}`);
+    path.join(root, 'site/maintenanceBackground.tsx'), path.join(root, 'src/components/ShaderGradientBackground.tsx'), path.join(root, 'src/components/proofTicker.ts'),
+  ].includes(filename), `Unexpected portfolio dependency in the maintenance visual/proof graph: ${filename}`);
   return chunk.code;
 }
 
@@ -63,7 +63,7 @@ export async function buildMaintenance(outputRoot = root) {
     }
   }
   await writeFile(path.join(output, 'config.json'), JSON.stringify({ version: 3, routes: maintenanceRoutes() }, null, 2) + '\n');
-  console.log('Maintenance build: original shader/grain, original name/CTA markup and typography; three isolated decorative assets. Portfolio routes, CV and APIs remain 503; no application entry or functions emitted.');
+  console.log('Maintenance build: original shader/grain, original name/CTA markup and typography; three isolated visual assets and a DOM-only proof ticker. Portfolio routes, CV and APIs remain 503; no application entry or functions emitted.');
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

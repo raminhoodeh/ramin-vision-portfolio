@@ -72,7 +72,7 @@ async function worker() {
       } else {
         if (!body.includes('Under construction') || !body.includes('Ramin Hoodeh')) failures.push('missing maintenance content');
         try { assertMaintenanceContacts(body, { requireVisual: true, expectedIntegrity: visualIntegrity }); }
-        catch (error) { failures.push(`Maintenance contact/payload policy: ${error.message}`); }
+        catch (error) { failures.push(`Maintenance contact/proof/payload policy: ${error.message}`); }
       }
       results.push({ url: job.host + job.path, method: job.method ?? 'GET', status: response.status, platformPreflight, platformSourceMapDenial, failures });
     } catch (error) { results.push({ url: job.host + job.path, failures: [error.message] }); }

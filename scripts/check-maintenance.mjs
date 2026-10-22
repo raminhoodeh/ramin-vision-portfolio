@@ -180,5 +180,5 @@ try {
     assert.equal(response.status, 503, `API blocked for ${method}`);
     if (method === 'HEAD') assert.equal(await response.text(), '');
   }
-  console.log(`Maintenance passed: homepage plus exact three decorative artifacts, matching SRI, original local fonts, exact three-contact allowlist, ${rejectedContactFixtures} rejected contact/payload fixtures, stale artifact removal and two fresh-process stale-document denial regressions, ${paths.length} edge/server blocked paths, read-only assets and missing-file denial, all API methods, no CV/portfolio navigation/application payload.`);
+  console.log(`Maintenance passed: homepage plus exact three decorative artifacts, matching SRI, original local fonts, exact three-contact plus five-external-proof-link allowlist, ${rejectedContactFixtures} rejected contact/proof/payload fixtures, stale artifact removal and two fresh-process stale-document denial regressions, ${paths.length} edge/server blocked paths, read-only assets and missing-file denial, all API methods, no CV/internal portfolio navigation/application payload.`);
 } finally { child.kill('SIGTERM'); }

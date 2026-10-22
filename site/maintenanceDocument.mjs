@@ -24,7 +24,7 @@ export function homepageBio(root) {
 
 // The enhanced markup comes from the original Hero/GlassImprintCta at build
 // time. A missing build still produces a useful closed maintenance response.
-export function maintenanceDocument(bio, { heroName, contacts, styles = '', visualIntegrity } = {}) {
+export function maintenanceDocument(bio, { heroName, contacts, proofs, styles = '', visualIntegrity } = {}) {
   const fallbackName = `<div class="homepage-hero__name fallback-name" aria-hidden="true">${escape(bio.name)}</div>`;
   const fallbackContacts = `<div class="contact-links" role="group" aria-label="Contact options">
     <a class="hero-thesis-glass-button" href="mailto:raminhoodeh@gmail.com">Email</a>
@@ -58,11 +58,11 @@ export function maintenanceDocument(bio, { heroName, contacts, styles = '', visu
               <h1 class="homepage-hero__role"><span class="sr-only">${escape(bio.name)}, </span><span>${escape(bio.role)}</span><span class="homepage-hero__specialism"><span aria-hidden="true">| </span><span class="sr-only">, </span>${escape(bio.specialism)}</span></h1>
               <h2 class="homepage-hero__money">${escape(bio.moneyMovement)}</h2>
               <p class="homepage-hero__intro">${escape(bio.intro)}</p>
-              <dl class="homepage-hero__strengths" aria-label="Three connected strengths">
-                <div><dt><span class="sr-only">Commercial judgment: </span>${escape(bio.strengthCommercial)}</dt><dd>${escape(bio.strengthCommercialDetail)}</dd></div>
-                <div><dt><span class="sr-only">Hands-on AI building: </span>${escape(bio.strengthBuilding)}</dt><dd>${escape(bio.strengthBuildingDetail)}</dd></div>
-                <div><dt><span class="sr-only">A method I teach: </span>${escape(bio.strengthTeaching)}</dt><dd>${escape(bio.strengthTeachingDetail)}</dd></div>
-              </dl>
+              ${proofs || `<dl class="homepage-hero__strengths" aria-label="Three connected strengths">
+                <div><dt>${escape(bio.strengthCommercial)}</dt><dd>${escape(bio.strengthCommercialDetail)}</dd></div>
+                <div><dt><a href="https://nsso.me/" target="_blank" rel="noopener noreferrer">nsso</a> · <a href="https://apps.apple.com/us/app/dreamsea/id6761101193" target="_blank" rel="noopener noreferrer">Dreamsea</a> · <a href="https://apps.apple.com/us/app/24seven-concierge/id6663954162" target="_blank" rel="noopener noreferrer">24Seven</a></dt><dd>${escape(bio.strengthBuildingDetail)}</dd></div>
+                <div><dt>${escape(bio.strengthTeaching)}</dt><dd>Creator · <a href="https://www.coursera.org/learn/ai-product-management/" target="_blank" rel="noopener noreferrer">Coursera</a> · <a href="https://www.udemy.com/course/from-product-manager-to-ai-product-manager/" target="_blank" rel="noopener noreferrer">Udemy</a></dd></div>
+              </dl>`}
               <section class="notice" aria-labelledby="construction-notice">
                 <h2 id="construction-notice"><span class="notice-dot" aria-hidden="true"></span>Under construction</h2>
                 <p>Temporarily closed as a precaution following the recent PHP security disclosures. I’m preparing more secure infrastructure for the site and its embedded AI features.</p>
