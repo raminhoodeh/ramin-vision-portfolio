@@ -8,6 +8,7 @@ import { buildMaintenance } from './build-site.mjs';
 import { maintenanceEnabled, maintenanceRoutes, maintenanceResponse } from '../site/maintenance.mjs';
 import { homepageBio } from '../site/maintenanceDocument.mjs';
 import { publicPages, routeAliases, sectionPathAliases } from '../src/seo/routes.mjs';
+import { assertMaintenanceContacts, checkMaintenanceContactPolicy } from './assert-maintenance-contacts.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 assert.equal(maintenanceEnabled, true, 'This verification is for the locked public site.');
@@ -16,7 +17,8 @@ const html = await readFile(path.join(root, 'dist/index.html'), 'utf8');
 assert.ok(html.indexOf(bio.name) < html.indexOf('id="construction-notice"'));
 assert.ok(html.indexOf(bio.experience) < html.indexOf('id="construction-notice"'), 'Notice is beneath the name and existing bio');
 assert.match(html, />Under construction<|>Under construction<\/h2>|<\/span>Under construction<\/h2>/);
-assert.doesNotMatch(html, /<(?:a|script|iframe|form|button|nav)\b|\b(?:src|href)\s*=|\/cv|drive\.google|docs\.google|View CV|Read my CV/i, 'No navigation, application code or CV access in public HTML');
+const rejectedContactFixtures = checkMaintenanceContactPolicy();
+assertMaintenanceContacts(html);
 assert.match(html, /noindex, nofollow, noarchive, nosnippet/);
 assert.deepEqual((await readdir(path.join(root, 'dist'))).sort(), ['index.html', 'robots.txt']);
 assert.deepEqual((await readdir(path.join(root, '.vercel/output'))).sort(), ['config.json', 'static']);
@@ -84,5 +86,5 @@ try {
     assert.equal(response.status, 503, `API blocked for ${method}`);
     if (method === 'HEAD') assert.equal(await response.text(), '');
   }
-  console.log(`Maintenance passed: homepage-only output, stale artifact removal, ${paths.length} edge/server blocked paths, all API methods, no CV/navigation/application payload.`);
+  console.log(`Maintenance passed: homepage-only output, exact three-contact allowlist, ${rejectedContactFixtures} rejected contact/payload fixtures, stale artifact removal, ${paths.length} edge/server blocked paths, all API methods, no CV/portfolio navigation/application payload.`);
 } finally { child.kill('SIGTERM'); }

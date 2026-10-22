@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { writeFile } from 'node:fs/promises';
 import { parseArgs } from 'node:util';
 import { publicPages, routeAliases, sectionPathAliases } from '../src/seo/routes.mjs';
+import { assertMaintenanceContacts } from './assert-maintenance-contacts.mjs';
 
 const { values } = parseArgs({ options: { output: { type: 'string' } } });
 const paths = [...new Set([
@@ -41,7 +42,8 @@ async function worker() {
         if (body !== 'User-agent: *\nDisallow: /\n') failures.push('robots');
       } else {
         if (!body.includes('Under construction') || !body.includes('Ramin Hoodeh')) failures.push('missing maintenance content');
-        if (/<(a|script|nav|button|iframe|form)\b|drive\.google|docs\.google|View CV|Read my CV/i.test(body)) failures.push('public navigation/code/CV leaked');
+        try { assertMaintenanceContacts(body); }
+        catch (error) { failures.push(`Maintenance contact/payload policy: ${error.message}`); }
       }
       results.push({ url: job.host + job.path, method: job.method ?? 'GET', status: response.status, platformPreflight, failures });
     } catch (error) { results.push({ url: job.host + job.path, failures: [error.message] }); }
