@@ -4,6 +4,7 @@ import {
   homepageRecognition,
   homepageWriting,
 } from '../data/homepage';
+import { GlassCarousel } from '../components/GlassCarousel';
 import './homeHighlights.css';
 
 export function HomeHighlights() {
@@ -44,23 +45,7 @@ export function HomeHighlights() {
         </div>
         <a className="home-highlights__text-link" href="/projects">All projects & tools <span aria-hidden="true">↗</span></a>
       </div>
-      <div className="home-products-grid" aria-labelledby="home-products-title">
-        {homepageProducts.map((project, index) => (
-          <article key={project.name} className="home-product-card">
-            <div className="home-product-card__topline">
-              <span className="home-product-card__number" aria-hidden="true">0{index + 1}</span>
-              <span>{project.kind}</span>
-            </div>
-            <p className="home-product-card__focus">{project.focus}</p>
-            <h3><a href={project.href}>{project.name}</a></h3>
-            <p className="home-product-card__description">{project.description}</p>
-            <div className="home-product-card__links">
-              <a className="home-highlights__text-link" href={project.href} aria-label={`Read the ${project.name} case study`}>Case study <span aria-hidden="true">→</span></a>
-              <a href={project.publicHref} target="_blank" rel="noopener noreferrer" aria-label={`${project.publicLabel} in a new tab`}>{project.publicLabel} <span aria-hidden="true">↗</span></a>
-            </div>
-          </article>
-        ))}
-      </div>
+      <GlassCarousel products={homepageProducts} labelledBy="home-products-title" />
     </section>
   );
 }

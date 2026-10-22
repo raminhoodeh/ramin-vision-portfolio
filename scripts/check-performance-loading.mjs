@@ -50,6 +50,7 @@ for (const deferred of [
   'src/sections/ProfessionalStories.tsx', 'src/sections/DisxTalkPage.tsx',
   'src/components/VisionLoadingScreen.tsx', 'src/three/hashgraphRockAssets.ts',
   'src/components/IPhone3D.tsx', 'src/performance/workVideoPreload.ts',
+  'src/components/glass-carousel/createGlassScene.ts',
 ]) assert.equal(visited.has(deferred), false, `${deferred} must stay out of the initial static dependency graph`);
 for (const name of external) assert.ok(!/^(three(?:\/|$)|@react-three\/|@shadergradient\/|hls\.js$)/.test(name), `${name} must be deferred`);
 
