@@ -1,5 +1,14 @@
 // Keep platform figures separate: course enrollments are not a count of unique learners.
 // Refresh the checked date only after reviewing the linked platform page.
+export const instructorTeachingEvidence = {
+  platform: 'Udemy',
+  href: 'https://www.udemy.com/user/ramin-hoodeh/',
+  totalLearners: '6,801',
+  reviews: '549',
+  checkedOn: '2026-10-22',
+  checkedLabel: 'Checked 22 October 2026',
+} as const;
+
 export const productCourseEvidence = {
   platform: 'Udemy',
   title: 'The Fastest Path to Product Management',
@@ -20,8 +29,8 @@ export const aiProductCourseEvidence = {
     checkedOn: '2026-10-22',
     checkedLabel: 'Checked 22 October 2026',
     rating: '4.6',
-    ratings: '387',
-    students: '1,920',
+    ratings: '388',
+    students: '1,930',
     badges: ['Bestseller', 'Highest Rated'],
   },
   coursera: {

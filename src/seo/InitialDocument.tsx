@@ -1,3 +1,4 @@
+import { HomepageProofs } from '../components/HomepageProofs';
 import { homepageOutcomes, homepagePositioning, homepageProducts } from '../data/homepage';
 import { portfolioContent } from '../data/portfolio';
 import { aiProductCourseEvidence, disxTalkEvidence, productCourseEvidence } from '../data/teachingEvidence';
@@ -81,7 +82,7 @@ function TalkItems({ currentOnly = false, earlierOnly = false }: { currentOnly?:
 function Body({ page }: { page: PublicPage }) {
   const teaching = portfolioContent.teachingSpeakingWriting;
   switch (page.kind) {
-    case 'home': return <><h1>{homepagePositioning.name} · {homepagePositioning.role} | {homepagePositioning.specialism}</h1><h2>{homepagePositioning.moneyMovement}</h2><p>{homepagePositioning.intro}</p><dl><div><dt>{homepagePositioning.strengthCommercial}</dt><dd>{homepagePositioning.strengthCommercialDetail}</dd></div><div><dt>{homepagePositioning.strengthBuilding}</dt><dd>{homepagePositioning.strengthBuildingDetail}</dd></div><div><dt>{homepagePositioning.strengthTeaching}</dt><dd>{homepagePositioning.strengthTeachingDetail}</dd></div></dl><section><h2>Selected commercial outcomes</h2>{homepageOutcomes.map((result) => <article key={result.id}><h3><a href={result.href}>{result.company}: {result.metric} {result.outcome}</a></h3><p>{result.responsibility} {result.measurementPeriod}.</p></article>)}</section><section><h2>Selected AI products</h2>{homepageProducts.map((product) => <article key={product.name}><h3><a href={product.href}>{product.name}</a></h3><p>{product.kind}</p><p>{product.description}</p></article>)}</section><ProductMethodSummary compact /><CourseList nested /><p>{homepagePositioning.personalNote} <a href="/thoughts/books">Explore my writing</a>.</p></>;
+    case 'home': return <><h1>{homepagePositioning.name} · {homepagePositioning.role} | {homepagePositioning.specialism}</h1><h2>{homepagePositioning.moneyMovement}</h2><p>{homepagePositioning.intro}</p><HomepageProofs /><section><h2>Selected commercial outcomes</h2>{homepageOutcomes.map((result) => <article key={result.id}><h3><a href={result.href}>{result.company}: {result.metric} {result.outcome}</a></h3><p>{result.responsibility} {result.measurementPeriod}.</p></article>)}</section><section><h2>Selected AI products</h2>{homepageProducts.map((product) => <article key={product.name}><h3><a href={product.href}>{product.name}</a></h3><p>{product.kind}</p><p>{product.description}</p></article>)}</section><ProductMethodSummary compact /><CourseList nested /><p>{homepagePositioning.personalNote} <a href="/thoughts/books">Explore my writing</a>.</p></>;
     case 'story': return <ProfessionalStories activeSlug={page.key} />;
     case 'method': return <ProductMethodSummary />;
     case 'disx': return <DisxTalkPage />;

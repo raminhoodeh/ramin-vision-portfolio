@@ -5,7 +5,7 @@ export const homepagePositioning = {
   role: 'AI Product Manager',
   specialism: 'Payments & Embedded Finance',
   moneyMovement: 'I am the AI product manager companies bring in when money needs to move somewhere it has never moved before.',
-  intro: 'I build AI products proven to grow revenue, and teach the judgment behind them.',
+  intro: '8+ years delivering commercial results. I build AI products proven to grow revenue and teach the judgment behind them.',
   experience:
     'Eight-plus years delivering commercial products across payments, marketplaces and financial data.',
   strengthCommercial: '+19% customer lifetime value',

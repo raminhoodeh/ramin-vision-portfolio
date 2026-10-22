@@ -70,7 +70,8 @@
     "check:api-maintenance": "node scripts/check-api-maintenance.mjs",
     "check:maintenance-live": "node scripts/check-maintenance-live.mjs",
     "deploy:preview": "node scripts/deploy-preview.mjs",
-    "check:glass-carousel": "node scripts/check-glass-carousel.mjs"
+    "check:glass-carousel": "node scripts/check-glass-carousel.mjs",
+    "check:proof-ticker": "node scripts/check-proof-ticker.mjs"
   },
   "dependencies": {
     "@gltf-transform/core": "^4.3.0",
