@@ -2,7 +2,7 @@
 
 This is the isolated `codex/site-preview` branch, forked from maintenance commit `d618619`. The public `ramin.vision` / `www.ramin.vision` domains stay on their maintenance deployment. This branch opens the full portfolio only in a protected Vercel Preview. CV links and redirects remain removed.
 
-Latest tested preview (22 October 2026): https://portfolio-3m0lxozla-ramin-hoodehs-projects.vercel.app/ — includes the homepage glass carousel and approved revenue, payments and teaching positioning. The latest refresh was checked for build success and authentication protection; its hosted private UI was not rechecked in a browser. See `docs/glass-carousel.md` for the carousel implementation and earlier verification. Earlier preview URLs below are historical snapshots.
+Latest tested preview (22 October 2026): https://portfolio-5yqa4vzn5-ramin-hoodehs-projects.vercel.app/ — includes the homepage glass carousel and the simplified hiring proposition with three concise proof points. This refresh passed focused source checks, a portfolio build and authentication-protection checks; its hosted private UI was not rechecked in a browser. See `docs/glass-carousel.md` for the carousel implementation and earlier verification. Earlier preview URLs below are historical snapshots.
 
 ## Edit and test
 
@@ -31,9 +31,19 @@ At release, review the final commit; turn off `portfolioPreview` in `src/seo/rou
 
 The historical maintenance design and its production evidence are retained in `docs/site-availability.md`. That file describes the public branch, not the availability of this Preview fork.
 
+## Homepage simplification
+
+22 October 2026: protected Preview deployment `dpl_7Rnk2iQfR9pdxD6C67oGdv9ViZ6f` is READY at the latest URL above, target `preview`, runtime commit `b029ee0`. The shared homepage now gives the approved money-movement sentence the main emphasis, retains the approved AI revenue/teaching sentence as supporting copy, and replaces repeated descriptions with three short proof entries. The experience paragraph and duplicate recognition strip were removed from the Hero; downstream commercial results, product sections and teaching evidence remain. The original name treatment, background, grain, glass controls and product carousel are retained.
+
+The commercial entry is “+19% customer lifetime value” with “Vivup · monetisation · five months”. This is the existing reported benefit-savings monetisation result, not a newly asserted revenue figure or an AI-attributed measurement. The underlying outcome record, measurement period and attribution limits remain unchanged.
+
+`check:content`, `check:accessibility`, `check:next-priority` (53 route/anchor cases), `check:glass-carousel` (47 behavioural checks), `git diff --check` and `build:portfolio` passed for this change. After the final wording-only shortening of the commercial proof, `check:content` passed again; the guarded hosted build also passed and prerendered all 27 noindex Preview pages. Existing asset and large-chunk advisories remain. The complete `verify:preview` suite and a hosted private-browser UI check were not rerun for this refresh.
+
+The guarded deployment confirmed Production remained unchanged. A separate project check confirmed Production stayed at `dpl_CEDUXGxpbobsHZp3vg8e425uiyiD` and Vercel Authentication remained `all_except_custom_domains`. An anonymous GET to the immutable Preview URL returned HTTP 302 to `vercel.com/sso-api` with `X-Robots-Tag: noindex`; no bypass was used. No provider generation or feedback submission was made. Evidence: `/tmp/homepage-simplified-preview-deploy.log`, `/tmp/homepage-simplified-preview-inspect.json`, `/tmp/homepage-simplified-preview-deployment-check.json`, `/tmp/homepage-simplified-preview-project-check.json` and `/tmp/homepage-simplified-preview-anonymous-headers.txt`. This is a documentation-only follow-up; no second deployment command was run.
+
 ## Homepage positioning refresh
 
-22 October 2026: Preview deployment `dpl_FQRKaBq4Kr6PxymEE2WraRp2kEtf` is READY at the latest URL above, with runtime commit `b38f6f0`. The update adds the approved revenue headline without an em dash, the same-line payments and embedded-finance specialism in lighter Instrument Serif, the money-movement line, and the three connected strengths. Only four shared homepage files changed; the carousel, Preview configuration and protection were retained.
+22 October 2026: historical Preview deployment `dpl_FQRKaBq4Kr6PxymEE2WraRp2kEtf` is READY at https://portfolio-3m0lxozla-ramin-hoodehs-projects.vercel.app/, with runtime commit `b38f6f0`. The update adds the approved revenue headline without an em dash, the same-line payments and embedded-finance specialism in lighter Instrument Serif, the money-movement line, and the three connected strengths. Only four shared homepage files changed; the carousel, Preview configuration and protection were retained.
 
 `check:content`, `check:next-priority` (including 53 parser route/anchor cases), `check:accessibility`, `check:glass-carousel` (47 behavioural cases), `git diff --check` and `build:portfolio` passed. The build prerendered 27 readable noindex Preview pages. Existing asset and large-chunk warnings remain. The matching public maintenance homepage was browser-tested at 390px and 320px: the title remained on one line, the serif suffix used weight 400, and there was no horizontal overflow. These public-page observations are not a new hosted private-browser check. The complete `verify:preview` suite was not rerun for this refresh.
 
