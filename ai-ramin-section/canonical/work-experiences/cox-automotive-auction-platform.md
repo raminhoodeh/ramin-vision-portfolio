@@ -13,6 +13,9 @@ source_paths:
   - "ai-ramin-context/PM Experience & Interview Prep 2a86fe2ecf3780d68f85f0edd9085933.md"
   - "src/data/portfolio.ts"
   - "docs/homepage-achievement-evidence.md"
+public_links:
+  - "https://www.coxautoinc.eu/news-insights/manheim-express-and-carsale24-bundle-offerings-for-manufacturer-direct-sales-in-germany/"
+  - "https://www.coxautoinc.eu/news-insights/manheim-express-a-year-on-7-lessons-learnt-from-running-a-start-up/"
 verification_status: metric_review_needed
 ---
 
@@ -34,9 +37,13 @@ The PM Experience source describes Cox Automotive as a hybrid product-led and sa
 
 The supplied Payments & Embedded Finance master CV, line 85, reports dealer settlement reduced from 5–7 business days to T+1 after vehicle handover. The condition after vehicle handover is essential; do not describe this as settlement within one day of the auction. Line 86 reports 40% fewer settlement reconciliation breaks through allocation and trade-desk workflows. These are supplied employer-work outcomes, not independently audited measurements; no separate measurement window or public baseline is specified for the 40% figure.
 
-Ramin now says he prepared Manheim Express for launch. The particular launch or release is not identified. Cox's retrospective places the original German launch on 15 June 2020, before his September–December 2021 Product Owner engagement. Do not attribute that original launch to him or invent a later market/release. Use the narrower first-person launch-preparation account alongside the documented Product Owner remit.
+Ramin now says he prepared Manheim Express for launch and explicitly identifies the platform as Germany/continental Europe. The particular launch or release is not identified. Cox's retrospective places the original German launch on 15 June 2020, before his September–December 2021 Product Owner engagement. Do not attribute that original launch to him or invent a later release. Use the narrower first-person launch-preparation account alongside the documented Product Owner remit.
 
-The source record does not establish an all-time ranking against other B2B vehicle-auction platforms. The homepage therefore uses launch preparation and specific reported settlement outcomes. See `docs/homepage-achievement-evidence.md` for the supplied master excerpts and employer chronology.
+Cox's 12 January 2023 manufacturer-direct-sales announcement reports 10,000+ cars sold in Germany since the platform's 2020 launch. The homepage states this cumulative platform total by January 2023. It is not a monthly figure, a launch-year figure, Ramin's personal sales volume or proof that his work alone caused those sales. This employer-reported platform milestone was checked on 22 October 2026; it does not independently verify the personal settlement/reconciliation metrics in the supplied CV.
+
+Older local interview notes mention approximately 4,000 cars per month without a defined market or measurement date. That undated number is not published on the homepage and must not be substituted for the dated employer platform milestone.
+
+The source record does not establish an all-time ranking against other B2B vehicle-auction platforms. The homepage therefore uses the dated German sales milestone, Ramin's separately stated launch preparation and specific reported settlement outcomes. See `docs/homepage-achievement-evidence.md` for the supplied master excerpts and employer chronology.
 
 ## What This Proves
 
