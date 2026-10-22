@@ -22,6 +22,7 @@ export function createCarouselController({
   let loading = false;
   let failed = false;
   let visible = false;
+  let observed = false;
   let frame = 0;
   let lastTime = 0;
   let position = initialIndex;
@@ -70,7 +71,20 @@ export function createCarouselController({
     if (position !== target || light !== lightTarget) frame = requestAnimationFrame(tick);
     else lastTime = 0;
   }
-  function wake() { if (!frame && running()) frame = requestAnimationFrame(tick); }
+  function wake() {
+    // Resizing a scrolled page can move the stage back into view before its
+    // intersection callback arrives. Recover on resize or interaction using
+    // current bounds, while leaving the initial lazy load to the observer.
+    if (observed) {
+      const bounds = stage.getBoundingClientRect();
+      visible = bounds.width > 0 && bounds.height > 0
+        && bounds.bottom > -120 && bounds.top < window.innerHeight + 120
+        && bounds.right > 0 && bounds.left < window.innerWidth;
+    }
+    if (!visible) { cancelFrame(); return; }
+    if (!scene) { void start(); return; }
+    if (!frame && running()) frame = requestAnimationFrame(tick);
+  }
   const announce = () => onSelect(wrapIndex(target, cards.length));
   function setTarget(value: number) {
     target = value;
@@ -138,6 +152,7 @@ export function createCarouselController({
     }
   }
   const observer = new IntersectionObserver(([entry]) => {
+    observed = true;
     visible = entry.isIntersecting;
     if (visible) { void start(); wake(); }
     else { interruptDrag(); cancelFrame(); }

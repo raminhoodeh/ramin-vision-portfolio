@@ -67,7 +67,7 @@ class Style {
 class Element extends Target {
   constructor(tag = 'div', parent = null) {
     super(); this.tag = tag; this.parent = parent; this.style = new Style(); this.dataset = {}; this.clientWidth = 1000;
-    this.contentHeight = 400; this.borderHeight = 0;
+    this.contentHeight = 400; this.borderHeight = 0; this.rectTop = 0; this.rectLeft = 0;
     this.captures = new Set(); this.captureCount = 0; this.releaseCount = 0;
   }
   closest(selector) {
@@ -84,22 +84,27 @@ class Element extends Target {
   get offsetHeight() { return Number.parseFloat(this.parent?.style['--glass-card-height']) || 446; }
   get clientHeight() { return this.offsetHeight - this.borderHeight; }
   get scrollHeight() { return Math.max(this.contentHeight, this.clientHeight); }
-  getBoundingClientRect() { return { left: 0, width: this.clientWidth, top: 0, height: 566 }; }
+  getBoundingClientRect() {
+    const width = this.clientWidth, height = Number.parseFloat(this.style['--glass-stage-height']) || 566;
+    return { left: this.rectLeft, right: this.rectLeft + width, width, top: this.rectTop, bottom: this.rectTop + height, height };
+  }
 }
 
 function fixture(options = {}) {
   const frames = new Map();
   let frameId = 0, now = 100, selection = '';
   const stage = options.stage ?? new Element();
+  stage.rectTop = options.initialTop ?? 1220; stage.rectLeft = 0;
   const mount = new Element();
   const cards = options.cards ?? Array.from({ length: 3 }, (_item, index) => {
     const card = new Element('article', stage); card.dataset.glassIndex = String(index); return card;
   });
   const document = new Target(); document.visibilityState = options.hidden ? 'hidden' : 'visible';
+  document.documentElement = { clientWidth: 1280, clientHeight: 720 };
   const media = new Target(); media.matches = options.reducedMotion ?? false;
   const connection = new Target(); connection.saveData = options.saveData ?? false; connection.effectiveType = options.effectiveType ?? '4g';
   const navigator = { connection, deviceMemory: options.deviceMemory ?? 8 };
-  const window = { matchMedia: () => media, getSelection: () => ({ toString: () => selection }) };
+  const window = Object.assign(new Target(), { innerWidth: 1280, innerHeight: 720, matchMedia: () => media, getSelection: () => ({ toString: () => selection }) });
   const observers = { intersection: [], resize: [] };
   const observer = (type) => class {
     constructor(callback) { this.callback = callback; this.connected = true; this.targets = new Set(); observers[type].push(this); }
@@ -155,10 +160,14 @@ function fixture(options = {}) {
     return count;
   };
   return {
-    stage, mount, cards, document, media, connection, navigator, observers, effects, controller, frames,
+    stage, mount, cards, document, window, media, connection, navigator, observers, effects, controller, frames,
     frame, drain, advance: (milliseconds) => { now += milliseconds; },
     setSelection: (value) => { selection = value; },
-    intersect: (visible) => observers.intersection.at(-1).emit(visible),
+    // Normal IO events agree with actual geometry. The stale-IO regressions
+    // below deliberately move the rect without delivering another IO event.
+    intersect: (visible) => { stage.rectTop = visible ? 0 : window.innerHeight + 500; observers.intersection.at(-1).emit(visible); },
+    bounds: ({ top = stage.rectTop, left = stage.rectLeft, width = stage.clientWidth } = {}) => { stage.rectTop = top; stage.rectLeft = left; stage.clientWidth = width; },
+    viewport: (width, height) => { window.innerWidth = width; window.innerHeight = height; document.documentElement.clientWidth = width; document.documentElement.clientHeight = height; },
     resize: () => observers.resize.at(-1).emit(),
     async ready() { this.intersect(true); await flushAsync(); drain(); return effects.scenes.at(-1); },
     visibility(value) { document.visibilityState = value; document.emit('visibilitychange'); },
@@ -199,6 +208,20 @@ test('mount is inert until visibility and concurrent entry imports only once', a
   assert.equal(h.effects.creates, 1, 'One in-flight renderer owns repeated visibility events');
   creation.resolve(); await flushAsync(); h.drain();
   assert.deepEqual(h.effects.modes, ['loading', 'ready']); h.dispose();
+});
+test('physical visibility alone never bypasses the first observer report or loads a truly offscreen stage', async () => {
+  const h = fixture({ initialTop: 0 });
+  assert.ok(h.stage.getBoundingClientRect().bottom > 0, 'The initial stage really has visible bounds');
+  for (let index = 0; index < 3; index += 1) h.resize();
+  h.visibility('visible'); await flushAsync();
+  assert.equal(h.effects.imports, 0, 'Initial measurement/visibility events still wait for IntersectionObserver');
+  assert.equal(h.frames.size, 0);
+  h.intersect(false); h.resize(); await flushAsync();
+  assert.equal(h.effects.imports, 0, 'A reported offscreen stage does not initialise on resize');
+  h.bounds({ top: 50, left: h.window.innerWidth + 1 }); h.resize(); await flushAsync();
+  assert.equal(h.effects.imports, 0, 'Vertical proximity does not override horizontal exclusion');
+  h.bounds({ left: 0 }); h.resize(); await flushAsync(); h.drain();
+  assert.equal(h.effects.creates, 1, 'After the initial observer report, actual entry can recover without another report'); h.dispose();
 });
 for (const [name, options] of [
   ['reduced motion', { reducedMotion: true }], ['Save-Data', { saveData: true }],
@@ -274,6 +297,28 @@ for (const type of ['offscreen', 'hidden']) test(`${type} cancels queued work an
   if (type === 'offscreen') h.intersect(true); else h.visibility('visible');
   await flushAsync(); h.drain(); assert.equal(h.effects.creates, 1); assert.equal(h.effects.selected.at(-1), 2);
   assert.equal(layout.wrapIndex(Number(h.stage.dataset.glassPosition), 3), 2); h.dispose();
+});
+test('selection wakes a resized partly visible stage despite a stale false IO report', async () => {
+  const h = fixture(); h.viewport(390, 844); h.stage.clientWidth = 390; await h.ready();
+  h.controller.select(1); h.drain(); assert.equal(Number(h.stage.dataset.glassPosition), 1);
+  h.intersect(false); assert.equal(h.frames.size, 0);
+  h.viewport(1280, 720); h.bounds({ width: 1280, top: -252 });
+  assert.ok(h.stage.getBoundingClientRect().bottom > 0, 'The desktop stage is partly visible after resizing');
+  h.controller.select(0); assert.equal(h.effects.selected.at(-1), 0); h.drain();
+  assert.equal(Number(h.stage.dataset.glassPosition), 0, 'Status and actual position both change without a new observer event'); h.dispose();
+});
+test('resize refreshes physical visibility and wakes an existing paused scene without IO delivery', async () => {
+  const h = fixture(); const scene = await h.ready(); h.intersect(false); h.controller.select(1);
+  const renders = scene.renders.length; assert.equal(h.frames.size, 0);
+  h.bounds({ width: 1280, top: -252 }); h.resize(); await flushAsync(); h.drain();
+  assert.equal(h.effects.creates, 1); assert.ok(scene.renders.length > renders);
+  assert.equal(Number(h.stage.dataset.glassPosition), 1); assert.equal(h.frames.size, 0); h.dispose();
+});
+test('resize can start a newly visible stage before the observer updates its false report', async () => {
+  const h = fixture(); h.intersect(false); await flushAsync(); assert.equal(h.effects.imports, 0);
+  h.bounds({ top: 50, width: 1280 }); h.resize(); await flushAsync(); h.drain();
+  assert.equal(h.effects.imports, 1); assert.equal(h.effects.creates, 1); assert.equal(h.effects.modes.at(-1), 'ready');
+  assert.equal(Number(h.stage.dataset.glassPosition), 0); h.dispose();
 });
 test('resizing shares geometry between DOM cards and scene', async () => {
   const h = fixture(); const scene = await h.ready(); h.stage.clientWidth = 390; h.resize(); h.drain();
