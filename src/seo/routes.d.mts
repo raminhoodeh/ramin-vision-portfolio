@@ -1,6 +1,7 @@
 export type PublicPage = { path: string; title: string; description: string; kind: string; key?: string };
 export type PageMetadata = PublicPage & { canonical: string | null; image: string; robots: string };
 export const CANONICAL_ORIGIN: string;
+export const portfolioPreview: boolean;
 export const DEFAULT_PREVIEW_IMAGE: string;
 export const publicPages: PublicPage[];
 export const routeAliases: Record<string, string>;

@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
 import { maintenanceEnabled, maintenanceRobots, maintenanceRoutes } from '../site/maintenance.mjs';
 import { homepageBio, maintenanceDocument } from '../site/maintenanceDocument.mjs';
+import { portfolioPreview } from '../src/seo/routes.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
@@ -28,7 +29,11 @@ export async function buildMaintenance(outputRoot = root) {
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   if (maintenanceEnabled) await buildMaintenance();
   else {
-    // Reopening also requires restoring the reviewed portfolio routing config.
+    if (portfolioPreview && process.env.VERCEL_ENV === 'production') {
+      throw new Error('This branch is a private Preview. Releasing requires an intentional production configuration review.');
+    }
+    // Never upload an old maintenance artifact alongside a full portfolio build.
+    await rm(path.join(root, '.vercel/output'), { recursive: true, force: true });
     const result = spawnSync('npm', ['run', 'build:portfolio'], { cwd: root, stdio: 'inherit' });
     process.exitCode = result.status ?? 1;
   }

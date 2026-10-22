@@ -5,13 +5,10 @@ import net from 'node:net';
 import http from 'node:http';
 import { readFile } from 'node:fs/promises';
 import sharp from 'sharp';
-import { CANONICAL_ORIGIN, getPageMetadata, getStructuredData, serializeStructuredData, publicPages, routeAliases, sectionPathAliases } from '../src/seo/routes.mjs';
+import { CANONICAL_ORIGIN, getPageMetadata, getStructuredData, serializeStructuredData, portfolioPreview, publicPages, routeAliases, sectionPathAliases } from '../src/seo/routes.mjs';
 import { maintenanceEnabled } from '../site/maintenance.mjs';
 
-if (maintenanceEnabled) {
-  await import('./check-maintenance.mjs');
-  process.exit(0);
-}
+assert.equal(maintenanceEnabled, false, 'Full portfolio HTTP verification cannot be satisfied by the maintenance page.');
 
 const probe = net.createServer();
 probe.listen(0, '127.0.0.1'); await once(probe, 'listening');
@@ -27,6 +24,12 @@ const request = (route, options = {}) => new Promise((resolve, reject) => {
     incoming.on('end', () => resolve(new Response([204, 205, 304].includes(incoming.statusCode) ? null : Buffer.concat(chunks), { status: incoming.statusCode, headers: incoming.headers })));
   });
   outgoing.on('error', reject); outgoing.end(options.body);
+}).then((response) => {
+  if (portfolioPreview) {
+    const directives = new Set((response.headers.get('x-robots-tag') ?? '').split(',').map((value) => value.trim().toLowerCase()));
+    for (const directive of ['noindex', 'nofollow', 'noarchive']) assert.ok(directives.has(directive), `Preview response ${route} includes ${directive}`);
+  }
+  return response;
 });
 try {
   for (let attempt = 0; attempt < 100 && !logs.includes('Portfolio server running'); attempt++) {
@@ -50,6 +53,12 @@ try {
     assert.ok(html.includes(`href="${expected.canonical}"`), `canonical ${page.path}`);
     assert.ok(html.includes(`<title>${escape(expected.title)}</title>`), `route title ${page.path}`);
     assert.ok(html.includes(`name="description" content="${escape(expected.description)}"`), `route description ${page.path}`);
+    assert.ok(headHtml.includes(`name="robots" content="${expected.robots}"`), `first HTML robots ${page.path}`);
+    if (portfolioPreview) {
+      assert.equal(expected.robots, 'noindex,nofollow,noarchive', `browser and prerender share Preview indexing ${page.path}`);
+      assert.equal(expected.canonical, CANONICAL_ORIGIN + page.path, `Preview preserves intended production canonical ${page.path}`);
+      assert.ok(expected.image.startsWith('/social/'), `Preview image stays on the current origin ${page.path}`);
+    }
     for (const key of ['og:title', 'og:description', 'og:image', 'twitter:title', 'twitter:description', 'twitter:image']) assert.ok(html.includes(`="${key}"`), `${key} ${page.path}`);
     for (const key of ['description', 'robots', 'og:title', 'og:description', 'og:image', 'og:image:alt', 'og:image:width', 'og:image:height', 'twitter:title', 'twitter:description', 'twitter:image', 'twitter:image:alt']) {
       assert.equal([...headHtml.matchAll(new RegExp(`(?:name|property)="${key}"`, 'g'))].length, 1, `unique ${key} ${page.path}`);
@@ -74,16 +83,24 @@ try {
     assert.equal([...initial.matchAll(/<h1\b/g)].length, 1, `one page heading ${page.path}`);
     assert.ok(!/\[confidential\]|\[object Object\]/i.test(initial), `public-safe readable fields ${page.path}`);
     assert.ok(!/src="\/(?:src|thoughts-section|projects-section)\//.test(initial), `built image URLs ${page.path}`);
+    for (const [, href] of initial.matchAll(/\bhref="([^"]+)"/g)) {
+      assert.ok(!/^\/cv\/?$/i.test(new URL(href.replaceAll('&amp;', '&'), base).pathname), `No CV action in first HTML ${page.path}`);
+    }
     for (const [, fragment] of initial.matchAll(/<a\b[^>]*href="#([^"]+)"/g)) {
       assert.ok(initial.includes(`id="${decodeURIComponent(fragment)}"`), `initial HTML fragment target ${page.path}#${fragment}`);
     }
-    const image = await request(new URL(expected.image).pathname); assert.equal(image.status, 200);
+    const imageUrl = new URL(expected.image, base);
+    if (portfolioPreview) assert.equal(imageUrl.origin, base, `Preview does not request its social image from locked production ${page.path}`);
+    const image = await request(imageUrl.pathname); assert.equal(image.status, 200);
     assert.match(image.headers.get('content-type'), /image\/png/);
     const dimensions = await sharp(Buffer.from(await image.arrayBuffer())).metadata();
     assert.equal(dimensions.width, 1200); assert.equal(dimensions.height, 630);
     const headResponse = await request(page.path, { method: 'HEAD' }); assert.equal(headResponse.status, 200); assert.equal(await headResponse.text(), '');
   }
-  const robots = await request('/robots.txt'); assert.equal(robots.status, 200); assert.match(robots.headers.get('content-type'), /text\/plain/); assert.ok((await robots.text()).includes(`Sitemap: ${CANONICAL_ORIGIN}/sitemap.xml`));
+  const robots = await request('/robots.txt'); assert.equal(robots.status, 200); assert.match(robots.headers.get('content-type'), /text\/plain/);
+  const robotsText = await robots.text();
+  if (portfolioPreview) assert.equal(robotsText, 'User-agent: *\nDisallow: /\n', 'Preview blocks every crawler path and does not advertise a sitemap');
+  else assert.ok(robotsText.includes(`Sitemap: ${CANONICAL_ORIGIN}/sitemap.xml`));
   const initialStyle = await (await request('/initial-content.css')).text();
   assert.ok(initialStyle.includes('overflow:auto!important'));
   assert.ok(initialStyle.includes('height:auto!important'));
@@ -113,6 +130,7 @@ try {
   assert.equal((await request('/api/visitor-journey', journeyOptions)).status, 204, 'measurement endpoint wired into Node hosting');
   assert.equal((await request('/api/visitor-journey', { ...journeyOptions, body: JSON.stringify({ ...journeyPayload, prompt: 'rejected-fixture' }) })).status, 400, 'extra text rejected over HTTP');
   const config = JSON.parse(await readFile('vercel.json', 'utf8'));
+  assert.ok(Array.isArray(config.redirects) && Array.isArray(config.rewrites), 'Full portfolio routing must be restored for Preview verification');
   for (const route of ['/cv', '/cv/']) {
     const response = await request(route, { headers: { host: 'ramin.vision' } });
     assert.equal(response.status, 410, 'CV stays removed after reopening');
@@ -123,7 +141,15 @@ try {
     const response = await request(route, { headers: { host: 'ramin.vision' } }); assert.equal(response.status, 307, route);
     assert.equal(response.headers.get('location'), config.redirects.find((rule) => rule.source === route).destination);
   }
-  const apex = await request('/product-method?source=test', { headers: { host: 'ramin.vision' } }); assert.equal(apex.status, 308); assert.equal(apex.headers.get('location'), `${CANONICAL_ORIGIN}/product-method?source=test`);
+  const apex = await request('/product-method?source=test', { headers: { host: 'ramin.vision' } });
+  if (portfolioPreview) {
+    assert.equal(apex.status, 200, 'Preview serves the tested page without escaping to production');
+    assert.equal(apex.headers.get('location'), null);
+    assert.ok((await apex.text()).includes(`href="${CANONICAL_ORIGIN}/product-method"`));
+  } else {
+    assert.equal(apex.status, 308);
+    assert.equal(apex.headers.get('location'), `${CANONICAL_ORIGIN}/product-method?source=test`);
+  }
   for (const [alias, target] of Object.entries(routeAliases).filter(([from,to]) => from !== to)) {
     const response = await request(alias); assert.equal(response.status, 308, alias); assert.equal(response.headers.get('location'), target);
     assert.ok(config.redirects.some((rule) => rule.source === alias && rule.destination === target && rule.permanent === true));
@@ -134,5 +160,5 @@ try {
     assert.ok(config.rewrites.some((rule) => rule.source === alias && rule.destination === target));
   }
   assert.equal(config.cleanUrls, true); assert.ok(!Object.hasOwn(config, 'trailingSlash'), 'Global slash redirects must not override the explicit presentation 307s'); assert.ok(config.rewrites.every((rule) => rule.source in sectionPathAliases));
-  console.log(`Public HTTP checks passed: ${publicPages.length} readable routes, previews, canonical metadata, discovery, aliases, preserved 307s, apex 308 and real 404s.`);
+  console.log(`Portfolio HTTP checks passed: ${publicPages.length} readable routes, ${portfolioPreview ? 'Preview noindex headers/metadata and blocked robots' : 'public discovery'}, same-origin social images, production canonicals, aliases, preserved presentation 307s, removed CV and real 404s.`);
 } finally { child.kill('SIGTERM'); }

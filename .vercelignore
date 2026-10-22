@@ -38,6 +38,3 @@ projects-section/Project Images/24seven-concierge-images/*.mp4
 # Raw Work videos retained locally after WebM conversion.
 work-section/company-videos/*.mov
 work-section/company-videos/*.mp4
-
-# Maintenance: do not deploy or discover portfolio API functions.
-api/

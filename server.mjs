@@ -6,12 +6,12 @@ import { fileURLToPath } from 'node:url';
 import { handleAiRaminFeedbackRequest, handleAiRaminRequest } from './server/aiRaminHandler.mjs';
 import { handleMassSocialWisdomRequest } from './server/massSocialWisdomHandler.mjs';
 import { handleVisitorJourneyRequest } from './server/visitorJourneyHandler.mjs';
-import { CANONICAL_ORIGIN, getPublicPage, normalizePublicPath, routeAliases } from './src/seo/routes.mjs';
+import { CANONICAL_ORIGIN, getPublicPage, normalizePublicPath, routeAliases, portfolioPreview } from './src/seo/routes.mjs';
 import { blockWhileMaintenance } from './server/siteMaintenance.mjs';
 
 const ROOT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const DIST_DIR = path.join(ROOT_DIR, 'dist');
-const PORT = Number(process.env.PORT || 4182);
+const PORT = Number(process.env.PORT || 4183);
 const PRESENTATION_REDIRECT_URL =
   'https://docs.google.com/presentation/d/1wCDf9rzm3g7lAoDkFw7UWSeDc9PHgUW-/edit?usp=sharing&ouid=110264933146795409149&rtpof=true&sd=true';
 
@@ -101,7 +101,7 @@ async function serveStatic(req, res) {
     if (existsSync(errorPage)) {
       res.statusCode = 404;
       res.setHeader('Content-Type', 'text/html; charset=utf-8');
-      res.setHeader('X-Robots-Tag', 'noindex');
+      if (!portfolioPreview) res.setHeader('X-Robots-Tag', 'noindex');
       if (req.method === 'HEAD') res.end(); else createReadStream(errorPage).pipe(res);
       return;
     }
@@ -116,6 +116,10 @@ async function serveStatic(req, res) {
 
 const server = http.createServer((req, res) => {
   if (blockWhileMaintenance(req, res)) return;
+  if (portfolioPreview) {
+    res.setHeader('X-Robots-Tag', 'noindex, nofollow, noarchive');
+    res.setHeader('X-Portfolio-Availability', 'preview');
+  }
   const requestUrl = new URL(req.url || '/', `http://${req.headers.host || 'localhost'}`);
 
   if (requestUrl.pathname === '/presentation' || requestUrl.pathname === '/presentation/') {
@@ -124,12 +128,12 @@ const server = http.createServer((req, res) => {
   }
 
   if (requestUrl.pathname === '/cv' || requestUrl.pathname === '/cv/') {
-    res.setHeader('X-Robots-Tag', 'noindex');
+    if (!portfolioPreview) res.setHeader('X-Robots-Tag', 'noindex');
     sendText(res, 410, 'The CV is no longer available on this website.');
     return;
   }
 
-  if ((req.headers.host || '').split(':')[0].toLowerCase() === 'ramin.vision' && !requestUrl.pathname.startsWith('/api/')) {
+  if (!portfolioPreview && (req.headers.host || '').split(':')[0].toLowerCase() === 'ramin.vision' && !requestUrl.pathname.startsWith('/api/')) {
     redirect(res, CANONICAL_ORIGIN + requestUrl.pathname + requestUrl.search, 308);
     return;
   }

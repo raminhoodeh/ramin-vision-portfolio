@@ -5,7 +5,7 @@ import { createServer } from 'vite';
 import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import sharp from 'sharp';
-import { CANONICAL_ORIGIN, getPageMetadata, getStructuredData, serializeStructuredData, previewImagePath, publicPages } from '../src/seo/routes.mjs';
+import { CANONICAL_ORIGIN, getPageMetadata, getStructuredData, serializeStructuredData, portfolioPreview, previewImagePath, publicPages } from '../src/seo/routes.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const dist = path.join(root, 'dist');
@@ -80,7 +80,7 @@ try {
     await preview(metadata, previewImagePath(entry.path));
   }
   await writeFile(path.join(dist, '404.html'), documentHtml(getPageMetadata('/404'), renderToStaticMarkup(React.createElement(InitialDocument, { page: null }))));
-  await writeFile(path.join(dist, 'robots.txt'), `User-agent: *\nAllow: /\nDisallow: /api/\nSitemap: ${CANONICAL_ORIGIN}/sitemap.xml\n`);
+  await writeFile(path.join(dist, 'robots.txt'), portfolioPreview ? 'User-agent: *\nDisallow: /\n' : `User-agent: *\nAllow: /\nDisallow: /api/\nSitemap: ${CANONICAL_ORIGIN}/sitemap.xml\n`);
   await writeFile(path.join(dist, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${publicPages.map((entry) => `  <url><loc>${CANONICAL_ORIGIN}${entry.path}</loc></url>`).join('\n')}\n</urlset>\n`);
-  console.log(`Prerendered ${publicPages.length} readable public pages, social images, sitemap, robots and 404.`);
+  console.log(`Prerendered ${publicPages.length} readable ${portfolioPreview ? 'Preview pages (noindex)' : 'public pages'}, social images, sitemap, robots and 404.`);
 } finally { await server.close(); }

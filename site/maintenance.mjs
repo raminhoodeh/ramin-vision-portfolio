@@ -1,6 +1,6 @@
-// Public availability is source-controlled. Keep enabled until Ramin explicitly
-// asks to reopen the portfolio. Private localhost editing can still use Vite.
-export const maintenanceEnabled = true;
+// This isolated preview branch opens the full portfolio behind Vercel Authentication.
+// The production branch keeps its independent, source-controlled maintenance lock.
+export const maintenanceEnabled = false;
 
 export const maintenanceHeaders = {
   'Cache-Control': 'no-store, max-age=0, must-revalidate',

@@ -1,5 +1,8 @@
 export const CANONICAL_ORIGIN = 'https://www.ramin.vision';
 export const DEFAULT_PREVIEW_IMAGE = '/social/home.png';
+// This fork is a review environment. A source-controlled value keeps the
+// prerendered document and browser metadata consistent after SPA navigation.
+export const portfolioPreview = true;
 
 const page = (path, title, description, kind, key) => ({ path, title: `${title} | Ramin Hoodeh`, description, kind, key });
 
@@ -101,8 +104,11 @@ export function isKnownPortfolioPath(value) {
 
 export function getPageMetadata(value) {
   const entry = getPublicPage(value);
-  return entry ? { ...entry, canonical: CANONICAL_ORIGIN + entry.path, image: CANONICAL_ORIGIN + previewImagePath(entry.path), robots: 'index,follow' }
-    : { path: '/404', title: 'Page not found | Ramin Hoodeh', description: 'This portfolio page could not be found. Explore the selected work, products and contact page.', canonical: null, image: CANONICAL_ORIGIN + DEFAULT_PREVIEW_IMAGE, robots: 'noindex,follow', kind: 'not-found' };
+  const imagePath = entry ? previewImagePath(entry.path) : DEFAULT_PREVIEW_IMAGE;
+  const image = portfolioPreview ? imagePath : CANONICAL_ORIGIN + imagePath;
+  const robots = portfolioPreview ? 'noindex,nofollow,noarchive' : entry ? 'index,follow' : 'noindex,follow';
+  return entry ? { ...entry, canonical: CANONICAL_ORIGIN + entry.path, image, robots }
+    : { path: '/404', title: 'Page not found | Ramin Hoodeh', description: 'This portfolio page could not be found. Explore the selected work, products and contact page.', canonical: null, image, robots, kind: 'not-found' };
 }
 
 export function getStructuredData(value) {
