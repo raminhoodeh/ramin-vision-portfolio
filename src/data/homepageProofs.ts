@@ -7,7 +7,7 @@ export const commercialProofs = [
   { id: 'urgentem-acquisition', title: 'Pre-seed startup, later acquired by ICE', detail: 'Urgentem · co-launched Element6 · acquired in 2022' },
   { id: 'wlp-acquisition', title: 'Zero-to-one Family Pay launch', detail: 'Work&Life Partners · company acquired by Vivup in 2024' },
   { id: 'groupm-carbon-scale', title: '£1bn+ media investment assessed', detail: 'GroupM · Carbon Calculator · 2022' },
-  { id: 'manheim-launch', title: 'Prepared Manheim Express for launch', detail: 'Cox Automotive · B2B vehicle auctions' },
+  { id: 'manheim-launch', title: '10,000+ cars sold in Germany', detail: 'Manheim Express · launch preparation · total by Jan 2023' },
   { id: 'manheim-settlement', title: 'Settlement: 5–7 days to T+1', detail: 'Manheim Express · after vehicle handover' },
   { id: 'wlp-childcare-savings', title: '30–40%+ childcare savings', detail: 'Family Pay · Work&Life Partners · eligible parents' },
   { id: 'urgentem-conversion', title: '+30% demo-to-buy conversion', detail: 'Urgentem · Element6 · four months' },
