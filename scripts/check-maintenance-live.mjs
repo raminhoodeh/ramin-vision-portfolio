@@ -47,14 +47,23 @@ async function worker() {
       // receives our maintenance headers, exposes no resource and invokes no
       // API function (the inspected deployment contains no functions at all).
       const platformPreflight = job.method === 'OPTIONS' && response.status === 204;
-      if (!platformPreflight && response.status !== job.status) failures.push(`status ${response.status} expected ${job.status}`);
+      // Vercel denies this absent source-map path before the terminal page
+      // route. Accept only the observed blank text denial for this exact URL;
+      // a 403 elsewhere or any source-map/body content still fails validation.
+      const platformSourceMapDenial = job.path === '/_maintenance/background.js.map'
+        && response.status === 403 && bytes.length <= 1 && body.trim() === ''
+        && response.headers.get('content-type') === 'text/plain';
+      if (!platformPreflight && !platformSourceMapDenial && response.status !== job.status) failures.push(`status ${response.status} expected ${job.status}`);
       if (response.headers.get('location')) failures.push('unexpected redirect');
       if (response.headers.get('x-portfolio-availability') !== 'maintenance') failures.push('missing maintenance header');
       if (!response.headers.get('cache-control')?.includes('no-store')) failures.push('cacheable response');
       if (!response.headers.get('x-robots-tag')?.includes('noindex')) failures.push('missing noindex');
+      if (response.headers.get('x-content-type-options') !== 'nosniff') failures.push('missing nosniff');
       if (response.headers.get('content-security-policy') !== maintenanceHeaders['Content-Security-Policy']) failures.push('unexpected CSP');
       if (platformPreflight || job.method === 'HEAD') {
         if (bytes.length) failures.push('HEAD/preflight must have no body');
+      } else if (platformSourceMapDenial) {
+        // No maintenance HTML is expected from this platform-level denial.
       } else if (job.asset) {
         if (response.headers.get('content-type') !== job.asset.contentType) failures.push('unexpected asset content type');
         if (bytes.length !== job.asset.bytes || createHash('sha384').update(bytes).digest('base64') !== job.asset.sha384) failures.push('asset differs from reviewed build');
@@ -65,13 +74,13 @@ async function worker() {
         try { assertMaintenanceContacts(body, { requireVisual: true, expectedIntegrity: visualIntegrity }); }
         catch (error) { failures.push(`Maintenance contact/payload policy: ${error.message}`); }
       }
-      results.push({ url: job.host + job.path, method: job.method ?? 'GET', status: response.status, platformPreflight, failures });
+      results.push({ url: job.host + job.path, method: job.method ?? 'GET', status: response.status, platformPreflight, platformSourceMapDenial, failures });
     } catch (error) { results.push({ url: job.host + job.path, failures: [error.message] }); }
   }
 }
 await Promise.all(Array.from({ length: 8 }, worker));
 const failed = results.filter((entry) => entry.failures.length);
-const report = { checked: results.length, passed: results.length - failed.length, failed, emptyPlatformPreflights: results.filter((entry) => entry.platformPreflight).length, checkedAt: new Date().toISOString() };
+const report = { checked: results.length, passed: results.length - failed.length, failed, emptyPlatformPreflights: results.filter((entry) => entry.platformPreflight).length, platformSourceMapDenials: results.filter((entry) => entry.platformSourceMapDenial).length, checkedAt: new Date().toISOString() };
 if (values.output) await writeFile(values.output, JSON.stringify({ report, results }, null, 2) + '\n');
 console.log(JSON.stringify(report, null, 2));
 assert.equal(failed.length, 0, 'Public pages, document/asset paths and APIs must stay locked.');

@@ -34,10 +34,11 @@ export function maintenanceResponse(pathname, method = 'GET') {
 
 export function maintenanceRoutes() {
   return [
-    { src: '^/$', methods: ['GET', 'HEAD'], dest: '/index.html', headers: maintenanceHeaders },
-    { src: '^/robots\\.txt$', methods: ['GET', 'HEAD'], dest: '/robots.txt', headers: maintenanceHeaders },
+    { src: '^/$', caseSensitive: true, methods: ['GET', 'HEAD'], dest: '/index.html', headers: maintenanceHeaders },
+    { src: '^/robots\\.txt$', caseSensitive: true, methods: ['GET', 'HEAD'], dest: '/robots.txt', headers: maintenanceHeaders },
     ...Object.entries(maintenanceAssets).map(([pathname, asset]) => ({
       src: `^${pathname.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`,
+      caseSensitive: true,
       methods: ['GET', 'HEAD'], dest: `/${asset.file}`, headers: { ...maintenanceHeaders, 'Content-Type': asset.contentType },
     })),
     // Deliberately before any filesystem phase: no API, old asset, document,

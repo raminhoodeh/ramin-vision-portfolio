@@ -40,6 +40,7 @@ for (const asset of Object.values(maintenanceAssets)) {
 }
 const config = JSON.parse(await readFile(path.join(root, '.vercel/output/config.json'), 'utf8'));
 assert.deepEqual(config, { version: 3, routes: maintenanceRoutes() });
+for (const route of config.routes.filter(({ dest, status }) => dest && !status)) assert.equal(route.caseSensitive, true, `Allowlist cannot admit case aliases: ${route.src}`);
 assert.ok(!config.routes.some((route) => route.handle || route.check || route.continue), 'No filesystem/API bypass before denial');
 assert.equal(config.routes.find((route) => new RegExp(route.src).test('/robots.txt'))?.dest, '/robots.txt');
 

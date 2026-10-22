@@ -7,6 +7,7 @@ if (maintenanceEnabled) {
   assert.equal(config.framework, null);
   assert.equal(config.buildCommand, 'npm run build');
   assert.deepEqual(config.routes, maintenanceRoutes());
+  for (const route of config.routes.filter(({ dest, status }) => dest && !status)) assert.equal(route.caseSensitive, true, `Read allowlist is case-sensitive: ${route.src}`);
   for (const key of ['redirects', 'rewrites', 'cleanUrls', 'trailingSlash', 'functions']) assert.ok(!(key in config), `Maintenance routing cannot retain ${key}`);
   assert.ok(readFileSync(new URL('../.vercelignore', import.meta.url), 'utf8').split('\n').includes('api/'), 'Source deployments must not discover API functions while locked');
   assert.equal(Object.keys(maintenanceAssets).length, 3, 'Only the shader bundle and two fonts are exposed');
