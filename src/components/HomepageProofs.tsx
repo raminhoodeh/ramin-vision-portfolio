@@ -22,12 +22,9 @@ export function HomepageProofs() {
     </section>
     <section className="homepage-proof-card homepage-proof-teaching" aria-label="A method I teach">
       <h3 className="homepage-proof-title">{homepagePositioning.strengthTeaching}</h3>
-      <div className="homepage-proof-ticker homepage-proof-detail" data-proof-ticker="teaching" aria-live="off">
-        <div className="homepage-proof-slide" data-proof-slide="" data-active="true" aria-hidden="false"><p>Creator &amp; instructor</p></div>
-        <div className="homepage-proof-slide" data-proof-slide="" data-active="false" aria-hidden="true" inert>
-          <p title={`${instructorTeachingEvidence.checkedLabel}; Udemy instructor totals`}>{totals}</p>
-          <div className="homepage-proof-badges" role="group" aria-label="Udemy AI course badges">{aiProductCourseEvidence.udemy.badges.map((badge) => <span key={badge} title={`${badge} on the Udemy AI course`}>{badge}</span>)}</div>
-        </div>
+      <div className="homepage-proof-summary homepage-proof-detail" data-teaching-summary="">
+        <p title={`${instructorTeachingEvidence.checkedLabel}; Udemy instructor totals`}>{totals}</p>
+        <div className="homepage-proof-badges" data-teaching-badges="" role="group" aria-label="Udemy AI course badges">{aiProductCourseEvidence.udemy.badges.map((badge) => <span key={badge} title={`${badge} on the Udemy AI course`}>{badge}</span>)}</div>
       </div>
       <p className="homepage-proof-courses"><a href={aiProductCourseEvidence.coursera.href} target="_blank" rel="noopener noreferrer" aria-label="Coursera AI product management course (opens in a new tab)">Coursera</a><span aria-hidden="true"> · </span><a href={aiProductCourseEvidence.udemy.href} target="_blank" rel="noopener noreferrer" aria-label="Udemy AI product management course (opens in a new tab)">Udemy</a></p>
       <button type="button" className="homepage-proof-motion" data-proof-motion="" aria-label="Pause proof rotation" aria-pressed="false" title="Pause proof rotation">
