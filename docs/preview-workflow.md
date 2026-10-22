@@ -2,7 +2,7 @@
 
 This is the isolated `codex/site-preview` branch, forked from maintenance commit `d618619`. The public `ramin.vision` / `www.ramin.vision` domains stay on their maintenance deployment. This branch opens the full portfolio only in a protected Vercel Preview. CV links and redirects remain removed.
 
-Latest tested preview (22 October 2026): https://portfolio-98cdzpy8x-ramin-hoodehs-projects.vercel.app/ — includes the homepage glass carousel. See `docs/glass-carousel.md` for implementation and verification. Earlier preview URLs below are historical snapshots.
+Latest tested preview (22 October 2026): https://portfolio-3m0lxozla-ramin-hoodehs-projects.vercel.app/ — includes the homepage glass carousel and approved revenue, payments and teaching positioning. The latest refresh was checked for build success and authentication protection; its hosted private UI was not rechecked in a browser. See `docs/glass-carousel.md` for the carousel implementation and earlier verification. Earlier preview URLs below are historical snapshots.
 
 ## Edit and test
 
@@ -30,6 +30,14 @@ This branch deliberately refuses a normal Vercel Production build. A protected P
 At release, review the final commit; turn off `portfolioPreview` in `src/seo/routes.mjs`; intentionally disable maintenance in the production release; restore `config/vercel-portfolio.json` (which has no CV redirects) as the production configuration; retain API inputs and the CV removal; restore the normal verification/build workflow. Rebuild with Production settings and run the release gates. Then deploy that reviewed production build and verify both custom domains, deep links, assets, redirects, removed CV access, APIs and indexing. Do not promote this Preview artifact directly: its noindex settings are part of the built JavaScript and HTML.
 
 The historical maintenance design and its production evidence are retained in `docs/site-availability.md`. That file describes the public branch, not the availability of this Preview fork.
+
+## Homepage positioning refresh
+
+22 October 2026: Preview deployment `dpl_FQRKaBq4Kr6PxymEE2WraRp2kEtf` is READY at the latest URL above, with runtime commit `b38f6f0`. The update adds the approved revenue headline without an em dash, the same-line payments and embedded-finance specialism in lighter Instrument Serif, the money-movement line, and the three connected strengths. Only four shared homepage files changed; the carousel, Preview configuration and protection were retained.
+
+`check:content`, `check:next-priority` (including 53 parser route/anchor cases), `check:accessibility`, `check:glass-carousel` (47 behavioural cases), `git diff --check` and `build:portfolio` passed. The build prerendered 27 readable noindex Preview pages. Existing asset and large-chunk warnings remain. The matching public maintenance homepage was browser-tested at 390px and 320px: the title remained on one line, the serif suffix used weight 400, and there was no horizontal overflow. These public-page observations are not a new hosted private-browser check. The complete `verify:preview` suite was not rerun for this refresh.
+
+The guarded `npm run deploy:preview` command confirmed the Production target remained unchanged after deployment. A separate project check confirmed Production was still `dpl_5B1CxGrCdJqVZsjo2n5S2TnaWwof` and Vercel Authentication remained `all_except_custom_domains`. An anonymous request to the new immutable Preview URL returned HTTP 302 to `vercel.com/sso-api` with `X-Robots-Tag: noindex`; no bypass was used. No live AI provider requests or feedback submissions were made. The deployment log is `/tmp/homepage-positioning-preview-deploy.log`.
 
 ## Initial verification
 
