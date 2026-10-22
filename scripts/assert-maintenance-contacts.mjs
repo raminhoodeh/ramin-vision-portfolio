@@ -9,23 +9,47 @@ const contacts = [
   { href: 'https://wa.link/7g31wi', label: /whatsapp/i },
 ];
 const visibleText = (html) => html
-  .replace(/<(style|svg)\b[\s\S]*?<\/\1\s*>/gi, '')
+  .replace(/<(style|svg|script)\b[\s\S]*?<\/\1\s*>/gi, '')
   .replace(/<[^>]*>/g, ' ')
   .replace(/\s+/g, ' ');
 
-export function assertMaintenanceContacts(html) {
-  assert.doesNotMatch(html, /<(?:script|iframe|form|button|nav|img|image|object|embed|link|base|audio|video|source|track|foreignObject|animate|animateMotion|animateTransform|set|use)\b/i,
+export function assertMaintenanceContacts(html, { requireVisual = false, expectedIntegrity } = {}) {
+  const scripts = [...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script\s*>/gi)];
+  assert.equal([...html.matchAll(/<script\b/gi)].length, scripts.length, 'Every decorative script must be explicitly closed');
+  assert.ok(scripts.length <= 1, 'Only one isolated decorative script is allowed');
+  if (requireVisual) assert.equal(scripts.length, 1, 'Built maintenance restores the original decorative shader');
+  for (const [, attributes, content] of scripts) {
+    assert.equal(content.trim(), '', 'Inline JavaScript is not allowed');
+    const src = attributes.match(/\bsrc\s*=\s*(["'])(.*?)\1/i)?.[2];
+    assert.equal(src, '/_maintenance/background.js', 'Only the reviewed decorative entry is allowed');
+    const integrity = attributes.match(/\bintegrity\s*=\s*(["'])(.*?)\1/i)?.[2];
+    assert.match(integrity ?? '', /^sha384-[A-Za-z0-9+/]{64}$/, 'Decorative script requires SHA-384 integrity');
+    if (expectedIntegrity) assert.equal(integrity, expectedIntegrity, 'Script integrity matches the emitted decorative bundle');
+    assert.match(attributes, /\sdefer(?:\s|$)/i, 'The decorative entry must defer until the page is parsed');
+    assert.match(attributes, /\bcrossorigin\s*=\s*(["'])anonymous\1/i, 'Decorative script uses anonymous SRI loading');
+    const rest = attributes
+      .replace(/\s+(?:src|integrity|crossorigin)\s*=\s*(["'])(.*?)\1/gi, '')
+      .replace(/\s+defer\b/gi, '').trim();
+    assert.equal(rest, '', 'No executable or unexpected script attributes are allowed');
+    for (const name of ['src', 'integrity', 'crossorigin', 'defer']) assert.equal([...attributes.matchAll(new RegExp(`(?:^|\\s)${name}(?=\\s|=|$)`, 'gi'))].length, 1, `Single ${name} attribute`);
+  }
+  const withoutScript = html.replace(/<script\b[^>]*>[\s\S]*?<\/script\s*>/gi, '');
+  assert.doesNotMatch(withoutScript, /<(?:iframe|form|button|nav|img|image|object|embed|link|base|audio|video|source|track|foreignObject|animate|animateMotion|animateTransform|set|use)\b/i,
     'Maintenance cannot load application code, media, embeds, forms or portfolio navigation');
-  assert.doesNotMatch(html, /\b(?:src|srcset|xlink:href)\s*=|\son[a-z]+\s*=/i,
-    'Maintenance cannot have resource sources or executable event attributes');
+  assert.doesNotMatch(withoutScript, /\b(?:src|srcset|xlink:href)\s*=|\son[a-z]+\s*=/i,
+    'Only the reviewed decorative script may have a resource source; no executable event attributes');
   assert.doesNotMatch(html, /\/cv\b|drive\.google|docs\.google|View CV|Read my CV/i,
     'Maintenance cannot expose CV or document access');
-  assert.doesNotMatch(html, /@import\b|@font-face\b|expression\s*\(/i,
-    'Maintenance styles must remain self-contained');
+  assert.doesNotMatch(html, /@import\b|expression\s*\(/i,
+    'Maintenance styles cannot import external styles or expressions');
+  const fontUrls = new Set(['/_maintenance/inter-latin.woff2', '/_maintenance/instrument-serif-italic-latin.woff2']);
+  const foundFonts = new Set();
   for (const match of html.matchAll(/\burl\s*\(\s*([^)]*)\)/gi)) {
     const reference = match[1].trim().replace(/^(['"])([\s\S]*)\1$/, '$2');
-    assert.match(reference, /^#[a-z][\w:.-]*$/i, 'Only local decorative filter references are allowed');
+    if (fontUrls.has(reference)) foundFonts.add(reference);
+    else assert.match(reference, /^#[a-z][\w:.-]*$/i, 'Only local decorative filters and the two reviewed fonts are allowed');
   }
+  if (requireVisual) assert.deepEqual([...foundFonts].sort(), [...fontUrls].sort(), 'Built maintenance uses both original local fonts');
 
   const anchors = [...html.matchAll(/<a\b([^>]*)>([\s\S]*?)<\/a\s*>/gi)];
   assert.equal([...html.matchAll(/<a\b/gi)].length, 3, 'Exactly three contact anchors are allowed');
@@ -59,6 +83,9 @@ export function checkMaintenanceContactPolicy() {
     <a href="https://www.linkedin.com/in/raminhoodeh" target="_blank" rel="noopener noreferrer">LinkedIn</a>
     <a href="https://wa.link/7g31wi" target="_blank" rel="noopener noreferrer">WhatsApp</a></main>`;
   assertMaintenanceContacts(fixture);
+  const visualFixture = fixture.replace('</style>', '@font-face{font-family:Inter;src:url("/_maintenance/inter-latin.woff2")}@font-face{font-family:Instrument;src:url("/_maintenance/instrument-serif-italic-latin.woff2")}</style>')
+    + `<script defer src="/_maintenance/background.js" integrity="sha384-${'A'.repeat(64)}" crossorigin="anonymous"></script>`;
+  assertMaintenanceContacts(visualFixture, { requireVisual: true });
   const rejected = [
     ['internal page', fixture.replace('https://wa.link/7g31wi', '/projects')],
     ['different external link', fixture.replace('https://wa.link/7g31wi', 'https://example.com')],
@@ -76,6 +103,16 @@ export function checkMaintenanceContactPolicy() {
     ['external stylesheet', fixture.replace('</style>', '@import "https://example.com/style.css";</style>')],
     ['SVG linked resource', fixture.replace('</main>', '<svg><use href="#maintenance-glass" /></svg></main>')],
     ['script payload', fixture.replace('</main>', '<script>console.log(1)</script></main>')],
+    ['additional decorative script', visualFixture + `<script defer src="/_maintenance/background.js" integrity="sha384-${'A'.repeat(64)}" crossorigin="anonymous"></script>`],
+    ['inline decorative script', visualFixture.replace('</script>', 'alert(1)</script>')],
+    ['different script entry', visualFixture.replace('/_maintenance/background.js', '/assets/index.js')],
+    ['external script entry', visualFixture.replace('/_maintenance/background.js', 'https://example.com/background.js')],
+    ['missing SRI', visualFixture.replace(/ integrity="[^"]+"/, '')],
+    ['invalid SRI', visualFixture.replace('sha384-', 'sha256-')],
+    ['script event handler', visualFixture.replace(' defer ', ' defer onload="alert(1)" ')],
+    ['module application entry', visualFixture.replace(' defer ', ' defer type="module" ')],
+    ['unexpected local font', visualFixture.replace('/_maintenance/inter-latin.woff2', '/fonts/other.woff2')],
+    ['external font', visualFixture.replace('/_maintenance/inter-latin.woff2', 'https://example.com/font.woff2')],
   ];
   for (const [name, html] of rejected) assert.throws(() => assertMaintenanceContacts(html), undefined, `Reject ${name}`);
   return rejected.length;
