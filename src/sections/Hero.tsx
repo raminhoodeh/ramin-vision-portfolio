@@ -162,7 +162,7 @@ export function Hero({ ready, onOpenThesis, onOpenBiography }: {
       <div className="homepage-hero__copy z-10">
         <h1 className="sr-only">{hero.name}</h1>
         <p className="homepage-hero__role blur-in translate-y-5 text-center text-[1.14rem] font-semibold leading-normal text-[#4f5863] [filter:blur(10px)] md:text-[1.3rem]">
-          <span>Product </span>
+          <span>AI Product </span>
           <motion.span
             key={activeRole}
             className="inline-block align-baseline font-display text-[1.04em] italic leading-normal text-[#65707c]"
