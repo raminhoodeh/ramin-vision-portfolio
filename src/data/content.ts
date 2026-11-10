@@ -2302,7 +2302,16 @@ export const portfolioContent = {
   hero: {
     name: 'Ramin Hoodeh',
     role: 'Product Teacher',
-    headline: 'I use AI to research, design, and build beautiful things that the world really needs. I\'ve shipped 6 live AI products and a framework for building them.',
+    headline: "I'm an AI Product Manager in payments and embedded finance with 8+ years of experience. I combine AI systems; evals, guardrails and agentic products - with consumer experience and growth, and zero-to-one marketplace and platform builds, delivered through APIs and integrations.",
+    biography: {
+      career: "My career spans B2B to B2B2C to B2C, at platforms and fintechs embedding finance into consumer and business products, looking to move money somewhere it hasn't moved before in their market: a new checkout, instrument or payout on regulated rails, so that it converts, earns a margin and reconciles the first time it goes live. I generally own the experience, integration and operations layers: the customer journey, the integration with licensed financial rails, and the live launch operations.",
+      latestWork: {
+        beforeLink: 'Most recent work is at Bayut, introducing the first ',
+        linkLabel: 'rent-by-credit-card checkout',
+        linkHref: 'https://fintechnews.ae/32179/proptech/dubizzle-invests-tern-uae-rent-payments/',
+        afterLink: ' in the UAE.',
+      },
+    },
     profilePicture: {
       src: profilePictureUrl,
       alt: 'Ramin Hoodeh profile picture',

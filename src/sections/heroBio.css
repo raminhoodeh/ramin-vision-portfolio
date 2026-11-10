@@ -1,0 +1,73 @@
+/* Anchor the copy beneath the original SVG name, independently of disclosure height. */
+.homepage-hero__copy {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 48rem;
+  margin-inline: auto;
+  padding-top: calc(var(--hero-stage-height, 100svh) * 0.52);
+  padding-bottom: 4.5rem;
+}
+
+.homepage-hero__role,
+.homepage-hero__cta {
+  flex-shrink: 0;
+}
+
+.homepage-hero__bio {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 42rem;
+  min-height: 0;
+  margin-top: 1.25rem;
+}
+
+.homepage-hero__bio-details p {
+  margin-top: 1rem;
+}
+
+.homepage-hero__bio-toggle {
+  flex-shrink: 0;
+  margin-top: 0.5rem;
+}
+
+.homepage-hero__bio-link {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.homepage-hero__bio-link:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.homepage-hero__bio-details,
+.homepage-hero__bio-link,
+.homepage-hero .education-read-more-chip,
+.homepage-hero__cta {
+  scroll-margin-block: 2rem 8rem;
+}
+
+.homepage-hero__cta {
+  margin-top: 1rem;
+}
+
+@media (max-width: 640px) {
+  .homepage-hero__copy {
+    padding-top: calc(var(--hero-stage-height, 100svh) * 0.47);
+    padding-bottom: 5rem;
+  }
+
+  .homepage-hero__bio {
+    margin-top: 0.75rem;
+    line-height: 1.5rem;
+  }
+
+  .homepage-hero__cta {
+    margin-top: 1.5rem;
+  }
+}
