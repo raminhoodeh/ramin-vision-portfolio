@@ -7,6 +7,7 @@ import {
 import { portfolioContent } from '../../data/portfolio';
 import { getProjectCardDescriptionByName } from './projectCopy';
 import { GlassImprintCta } from '../../components/GlassImprintCta';
+import { ReaderOverlay } from '../../components/ReaderOverlay';
 import { IPhone3D } from '../../components/IPhone3D';
 import { MassSocialWisdomDemo } from './MassSocialWisdomDemo';
 import aiCostsDashboardVisualUrl from '../../assets/projects/ai-costs-mock.webp';
@@ -915,36 +916,8 @@ export function CaseStudyOverlay({ item, onClose }: { item: CaseStudyEntry; onCl
     ...item.sections.filter((section) => section.label.toLowerCase() !== 'overview'),
   ];
 
-  useEffect(() => {
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') onClose();
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      window.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [onClose]);
-
   return (
-    <motion.div
-      className="portfolio-deep-dive-overlay fixed inset-0 z-[220] overflow-y-auto px-3 py-3 text-text-primary sm:px-5 sm:py-5"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.28, ease: [0.25, 0.1, 0.25, 1] }}
-    >
-      <button
-        type="button"
-        aria-label="Close case study backdrop"
-        className="portfolio-deep-dive-backdrop absolute inset-0 bg-bg/20 backdrop-blur-[3px]"
-        onClick={onClose}
-      />
-
+    <ReaderOverlay onClose={onClose}>
       {shouldShowMassSocialDemo ? (
         <MassSocialWisdomDemo onClose={onClose} githubHref={proofCta?.href} />
       ) : (
@@ -1066,6 +1039,6 @@ export function CaseStudyOverlay({ item, onClose }: { item: CaseStudyEntry; onCl
         </div>
       </motion.article>
       )}
-    </motion.div>
+    </ReaderOverlay>
   );
 }

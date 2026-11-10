@@ -1273,6 +1273,7 @@ a {
 
 [data-deep-dive-active='true'] [data-portfolio-underlay],
 [data-deep-dive-active='true'] .portfolio-bottom-navigation,
+[data-deep-dive-active='true'] .portfolio-mobile-bottom-navigation,
 [data-deep-dive-active='true'] .portfolio-ai-screen-border {
   content-visibility: hidden;
   visibility: hidden;

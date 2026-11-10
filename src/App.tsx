@@ -20,6 +20,7 @@ import { scrollToId } from './lib/scroll';
 import { type CaseStudyEntry } from './sections/types';
 import { Contact } from './sections/Contact';
 import { Hero } from './sections/Hero';
+import { BiographyReader } from './sections/BiographyReader';
 import { AiRaminSection } from './sections/AiRamin';
 import { ExperienceEducationSection } from './sections/ExperienceEducation';
 import {
@@ -273,6 +274,7 @@ function ActivePortfolioSection({
   active,
   ready,
   onOpenThesis,
+  onOpenBiography,
   onOpenCaseStudy,
   showContentReadiness,
   bonusRockPreloadStatus,
@@ -283,6 +285,7 @@ function ActivePortfolioSection({
   active: SectionTarget;
   ready: boolean;
   onOpenThesis: () => void;
+  onOpenBiography: (trigger: HTMLButtonElement) => void;
   onOpenCaseStudy: (item: CaseStudyEntry) => void;
   showContentReadiness: boolean;
   bonusRockPreloadStatus: BonusRockPreloadStatus;
@@ -314,13 +317,25 @@ function ActivePortfolioSection({
       return <AiRaminSection onOpenMenu={onOpenMobileMenu} />;
     case 'hero':
     default:
-      return <Hero ready={ready} onOpenThesis={onOpenThesis} />;
+      return <Hero ready={ready} onOpenThesis={onOpenThesis} onOpenBiography={onOpenBiography} />;
   }
 }
 
 function PortfolioPage() {
   const location = useLocation();
   const navigate = useNavigate();
+  const [isBiographyOpen, setIsBiographyOpen] = useState(false);
+  const biographyTriggerRef = useRef<HTMLElement | null>(null);
+  const handleOpenBiography = useCallback((trigger: HTMLButtonElement) => {
+    biographyTriggerRef.current = trigger;
+    setIsBiographyOpen(true);
+  }, []);
+  const handleCloseBiography = useCallback(() => setIsBiographyOpen(false), []);
+
+  useEffect(() => {
+    biographyTriggerRef.current = null;
+    setIsBiographyOpen(false);
+  }, [location.key]);
   const [isLoading, setIsLoading] = useState(
     () => !(import.meta.env.DEV && new URLSearchParams(window.location.search).has('noIntro')),
   );
@@ -359,7 +374,7 @@ function PortfolioPage() {
   const isAiRaminSection = activeSection === 'ai-ramin';
   const isContactSection = activeSection === 'contact';
   const isFullBleedSection = isProjectsSection || isThoughtsSection;
-  const hasActiveDeepDive = activeCaseStudy !== null;
+  const hasActiveDeepDive = activeCaseStudy !== null || isBiographyOpen;
   const usesProjectsBackdrop = isProjectsSection;
   const shaderVariant: PortfolioShaderVariant = usesProjectsBackdrop
     ? 'projects'
@@ -663,6 +678,7 @@ function PortfolioPage() {
                     active={activeSection}
                     ready={!isLoading}
                     onOpenThesis={handleOpenThesis}
+                    onOpenBiography={handleOpenBiography}
                     onOpenCaseStudy={handleOpenCaseStudy}
                     showContentReadiness={showContentReadiness}
                     bonusRockPreloadStatus={bonusRockPreloadStatus}
@@ -677,6 +693,9 @@ function PortfolioPage() {
         </div>
       </div>
       <AnimatePresence>
+        {isBiographyOpen ? (
+          <BiographyReader key="biography-reader" onClose={handleCloseBiography} returnFocusRef={biographyTriggerRef} />
+        ) : null}
         {activeCaseStudy ? (
           activeCaseStudy.id === THESIS_CASE_STUDY_ID ? (
             <ThesisDeepDive key="thesis-deep-dive" onClose={handleCloseCaseStudy} />

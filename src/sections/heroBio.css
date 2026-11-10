@@ -2,7 +2,7 @@
   overflow-anchor: none;
 }
 
-/* Balance the collapsed name/copy/CTA together; keep that anchor when details open. */
+/* Balance the name/copy/CTA together. The full biography opens outside this layout. */
 .homepage-hero__copy {
   position: relative;
   display: flex;
@@ -28,40 +28,105 @@
   margin-top: 1.25rem;
 }
 
-.homepage-hero__bio-details p {
-  margin-top: 1rem;
-}
-
-.homepage-hero__bio-details:not([hidden]) {
-  display: flow-root;
-}
-
 .homepage-hero__bio-toggle {
+  display: flex;
+  justify-content: center;
   flex-shrink: 0;
+  height: 2rem;
   margin-top: 0.5rem;
 }
 
-.homepage-hero__bio-link {
+.homepage-hero__read-more {
+  border: 0;
+  background: none;
+  padding: 0.25rem 0.5rem;
+  color: #65707c;
+  font-size: 0.8125rem;
+  line-height: 1.5rem;
+  text-decoration: underline;
+  text-decoration-color: #65707c60;
+  text-underline-offset: 0.2em;
+  transition: color 160ms ease, text-decoration-color 160ms ease;
+}
+
+.homepage-hero__read-more:hover {
+  color: #34485c;
+  text-decoration-color: currentColor;
+}
+
+.biography-reader-link {
   color: inherit;
   text-decoration: underline;
   text-underline-offset: 0.2em;
 }
 
-.homepage-hero__bio-link:focus-visible {
+.homepage-hero__read-more:focus-visible,
+.biography-reader-link:focus-visible {
   outline: 2px solid currentColor;
   outline-offset: 3px;
   border-radius: 2px;
 }
 
-.homepage-hero__bio-details,
-.homepage-hero__bio-link,
-.homepage-hero .education-read-more-chip,
+.homepage-hero__read-more,
 .homepage-hero__cta {
   scroll-margin-block: 2rem 8rem;
 }
 
 .homepage-hero__cta {
   margin-top: 2rem;
+}
+
+.biography-reader-overlay {
+  display: flex;
+}
+
+.biography-reader-shell {
+  width: 100%;
+  max-width: 48rem;
+  flex-shrink: 0;
+  margin: auto;
+}
+
+.biography-reader-close {
+  flex-shrink: 0;
+}
+
+.biography-reader-overlay .portfolio-deep-dive-mobile-close.card-glass-attachment {
+  display: none;
+}
+
+.biography-reader-shell .portfolio-deep-dive-reader-panel {
+  display: flex;
+  max-height: calc(100dvh - 2.5rem);
+  flex-direction: column;
+}
+
+.biography-reader-shell .portfolio-deep-dive-header {
+  flex-shrink: 0;
+}
+
+.biography-reader-body {
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.biography-reader-body p + p {
+  margin-top: 1.25rem;
+}
+
+@media (max-width: 767px) {
+  .biography-reader-overlay .portfolio-deep-dive-mobile-close.card-glass-attachment {
+    display: inline-flex;
+  }
+
+  .biography-reader-shell {
+    padding-top: 3.5rem;
+  }
+
+  .biography-reader-shell .portfolio-deep-dive-reader-panel {
+    max-height: none;
+  }
 }
 
 @media (max-width: 640px) {
