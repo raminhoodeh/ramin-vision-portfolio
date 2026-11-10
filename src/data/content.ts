@@ -2301,7 +2301,7 @@ const thoughtWorkIntegration = {
 export const portfolioContent = {
   hero: {
     name: 'Ramin Hoodeh',
-    role: 'Product Teacher and Fiction Author',
+    role: 'Product Teacher',
     headline: 'I use AI to research, design, and build beautiful things that the world really needs. I\'ve shipped 6 live AI products and a framework for building them.',
     profilePicture: {
       src: profilePictureUrl,

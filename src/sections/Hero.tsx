@@ -125,7 +125,6 @@ export function Hero({ ready, onOpenThesis }: { ready: boolean; onOpenThesis: ()
           >
             {activeRole}
           </motion.span>
-          <span> and Fiction Author</span>
         </p>
         <p className="blur-in mt-5 max-w-md translate-y-5 text-sm leading-7 text-muted [filter:blur(10px)] md:text-base">
           {hero.headline}
