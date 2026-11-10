@@ -127,6 +127,11 @@
   .biography-reader-shell .portfolio-deep-dive-reader-panel {
     max-height: none;
   }
+
+  .biography-reader-body {
+    overflow: visible;
+    overscroll-behavior: auto;
+  }
 }
 
 @media (max-width: 640px) {
