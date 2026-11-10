@@ -14,6 +14,7 @@ export function Hero({ ready, onOpenThesis }: { ready: boolean; onOpenThesis: ()
   const [roleIndex, setRoleIndex] = useState(0);
   const [isBioExpanded, setIsBioExpanded] = useState(false);
   const [viewBoxScale, setViewBoxScale] = useState(1);
+  const [nameVerticalOffset, setNameVerticalOffset] = useState(0);
   const bioDetailsId = `hero-bio-${useId().replace(/:/g, '')}`;
   const bioDetailsRef = useRef<HTMLDivElement | null>(null);
   const { hero } = portfolioContent;
@@ -23,10 +24,44 @@ export function Hero({ ready, onOpenThesis }: { ready: boolean; onOpenThesis: ()
     const root = rootRef.current;
     const stage = root?.closest<HTMLElement>('.portfolio-stage');
     if (!root || !stage) return;
+    let active = true;
+    let previousOffset = 0;
+    let previousWidth = 0;
+    let previousHeight = 0;
+    let previousIntroHeight = 0;
     const update = () => {
+      if (!active) return;
       const viewportHeight = stage.clientHeight;
       if (!viewportHeight) return;
       root.style.setProperty('--hero-stage-height', `${viewportHeight}px`);
+      const details = bioDetailsRef.current;
+      const intro = root.querySelector<HTMLElement>('.homepage-hero__bio-intro');
+      const cta = root.querySelector<HTMLElement>('.homepage-hero__cta');
+      const mobile = window.matchMedia('(max-width: 640px)').matches;
+      const name = root.querySelector<SVGTextElement>(
+        `.hero-name-cutout-layer-${mobile ? 'mobile' : 'desktop'} .hero-name-cutout-mask-text`,
+      );
+      const introHeight = intro?.getBoundingClientRect().height ?? 0;
+      const resized = previousWidth !== stage.clientWidth || previousHeight !== viewportHeight || previousIntroHeight !== introHeight;
+      if (name && cta && details && (details.hidden || resized)) {
+        const viewHeight = mobile ? 760 : 900;
+        const baselineOffset = Number(name.getAttribute('y')) - (mobile ? 306 : 350);
+        const nameTop = (name.getBBox().y - baselineOffset) * viewportHeight / viewHeight;
+        const detailsHeight = details.hidden ? 0 : details.getBoundingClientRect().height;
+        const ctaStyle = window.getComputedStyle(cta);
+        const transformOffset = ctaStyle.transform === 'none' ? 0 : new DOMMatrixReadOnly(ctaStyle.transform).m42;
+        const translateOffset = ctaStyle.translate === 'none' ? 0 : Number.parseFloat(ctaStyle.translate.split(/\s+/)[1] ?? '0');
+        const entranceOffset = transformOffset + translateOffset;
+        const collapsedBottom = cta.getBoundingClientRect().bottom - root.getBoundingClientRect().top - detailsHeight - previousOffset - entranceOffset;
+        const centeredOffset = viewportHeight / 2 - (nameTop + collapsedBottom) / 2;
+        const offset = Math.max(64 - nameTop, centeredOffset);
+        root.style.setProperty('--hero-copy-offset', `${offset}px`);
+        previousOffset = offset;
+        setNameVerticalOffset((current) => Math.abs(current - offset / viewportHeight) > 0.00001 ? offset / viewportHeight : current);
+        previousWidth = stage.clientWidth;
+        previousHeight = viewportHeight;
+        previousIntroHeight = introHeight;
+      }
       const scale = Math.max(1, root.clientHeight / viewportHeight);
       setViewBoxScale((current) => Math.abs(current - scale) > 0.001 ? scale : current);
     };
@@ -34,7 +69,8 @@ export function Hero({ ready, onOpenThesis }: { ready: boolean; onOpenThesis: ()
     observer.observe(root);
     observer.observe(stage);
     update();
-    return () => observer.disconnect();
+    void document.fonts.ready.then(update);
+    return () => { active = false; observer.disconnect(); };
   }, []);
 
   useLayoutEffect(() => {
@@ -58,10 +94,6 @@ export function Hero({ ready, onOpenThesis }: { ready: boolean; onOpenThesis: ()
 
     return () => ctx.revert();
   }, [ready]);
-
-  useEffect(() => {
-    if (isBioExpanded) bioDetailsRef.current?.focus();
-  }, [isBioExpanded]);
 
   function toggleBiography() {
     setIsBioExpanded((current) => !current);
@@ -93,7 +125,7 @@ export function Hero({ ready, onOpenThesis }: { ready: boolean; onOpenThesis: ()
         <defs>
           <mask id="hero-name-cutout-mask-desktop" maskUnits="userSpaceOnUse" x="0" y="0" width="1600" height={900 * viewBoxScale}>
             <rect x="0" y="0" width="1600" height={900 * viewBoxScale} fill="white" />
-            <text className="hero-name-cutout-mask-text hero-name-cutout-mask-text-desktop" x="800" y="350" fill="black">
+            <text className="hero-name-cutout-mask-text hero-name-cutout-mask-text-desktop" x="800" y={350 + 900 * nameVerticalOffset} fill="black">
               {hero.name}
             </text>
           </mask>
@@ -120,7 +152,7 @@ export function Hero({ ready, onOpenThesis }: { ready: boolean; onOpenThesis: ()
             <text
               className="hero-name-cutout-mask-text hero-name-cutout-mask-text-mobile"
               x="300"
-              y="306"
+              y={306 + 760 * nameVerticalOffset}
               fill="black"
               stroke="black"
               transform="translate(300 306) scale(1.45 1) translate(-300 -306)"
@@ -156,32 +188,7 @@ export function Hero({ ready, onOpenThesis }: { ready: boolean; onOpenThesis: ()
           </motion.span>
         </p>
         <div className="homepage-hero__bio blur-in translate-y-5 text-sm leading-7 text-muted [filter:blur(10px)] md:text-base">
-          <div>
-            <p>{hero.headline}</p>
-            <div
-              id={bioDetailsId}
-              ref={bioDetailsRef}
-              hidden={!isBioExpanded}
-              tabIndex={-1}
-              role="region"
-              aria-label="More about Ramin Hoodeh"
-              className="homepage-hero__bio-details"
-            >
-              <p>{hero.biography.career}</p>
-              <p>
-                {hero.biography.latestWork.beforeLink}
-                <a
-                  href={hero.biography.latestWork.linkHref}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="homepage-hero__bio-link"
-                >
-                  {hero.biography.latestWork.linkLabel}
-                </a>
-                {hero.biography.latestWork.afterLink}
-              </p>
-            </div>
-          </div>
+          <p className="homepage-hero__bio-intro">{hero.headline}</p>
           <div className="homepage-hero__bio-toggle">
             <button
               type="button"
@@ -192,6 +199,29 @@ export function Hero({ ready, onOpenThesis }: { ready: boolean; onOpenThesis: ()
             >
               <span className="education-read-more-chip__label">{isBioExpanded ? 'Show less' : 'Read more'}</span>
             </button>
+          </div>
+          <div
+            id={bioDetailsId}
+            ref={bioDetailsRef}
+            hidden={!isBioExpanded}
+            tabIndex={-1}
+            role="region"
+            aria-label="More about Ramin Hoodeh"
+            className="homepage-hero__bio-details"
+          >
+            <p>{hero.biography.career}</p>
+            <p>
+              {hero.biography.latestWork.beforeLink}
+              <a
+                href={hero.biography.latestWork.linkHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="homepage-hero__bio-link"
+              >
+                {hero.biography.latestWork.linkLabel}
+              </a>
+              {hero.biography.latestWork.afterLink}
+            </p>
           </div>
         </div>
         <div className="homepage-hero__cta blur-in flex translate-y-5 flex-wrap justify-center gap-4 [filter:blur(10px)]">

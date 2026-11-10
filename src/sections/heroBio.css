@@ -1,4 +1,8 @@
-/* Anchor the copy beneath the original SVG name, independently of disclosure height. */
+.homepage-hero {
+  overflow-anchor: none;
+}
+
+/* Balance the collapsed name/copy/CTA together; keep that anchor when details open. */
 .homepage-hero__copy {
   position: relative;
   display: flex;
@@ -6,7 +10,7 @@
   align-items: center;
   max-width: 48rem;
   margin-inline: auto;
-  padding-top: calc(var(--hero-stage-height, 100svh) * 0.52);
+  padding-top: max(0px, calc(var(--hero-stage-height, 100svh) * 0.5 + var(--hero-copy-offset, 0px)));
   padding-bottom: 4.5rem;
 }
 
@@ -26,6 +30,10 @@
 
 .homepage-hero__bio-details p {
   margin-top: 1rem;
+}
+
+.homepage-hero__bio-details:not([hidden]) {
+  display: flow-root;
 }
 
 .homepage-hero__bio-toggle {
@@ -53,12 +61,12 @@
 }
 
 .homepage-hero__cta {
-  margin-top: 1rem;
+  margin-top: 2rem;
 }
 
 @media (max-width: 640px) {
   .homepage-hero__copy {
-    padding-top: calc(var(--hero-stage-height, 100svh) * 0.47);
+    padding-top: max(0px, calc(var(--hero-stage-height, 100svh) * 0.47 + var(--hero-copy-offset, 0px)));
     padding-bottom: 5rem;
   }
 
